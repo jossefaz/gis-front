@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
 import {Tool} from "./models/tool";
-import { ToolList } from './components/tool/ToolList';
+import MapComponent from './components/map/MapComponent';
 
 
 interface State {
   tools:Tool[];
+//  map : Map
 }
 
 
 
+
 class App extends Component<{}, State> {
+  
+  
   state = {    
     tools: [
       {
@@ -23,21 +27,19 @@ class App extends Component<{}, State> {
         name: "my second test",
         toolTip : "second!"
       }
-    ]
-  };
+    ],
+ 
+};
 
   render() {
-    // const handleTaskChange = (tool:Tool) => {
-    //   alert(tool.id);
-    // }
-    
+   
     return (
-      <div>
-        <h2>Hello React TS!</h2>
-        <ToolList tools={this.state.tools}></ToolList>
-      </div>
-    );
+        <div>
+          <MapComponent></MapComponent>
+        </div>
+    )
   }
+ 
 }
 
 export default App;
