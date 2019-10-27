@@ -7,10 +7,11 @@
     "@types/node": "12.7.9",
     "@types/react": "16.9.4",
     "@types/react-dom": "16.9.1",
-    "ol": "^6.0.1",
+    "ol": "^5.3.3",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-openlayers": "^0.2.1",
+    "react-redux": "^7.1.1",
     "react-scripts": "3.1.2",
     "typescript": "3.6.3"
   },

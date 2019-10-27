@@ -14,20 +14,8 @@ export interface MapProps {
 }
 
 export const MapObject: FunctionComponent<MapProps> = ({   
+    
     map
   }) => (
      <div id="map">{map}</div>
-);
- 
-// export const MapObject: FunctionComponent<MapProps> = ({
-
-// }) => (
-//   
-// );
-
-
-    
-// return (
-//         <div id="map"></div>   
-//     );    
-// );
+); 

@@ -12,6 +12,7 @@ export interface Props {
 // }
 
 export const ToolList: FunctionComponent<Props> = ({
+  use
   // onChange,
   tools
 }) => (

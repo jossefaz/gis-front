@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-
 
 // Open Layers Imports
-import {ol} from '././ol';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
+import {OSM,} from 'ol/source.js';
+import View from 'ol/View.js';
+import Map from 'ol/Map.js';
 import 'ol/ol.css';
 
 
@@ -18,52 +18,31 @@ class MapComponent extends React.Component {
 
     componentDidMount() {
 
-        this.map = new ol.Map({
+        this.map = new Map({
             layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.OSM()
+                new TileLayer({
+                    source: new OSM()
                 })
             ],
             target: 'map',
-            view: new ol.View({
+            view: new View({
                 center: [0, 0],
                 zoom: 2
             })
         });
-
-        // this.map.updateSize();
-        // this.map.render();
-        // this.map.redraw();
+    }
+    
+    addLayer = layer => {
+        
     }
 
 
     render() {
-        //if(this.props.contentRender) {      // Conditional Rendering
         return (
             <div>
-         
-
-
-                    <div id="map" className="map" ref="olmap"></div>
-
-
-         
+                <div id="map" className="map" ref="olmap"></div>
             </div>
         )
-        //}else{return false}
     }
 }
-
-
-
-MapComponent.propTypes = {
-    contentRender: PropTypes.bool
-};
-
-const mapStateToProps = (state) => {
-    return {
-        contentRender: state.setWMSComponentStatus.setWMSComponentStatusState
-    }
-}
-
-export default connect(mapStateToProps)(MapComponent);
+export default (MapComponent);

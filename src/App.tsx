@@ -2,17 +2,29 @@ import React, { Component } from 'react';
 import './App.css';
 import {Tool} from "./models/tool";
 import MapComponent from './components/map/MapComponent';
+import { MapObject } from './components/map/MapObject';
+
+// Open Layers Imports
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
+import {OSM,} from 'ol/source.js';
+import View from 'ol/View.js';
+import Map from 'ol/Map.js';
+import 'ol/ol.css';
+
 
 
 interface State {
   tools:Tool[];
-//  map : Map
+  map : Map
 }
 
 
 
 
 class App extends Component<{}, State> {
+  
+  
+  
   
   
   state = {    
@@ -28,13 +40,24 @@ class App extends Component<{}, State> {
         toolTip : "second!"
       }
     ],
- 
+    map:  new Map({
+      layers: [
+          new TileLayer({
+              source: new OSM()
+          })
+      ],
+      target: 'map',
+      view: new View({
+          center: [0, 0],
+          zoom: 2
+      })
+  }) 
 };
 
   render() {
-   
+    
     return (
-        <div>
+        <div>          
           <MapComponent></MapComponent>
         </div>
     )
