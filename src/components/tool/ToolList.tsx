@@ -11,10 +11,9 @@ export interface Props {
 //   alert('test!');
 // }
 
-export const ToolList: FunctionComponent<Props> = ({
-  use
+export const ToolList: FunctionComponent<Props> = ({ 
   // onChange,
-  tools
+  tools,
 }) => (
   
     <ul>

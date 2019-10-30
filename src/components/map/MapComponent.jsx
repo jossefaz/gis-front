@@ -31,10 +31,12 @@ class MapComponent extends React.Component {
             })
         });
     }
+
     
-    addLayer = layer => {
+    
+    // addLayer = layer => {
         
-    }
+    // }
 
 
     render() {

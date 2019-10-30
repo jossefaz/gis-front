@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import {Tool} from "./models/tool";
 import MapComponent from './components/map/MapComponent';
-import { MapObject } from './components/map/MapObject';
+import AddTodo from './components/test/testComponent';
 
 // Open Layers Imports
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
@@ -22,8 +22,11 @@ interface State {
 
 
 class App extends Component<{}, State> {
-  
-  
+
+  onClick = () => {    
+    alert("my test");
+  };
+
   
   
   
@@ -54,14 +57,16 @@ class App extends Component<{}, State> {
   }) 
 };
 
-  render() {
-    
-    return (
-        <div>          
-          <MapComponent></MapComponent>
-        </div>
-    )
-  }
+render() {
+  
+  return (
+      <div>
+        <AddTodo></AddTodo>
+        <input type="button" onClick={this.onClick}></input>          
+        <MapComponent></MapComponent>
+      </div>
+  )
+}
  
 }
 
