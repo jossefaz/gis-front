@@ -1,10 +1,9 @@
 import {
-  ADD_LAYER,
-  UPDATE_LAYER,  
+  ADD_LAYER,   
 } from '../actions/actionsTypes'
 
 const initialState = {
-  layers: []
+  layers: ["1","2"]
  
 };
 export default function (state = initialState, action){

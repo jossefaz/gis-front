@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Open Layers Imports
-import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
+import {Tile as TileLayer} from 'ol/layer.js';
 import {OSM,} from 'ol/source.js';
 import View from 'ol/View.js';
 import Map from 'ol/Map.js';
@@ -32,7 +32,7 @@ class MapComponent extends React.Component {
         });
     }
 
-    
+
     
     // addLayer = layer => {
         
@@ -40,9 +40,13 @@ class MapComponent extends React.Component {
 
 
     render() {
+        console.log(this.props.layers)
         return (
+            
             <div>
-                <div id="map" className="map" ref="olmap"></div>
+                <div>
+                    <div id="map" className="map" ref="olmap"></div>
+                </div>
             </div>
         )
     }
