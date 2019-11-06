@@ -17,7 +17,7 @@ class VisibleMap extends React.Component {
         this.map = {};
     }
 
-    handleAddTodo = () =>{
+    handleAddLayer = () =>{
 
         console.log('trying toadd a layer!!!!!!');
         
@@ -31,38 +31,26 @@ class VisibleMap extends React.Component {
       
           var polyEditingVectorSource = new VectorSource({
             format: new GeoJSON(),
-            url:'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AGANANUTFORGEOSERVER&maxFeatures=100000&outputFormat=application%2Fjson'
+            url:'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AFAMILY_HEALTH_CENTER&maxFeatures=50&outputFormat=application%2Fjson'
           });
       
           var vectorEditingLayer = new VectorLayer({
             source: polyEditingVectorSource,
             projection: proj_2039 
           });
-          console.log("vectorEditingLayer declared")
-          addLayer(vectorEditingLayer);          
+          console.log("vectorEditingLayer declared");
+          console.log('as of now the layers are:' + this.props.layers);
+          this.props.addLayer(vectorEditingLayer);          
     }
-    testItA(){
-       
-    }
-    
     
     render() {
         return (
-        //     <div>
-        //       <button className="add-todo" onClick={() => {
-        //         this.handleAddTodo();
-        //       }} >           
-        //       it will work
-        //       </button>
-        //    {/* <MapComponent layers={this.props.layers} addLayer={this.props.addLayerParent}></MapComponent> */}
-        //     </div>  
-        
-        <div>
-                <button className="add-todo" onClick={this.handleAddTodo}>
-               check
-                </button>
+            <div>
+              <button  onClick={() => { this.handleAddLayer(); }} > 
+              Health Center
+              </button>
+             <MapComponent layers={this.props.layers} addLayer={this.props.addLayer}></MapComponent>
         </div>
-              
         )
     }
 }
@@ -85,14 +73,14 @@ const mapDispatchToProps = (dispatch) => {
 //     return {actions: bindActionCreators(addLayer, dispatch)}
 // }
 
-// export default connect(
-//     mapStateToProps,
-//     addLayer,
-//     null 
-// )(VisibleMap);
+export default connect(
+    mapStateToProps,
+    {addLayer},
+    null 
+)(VisibleMap);
 
 
-export default (VisibleMap);
+//export default (VisibleMap);
     
 //     mapStateToProps,
 //     addLayer,

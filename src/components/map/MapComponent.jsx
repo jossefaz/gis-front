@@ -10,34 +10,35 @@ import {Projection} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
 import 'ol/ol.css';
+import { combineReducers } from 'redux';
 
 
 class MapComponent extends React.Component {
-    constructor(props) {
-        super(props)
+     constructor(props) {
+         super(props)
 
-        this.map = {};
+         this.map = {};
     }
 
-    handleAddTodo(){
-        // var proj_2039 = new Projection({
-        //     code: 'EPSG:2039',
-        //     units: 'm',
-        //     axisOrientation: 'neu',
-        //     global: false
-        //   });
+    handleAddLayer(){
+        var proj_2039 = new Projection({
+            code: 'EPSG:2039',
+            units: 'm',
+            axisOrientation: 'neu',
+            global: false
+          });
       
-        //   var polyEditingVectorSource = new VectorSource({
-        //     format: new GeoJSON(),
-        //     url:'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AGANANUTFORGEOSERVER&maxFeatures=100000&outputFormat=application%2Fjson'
-        //   });
+          var polyEditingVectorSource = new VectorSource({
+            format: new GeoJSON(),
+            url:'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AGANANUTFORGEOSERVER&maxFeatures=100000&outputFormat=application%2Fjson'
+          });
       
-        //   var vectorEditingLayer = new VectorLayer({
-        //     source: polyEditingVectorSource,
-        //     projection: proj_2039 
-        //   });
+          var vectorEditingLayer = new VectorLayer({
+            source: polyEditingVectorSource,
+            projection: proj_2039 
+          });
       
-        //   addLayer(vectorEditingLayer);          
+          this.props.addLayer(vectorEditingLayer);          
     }
 
     componentDidMount() {
@@ -61,23 +62,21 @@ class MapComponent extends React.Component {
           newProps.layers !== this.props.layers &&
           newProps.layers.length > 0
         ) {
-            this.map.addLayer(newProps.layers.pop());
+            var layers = [...newProps.layers];
+            this.map.addLayer(layers.pop());
         }
     }
 
+
     render() {
-        console.log(this.props.layers)
+        console.log("our layers:" + this.props.layers)
         return (
             
             <div>
-                <button className="add-todo" onClick={() => {
-                 this.handleAddTodo();
-              }}>
-                    Add Todo
-                </button>
-                <div>
-                    <div id="map" className="map" ref="olmap"></div>
-                </div>
+              <button onClick={() => { this.handleAddLayer(); }} > 
+              Gardens
+              </button> 
+              <div id="map" className="map" ref="olmap"></div>
             </div>
         )
     }
