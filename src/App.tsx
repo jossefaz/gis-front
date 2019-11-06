@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import {Tool} from "./models/tool";
 
-import AddTodo from './components/test/testComponent';
+// import AddTodo from './components/test/testComponent';
 
 // Open Layers Imports
 import {Tile as TileLayer} from 'ol/layer.js';
@@ -19,12 +19,6 @@ interface State {
 
 class App extends Component<{}, State> {
 
-  onClick = () => {    
-    alert("my test");
-  };
-
-  
-  
   
   state = {    
     tools: [
@@ -56,9 +50,7 @@ class App extends Component<{}, State> {
 render() {
   
   return (
-      <div>
-        <AddTodo></AddTodo>
-        <input type="button" onClick={this.onClick}></input>          
+      <div>       
         <VisibleMap/>
       </div>
   )

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import layers from './layers'
+import mapLayers from './mapLayers'
 
 export default combineReducers({
-    layers
+    mapLayers
 })  
