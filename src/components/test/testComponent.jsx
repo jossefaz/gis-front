@@ -35,17 +35,12 @@ class AddTodo extends React.Component {
       projection: proj_2039 
     });
 
-    this.props.addLayer(vectorEditingLayer);
-    //this.setState({ input: "" });
+    this.props.addLayer(vectorEditingLayer);    
   };
 
   render() {
     return (
-      <div>
-        {/* <input
-          onChange={e => this.updateInput(e.target.value)}
-          value={this.state.input}
-        /> */}
+      <div>       
         <button className="add-todo" onClick={this.handleAddTodo}>
           Add Todo
         </button>
