@@ -10,7 +10,8 @@ import {
 import GeoJSON from 'ol/format/GeoJSON.js';
 import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
-import Style from 'ol/style/Style'
+import Style from 'ol/style/Style';
+import {Point} from 'ol/geom';
 
 
 export function addMantiIntersectionLayer() {
@@ -23,6 +24,13 @@ export function addMantiIntersectionLayer() {
         global: false
     });
 
+    var proj_3857 = new Projection({
+        code: 'EPSG:3857',
+        units: 'm',
+        axisOrientation: 'neu',
+        global: true
+    });
+
     var polyEditingVectorSource = new VectorSource({
         format: new GeoJSON(),
         url: 'http://lbshayna1-7.muni.jerusalem.muni.il:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AZOMETMANTI&maxFeatures=1000&outputFormat=application%2Fjson'
@@ -33,6 +41,9 @@ export function addMantiIntersectionLayer() {
         if (polyEditingVectorSource.getState() == 'ready') {
 
             polyEditingVectorSource.getFeatures().forEach(feature => {
+                // var coordinate = feature.getGeometry().getCoordinates();
+                // feature.setGeometry(new Point(Projection.transform(coordinate, 'EPSG:2039', 'EPSG:3857')));
+
                 feature.values_["Offset"] = 0;
                 feature.values_["FB"] = 2;
                 feature.values_["PH"] = 8;
@@ -56,7 +67,7 @@ export function addMantiIntersectionLayer() {
 
     var vectorEditingLayer = new VectorLayer({
         source: polyEditingVectorSource,
-        projection: proj_2039,
+        projection: proj_3857,
         style : function(feature, resolution){
             var styleOL = new Style( {
                 image: new CircleStyle( {

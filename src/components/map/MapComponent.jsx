@@ -1,11 +1,11 @@
 import React from 'react';
 
 // Open Layers Imports
-import {Tile as TileLayer} from 'ol/layer.js';
-import {OSM,} from 'ol/source.js';
+// import {Tile as TileLayer} from 'ol/layer.js';
+import TileLayer from 'ol/layer/Tile';
 import View from 'ol/View.js';
 import Map from 'ol/Map.js';
-import {Vector as VectorSource} from 'ol/source.js';
+import {TileArcGISRest,OSM, Vector as VectorSource} from 'ol/source';
 import {Projection} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
@@ -15,7 +15,8 @@ import {addMantiIntersectionLayer} from '../../usefulgarbage/layers';
 import {add} from 'ol/coordinate';
 import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
-import Style from 'ol/style/Style'
+import Style from 'ol/style/Style';
+import WMTSTileGrid from 'ol/tilegrid/WMTS';
 
 
 class MapComponent extends React.Component {
@@ -24,15 +25,17 @@ class MapComponent extends React.Component {
 
          this.map = {};
          this.vectorEditingLayer = null;
-    }
 
-    handleAddLayer(){
-        var proj_2039 = new Projection({
+         this.proj_2039 = new Projection({
             code: 'EPSG:2039',
             units: 'm',
             axisOrientation: 'neu',
             global: false
           });
+    }
+
+    handleAddLayer(){
+        
       
           var polyEditingVectorSource = new VectorSource({
             format: new GeoJSON(),
@@ -41,34 +44,49 @@ class MapComponent extends React.Component {
       
           this.vectorEditingLayer = new VectorLayer({
             source: polyEditingVectorSource,
-            projection: proj_2039 
+            projection: this.proj_2039 
           });
-
           this.map.addLayer(this.vectorEditingLayer);
-      
-          //this.props.addLayer(vectorEditingLayer);          
+            
     }
 
     componentDidMount() {
-        var a  = new TileLayer({
-            source: new OSM()
+        var osmLayer  = new TileLayer({
+            source: new OSM()          
         })
 
         this.map = new Map({
 
             target: 'map',
             view: new View({
-                center: [222000,635000],
+                center: Projection.transform([222000,635000], 'EPSG:2039', 'EPSG:3857'),
                 zoom: 12
             })
         });
 
+        var baseMapLayer = new TileLayer({
+            extent: [-13884991, 2870341, -7455066, 6338219],
+            source: new TileArcGISRest({
+                url: "https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StateCityHighway_USA/MapServer",
+              //url: "https://ntgisarc12.muni.jerusalem.muni.il/arcgis/rest/services/Jrslm_Vector_Blds_ForCache/MapServer",
+              // projection : proj_2039
+            })
+
+        });
+        // this.map.addLayer(osmLayer);
+
         this.vectorEditingLayer = addMantiIntersectionLayer();
         this.map.addLayer(this.vectorEditingLayer);
 
+        var proj_2039 = new Projection({
+            code: 'EPSG:2039',
+            units: 'm',
+            axisOrientation: 'neu',
+            global: false
+        });
+       
         this.subscribeToServer();
     }
-    
 
     componentWillReceiveProps(newProps) {
         // if (
@@ -117,17 +135,6 @@ class MapComponent extends React.Component {
             });
 
             if (f) {
-                // var styleOFFL = new Style( {
-                //     image: new CircleStyle( {
-                //         radius: 10,
-                //         fill: new Fill( {
-                //             color: 'black'
-                //         } )
-                //     } )
-                // } );
-                // var coordinate = f.getGeometry().getCoordinates();
-                // add(coordinate, [10, 10]);
-                // f.setGeometry(new Point(coordinate));
                 var st = lyr.getStyleFunction();
                 f.setProperties(message, true);
                 f.setStyle(st.apply(this, [f]));
