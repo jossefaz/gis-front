@@ -10,7 +10,8 @@ import {OSM,} from 'ol/source.js';
 import View from 'ol/View.js';
 import Map from 'ol/Map.js';
 import 'ol/ol.css';
-import VisibleMap from './containers/VisibleMap'
+import {ToolList} from './components/tool/ToolList';
+import tools from './usefulgarbage/tools.json';
 
 interface State {
   tools:Tool[];
@@ -18,40 +19,13 @@ interface State {
 }
 
 class App extends Component<{}, State> {
-
   
-  state = {    
-    tools: [
-      {
-        id: 1,
-        name: "my first test",
-        toolTip: "yes first test"
-      },
-      {
-        id: 2,
-        name: "my second test",
-        toolTip : "second!"
-      }
-    ],
-    map:  new Map({
-      layers: [
-          new TileLayer({
-              source: new OSM()
-          })
-      ],
-      target: 'map',
-      view: new View({
-          center: [0, 0],
-          zoom: 2
-      })
-  }) 
-};
 
 render() {
   
   return (
       <div>       
-        <VisibleMap/>
+        <ToolList tools={tools}></ToolList>
       </div>
   )
 }

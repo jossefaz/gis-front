@@ -1,5 +1,13 @@
 export interface Tool{
-    id: number;
-    name: string;
-    toolTip: string;
+    Id: number;
+    ToolName: string;
+    ToolTip: string;
+    ToolImage : string;
+    ToolActionInvoker : string;
+    ToolTypeID : string;
+    ToolParams : string;
+    ToolLocation : string;
+    Order :  number;
+    IsAGroup : boolean;
+    ToolGroupId : number;
 }

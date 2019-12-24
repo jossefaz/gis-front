@@ -10,22 +10,16 @@ export const ToolTask: FunctionComponent<Props> = ({
   //  onChange,
     tool
 }) => {
-    const onClick = () => {
-      //  onChange(tool);
-    };
+   
 
-    const test = () =>{
+    const test = () => {
         alert('single tool working!');
     }
 
     return (
-        <div>
-            {/* <input onClick={onClick} value={tool.toolTip}></input> */}
-            <input type="button" onClick={test} value={tool.name} />
+        <div>            
+            <input type="button" onClick={test} value={tool.ToolName} />
         </div>
     );
- 
-    // 
-    
 }
 
