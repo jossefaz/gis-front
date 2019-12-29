@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import MapComponent from '../components/map/MapComponent';
+import MapComponent from '../components/map/MapComponentOld';
 import { bindActionCreators } from 'redux'
 import  {addLayer}  from "../redux/actions/actions";
 import {Vector as VectorSource} from 'ol/source.js';
