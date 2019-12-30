@@ -17,8 +17,7 @@ class  ToolTask extends Component{
     componentDidMount (){   
         
         //Logo
-         this._getImage();
-        
+         this._getImage();        
         
         //Invoker
         switch (this.props.tool.ToolInvokerType) {
