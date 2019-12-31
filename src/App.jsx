@@ -7,8 +7,9 @@ import './App.css';
 import TestIO from './usefulgarbage/TestIO';
 import Map from './components/map/MapComponent';
 import MapComponent from './components/map/MapComponent';
+import ProductDetail from './usefulgarbage/ProductDetail';
 
- const uri = 'http://localhost/test';
+ const uri = '172.17.22.215:9090/subscribe/events';
  const options = { transports: ['websocket'] };
 
  class App extends Component{  
@@ -24,10 +25,15 @@ import MapComponent from './components/map/MapComponent';
     return (
       <div>
         <div><ToolList tools={tools}></ToolList></div>
-        <div>
+        {/* <div>
           <Socket uri={uri} options={options}> 
+          
           <TestIO></TestIO>
           </Socket>  
+
+        </div> */}
+        <div>
+          <ProductDetail></ProductDetail>
         </div>
        <div>
            <MapComponent></MapComponent>

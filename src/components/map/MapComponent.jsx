@@ -2,6 +2,7 @@ import React,{ Component } from "react";
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 
+
 class MapComponent extends Component {
     constructor(props) {
         super(props);

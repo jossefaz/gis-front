@@ -15,7 +15,7 @@ export default class testIO extends React.Component {
         return (
             <div>
                 <h1>SocketIO Test.</h1>
-                <Event event='e1' handler={this.onMessage} />
+                <Event event='client_id=yoni12&channel=e2&group=&subscribe_type=events' handler={this.onMessage} />
             </div>
         );
     }
