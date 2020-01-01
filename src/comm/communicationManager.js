@@ -16,9 +16,8 @@ export const onMessageRecived = (message) => {
     
     var channelItem =  channels.map(function(channel){
         if(channel.Channel = message.Channel){
-
+           
         }
-
     });
     
     // switch (type) {
