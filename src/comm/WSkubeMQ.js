@@ -1,4 +1,4 @@
-var WSkubeMQ = (function() {
+export var  WSkubeMQ = (function() {
   var _this = null;
   var _props = null;
   var _url = null;

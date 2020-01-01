@@ -6,6 +6,7 @@ import './App.css';
 import MapComponent from './components/map/MapComponent';
 import ProductDetail from './usefulgarbage/ProductDetail';
 import VisibleMap from './containers/VisibleMap';
+import {loadChannels}  from './comm/communicationManager.js'
 
 
 
@@ -13,6 +14,8 @@ import VisibleMap from './containers/VisibleMap';
   
   constructor(props) {
     super(props);
+
+    loadChannels();
   }
   
   render(){
