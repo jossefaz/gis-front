@@ -1,5 +1,7 @@
 [
-    { "name": "E1 PubSub Channel", "type": "PubSub", "Channel": "e1", "redux-target": "MTCS.Units","redux-function:" : "", "description": "change is MTCS.Units attribute(s)"},
-    { "name": "E2 PubSub Channel", "type": "PubSub", "Channel": "e2" },
-    { "name": "Q1 Queue", "type": "Queue", "Channel": "q1", "PollSecs": 15, "FetchSize": 3 }
+    // { "name": "E1 PubSub Channel", "type": "PubSub", "Channel": "e1", "redux-target": "MTCS.Units","redux-function:" : "update_attribute", "description": "change is MTCS.Units attribute(s)"},
+    // { "name": "E2 PubSub Channel", "type": "PubSub", "Channel": "e2" },
+    // { "name": "Q1 Queue", "type": "Queue", "Channel": "q1", "PollSecs": 15, "FetchSize": 3 }
+
+    { "name": "MTCS.Units PubSub Channel", "type": "PubSub", "Channel": "MTCS.Units.*", "redux-target": "MTCS.Units", "redux-function" : "update_attributes", "description": "change is MTCS.Units attribute(s)",}
 ]

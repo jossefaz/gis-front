@@ -12,16 +12,23 @@ export const loadChannels = () => {
     });
 }
 
-export const onMessageRecived = () => {
+export const onMessageRecived = (message) => {
     
-    switch (type) {
-        case "":
-            updateFeatureAttributes();
-            break;
-        case "":
-            addLayer();            
-            break;
-        default:
-            break;
-    } 
+    var channelItem =  channels.map(function(channel){
+        if(channel.Channel = message.Channel){
+
+        }
+
+    });
+    
+    // switch (type) {
+    //     case "":
+    //         updateFeatureAttributes();
+    //         break;
+    //     case "":
+    //         addLayer();            
+    //         break;
+    //     default:
+    //         break;
+    // } 
 }
