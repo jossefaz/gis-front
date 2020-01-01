@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import MapComponent from '../components/map/MapComponentOld';
+import MapComponent from '../components/map/MapComponent';
 import { bindActionCreators } from 'redux'
-import  {addLayer}  from "../redux/actions/actions";
+import  {addLayer,updateFeatureAttributes}  from "../redux/actions/actions";
 import {Vector as VectorSource} from 'ol/source.js';
 import {Projection} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON.js';
@@ -14,10 +14,36 @@ import {addMantiIntersectionLayer} from '../usefulgarbage/layers'
 class VisibleMap extends React.Component {
     constructor(props) {
         super(props)
-
         
+    }   
+    
+  
+    updateFeartures =() =>{
+        this.props.updateFeatureAttributes([{
+            "unit-id": 340,
+            "changes": [{
+                "field-name": "Status",
+                "value": "FAIL"
+            },
+            {
+                "field-name": "Time",
+                "value": "2019222"
+            }]
+        },
+        {
+            "unit-id": 580,
+            "changes": [{
+                "field-name": "Status",
+                "value": "FAIL"
+            },
+            {
+                "field-name": "Time",
+                "value": "2019222"
+            }]
+        }],"units","unit-id","unit-id","changes", "field-name","value");
+        console.log(this.props);
+
     }
-   
 
     handleAddLayer = () =>{
 
@@ -64,24 +90,26 @@ class VisibleMap extends React.Component {
               <button  onClick={() => { this.handleAddLayer(); }} > 
               Health Center
               </button>
+              <button  onClick={() => { this.updateFeartures(); }} > 
+              update Feartures
+              </button>
               <button  onClick={() => { this.handleAddTzmatimLayer(); }} > 
               צמתים
               </button>
               <button  onClick={() => { this.handleChangeStatusTzmet(); }} > 
               שנה סטטוס צומת
-              </button> 
-              {/* <button  onClick={() => { this.changeStatusFromServer("",null); }} > 
-              שינוי צמתים ידנית
-              </button>               */}
-             <MapComponent layers={this.props.layers}   addLayer={this.props.addLayer} ></MapComponent>
+              </button>               
+             <MapComponent layers={this.props.layers}   
+             addLayer={this.props.addLayer} units={this.props.units}></MapComponent>
         </div>
         )
     }
 }
 
 const mapStateToProps = state => {
-    return{
-        layers: state.mapLayers.layers
+    return {
+        layers: state.mapLayers.layers,
+        units : state.featureAttributes.units
     }    
 }
 
@@ -91,20 +119,10 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-// const mapDispatchToProps =(dispatch) => {
-//     return {actions: bindActionCreators(addLayer, dispatch)}
-// }
-
 export default connect(
     mapStateToProps,
-    {addLayer},
+    {addLayer,updateFeatureAttributes},
     null 
 )(VisibleMap);
 
 
-//export default (VisibleMap);
-    
-//     mapStateToProps,
-//     addLayer,
-//     null 
-// )(VisibleMap);

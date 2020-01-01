@@ -77,6 +77,7 @@ class  ToolTask extends Component{
     return (
         <div>            
             <input type = "image"  
+             alt = ""
              value = {tool.ToolName}   
              title = {tool.ToolTip} 
              src = {this.state.logo}

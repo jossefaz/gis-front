@@ -21,11 +21,26 @@ class MapComponent extends Component {
                 extent: [207000.0,624000.0,234525.12,651525.12]
             })
         });
-    
+
+        this.map.addLayer(this.props.layers[0]);    
+    }
+
+    componentWillReceiveProps(newProps) {
+        
+        console.log("new props recived now:" + newProps);
+        
+        if (
+          newProps.layers !== this.props.layers &&
+          newProps.layers.length > 0
+        ) {
+            var layers = [...newProps.layers];
+            this.map.addLayer(layers.pop());
+        }
     }
 
 
     render() { 
+        console.log("our layers:" + this.props.layers)
         return (  
             <div id = "map" 
                 className = "map" 

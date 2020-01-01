@@ -145,7 +145,8 @@ class MapComponent extends React.Component {
     
             if (f) {
                 var st = lyr.getStyleFunction();
-                f.setProperties(message, true);
+                f.setProperties(message, 
+                    true);
                 f.setStyle(st.apply(this, [f]));
             }
         }

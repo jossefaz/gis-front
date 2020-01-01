@@ -11,18 +11,8 @@ class ProductDetail extends React.Component {
   }
 
   handleData(data) {
-    console.log(data);
-    // let result = JSON.parse(data);
-     this.setState({message: data});
-    //  switch (key) {
-    //      <map name="()" className="channeList"></map>
-
-             
-    //          break;
-     
-    //      default:
-    //          break;
-    //  }
+    console.log(data);    
+     this.setState({message: data});    
   }
 
   render() {
