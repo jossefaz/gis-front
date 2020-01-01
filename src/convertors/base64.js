@@ -1,4 +1,4 @@
-var Base64 = {
+export var Base64 = {
 
     // private property
     _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
@@ -103,6 +103,7 @@ var Base64 = {
     _utf8_decode: function (utftext) {
         var string = "";
         var i = 0;
+        var c1,c2,c3;
         var c = c1 = c2 = 0;
 
         while (i < utftext.length) {

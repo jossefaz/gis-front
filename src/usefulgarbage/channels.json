@@ -1,5 +1,5 @@
 [
 
 
-    { "name": "MTCS.Units PubSub Channel", "type": "PubSub", "Channel": "MTCS.Units.*", "redux-target": "MTCS.Units", "redux-function" : "update_attributes", "description": "change is MTCS.Units attribute(s)"}
+    { "name": "MTCS.Units PubSub Channel", "type": "PubSub", "Channel": "MTCS.Units.*", "reduxTarget": "MTCS.Units", "reduxFunction" : "update_attributes", "description": "change is MTCS.Units attribute(s)"}
 ]
