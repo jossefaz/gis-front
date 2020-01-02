@@ -8,6 +8,8 @@ import {Projection} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
 import {addMantiIntersectionLayer} from '../usefulgarbage/layers'
+import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js'
+//import {manti_inte} from '../usefulgarbage/manti_inte.json'
 
 
 
@@ -58,8 +60,10 @@ class VisibleMap extends React.Component {
         });
       
         var polyEditingVectorSource = new VectorSource({
-            format: new GeoJSON(),
-            url:'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AFAMILY_HEALTH_CENTER&maxFeatures=50&outputFormat=application%2Fjson'
+           // format: new GeoJSON(),
+           // url: geoJsonMantiIntersection,
+            features: (new GeoJSON()).readFeatures(geoJsonMantiIntersection)
+            //'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AFAMILY_HEALTH_CENTER&maxFeatures=50&outputFormat=application%2Fjson'
         });
       
         var vectorEditingLayer = new VectorLayer({

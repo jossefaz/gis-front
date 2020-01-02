@@ -1,4 +1,4 @@
-{
+export var geoJsonMantiIntersection = {
 	"type": "FeatureCollection",
 	"features": [{
 		"type": "Feature",
