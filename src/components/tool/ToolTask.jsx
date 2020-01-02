@@ -48,7 +48,7 @@ class  ToolTask extends Component{
         if(this.props.tool.ToolImage !== null && 
             this.props.tool.ToolImage !== "") {
                  import(`./toolImages/${ this.props.tool.ToolImage}.png`)        
-                 .then( obj => {console.log("this is the image:" + obj.default); this.setState({ logo :  obj.default});  
+                 .then( obj => { this.setState({ logo :  obj.default});  
                  })         
                  .catch(error => {        
                  }); 

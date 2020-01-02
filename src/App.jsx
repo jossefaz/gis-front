@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 
- import ToolList from './components/tool/ToolList.jsx';
- import tools from './usefulgarbage/tools.json';
-import MapComponent from './components/map/MapComponent';
-import ProductDetail from './usefulgarbage/ProductDetail';
+import ToolList from './components/tool/ToolList.jsx';
+import tools from './usefulgarbage/tools.json';
+import channels from './usefulgarbage/channels.json'
+
 import VisibleMap from './containers/VisibleMap';
 import {loadChannels}  from './comm/communicationManager.js'
 
@@ -19,6 +19,8 @@ import {loadChannels}  from './comm/communicationManager.js'
   }
   
   render(){
+
+    console.log("channels:" + channels[0]);
 
     console.log(tools);
     return (

@@ -1,4 +1,5 @@
-import channels from '../usefulgarbage/channels.json'
+import channels from '../usefulgarbage/channels'
+import tools from '../usefulgarbage/tools'
 import  {addLayer,updateFeatureAttributes}  from "../redux/actions/actions";
 // import {ADD_LAYER,UPDATE_FEATURE_ATTRIBUTES} from '../actions/actionsTypes';
 import {WSkubeMQ} from '../comm/WSkubeMQ.js'; 
