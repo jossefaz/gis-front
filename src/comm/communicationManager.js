@@ -24,43 +24,53 @@ export const onMessageRecived = (message) => {
     
     console.log("my messaage from communication:" + message);
     
-    var channelItem =  channels.find(function(item){
-        // if(item.Channel === message.Channel){
-        //     return item;
-        // }
+    var channelItem =  channels.find(function(item){     
         return item.Channel === message.Channel;
     });
 
     if(channelItem){
 
-    switch (channelItem.reduxFunction) {
-        case "UPDATE_FEATURE_ATTRIBUTES":
-            store.dispatch (updateFeatureAttributes([{
-                "unit-id": 340,
-                "changes": [{
-                    "field-name": "Status",
-                    "value": "FAIL"
-                },
-                {
-                    "field-name": "Time",
-                    "value": "2019222"
-                }]
+        //var data = JSON.stringify(message.Body);
+        var data = [{
+            "unit-id": 340,
+            "changes": [{
+                "field-name": "Status",
+                "value": "FAIL"
             },
             {
-                "unit-id": 580,
-                "changes": [{
-                    "field-name": "Status",
-                    "value": "FAIL"
-                },
-                {
-                    "field-name": "Time",
-                    "value": "2019222"
-                }]
-            }],"units","unit-id","unit-id","changes", "field-name","value"));           
-            break;    
-        default:
-            break;
-    }
+                "field-name": "Time",
+                "value": "2019222"
+            }]
+        },
+        {
+            "unit-id": 580,
+            "changes": [{
+                "field-name": "Status",
+                "value": "FAIL"
+            },
+            {
+                "field-name": "Time",
+                "value": "2019222"
+            }]
+        }]
+    
+
+        switch (channelItem.reduxFunction) {
+            case "UPDATE_FEATURE_ATTRIBUTES":
+                store.dispatch (updateFeatureAttributes(
+                    
+                    data,
+                    channelItem.reduxTarget,                    
+                    channelItem.idTargetKey,
+                    channelItem.idSourceKey,
+                    channelItem.atrributeListKey,
+                    channelItem.attributeKey,
+                    channelItem.attributeValue
+                    ));          
+                break;    
+            default:
+                break;
+        }
   }
 
 }

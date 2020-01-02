@@ -2,8 +2,13 @@
     {  "name": "MTCS.Units PubSub Channel",
         "type": "PubSub",
         "Channel": "e1",
-        "reduxTarget": "MTCS.Units",
+        "reduxTarget": "units",
         "reduxFunction" : "UPDATE_FEATURE_ATTRIBUTES",
+        "idTargetKey" : "unit-id",   
+        "idSourceKey" : "unit-id",
+        "atrributeListKey" : "changes", 
+        "attributeKey" : "field-name",
+        "attributeValue": "value",
         "description": "change is MTCS.Units attribute(s)"
     }
 ]

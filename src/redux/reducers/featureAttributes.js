@@ -11,7 +11,7 @@ import {
   };
   
   export default function (state = initialState, action){
-      console.log("got to redux store");
+      
       switch (action.type) {
           case UPDATE_FEATURE_ATTRIBUTES:
             var data = action.data;
