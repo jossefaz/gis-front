@@ -1,7 +1,7 @@
 [
     {  "name": "MTCS.Units PubSub Channel",
         "type": "PubSub",
-        "Channel": "MTCS.Units.*",
+        "Channel": "e1",
         "reduxTarget": "MTCS.Units",
         "reduxFunction" : "UPDATE_FEATURE_ATTRIBUTES",
         "description": "change is MTCS.Units attribute(s)"

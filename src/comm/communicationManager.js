@@ -4,6 +4,7 @@ import  {addLayer,updateFeatureAttributes}  from "../redux/actions/actions";
 // import {ADD_LAYER,UPDATE_FEATURE_ATTRIBUTES} from '../actions/actionsTypes';
 import {WSkubeMQ} from '../comm/WSkubeMQ.js'; 
 import {Base64} from '../convertors/base64';
+import store from '../redux/store.js';
 
 
 export const loadChannels = () => {
@@ -23,15 +24,18 @@ export const onMessageRecived = (message) => {
     
     console.log("my messaage from communication:" + message);
     
-    var channelItem =  channels.map(function(item){
-        if(item.Channel === message.Channel){
-            return channelItem;
-        }
+    var channelItem =  channels.find(function(item){
+        // if(item.Channel === message.Channel){
+        //     return item;
+        // }
+        return item.Channel === message.Channel;
     });
 
+    if(channelItem){
+
     switch (channelItem.reduxFunction) {
-        case "update_attributes":
-            updateFeatureAttributes([{
+        case "UPDATE_FEATURE_ATTRIBUTES":
+            store.dispatch (updateFeatureAttributes([{
                 "unit-id": 340,
                 "changes": [{
                     "field-name": "Status",
@@ -52,18 +56,12 @@ export const onMessageRecived = (message) => {
                     "field-name": "Time",
                     "value": "2019222"
                 }]
-            }],"units","unit-id","unit-id","changes", "field-name","value");
-                // var data = action.data;
-                // var target = action.target;       
-                // var idTargetKey = action.idTargetKey;
-                // var idSourceKey = action.idSourceKey;
-                // var atrributeListKey = action.atrributeListKey;
-                // var attributeKey = action.attributeKey;
-                // var attributeValue = action.attributeValue;              
+            }],"units","unit-id","unit-id","changes", "field-name","value"));           
             break;    
         default:
             break;
     }
+  }
 
 }
 
