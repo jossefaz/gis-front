@@ -7,14 +7,35 @@ import {Base64} from '../convertors/base64';
 import store from '../redux/store.js';
 import watch from 'redux-watch' 
 
+
+
+function select(state, filter) {
+    return state.featureAttributes.units['unit-id' === 340];
+  }
+  let currentValue
+  function handleChange() {
+    let previousValue = currentValue.filter(f);
+    currentValue = store.getState().filter(f);
+    if (previousValue !== currentValue) {
+      console.log(
+        'Some deep nested property changed from',
+        previousValue,
+        'to',
+        currentValue
+      )
+    }
+  }
+
 export const loadChannels = () => {
 
-    console.log(store.getState().units); 
+    console.log("units from redux watch" + store.getState().featureAttributes.units); 
 
-    let w = watch(store.getState, 'units')
-        store.subscribe(w((newVal, oldVal, objectPath) => {
-        console.log('%s changed from %s to %s', objectPath, oldVal, newVal) 
-    }));
+    //let w = watch(store.getState, 'featureAttributes.units');
+    
+    // store.subscribe(w( (newVal, oldVal, objectPath) => {
+    //     console.log('%s changed from %s to %s', objectPath, oldVal, newVal) 
+    // }));
+    store.subscribe(handleChange);
     
     channels.map(function(channel){     
 
@@ -36,30 +57,30 @@ export const onMessageRecived = (message) => {
     });
 
     if(channelItem){
-
-        //var data = JSON.stringify(message.Body);
-        var data = [{
-            "unit-id": 340,
-            "changes": [{
-                "field-name": "Status",
-                "value": "FAIL"
-            },
-            {
-                "field-name": "Time",
-                "value": "2019222"
-            }]
-        },
-        {
-            "unit-id": 580,
-            "changes": [{
-                "field-name": "Status",
-                "value": "FAIL"
-            },
-            {
-                "field-name": "Time",
-                "value": "2019222"
-            }]
-        }]
+       
+        var data = JSON.parse(message.Body.replace(' - (1)', ''));
+        // var data = [{
+        //     "unit-id": 340,
+        //     "changes": [{
+        //         "field-name": "Status",
+        //         "value": "FAIL"
+        //     },
+        //     {
+        //         "field-name": "Time",
+        //         "value": "2019222"
+        //     }]
+        // },
+        // {
+        //     "unit-id": 580,
+        //     "changes": [{
+        //         "field-name": "Status",
+        //         "value": "FAIL"
+        //     },
+        //     {
+        //         "field-name": "Time",
+        //         "value": "2019222"
+        //     }]
+        // }]
     
 
         switch (channelItem.reduxFunction) {

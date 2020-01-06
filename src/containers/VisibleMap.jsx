@@ -113,7 +113,7 @@ class VisibleMap extends React.Component {
 const mapStateToProps = state => {
     return {
         layers: state.mapLayers.layers,
-        units : state.featureAttributes.units
+        units : state.featureAttributes.units.filter
     }    
 }
 
