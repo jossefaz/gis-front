@@ -5,10 +5,17 @@ import  {addLayer,updateFeatureAttributes}  from "../redux/actions/actions";
 import {WSkubeMQ} from '../comm/WSkubeMQ.js'; 
 import {Base64} from '../convertors/base64';
 import store from '../redux/store.js';
-
+import watch from 'redux-watch' 
 
 export const loadChannels = () => {
 
+    console.log(store.getState().units); 
+
+    let w = watch(store.getState, 'units')
+        store.subscribe(w((newVal, oldVal, objectPath) => {
+        console.log('%s changed from %s to %s', objectPath, oldVal, newVal) 
+    }));
+    
     channels.map(function(channel){     
 
         var ws = new WSkubeMQ('172.17.22.215:9090', 'e1', 'yoni', '',{
