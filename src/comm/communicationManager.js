@@ -10,12 +10,12 @@ import watch from 'redux-watch'
 
 
 function select(state, filter) {
-    return state.featureAttributes.units['unit-id' === 340];
+    return state.featureAttributes.units;
   }
   let currentValue
   function handleChange() {
-    let previousValue = currentValue.filter(f);
-    currentValue = store.getState().filter(f);
+    let previousValue = currentValue;
+    currentValue = select(store.getState());
     if (previousValue !== currentValue) {
       console.log(
         'Some deep nested property changed from',

@@ -86,6 +86,10 @@ class VisibleMap extends React.Component {
             ftrs[0].values_['CSTAT'] = 'FAIL';
         }
     }
+
+    test = (state) => {
+        return state.featureAttributes.units
+    }
     
     render() {
 
@@ -110,10 +114,10 @@ class VisibleMap extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = state =>  {
     return {
         layers: state.mapLayers.layers,
-        units : state.featureAttributes.units.filter
+        units : this.test(state)
     }    
 }
 
