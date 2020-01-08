@@ -18,6 +18,7 @@
     "react-socket-io": "^0.2.5",
     "react-websocket": "^2.1.0",
     "redux-watch": "^1.1.1",
+    "reselect": "^4.0.0",
     "typescript": "3.6.3"
   },
   "scripts": {

@@ -27,7 +27,7 @@ class MapComponent extends Component {
 
     componentWillReceiveProps(newProps) {
         
-        console.log("new props recived now:" + newProps);
+        console.log("new props recived now:" + newProps.units["unit-id"]);
         
         if (
           newProps.layers !== this.props.layers &&

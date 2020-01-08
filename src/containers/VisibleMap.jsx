@@ -9,7 +9,8 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
 import {addMantiIntersectionLayer} from '../usefulgarbage/layers'
 import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js'
-//import {manti_inte} from '../usefulgarbage/manti_inte.json'
+//import {manti_inte} from '../usefulgarbage/manti_inte.json';
+import  {selectUnits}  from "../redux/selectors/unitsSelector";
 
 
 
@@ -87,9 +88,7 @@ class VisibleMap extends React.Component {
         }
     }
 
-    test = (state) => {
-        return state.featureAttributes.units
-    }
+   
     
     render() {
 
@@ -117,7 +116,7 @@ class VisibleMap extends React.Component {
 const mapStateToProps = state =>  {
     return {
         layers: state.mapLayers.layers,
-        units : this.test(state)
+        units : selectUnits(state)
     }    
 }
 
