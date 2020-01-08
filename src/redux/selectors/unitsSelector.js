@@ -13,7 +13,8 @@ const getUnits = state => state.featureAttributes.units
 
 ;
 
-//let regex = '[^]*'
+let regex =  new RegExp('[^]*');
+
 
 
 //regex.test(str) // true
@@ -22,13 +23,12 @@ const getUnits = state => state.featureAttributes.units
 export const selectUnits = createSelector(
     [getUnits],
     (units) => {
-        var f = units.find(function (unit) {
+        var f = units.filter(function (unit) {
             console.log("this is a unit:" + unit);         
-            return  unit["unit-id"] === 840
-            //return  regex.test(str) 
-            return unit;
+            //return  unit["unit-id"] === 840
+            return  regex.test(unit["unit-id"]);
+            //return unit;
         });
         return f;
-     
     }
-  )
+)
