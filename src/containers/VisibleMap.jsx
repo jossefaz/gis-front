@@ -107,7 +107,8 @@ class VisibleMap extends React.Component {
               שנה סטטוס צומת
               </button>               
              <MapComponent layers={this.props.layers}   
-             addLayer={this.props.addLayer} units={this.props.units}></MapComponent>
+             addLayer={this.props.addLayer} 
+             units={this.props.units}></MapComponent>
         </div>
         )
     }
@@ -116,7 +117,7 @@ class VisibleMap extends React.Component {
 const mapStateToProps = state =>  {
     return {
         layers: state.mapLayers.layers,
-        units : selectUnits(state)
+        units : selectUnits(state, 'unit_id === 840')
     }    
 }
 
