@@ -11,6 +11,10 @@ import {addMantiIntersectionLayer} from '../usefulgarbage/layers'
 import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js'
 //import {manti_inte} from '../usefulgarbage/manti_inte.json';
 import  {selectUnits}  from "../redux/selectors/unitsSelector";
+import {
+    UPDATE_FEATURE_ATTRIBUTES,
+    UPDATE_PUBLISHED_STATUS   
+  } from '../redux/actions/actionsTypes';
 
 
 
@@ -108,6 +112,7 @@ class VisibleMap extends React.Component {
               </button>               
              <MapComponent layers={this.props.layers}   
              addLayer={this.props.addLayer} 
+             updatePublishedStatus = {this.props.updatePublishedStatus}
              units={this.props.units}></MapComponent>
         </div>
         )
@@ -117,19 +122,30 @@ class VisibleMap extends React.Component {
 const mapStateToProps = state =>  {
     return {
         layers: state.mapLayers.layers,
-        units : selectUnits(state, 'unit_id === 840')
+        units : selectUnits(state)
     }    
 }
 
-const mapDispatchToProps = (dispatch) => {    
-    return {
-      addLayerParent: (layer) => dispatch(addLayer(layer))
-    };
-};
+// const mapDispatchToProps = (dispatch) => {    
+//     return {
+//       addLayerParent: (layer) => dispatch(addLayer(layer))
+//     };
+// };
+
+const updatePublishedStatus = () => ({ type: 'UPDATE_PUBLISHED_STATUS' })
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+    // dispatching actions returned by action creators
+    updatePublishedStatus: () => dispatch(updatePublishedStatus())
+  }
+}
 
 export default connect(
     mapStateToProps,
-    {addLayer,updateFeatureAttributes},
+   // [addLayer,updateFeatureAttributes,updatePublishedStatus],
+    mapDispatchToProps,
     null 
 )(VisibleMap);
 

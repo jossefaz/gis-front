@@ -1,5 +1,6 @@
 import {
-    UPDATE_FEATURE_ATTRIBUTES   
+    UPDATE_FEATURE_ATTRIBUTES,
+    UPDATE_PUBLISHED_STATUS   
   } from '../actions/actionsTypes';
   import produce from 'immer';
   import mantiIntersections from '../../usefulgarbage/mantiIntersections.json';
@@ -34,9 +35,19 @@ import {
                         item[atrributeListKey].map(function(attribute){
                              f[attribute[attributeKey]] = attribute[attributeValue]
                         });
+                        f["isPublished"] = true;
                     }
                 });             
-      });
+          });
+          case UPDATE_PUBLISHED_STATUS:
+                return produce(state, draft => { 
+                    
+                    var arrayToUpdate = action.params.arrayToUpdate;
+                    arrayToUpdate.map(function(item){
+                        var itemToUpdate = draft[target].find(x => x[action.params.idTargetKey] === action.params.id)
+                        itemToUpdate["isPublished"] = false;
+                    })
+                });
           default:
             return state
         }

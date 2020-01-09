@@ -36,6 +36,10 @@ class MapComponent extends Component {
             var layers = [...newProps.layers];
             this.map.addLayer(layers.pop());
         }
+
+        if(this.props.units !== newProps.units)        
+            this.props.updatePublishedStatus({"arrayToUpdate" : newProps.units , idTargetKey : "unit-id"})
+        
     }
 
 

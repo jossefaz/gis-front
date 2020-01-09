@@ -1,4 +1,6 @@
-import {ADD_LAYER,UPDATE_FEATURE_ATTRIBUTES} from '../actions/actionsTypes'
+import {ADD_LAYER,
+        UPDATE_FEATURE_ATTRIBUTES,
+        UPDATE_PUBLISHED_STATUS} from '../actions/actionsTypes'
 import Layer from 'ol/layer/Layer';
 
 
@@ -27,6 +29,8 @@ export  const updateFeatureAttributes = (JSONFeatureList,
     });
 };
 
-// export const updateLayer = text => ({
-//     return {type: UPDATE_LAYER , text}
-// }
+export const updatePublishedStatus = params =>  ({
+    type : UPDATE_PUBLISHED_STATUS,
+    params : params
+});
+
