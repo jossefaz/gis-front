@@ -138,7 +138,7 @@ const updatePublishedStatus = () => ({ type: 'UPDATE_PUBLISHED_STATUS' })
 const mapDispatchToProps = dispatch => {
   return {
     // dispatching actions returned by action creators
-    updatePublishedStatus: () => dispatch(updatePublishedStatus())
+    updatePublishedStatus: (...params) => dispatch(updatePublishedStatus(params))
   }
 }
 

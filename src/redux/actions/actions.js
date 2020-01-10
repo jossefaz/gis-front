@@ -29,8 +29,15 @@ export  const updateFeatureAttributes = (JSONFeatureList,
     });
 };
 
-export const updatePublishedStatus = params =>  ({
-    type : UPDATE_PUBLISHED_STATUS,
-    params : params
-});
+export const updatePublishedStatus = (params) => {
+    return {
+      type: UPDATE_PUBLISHED_STATUS,
+      params : params
+    }
+}
+
+// export const updatePublishedStatus = params =>  (
+//     type : UPDATE_PUBLISHED_STATUS,
+//     params : params
+// );
 
