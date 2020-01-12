@@ -27,15 +27,6 @@ function select(state, filter) {
   }
 
 export const loadChannels = () => {
-
-    console.log("units from redux watch" + store.getState().featureAttributes.units); 
-
-    //let w = watch(store.getState, 'featureAttributes.units');
-    
-    // store.subscribe(w( (newVal, oldVal, objectPath) => {
-    //     console.log('%s changed from %s to %s', objectPath, oldVal, newVal) 
-    // }));
-    store.subscribe(handleChange);
     
     channels.map(function(channel){     
 

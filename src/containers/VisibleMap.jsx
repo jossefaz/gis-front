@@ -3,18 +3,14 @@ import { connect } from 'react-redux';
 import MapComponent from '../components/map/MapComponent';
 import { bindActionCreators } from 'redux'
 import  {addLayer,updateFeatureAttributes,updatePublishedStatus}  from "../redux/actions/actions";
-import {Vector as VectorSource} from 'ol/source.js';
 import {Projection} from 'ol/proj';
+import {addMantiIntersectionLayer} from '../usefulgarbage/layers';
+import  {selectUnits}  from "../redux/selectors/unitsSelector";
+import {FeatureLayer} from '../components/layers/FeatureLayer.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
-import {addMantiIntersectionLayer} from '../usefulgarbage/layers'
 import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js'
-//import {manti_inte} from '../usefulgarbage/manti_inte.json';
-import  {selectUnits}  from "../redux/selectors/unitsSelector";
-import {
-    UPDATE_FEATURE_ATTRIBUTES,
-    UPDATE_PUBLISHED_STATUS   
-  } from '../redux/actions/actionsTypes';
+
 
 
 
@@ -23,35 +19,6 @@ class VisibleMap extends React.Component {
         super(props)
         
     }   
-    
-  
-    updateFeartures =() =>{
-        this.props.updateFeatureAttributes([{
-            "unit-id": 340,
-            "changes": [{
-                "field-name": "Status",
-                "value": "FAIL"
-            },
-            {
-                "field-name": "Time",
-                "value": "2019222"
-            }]
-        },
-        {
-            "unit-id": 580,
-            "changes": [{
-                "field-name": "Status",
-                "value": "FAIL"
-            },
-            {
-                "field-name": "Time",
-                "value": "2019222"
-            }]
-        }],"units","unit-id","unit-id","changes", "field-name","value");
-        console.log(this.props);
-
-    }
-
     handleAddLayer = () =>{
 
         console.log('trying toadd a layer!!!!!!');
@@ -63,21 +30,28 @@ class VisibleMap extends React.Component {
             axisOrientation: 'neu',
             global: false
         });
-      
-        var polyEditingVectorSource = new VectorSource({
-           // format: new GeoJSON(),
-           // url: geoJsonMantiIntersection,
-            features: (new GeoJSON()).readFeatures(geoJsonMantiIntersection)
-            //'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AFAMILY_HEALTH_CENTER&maxFeatures=50&outputFormat=application%2Fjson'
+        
+        var fl = new FeatureLayer(new GeoJSON().readFeatures(geoJsonMantiIntersection),{
+            format : new GeoJSON() 
         });
+        // var polyEditingVectorSource = new VectorSource({
+        //     format: new GeoJSON(),
+        //    // url: geoJsonMantiIntersection,
+        //     features: (new GeoJSON()).readFeatures(geoJsonMantiIntersection)
+        //     //'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AFAMILY_HEALTH_CENTER&maxFeatures=50&outputFormat=application%2Fjson'
+        // });
       
-        var vectorEditingLayer = new VectorLayer({
-          source: polyEditingVectorSource,
-          projection: proj_2039 
-        });
+        // var vectorEditingLayer = new VectorLayer({
+        //   source: polyEditingVectorSource,
+        //   projection: proj_2039 
+        // });
+
+        
+    
+
         console.log("vectorEditingLayer declared");
         console.log('as of now the layers are:' + this.props.layers);
-        this.props.addLayer(vectorEditingLayer);          
+        this.props.addLayer(fl.vl);          
     }
 
 
@@ -132,7 +106,8 @@ const mapStateToProps = state =>  {
 const mapDispatchToProps = dispatch => {
   return {
     // dispatching actions returned by action creators
-    updatePublishedStatus: (...params) => dispatch(updatePublishedStatus(params))
+    updatePublishedStatus: (...params) => dispatch(updatePublishedStatus(params)),
+    addLayer : (layer) => dispatch(addLayer(layer))
   }
 }
 

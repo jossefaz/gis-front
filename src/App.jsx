@@ -15,7 +15,7 @@ import {loadChannels}  from './comm/communicationManager.js'
   constructor(props) {
     super(props);
 
-    loadChannels();
+    //loadChannels();
   }
   
   render(){
