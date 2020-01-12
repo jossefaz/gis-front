@@ -38,7 +38,7 @@ class MapComponent extends Component {
         }
 
         if(this.props.units !== newProps.units)        
-            this.props.updatePublishedStatus({"arrayToUpdate" : newProps.units , idTargetKey : "unit-id"})
+            this.props.updatePublishedStatus({"arrayToUpdate" : newProps.units ,"target" : "units" , idTargetKey : "unit-id"})
         
     }
 

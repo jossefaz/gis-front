@@ -42,9 +42,11 @@ import {
           case UPDATE_PUBLISHED_STATUS:
                 return produce(state, draft => { 
                     
-                    var arrayToUpdate = action.params.arrayToUpdate;
+                    var arrayToUpdate = action.params[0].arrayToUpdate;
+                    var target = action.params[0].target;
+                    var idTargetKey = action.params[0].idTargetKey;
                     arrayToUpdate.map(function(item){
-                        var itemToUpdate = draft[target].find(x => x[action.params.idTargetKey] === action.params.id)
+                        var itemToUpdate = draft[target].find(x => x[action.params[0].idTargetKey] == item[idTargetKey])
                         itemToUpdate["isPublished"] = false;
                     })
                 });

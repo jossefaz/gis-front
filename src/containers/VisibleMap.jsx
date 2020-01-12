@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MapComponent from '../components/map/MapComponent';
 import { bindActionCreators } from 'redux'
-import  {addLayer,updateFeatureAttributes}  from "../redux/actions/actions";
+import  {addLayer,updateFeatureAttributes,updatePublishedStatus}  from "../redux/actions/actions";
 import {Vector as VectorSource} from 'ol/source.js';
 import {Projection} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON.js';
@@ -132,7 +132,7 @@ const mapStateToProps = state =>  {
 //     };
 // };
 
-const updatePublishedStatus = () => ({ type: 'UPDATE_PUBLISHED_STATUS' })
+//const updatePublishedStatus = () => ({ type: 'UPDATE_PUBLISHED_STATUS' })
 
 
 const mapDispatchToProps = dispatch => {
