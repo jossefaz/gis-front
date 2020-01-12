@@ -126,13 +126,7 @@ const mapStateToProps = state =>  {
     }    
 }
 
-// const mapDispatchToProps = (dispatch) => {    
-//     return {
-//       addLayerParent: (layer) => dispatch(addLayer(layer))
-//     };
-// };
 
-//const updatePublishedStatus = () => ({ type: 'UPDATE_PUBLISHED_STATUS' })
 
 
 const mapDispatchToProps = dispatch => {
@@ -143,8 +137,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(
-    mapStateToProps,
-   // [addLayer,updateFeatureAttributes,updatePublishedStatus],
+    mapStateToProps,   
     mapDispatchToProps,
     null 
 )(VisibleMap);
