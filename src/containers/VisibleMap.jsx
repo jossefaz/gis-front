@@ -9,7 +9,60 @@ import  {selectUnits}  from "../redux/selectors/unitsSelector";
 import {FeatureLayer} from '../components/layers/FeatureLayer.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
-import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js'
+import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js';
+import CircleStyle from 'ol/style/Circle';
+import Fill from 'ol/style/Fill';
+import Style from 'ol/style/Style';
+
+
+const  styleFunction = function(feature, resolution){
+    var styleOL = new Style( {
+        image: new CircleStyle( {
+            radius: 10,
+            fill: new Fill( {
+                color: 'green'
+            } )
+        } )
+    } );
+    var styleCPS = new Style( {
+        image: new CircleStyle( {
+            radius: 10,
+            fill: new Fill( {
+                color: 'blue'
+            } )
+        } )
+    } );
+
+    var styleOFFL = new Style( {
+        image: new CircleStyle( {
+            radius: 10,
+            fill: new Fill( {
+                color: 'black'
+            } )
+        } )
+    } );
+
+    var styleFAIL = new Style( {
+        image: new CircleStyle( {
+            radius: 10,
+            fill: new Fill( {
+                color: 'red'
+            } )
+        } )
+    } );
+
+    switch (feature.get('CSTAT')) {
+        case 'OL':
+            return [styleOL];
+        case 'CPS':
+            return [styleCPS];
+        case 'FAIL':
+            return [styleFAIL]
+        default:
+            return [styleOFFL];              
+    } 
+}
+
 
 
 
@@ -18,7 +71,10 @@ class VisibleMap extends React.Component {
     constructor(props) {
         super(props)
         
-    }   
+    }
+    
+   
+
     handleAddLayer = () =>{
 
         console.log('trying toadd a layer!!!!!!');
@@ -32,32 +88,18 @@ class VisibleMap extends React.Component {
         });
         
         var fl = new FeatureLayer(new GeoJSON().readFeatures(geoJsonMantiIntersection),{
-            format : new GeoJSON() 
-        });
-        // var polyEditingVectorSource = new VectorSource({
-        //     format: new GeoJSON(),
-        //    // url: geoJsonMantiIntersection,
-        //     features: (new GeoJSON()).readFeatures(geoJsonMantiIntersection)
-        //     //'http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3AFAMILY_HEALTH_CENTER&maxFeatures=50&outputFormat=application%2Fjson'
-        // });
-      
-        // var vectorEditingLayer = new VectorLayer({
-        //   source: polyEditingVectorSource,
-        //   projection: proj_2039 
-        // });
-
-        
-    
+            format : new GeoJSON(),
+            style : styleFunction
+        });  
 
         console.log("vectorEditingLayer declared");
         console.log('as of now the layers are:' + this.props.layers);
-        this.props.addLayer(fl.vl);          
+        this.props.addLayer(fl);          
     }
 
 
-    handleAddTzmatimLayer = () =>{
-        this.props.addLayer(addMantiIntersectionLayer());   
-
+    handleAddTzmatimLayer = () => {
+        this.props.addLayer(addMantiIntersectionLayer());  
     }
     handleChangeStatusTzmet = () => {
         var ftrs = this.props.layers[1].getSource().getFeatures();

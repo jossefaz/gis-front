@@ -22,23 +22,81 @@ export var FeatureLayer =  (function() {
          var vectorSource = new VectorSource({
             features : source,
             format : props.format != null ?  props.format : sourceFormat,
+        
          });
 
          _vectorLayer = new VectorLayer({
             source: vectorSource,
-            projection: props.projection != null ?  props.projection : projection
+            projection: props.projection != null ?  props.projection : projection,
+            style : props.style != null ? props.style : null
         });
       }
 
       return {
           vl : _vectorLayer,
-          drawSymbolgy: drawSymbolgy,
-        
+          drawSymbolgy : drawSymbolgy,
+          setProperties : setProperties        
       }
     };
 
-    function drawSymbolgy() {
-        console.log('drawSymbolgy');
+
+    var setProperties = (data,props) => {
+        
+        var lyr = _vectorLayer;
+        
+        if(data && data.sourceArray){
+            
+            var targetId = props.targetId;
+            var sourceId = props.sourceId;     
+
+            if (lyr) {
+
+                var ftrs = lyr.getSource().getFeatures();
+                
+                data.sourceArray.map(function(sourceItem){
+                    
+                    var f = ftrs.find(function (feature) {
+                    return feature.values_[targetId] === sourceItem[sourceId];
+                    });
+
+                    if (f) {               
+                        f.setProperties(sourceItem, true);
+                       // f.setStyle(st.apply(this, [f]));
+                    }
+                });       
+            }
+        }
+
+    }
+
+    var drawSymbolgy = (data,props) => {
+        
+        var lyr = _vectorLayer;
+        
+        if(data && data.sourceArray){
+            
+            var targetId = props.targetId;
+            var sourceId = props.sourceId;
+
+            if (lyr) {
+                
+                var st = lyr.getStyleFunction();
+                var ftrs = lyr.getSource().getFeatures();
+                
+                
+                data.sourceArray.map(function(sourceItem){
+                    
+                    var f = ftrs.find(function (feature) {
+                    return feature.values_[targetId] === sourceItem[sourceId];
+                    });
+
+                    if (f) {               
+                        //f.setProperties(message, true);
+                        f.setStyle(st.apply(this, [f]));
+                    }
+                });       
+            }
+        }
     }
 
     return FeatureLayer;

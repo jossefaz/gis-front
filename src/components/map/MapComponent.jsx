@@ -9,6 +9,7 @@ class MapComponent extends Component {
         this.state = {  }
 
         this.map = {};
+        this.layer = null;
     }
 
     componentDidMount() {
@@ -34,11 +35,23 @@ class MapComponent extends Component {
           newProps.layers.length > 0
         ) {
             var layers = [...newProps.layers];
-            this.map.addLayer(layers.pop());
+            this.layer  = layers.pop();
+            this.map.addLayer(this.layer.vl);
         }
 
-        if(this.props.units !== newProps.units)        
-            this.props.updatePublishedStatus({"arrayToUpdate" : newProps.units ,"target" : "units" , idTargetKey : "unit-id"})
+        if(this.props.units !== newProps.units)                   
+        {
+            this.layer.setProperties(newProps.units,{
+                targetId : "NUM",
+                sourceId : "unit-id"
+            });
+
+            this.layer.setProperties(newProps.units,{
+                targetId : "NUM",
+                sourceId : "unit-id"
+            });
+        }
+        // this.props.updatePublishedStatus({"arrayToUpdate" : newProps.units ,"target" : "units" , idTargetKey : "unit-id"})
         
     }
 

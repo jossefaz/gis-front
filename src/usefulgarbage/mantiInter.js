@@ -10,6 +10,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1260,
 			"name": null,
@@ -33,6 +34,7 @@ export var geoJsonMantiIntersection = {
 		"geometry_name": "Shape",
 		"properties": {
 			"TEXT": "SIGNALOR",
+			"CSTAT" : "CPS" ,
 			"NUM": 2070,
 			"name": null,
 			"number": null,
@@ -54,6 +56,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1960,
 			"name": null,
@@ -76,6 +79,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1630,
 			"name": null,
@@ -98,6 +102,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1640,
 			"name": null,
@@ -120,6 +125,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1650,
 			"name": null,
@@ -142,6 +148,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1660,
 			"name": null,
@@ -164,6 +171,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1970,
 			"name": null,
@@ -186,6 +194,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 2090,
 			"name": null,
@@ -208,6 +217,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 2100,
 			"name": null,
@@ -230,6 +240,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1600,
 			"name": null,
@@ -252,6 +263,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1590,
 			"name": null,
@@ -274,6 +286,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1700,
 			"name": null,
@@ -296,6 +309,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 390,
 			"name": null,
@@ -318,6 +332,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 790,
 			"name": null,
@@ -340,6 +355,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 500,
 			"name": null,
@@ -362,6 +378,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 760,
 			"name": null,
@@ -384,6 +401,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
 			"NUM": 650,
 			"name": null,
@@ -406,6 +424,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 510,
 			"name": null,
@@ -428,6 +447,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 2040,
 			"name": null,
@@ -450,6 +470,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 960,
 			"name": null,
@@ -472,6 +493,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 900,
 			"name": null,
@@ -494,6 +516,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 940,
 			"name": null,
@@ -516,6 +539,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 800,
 			"name": null,
@@ -538,6 +562,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 870,
 			"name": null,
@@ -560,6 +585,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 850,
 			"name": null,
@@ -582,6 +608,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 860,
 			"name": null,
@@ -604,6 +631,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
 			"NUM": 570,
 			"name": null,
@@ -626,6 +654,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
 			"NUM": 1010,
 			"name": null,
@@ -648,6 +677,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
 			"NUM": 230,
 			"name": null,
@@ -670,6 +700,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1020,
 			"name": null,
@@ -692,6 +723,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "ARIEL",
 			"NUM": 280,
 			"name": null,
@@ -714,6 +746,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
 			"NUM": 1180,
 			"name": null,
@@ -736,6 +769,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1170,
 			"name": null,
@@ -758,6 +792,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1160,
 			"name": null,
@@ -780,6 +815,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
 			"NUM": 1040,
 			"name": null,
@@ -802,6 +838,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "ARIEL",
 			"NUM": 550,
 			"name": null,
@@ -824,6 +861,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
 			"NUM": 830,
 			"name": null,
@@ -846,6 +884,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 1720,
 			"name": null,
@@ -868,6 +907,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
 			"NUM": 640,
 			"name": null,
@@ -890,6 +930,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
 			"NUM": 560,
 			"name": null,
@@ -912,6 +953,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
 			"NUM": 450,
 			"name": null,
@@ -934,6 +976,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "VIMAZOR",
 			"NUM": 440,
 			"name": null,
@@ -956,6 +999,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "VIMAZOR",
 			"NUM": 630,
 			"name": null,
@@ -978,6 +1022,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
 			"NUM": 300,
 			"name": null,
@@ -1000,6 +1045,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 720,
 			"name": null,
@@ -1022,6 +1068,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 330,
 			"name": null,
@@ -1044,6 +1091,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 320,
 			"name": null,
@@ -1066,6 +1114,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 310,
 			"name": null,
@@ -1088,6 +1137,7 @@ export var geoJsonMantiIntersection = {
 		},
 		"geometry_name": "Shape",
 		"properties": {
+			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
 			"NUM": 700,
 			"name": null,
@@ -1111,6 +1161,3 @@ export var geoJsonMantiIntersection = {
 		}
 	}
 }
-
-		
-	
