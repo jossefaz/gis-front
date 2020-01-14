@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect'
-
+import  {updatePublishedStatus}  from "../actions/actions";
 
 const getUnits = state => state.featureAttributes.units;
+
 
 
 
@@ -14,8 +15,11 @@ export const selectUnits = createSelector(
     [getUnits],
     (units) => {
         var f = units.filter(function (unit) {
-            if (unit["isPublished"] === true){
-                unit["isPublished"] = false;
+            if (unit["_isPublished"] === true){
+                updatePublishedStatus({
+                    "arrayToUpdate" : [unit] ,"target" : "units" , idTargetKey : "unit-id"
+                })
+
                 return true;
             }                
             return false;

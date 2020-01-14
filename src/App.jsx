@@ -15,7 +15,7 @@ import {loadChannels}  from './comm/communicationManager.js'
   constructor(props) {
     super(props);
 
-    //loadChannels();
+    loadChannels();
   }
   
   render(){
@@ -25,13 +25,10 @@ import {loadChannels}  from './comm/communicationManager.js'
     console.log(tools);
     return (
       <div>
-        <div><ToolList tools={tools}></ToolList></div>      
-        {/* <div>
-          <ProductDetail></ProductDetail>
-        </div> */}
+        <div><ToolList tools={tools}></ToolList></div>            
        <div>
          <VisibleMap></VisibleMap>
-           {/* <MapComponent></MapComponent> */}
+      
        </div>
       </div>
     )
