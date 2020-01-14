@@ -49,34 +49,12 @@ export const onMessageRecived = (message) => {
 
     if(channelItem){
        
-        var data = JSON.parse(message.Body.replace(' - (1)', ''));
-        // var data = [{
-        //     "unit-id": 340,
-        //     "changes": [{
-        //         "field-name": "Status",
-        //         "value": "FAIL"
-        //     },
-        //     {
-        //         "field-name": "Time",
-        //         "value": "2019222"
-        //     }]
-        // },
-        // {
-        //     "unit-id": 580,
-        //     "changes": [{
-        //         "field-name": "Status",
-        //         "value": "FAIL"
-        //     },
-        //     {
-        //         "field-name": "Time",
-        //         "value": "2019222"
-        //     }]
-        // }]
+        var data = JSON.parse(message.Body.replace(' - (1)', ''));       
     
 
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
-                store.dispatch (updateFeatureAttributes(
+                store.dispatch(updateFeatureAttributes(
                     
                     data,
                     channelItem.reduxTarget,                    
@@ -85,7 +63,8 @@ export const onMessageRecived = (message) => {
                     channelItem.atrributeListKey,
                     channelItem.attributeKey,
                     channelItem.attributeValue
-                    ));          
+                    ));
+                    console.log("we just updated redux object");       
                 break;    
             default:
                 break;

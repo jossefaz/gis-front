@@ -27,8 +27,8 @@ import {loadChannels}  from './comm/communicationManager.js'
       <div>
         <div><ToolList tools={tools}></ToolList></div>            
        <div>
-         <VisibleMap></VisibleMap>
-      
+         <div><VisibleMap></VisibleMap></div>
+          
        </div>
       </div>
     )
