@@ -42,19 +42,13 @@ class MapComponent extends Component {
         if(this.props.units !== newProps.units)                   
         {
             console.log("new units:" + newProps.units)
-            // this.layer.setProperties(newProps.units,{
-            //     targetId : "NUM",
-            //     sourceId : "unit-id"
-            // });
 
-            // this.layer.setProperties(newProps.units,{
-            //     targetId : "NUM",
-            //     sourceId : "unit-id"
-            this.props.updatePublishedStatus({"arrayToUpdate" : newProps.units ,"target" : "units" , idTargetKey : "unit-id"})
-        
-            // });
-        }
-        // 
+            
+            this.layer.setProperties(newProps.units,{
+                targetId : "NUM",
+                sourceId : "unit-id"
+            });
+        }     
     }
 
 
@@ -65,6 +59,8 @@ class MapComponent extends Component {
                 className = "map" 
                 ref = "olmap"> 
             </div>
+
+
         );
     }
 }
