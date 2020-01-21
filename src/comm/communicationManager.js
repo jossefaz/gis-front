@@ -30,7 +30,7 @@ export const loadChannels = () => {
     
     channels.map(function(channel){     
 
-        var ws = new WSkubeMQ('172.17.22.215:9090', 'e1', 'yoni', '',{
+        var ws = new WSkubeMQ('172.17.22.215:9090', 'MTCS.Units.*', 'DataServer', '',{
             onMessage :  onMessageRecived,
             onError : onErrorRecived,
             decoder: Base64.decode
