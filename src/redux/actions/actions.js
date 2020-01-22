@@ -4,7 +4,7 @@ import {ADD_LAYER,
         SET_FILTER_IDS,
         UPDATED_INFO} from '../actions/actionsTypes'
 import Layer from 'ol/layer/Layer';
-import { SET_FILTER_IDS } from './actionsTypes';
+
 
 
 
@@ -26,8 +26,7 @@ export const setFilterIds = Ids => ({
 export  const updateFeatureAttributes = (JSONFeatureList,
     target,
     idTargetKey,
-    idSourceKey,
-    atrributeListKey,
+    idSourceKey,    
     attributeKey,
     attributeValue) => {
     return ({
@@ -35,10 +34,7 @@ export  const updateFeatureAttributes = (JSONFeatureList,
         data: JSONFeatureList,
         target: target,
         idTargetKey : idTargetKey,
-        idSourceKey : idSourceKey,
-        atrributeListKey : atrributeListKey,
-        attributeKey : attributeKey,
-        attributeValue : attributeValue
+        idSourceKey : idSourceKey   
     });
 };
 

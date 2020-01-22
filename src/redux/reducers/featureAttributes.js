@@ -19,31 +19,31 @@ import {
             var target = action.target;       
             var idTargetKey = action.idTargetKey;
             var idSourceKey = action.idSourceKey;
-            var atrributeListKey = action.atrributeListKey;
-            var attributeKey = action.attributeKey;
-            var attributeValue = action.attributeValue;
+          
             
             return produce(state, draft => {
                 
-                data.map(function(item){
-                    var f = draft[target].find(function (feature) {
-                        return feature[idTargetKey] === item[idSourceKey];
-                    }); 
-                    console.log("target:" + f);
-                    console.log("newMessage:" + item);
-                    if(f){
-                        item[atrributeListKey].map(function(attribute){
-                             f[attribute[attributeKey]] = attribute[attributeValue]
-                        });                      
-                    }
+                // data.map(function(item){
+                //     var f = draft[target].find(function (feature) {
+                //         return feature[idTargetKey] === item[idSourceKey];
+                //     }); 
+                //     // console.log("target:" + f);
+                //     // console.log("newMessage:" + item);
+                //     // if(f){
+                //     //     item[atrributeListKey].map(function(attribute){
+                //     //          f[attribute[attributeKey]] = attribute[attributeValue]
+                //     //     });                      
+                //     // }
+                //     return f;    
+                return state;
             });         
             // return {
             //     ...state,
             //     units : action.data
             // }  
-         
+        
 
-          });
+        
           case UPDATE_PUBLISHED_STATUS:
                 return produce(state, draft => { 
                     

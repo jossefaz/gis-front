@@ -41,11 +41,15 @@ export const loadChannels = () => {
 
 export const onMessageRecived = (message) => {
     
-    console.log("my messaage from communication:" + message);
+    //console.log("my messaage from communication:" + message);
     
-    var channelItem =  channels.find(function(item){     
-        return item.Channel === message.Channel;
-    });
+    // var channelItem =  channels.find(function(item){ 
+    //     var a = item.Channel;
+    //     var b = message.Channel;
+    //     return item.Channel.indexOf(message.Channel) > -1;
+    // });
+
+    var channelItem = channels[0];
 
     if(channelItem){
        
@@ -55,14 +59,10 @@ export const onMessageRecived = (message) => {
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
                 store.dispatch(updateFeatureAttributes(
-                    
                     data,
                     channelItem.reduxTarget,                    
                     channelItem.idTargetKey,
-                    channelItem.idSourceKey,
-                    channelItem.atrributeListKey,
-                    channelItem.attributeKey,
-                    channelItem.attributeValue
+                    channelItem.idSourceKey   
                     ));
                     console.log("we just updated redux object");       
                 break;    

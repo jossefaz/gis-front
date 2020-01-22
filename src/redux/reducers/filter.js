@@ -21,13 +21,7 @@ import mantiIntersections from '../../usefulgarbage/mantiIntersections.json';
             isInfoUpdated: action.isInfoUpdated          
         };
         case SET_FILTER_IDS:
-            return {
-                
-            }
-            ...state,
-        }
-
-
+            return 1; 
         default:
           return state
       }

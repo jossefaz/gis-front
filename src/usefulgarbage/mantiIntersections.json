@@ -1,4 +1,15 @@
-[
-            { "unit-id": 340, "Status": "OL", "Time": 20190303 },
-            { "unit-id": 840, "Status": "OL", "Time": 20190303 }
-]
+{
+    "370" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"0780","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"},    
+    "1260" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"1260","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"},
+    "1600" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"2070","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"},
+    "2070" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"1960","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"},
+    "2100" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"0780","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"},
+    "800" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"0780","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"} ,
+    "940" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"0780","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"},
+    "510" : {"Offset":22272,"FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"0780","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"}
+         
+}
+
+
+
+
