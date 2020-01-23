@@ -23,14 +23,17 @@ import {
             
             return produce(state, draft => {
                 
-                  var obj = data;
+                  data.map(function(sourceItem){
+
+                    var obj = sourceItem;
                   
-                  var f = draft[target][data[idSourceKey]];
-                  for (var prop in obj) {                 
-                      if (!obj.hasOwnProperty(prop)) continue;
-                      f[prop] =  obj[prop]
-                  }
-            });         
+                    var f = draft[target][obj[idSourceKey]];
+                    for (var prop in obj) {                 
+                        if (!obj.hasOwnProperty(prop)) continue;
+                        f[prop] =  obj[prop]
+                    }                      
+            }); 
+          });         
           
 
         

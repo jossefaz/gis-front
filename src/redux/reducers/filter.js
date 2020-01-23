@@ -21,9 +21,14 @@ import mantiIntersections from '../../usefulgarbage/mantiIntersections.json';
             isInfoUpdated: action.isInfoUpdated          
         };
         case SET_FILTER_IDS:
+          var ids = [];
+          if(action.ids != null){
+            //TODO change to dynamic key
+            ids = action.ids.map(item => item["id"]);
+          }
           return {
             ...state,
-            ids : action.ids          
+            ids : ids        
         }; 
         default:
           return state

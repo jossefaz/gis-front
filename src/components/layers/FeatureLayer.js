@@ -55,7 +55,6 @@ export var FeatureLayer =  (function() {
             if (lyr) {
 
                 var ftrs = lyr.getSource().getFeatures();
-                var id =  parseInt(data[sourceId]);
                     
                     
                 data.map(function(sourceItem){
