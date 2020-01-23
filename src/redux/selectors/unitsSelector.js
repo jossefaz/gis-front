@@ -10,11 +10,11 @@ export const selectUnits = createSelector(
     [getUnits,changedIds,isInfoUpdated],
     (units,changedIds,isInfoUpdated) => {
             
-        if(isInfoUpdated){
+        // if(isInfoUpdated){
             return changedIds.map(id =>  {
                 return units[id]
         });
-        }
+        // }
 });
 
      

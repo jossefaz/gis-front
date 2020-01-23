@@ -53,7 +53,7 @@ export const onMessageRecived = (message) => {
 
     if(channelItem){
        
-        //var data = JSON.parse(message.Body.replace(' - (1)', ''));       
+        var data = JSON.parse(message.Body.replace(' - (1)', ''));       
 
         var data = message;
 
@@ -67,7 +67,7 @@ export const onMessageRecived = (message) => {
                     ));
                     console.log("we just updated redux object");
                     store.dispatch(setFilterIds([data[channelItem.idSourceKey ]])); 
-                    store.dispatch(udpatedInfo(true));        
+                    // store.dispatch(udpatedInfo(true));        
                 break;    
             default:
                 break;

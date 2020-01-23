@@ -38,7 +38,7 @@ class MapComponent extends Component {
             this.map.addLayer(this.layer.vl);
         }
 
-        if(this.props.units !== newProps.units)                   
+        if(this.props.units !== newProps.units && newProps.units.length > 0)                   
         {
             console.log("new units:" + newProps.units)             
        

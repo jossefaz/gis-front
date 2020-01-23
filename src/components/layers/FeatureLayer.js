@@ -42,6 +42,9 @@ export var FeatureLayer =  (function() {
 
     var setProperties = (data,props) => {
         
+
+        console.log("we are setting the layer properties");
+
         var lyr = _vectorLayer;
         
         if(data){
@@ -52,7 +55,7 @@ export var FeatureLayer =  (function() {
             if (lyr) {
 
                 var ftrs = lyr.getSource().getFeatures();
-                var id =  parseInt(data[0][sourceId]);
+                var id =  parseInt(data[sourceId]);
                     
                     
                 data.map(function(sourceItem){
