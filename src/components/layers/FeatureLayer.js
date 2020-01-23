@@ -54,23 +54,20 @@ export var FeatureLayer =  (function() {
                 var ftrs = lyr.getSource().getFeatures();
                 var id =  parseInt(data[0][sourceId]);
                     
+                    
+                data.map(function(sourceItem){
+
+                    var id =  parseInt(sourceItem[sourceId]);
+
                     var f = ftrs.find(function (feature) {
                         console.log(feature.values_[targetId]);
                         return feature.values_[targetId] == id;
                     });
 
-                    if (f) {    
-                        
-                        // sourceItem.map(function(changedItem){
-                        //     if(changedItem["field-name"]){
-                        //         console.log("f" + f.values_["NUM"] )
-                        //         f.set(changedItem["field-name"], changedItem["value"]);
-                        //     }
-                                
-                        // });  
-                        f.set("CSTAT",  data[0]["CSTAT"]);
-                        
+                    if (f) {                                                
+                        f.set("CSTAT",  sourceItem["CSTAT"]);                        
                     }
+                });              
             }
         }
 
