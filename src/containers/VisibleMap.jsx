@@ -13,7 +13,7 @@ import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js';
 import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
 import Style from 'ol/style/Style';
-import {onMessageRecived}  from '../comm/communicationManager.js'
+import {loadChannels , onMessageRecived}  from '../comm/communicationManager.js'
 
 const  styleFunction = function(feature, resolution){
     var styleOL = new Style( {
@@ -94,7 +94,8 @@ class VisibleMap extends React.Component {
 
         console.log("vectorEditingLayer declared");
         console.log('as of now the layers are:' + this.props.layers);
-        this.props.addLayer(fl);          
+        this.props.addLayer(fl);        
+        loadChannels();  
     }
 
 
