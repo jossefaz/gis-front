@@ -23,25 +23,15 @@ import {
             
             return produce(state, draft => {
                 
-                // data.map(function(item){
-                //     var f = draft[target].find(function (feature) {
-                //         return feature[idTargetKey] === item[idSourceKey];
-                //     }); 
-                //     // console.log("target:" + f);
-                //     // console.log("newMessage:" + item);
-                //     // if(f){
-                //     //     item[atrributeListKey].map(function(attribute){
-                //     //          f[attribute[attributeKey]] = attribute[attributeValue]
-                //     //     });                      
-                //     // }
-                //     return f;    
-                return state;
+                  var obj = data;
+                  
+                  var f = draft[target][data[idSourceKey]];
+                  for (var prop in obj) {                 
+                      if (!obj.hasOwnProperty(prop)) continue;
+                      f[prop] =  obj[prop]
+                  }
             });         
-            // return {
-            //     ...state,
-            //     units : action.data
-            // }  
-        
+          
 
         
           case UPDATE_PUBLISHED_STATUS:

@@ -8,8 +8,8 @@ import mantiIntersections from '../../usefulgarbage/mantiIntersections.json';
   
 
   const initialState = {
-    isInfoUpdated :false,
-    ids : []
+      isInfoUpdated :false,
+      ids : []
   };
 
 
@@ -21,7 +21,10 @@ import mantiIntersections from '../../usefulgarbage/mantiIntersections.json';
             isInfoUpdated: action.isInfoUpdated          
         };
         case SET_FILTER_IDS:
-            return 1; 
+          return {
+            ...state,
+            ids : action.ids          
+        }; 
         default:
           return state
       }

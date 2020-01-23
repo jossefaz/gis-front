@@ -12,7 +12,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1260,
+			"NUM": 370,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,

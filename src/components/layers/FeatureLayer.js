@@ -44,7 +44,7 @@ export var FeatureLayer =  (function() {
         
         var lyr = _vectorLayer;
         
-        if(data && data){
+        if(data){
             
             var targetId = props.targetId;
             var sourceId = props.sourceId;     
@@ -52,24 +52,25 @@ export var FeatureLayer =  (function() {
             if (lyr) {
 
                 var ftrs = lyr.getSource().getFeatures();
-                
-                data.map(function(sourceItem){
+                var id =  parseInt(data[0][sourceId]);
                     
                     var f = ftrs.find(function (feature) {
-                    return feature.values_[targetId] === sourceItem[sourceId];
+                        console.log(feature.values_[targetId]);
+                        return feature.values_[targetId] == id;
                     });
 
                     if (f) {    
                         
-                        sourceItem.changes.map(function(changedItem){
-                            if(changedItem["field-name"]){
-                                console.log("f" + f.values_["NUM"] )
-                                f.set(changedItem["field-name"], changedItem["value"]);
-                            }
+                        // sourceItem.map(function(changedItem){
+                        //     if(changedItem["field-name"]){
+                        //         console.log("f" + f.values_["NUM"] )
+                        //         f.set(changedItem["field-name"], changedItem["value"]);
+                        //     }
                                 
-                        });  
+                        // });  
+                        f.set("CSTAT",  data[0]["CSTAT"]);
+                        
                     }
-                });       
             }
         }
 

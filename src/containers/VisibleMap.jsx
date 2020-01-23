@@ -13,7 +13,7 @@ import {geoJsonMantiIntersection} from '../usefulgarbage/mantiInter.js';
 import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
 import Style from 'ol/style/Style';
-
+import {onMessageRecived}  from '../comm/communicationManager.js'
 
 const  styleFunction = function(feature, resolution){
     var styleOL = new Style( {
@@ -108,6 +108,11 @@ class VisibleMap extends React.Component {
         }
     }
 
+    sendMessage = () => {
+        onMessageRecived (
+        {"Offset":"test","FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"370","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"}        
+        );
+    }
    
     
     render() {
@@ -125,23 +130,14 @@ class VisibleMap extends React.Component {
               </button>
               <button  onClick={() => { this.handleChangeStatusTzmet(); }} > 
               שנה סטטוס צומת
-              </button>               
+              </button>         
+              <button  onClick={() => { this.sendMessage(); }} > 
+              שלח הודעה
+              </button>              
              <MapComponent layers={this.props.layers}   
              addLayer={this.props.addLayer} 
              updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent>
-                   <MapComponent layers={this.props.layers}   
-             addLayer={this.props.addLayer} 
-             updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent>
-                   <MapComponent layers={this.props.layers}   
-             addLayer={this.props.addLayer} 
-             updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent>
-                   <MapComponent layers={this.props.layers}   
-             addLayer={this.props.addLayer} 
-             updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent>
+             units={this.props.units}></MapComponent>              
         </div>
         )
     }

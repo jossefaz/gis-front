@@ -1,11 +1,11 @@
 import channels from '../usefulgarbage/channels'
 import tools from '../usefulgarbage/tools'
-import  {addLayer,updateFeatureAttributes}  from "../redux/actions/actions";
+import  {addLayer,updateFeatureAttributes,setFilterIds,udpatedInfo}  from "../redux/actions/actions";
 // import {ADD_LAYER,UPDATE_FEATURE_ATTRIBUTES} from '../actions/actionsTypes';
 import {WSkubeMQ} from '../comm/WSkubeMQ.js'; 
 import {Base64} from '../convertors/base64';
 import store from '../redux/store.js';
-import watch from 'redux-watch' 
+import watch from 'redux-watch' ;
 
 
 
@@ -53,8 +53,9 @@ export const onMessageRecived = (message) => {
 
     if(channelItem){
        
-        var data = JSON.parse(message.Body.replace(' - (1)', ''));       
-    
+        //var data = JSON.parse(message.Body.replace(' - (1)', ''));       
+
+        var data = message;
 
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
@@ -64,7 +65,9 @@ export const onMessageRecived = (message) => {
                     channelItem.idTargetKey,
                     channelItem.idSourceKey   
                     ));
-                    console.log("we just updated redux object");       
+                    console.log("we just updated redux object");
+                    store.dispatch(setFilterIds([data[channelItem.idSourceKey ]])); 
+                    store.dispatch(udpatedInfo(true));        
                 break;    
             default:
                 break;

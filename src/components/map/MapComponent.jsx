@@ -23,12 +23,11 @@ class MapComponent extends Component {
             })
         });
 
-        this.map.addLayer(this.props.layers[0]);    
+       // this.map.addLayer(this.props.layers[0]);    
     }
 
     componentWillReceiveProps(newProps) {
         
-        console.log("new props recived now:" + newProps.units["unit-id"]);
         
         if (
           newProps.layers !== this.props.layers &&
@@ -41,12 +40,12 @@ class MapComponent extends Component {
 
         if(this.props.units !== newProps.units)                   
         {
-            console.log("new units:" + newProps.units)
-
+            console.log("new units:" + newProps.units)             
+       
             
             this.layer.setProperties(newProps.units,{
                 targetId : "NUM",
-                sourceId : "unit-id"
+                sourceId : "id"
             });
         }     
     }
@@ -59,8 +58,6 @@ class MapComponent extends Component {
                 className = "map" 
                 ref = "olmap"> 
             </div>
-
-
         );
     }
 }

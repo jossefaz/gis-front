@@ -10,7 +10,7 @@ var a  = new TileLayer({
 })
 
 const initialState = {
-  layers: [a]
+  layers: []
 };
 
 export default function (state = initialState, action){
