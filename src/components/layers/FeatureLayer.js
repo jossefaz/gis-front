@@ -47,7 +47,7 @@ export var FeatureLayer =  (function() {
 
         var lyr = _vectorLayer;
         
-        if(data){
+        if(data != null && data.length > 0){
             
             var targetId = props.targetId;
             var sourceId = props.sourceId;     

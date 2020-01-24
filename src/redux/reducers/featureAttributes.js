@@ -28,10 +28,12 @@ import {
                     var obj = sourceItem;
                   
                     var f = draft[target][obj[idSourceKey]];
-                    for (var prop in obj) {                 
+                    if(f){
+                      for (var prop in obj) {                 
                         if (!obj.hasOwnProperty(prop)) continue;
                         f[prop] =  obj[prop]
-                    }                      
+                    }  
+                    }               
             }); 
           });         
           

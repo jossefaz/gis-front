@@ -50,12 +50,15 @@ export const onMessageRecived = (message) => {
     // });
 
     var channelItem = channels[0];
+    var data = [];
 
     if(channelItem){
        
-        //var data = JSON.parse(message.Body.replace(' - (1)', ''));       
+        var newMessage = JSON.parse(message.Body.replace(' - (1)', ''));   
+        
+        data.push(newMessage);
 
-        var data = message;
+        //var data = message;
 
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
