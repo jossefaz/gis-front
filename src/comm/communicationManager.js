@@ -41,7 +41,7 @@ export const loadChannels = () => {
 
 export const onMessageRecived = (message) => {
     
-    //console.log("my messaage from communication:" + message);
+    console.log("my messaage from communication:" + message);
     
     // var channelItem =  channels.find(function(item){ 
     //     var a = item.Channel;
@@ -53,12 +53,13 @@ export const onMessageRecived = (message) => {
 
     if(channelItem){
        
-        //var data = JSON.parse(message.Body.replace(' - (1)', ''));       
+        var data = JSON.parse(message.Body.replace(' - (1)', ''));       
 
-        var data = message;
+        // var data = message;
 
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
+                store.dispatch(setFilterIds(null)); 
                 store.dispatch(updateFeatureAttributes(
                     data,
                     channelItem.reduxTarget,                    

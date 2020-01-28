@@ -43,10 +43,13 @@ class MapComponent extends Component {
             console.log("new units:" + newProps.units)             
        
             
-            this.layer.setProperties(newProps.units,{
-                targetId : "NUM",
-                sourceId : "id"
-            });
+            if(this.layer){
+                this.layer.setProperties(newProps.units,{
+                    targetId : "NUM",
+                    sourceId : "id"
+                });
+            }
+           
         }     
     }
 
