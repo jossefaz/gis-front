@@ -31,14 +31,17 @@ class MapComponent extends Component {
         
         if (
           newProps.layers !== this.props.layers &&
-          newProps.layers.length > 0
+          newProps.layers.length > 0 
         ) {
             var layers = [...newProps.layers];
             this.layer  = layers.pop();
             this.map.addLayer(this.layer.vl);
         }
 
-        if(this.props.units !== newProps.units && newProps.units.length > 0)                   
+        if(newProps.units != null 
+            && this.props.units !== newProps.units 
+            && newProps.units.length > 0
+            && newProps.units[0] != undefined)                   
         {
             console.log("new units:" + newProps.units)             
        

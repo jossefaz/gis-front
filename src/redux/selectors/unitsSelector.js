@@ -11,9 +11,20 @@ export const selectUnits = createSelector(
     (units,changedIds,isInfoUpdated) => {
             
         // if(isInfoUpdated){
-            return changedIds.map(id =>  {
-                return units[id]
-        });
+        if(changedIds &&  changedIds > 0){
+            var arr = changedIds.map(id =>  {
+                if(units[id] != undefined )   
+                   return units[id];
+            });
+    
+            if(arr[0] != undefined)
+              return arr;
+            else
+               return null;      
+        }
+        else
+            return null;
+          
         // }
 });
 

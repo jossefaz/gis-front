@@ -47,7 +47,7 @@ export var FeatureLayer =  (function() {
 
         var lyr = _vectorLayer;
         
-        if(data){
+        if(data != null && data.length > 0){
             
             var targetId = props.targetId;
             var sourceId = props.sourceId;     
@@ -60,7 +60,7 @@ export var FeatureLayer =  (function() {
                 data.map(function(sourceItem){
 
                     var id =  parseInt(sourceItem[sourceId]);
-
+                    console.log('set proerties for data item id=' + id);
                     var f = ftrs.find(function (feature) {
                         console.log(feature.values_[targetId]);
                         return feature.values_[targetId] == id;

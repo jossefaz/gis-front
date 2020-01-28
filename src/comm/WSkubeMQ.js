@@ -37,7 +37,7 @@ export var  WSkubeMQ = (function() {
   }
 
   function _onmessage(event) {
-    console.log('Response from server: ' + event.data);
+    //console.log('Response from server: ' + event.data);
     if (_props && typeof _props.onMessage === 'function') {
       var result = null
       if (_props && _props.IsDebugEcho)
