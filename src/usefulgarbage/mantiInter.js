@@ -12,7 +12,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 370,
+			"NUM": 221,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -35,7 +35,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"TEXT": "SIGNALOR",
 			"CSTAT" : "CPS" ,
-			"NUM": 2070,
+			"NUM": 290,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -58,7 +58,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1960,
+			"NUM": 291,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -81,7 +81,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1630,
+			"NUM": 610,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -104,7 +104,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1640,
+			"NUM": 970,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -127,7 +127,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1650,
+			"NUM": 1010,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -150,7 +150,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1660,
+			"NUM": 1030,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -173,7 +173,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1970,
+			"NUM": 1301,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -196,7 +196,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 2090,
+			"NUM": 1360,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -219,7 +219,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 2100,
+			"NUM": 1370,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -242,7 +242,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1600,
+			"NUM": 1390,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -265,7 +265,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1590,
+			"NUM": 1400,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -288,7 +288,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1700,
+			"NUM": 1410,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -311,7 +311,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 390,
+			"NUM": 1550,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -334,7 +334,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 790,
+			"NUM": 1810,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -357,7 +357,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 500,
+			"NUM": 1840,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -380,7 +380,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 760,
+			"NUM": 1850,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -403,7 +403,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
-			"NUM": 650,
+			"NUM": 2000,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -426,7 +426,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 510,
+			"NUM": 2030,
 			"name": null,
 			"number": "510",
 			"maintainsBy": "",
@@ -449,7 +449,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 2040,
+			"NUM": 2200,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -472,7 +472,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 960,
+			"NUM": 3010,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -495,7 +495,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 900,
+			"NUM": 5020,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -518,7 +518,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 940,
+			"NUM": 6020,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -541,7 +541,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 800,
+			"NUM": 6030,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -564,7 +564,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 870,
+			"NUM": 6040,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -587,7 +587,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 850,
+			"NUM": 6210,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -610,7 +610,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 860,
+			"NUM": 6050,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -633,7 +633,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
-			"NUM": 570,
+			"NUM": 2250,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -656,7 +656,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
-			"NUM": 1010,
+			"NUM": 700,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -679,7 +679,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
-			"NUM": 230,
+			"NUM": 2280,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -702,7 +702,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1020,
+			"NUM": 840,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -725,7 +725,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "ARIEL",
-			"NUM": 280,
+			"NUM": 1510,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -748,7 +748,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
-			"NUM": 1180,
+			"NUM": 1680,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -771,7 +771,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1170,
+			"NUM": 1680,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -794,7 +794,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1160,
+			"NUM": 120,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -817,7 +817,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
-			"NUM": 1040,
+			"NUM": 141,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -840,7 +840,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "ARIEL",
-			"NUM": 550,
+			"NUM": 191,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -863,7 +863,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
-			"NUM": 830,
+			"NUM": 1730,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -886,7 +886,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 1720,
+			"NUM": 1130,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -909,7 +909,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
-			"NUM": 640,
+			"NUM": 190,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -932,7 +932,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
-			"NUM": 560,
+			"NUM": 570,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -955,7 +955,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Menora",
-			"NUM": 450,
+			"NUM": 1870,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -978,7 +978,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "VIMAZOR",
-			"NUM": 440,
+			"NUM": 1560,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -1001,7 +1001,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "VIMAZOR",
-			"NUM": 630,
+			"NUM": 1540,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -1024,7 +1024,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "Vimazor",
-			"NUM": 300,
+			"NUM": 2230,
 			"name": null,
 			"number": "",
 			"maintainsBy": "",
@@ -1047,7 +1047,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 720,
+			"NUM": 1640,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -1070,7 +1070,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 330,
+			"NUM": 1920,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -1093,7 +1093,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 320,
+			"NUM": 1380,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -1116,7 +1116,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 310,
+			"NUM": 1270,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,
@@ -1139,7 +1139,7 @@ export var geoJsonMantiIntersection = {
 		"properties": {
 			"CSTAT" : "CPS" ,
 			"TEXT": "SIGNALOR",
-			"NUM": 700,
+			"NUM": 160,
 			"name": null,
 			"number": null,
 			"maintainsBy": null,

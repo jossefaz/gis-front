@@ -55,7 +55,7 @@ export const onMessageRecived = (message) => {
     if(channelItem){
        
         var newMessage = JSON.parse(message.Body.replace(' - (1)', ''));   
-        
+        console.log('received: ' + JSON.stringify(newMessage));
         data.push(newMessage);
 
         //var data = message;
