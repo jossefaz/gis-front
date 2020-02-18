@@ -134,11 +134,26 @@ class VisibleMap extends React.Component {
               </button>         
               <button  onClick={() => { this.sendMessage(); }} > 
               שלח הודעה
-              </button>              
-             <MapComponent layers={this.props.layers}   
+              </button>     
+              <div >
+              <MapComponent layers={this.props.layers}   
              addLayer={this.props.addLayer} 
              updatePublishedStatus = {this.props.updatePublishedStatus}
              units={this.props.units}></MapComponent>              
+                 <MapComponent layers={this.props.layers}   
+             addLayer={this.props.addLayer} 
+             updatePublishedStatus = {this.props.updatePublishedStatus}
+             units={this.props.units}></MapComponent> 
+             </div>         
+           
+                 <MapComponent layers={this.props.layers}   
+             addLayer={this.props.addLayer} 
+             updatePublishedStatus = {this.props.updatePublishedStatus}
+             units={this.props.units}></MapComponent> 
+                 <MapComponent layers={this.props.layers}   
+             addLayer={this.props.addLayer} 
+             updatePublishedStatus = {this.props.updatePublishedStatus}
+             units={this.props.units}></MapComponent> 
         </div>
         )
     }

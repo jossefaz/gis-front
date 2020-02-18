@@ -15,7 +15,7 @@ import {loadChannels}  from './comm/communicationManager.js'
   constructor(props) {
     super(props);
 
-    loadChannels();
+  
    
   }
   
@@ -26,7 +26,7 @@ import {loadChannels}  from './comm/communicationManager.js'
     console.log(tools);
     return (
       <div>
-        <div><ToolList tools={tools}></ToolList></div>            
+        {/* <div><ToolList tools={tools}></ToolList></div>             */}
        <div>
          <div><VisibleMap></VisibleMap></div>
           

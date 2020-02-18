@@ -53,18 +53,11 @@ export const onMessageRecived = (message) => {
     var data = [];
 
     if(channelItem){
-       
-<<<<<<< HEAD
-        var data = JSON.parse(message.Body.replace(' - (1)', ''));       
-
-        // var data = message;
-=======
         var newMessage = JSON.parse(message.Body.replace(' - (1)', ''));   
         console.log('received: ' + JSON.stringify(newMessage));
         data.push(newMessage);
 
         //var data = message;
->>>>>>> cd96df317cf57a480927cb8743edcc12c3438d37
 
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
