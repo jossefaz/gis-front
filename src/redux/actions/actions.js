@@ -3,9 +3,6 @@ import {ADD_LAYER,
         SET_UPDATED_IDS} from '../actions/actionsTypes'
 import Layer from 'ol/layer/Layer';
 
-
-
-
 export const addLayer = Layer => ({
     type: ADD_LAYER,  
     layer:Layer
@@ -21,9 +18,8 @@ export const setFilterIds = Ids => ({
 export  const updateFeatureAttributes = (JSONFeatureList,
     target,
     idTargetKey,
-    idSourceKey,    
-    attributeKey,
-    attributeValue) => {
+    idSourceKey   
+    ) => {
     return ({
         type: UPDATE_FEATURE_ATTRIBUTES,
         data: JSONFeatureList,
@@ -32,16 +28,3 @@ export  const updateFeatureAttributes = (JSONFeatureList,
         idSourceKey : idSourceKey   
     });
 };
-
-export const updatePublishedStatus = (params) => {
-    return {
-      type: UPDATE_PUBLISHED_STATUS,
-      params : params
-    }
-}
-
-// export const updatePublishedStatus = params =>  (
-//     type : UPDATE_PUBLISHED_STATUS,
-//     params : params
-// );
-

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MapComponent from '../components/map/MapComponent';
 import { bindActionCreators } from 'redux'
-import  {addLayer,updateFeatureAttributes,updatePublishedStatus}  from "../redux/actions/actions";
+import  {addLayer,}  from "../redux/actions/actions";
 import {Projection} from 'ol/proj';
 import {addMantiIntersectionLayer} from '../usefulgarbage/layers';
 import  {selectUnits}  from "../redux/selectors/unitsSelector";
@@ -172,7 +172,6 @@ const mapStateToProps = state =>  {
 const mapDispatchToProps = dispatch => {
   return {
     // dispatching actions returned by action creators
-    updatePublishedStatus: (...params) => dispatch(updatePublishedStatus(params)),
     addLayer : (layer) => dispatch(addLayer(layer))
   }
 }
