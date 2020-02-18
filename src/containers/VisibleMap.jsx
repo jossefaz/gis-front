@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import MapComponent from '../components/map/MapComponent';
-import { bindActionCreators } from 'redux'
 import  {addLayer,}  from "../redux/actions/actions";
 import {Projection} from 'ol/proj';
 import {addMantiIntersectionLayer} from '../usefulgarbage/layers';
-import  {selectUnits}  from "../redux/selectors/unitsSelector";
+import  {selectUnits}  from "../redux/selectors/mantiSystemsSelector";
 import {FeatureLayer} from '../components/layers/FeatureLayer.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import {Vector as VectorLayer} from 'ol/layer.js';
