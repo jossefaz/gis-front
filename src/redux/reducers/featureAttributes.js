@@ -8,7 +8,10 @@ import {
   
 
   const initialState = {
-    units: mantiIntersections
+    units: 
+
+    
+    mantiIntersections
   };
   
   export default function (state = initialState, action){

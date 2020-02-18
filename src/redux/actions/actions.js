@@ -1,6 +1,5 @@
 import {ADD_LAYER,
-        UPDATE_FEATURE_ATTRIBUTES,
-        UPDATE_PUBLISHED_STATUS,
+        UPDATE_FEATURE_ATTRIBUTES,   
         SET_UPDATED_IDS} from '../actions/actionsTypes'
 import Layer from 'ol/layer/Layer';
 
