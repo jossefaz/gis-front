@@ -22,8 +22,6 @@ class MapComponent extends Component {
                 extent: [207000.0,624000.0,234525.12,651525.12]
             })
         });
-
-       // this.map.addLayer(this.props.layers[0]);    
     }
 
     componentWillReceiveProps(newProps) {
@@ -41,7 +39,7 @@ class MapComponent extends Component {
         if(newProps.units != null 
             && this.props.units !== newProps.units 
             && newProps.units.length > 0
-            && newProps.units[0] != undefined)                   
+            )                   
         {
             console.log("new units:" + newProps.units)             
        
@@ -58,7 +56,7 @@ class MapComponent extends Component {
 
 
     render() { 
-        console.log("our layers:" + this.props.layers)
+     
         return (  
             <div id = "map" 
                 className = "map" 

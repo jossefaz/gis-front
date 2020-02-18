@@ -19,37 +19,19 @@ import {
             var target = action.target;       
             var idTargetKey = action.idTargetKey;
             var idSourceKey = action.idSourceKey;
-          
             
             return produce(state, draft => {
-                
                   data.map(function(sourceItem){
-
                     var obj = sourceItem;
-                  
                     var f = draft[target][obj[idSourceKey]];
                     if(f){
                       for (var prop in obj) {                 
                         if (!obj.hasOwnProperty(prop)) continue;
                         f[prop] =  obj[prop]
                     }  
-                    }               
+                  }               
             }); 
-          });         
-          
-
-        
-          case UPDATE_PUBLISHED_STATUS:
-                return produce(state, draft => { 
-                    
-                    var arrayToUpdate = action.params[0].arrayToUpdate;
-                    var target = action.params[0].target;
-                    var idTargetKey = action.params[0].idTargetKey;
-                    arrayToUpdate.map(function(item){
-                        var itemToUpdate = draft[target].find(x => x[action.params[0].idTargetKey] == item[idTargetKey])
-                        itemToUpdate["_isPublished"] = false;
-                    })
-                });
+          }); 
           default:
             return state
         }

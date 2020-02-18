@@ -1,8 +1,7 @@
 import {ADD_LAYER,
         UPDATE_FEATURE_ATTRIBUTES,
         UPDATE_PUBLISHED_STATUS,
-        SET_FILTER_IDS,
-        UPDATED_INFO} from '../actions/actionsTypes'
+        SET_UPDATED_IDS} from '../actions/actionsTypes'
 import Layer from 'ol/layer/Layer';
 
 
@@ -13,13 +12,10 @@ export const addLayer = Layer => ({
     layer:Layer
 });
 
-export const udpatedInfo = IsInfoUpdated => ({
-    type : UPDATED_INFO,
-    isInfoUpdated : IsInfoUpdated
-});
+
 
 export const setFilterIds = Ids => ({
-    type : SET_FILTER_IDS,
+    type : SET_UPDATED_IDS,
     ids : Ids
 });
 

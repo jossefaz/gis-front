@@ -9,22 +9,7 @@ import watch from 'redux-watch' ;
 
 
 
-function select(state, filter) {
-    return state.featureAttributes.units;
-  }
-  let currentValue
-  function handleChange() {
-    let previousValue = currentValue;
-    currentValue = select(store.getState());
-    if (previousValue !== currentValue) {
-      console.log(
-        'Some deep nested property changed from',
-        previousValue,
-        'to',
-        currentValue
-      )
-    }
-  }
+
 
 export const loadChannels = () => {
     
@@ -41,9 +26,7 @@ export const loadChannels = () => {
 
 export const onMessageRecived = (message) => {
     
-    console.log("my messaage from communication:" + message);
-    
-    // var channelItem =  channels.find(function(item){ 
+      // var channelItem =  channels.find(function(item){ 
     //     var a = item.Channel;
     //     var b = message.Channel;
     //     return item.Channel.indexOf(message.Channel) > -1;
@@ -54,11 +37,8 @@ export const onMessageRecived = (message) => {
 
     if(channelItem){
         var newMessage = JSON.parse(message.Body.replace(' - (1)', ''));   
-        console.log('received: ' + JSON.stringify(newMessage));
+     
         data.push(newMessage);
-
-        //var data = message;
-
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
                 store.dispatch(setFilterIds(null)); 
@@ -68,9 +48,7 @@ export const onMessageRecived = (message) => {
                     channelItem.idTargetKey,
                     channelItem.idSourceKey   
                     ));
-                    console.log("we just updated redux object");
-                    store.dispatch(setFilterIds(data)); 
-                    // store.dispatch(udpatedInfo(true));        
+                    store.dispatch(setFilterIds(data));                    
                 break;    
             default:
                 break;

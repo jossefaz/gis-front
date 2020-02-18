@@ -154,7 +154,7 @@ class MapComponent extends React.Component {
     
 
     render() {
-        console.log("our layers:" + this.props.layers)
+      
         return (
             <div>
             <button onClick = {() => {this.handleAddLayer();}}>Gardens</button>

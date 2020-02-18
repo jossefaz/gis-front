@@ -1,26 +1,15 @@
 import {
-    SET_FILTER_IDS,
-    UPDATED_INFO   
+    SET_UPDATED_IDS,
 } from '../actions/actionsTypes';
-import produce from 'immer';
-import mantiIntersections from '../../usefulgarbage/mantiIntersections.json';
- 
-  
 
   const initialState = {
-      isInfoUpdated :false,
       ids : []
   };
 
 
   export default function (state = initialState, action){
     switch (action.type) {
-        case UPDATED_INFO:
-          return {
-            ...state,
-            isInfoUpdated: action.isInfoUpdated          
-        };
-        case SET_FILTER_IDS:
+        case SET_UPDATED_IDS:
           var ids = [];
           if(action.ids != null){
             //TODO change to dynamic key

@@ -14,10 +14,7 @@ export var FeatureLayer =  (function() {
       _this = this;   
       _props = props;
       _source = source;
-
-      console.log("props:" + props);
-      console.log("source:" + source);
-
+    
       if(source != null){
          var vectorSource = new VectorSource({
             features : source,
@@ -41,10 +38,6 @@ export var FeatureLayer =  (function() {
 
 
     var setProperties = (data,props) => {
-        
-
-        console.log("we are setting the layer properties");
-
         var lyr = _vectorLayer;
         
         if(data != null && data.length > 0){
@@ -60,9 +53,8 @@ export var FeatureLayer =  (function() {
                 data.map(function(sourceItem){
 
                     var id =  parseInt(sourceItem[sourceId]);
-                    console.log('set proerties for data item id=' + id);
-                    var f = ftrs.find(function (feature) {
-                        console.log(feature.values_[targetId]);
+                
+                    var f = ftrs.find(function (feature) {                      
                         return feature.values_[targetId] == id;
                     });
 
