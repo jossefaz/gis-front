@@ -41,14 +41,14 @@ export const onMessageRecived = (message) => {
         data.push(newMessage);
         switch (channelItem.reduxFunction) {
             case "UPDATE_FEATURE_ATTRIBUTES":
-                store.dispatch(setFilterIds(null)); 
+                store.dispatch(setFilterIds("units",null)); 
                 store.dispatch(updateFeatureAttributes(
                     data,
                     channelItem.reduxTarget,                    
                     channelItem.idTargetKey,
                     channelItem.idSourceKey   
                     ));
-                    store.dispatch(setFilterIds(data));                    
+                    store.dispatch(setFilterIds("units",data));                    
                 break;    
             default:
                 break;

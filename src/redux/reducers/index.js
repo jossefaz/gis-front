@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import mapLayers from './mapLayers'
-import featureAttributes from './featureAttributes'
+import mantiSystems from './mantiSystems'
 import filter from './filter'
 
 export default combineReducers({
     mapLayers,
-    featureAttributes,
-    filter
+    mantiSystems,
+    // filter
 })  

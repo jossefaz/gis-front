@@ -10,10 +10,16 @@ export const addLayer = Layer => ({
 
 
 
-export const setFilterIds = Ids => ({
-    type : SET_UPDATED_IDS,
-    ids : Ids
-});
+export const setFilterIds =  (
+     target,
+     data
+) => {
+     return ({
+          type : SET_UPDATED_IDS,
+          data : data,
+          target :target
+    });
+};
 
 export  const updateFeatureAttributes = (JSONFeatureList,
     target,

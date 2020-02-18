@@ -1,24 +1,31 @@
 import {
     SET_UPDATED_IDS,
 } from '../actions/actionsTypes';
+import produce from 'immer';
 
   const initialState = {
-      ids : []
+      updatedIds : []
   };
 
 
   export default function (state = initialState, action){
     switch (action.type) {
         case SET_UPDATED_IDS:
-          var ids = [];
-          if(action.ids != null){
-            //TODO change to dynamic key
-            ids = action.ids.map(item => item["id"]);
-          }
-          return {
-            ...state,
-            ids : ids        
-        }; 
+          
+        // if(action.target){
+        //     var ids = [];
+        //     if(action.data != null){
+        //       //TODO change to dynamic key
+        //       ids = action.data.map(item => item["id"]);
+
+        //       return produce(state, draft => {
+                
+        //          draft[target]["updatedIds"] = ids;
+        //       }); 
+        //     }
+        //   }
+        //   else
+            return state;
         default:
           return state
       }

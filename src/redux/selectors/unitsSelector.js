@@ -1,14 +1,12 @@
 import { createSelector } from 'reselect'
-import  {updatePublishedStatus}  from "../actions/actions";
 
-const getUnits = state => state.featureAttributes.units;
-const isInfoUpdated = state => state.filter.isInfoUpdated;
-const updatedIds =  state => state.filter.ids;
+const getUnits = state => state.mantiSystems.units.elements;
+const updatedIds =  state => state.mantiSystems.units.updatedIds;
 
 
 export const selectUnits = createSelector(
-    [getUnits,updatedIds,isInfoUpdated],
-    (units,updatedIds,isInfoUpdated) => {
+    [getUnits,updatedIds],
+    (units,updatedIds) => {
         
         if(updatedIds &&  updatedIds.length > 0){
             var arr =[];
