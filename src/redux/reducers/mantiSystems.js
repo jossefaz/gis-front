@@ -11,6 +11,10 @@ import {
     units: {
       elements : mantiIntersections,
       updatedIds : []
+    },
+    falcon : {
+      elements : null,
+      updatedIds : []
     }
   };
   
@@ -39,6 +43,7 @@ import {
             if(action.target){
                 var ids = [];
                 if(action.data != null){
+                  
                   //TODO change to dynamic key
                   ids = action.data.map(item => item["id"]);
                   return produce(state, draft => {

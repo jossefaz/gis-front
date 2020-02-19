@@ -157,18 +157,7 @@ class MapComponent extends React.Component {
       
         return (
             <div>
-            <button onClick = {() => {this.handleAddLayer();}}>Gardens</button>
-            {/* <div>
-      
-               {this.state.messages.map(message=> (
-                
-                       <li>
-                           {message.id}
-                       </li>
-                     
-                
-                ))}
-            </div> */}
+            <button onClick = {() => {this.handleAddLayer();}}>Gardens</button>          
             <div id = "map" className = "map" ref = "olmap"> </div>
             </div>
         )
