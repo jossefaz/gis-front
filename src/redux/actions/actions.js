@@ -22,15 +22,13 @@ export const setFilterIds =  (
 };
 
 export  const updateFeatureAttributes = (JSONFeatureList,
-    target,
-    idTargetKey,
+    target,   
     idSourceKey   
     ) => {
     return ({
         type: UPDATE_FEATURE_ATTRIBUTES,
         data: JSONFeatureList,
-        target: target,
-        idTargetKey : idTargetKey,
+        target: target,        
         idSourceKey : idSourceKey   
     });
 };

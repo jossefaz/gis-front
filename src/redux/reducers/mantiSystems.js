@@ -23,8 +23,7 @@ import {
       switch (action.type) {
           case UPDATE_FEATURE_ATTRIBUTES:
             var data = action.data;
-            var target = action.target;       
-            var idTargetKey = action.idTargetKey;
+            var target = action.target;             
             var idSourceKey = action.idSourceKey;
             
             return produce(state, draft => {

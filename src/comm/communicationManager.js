@@ -26,12 +26,6 @@ export const loadChannels = () => {
 
 export const onMessageRecived = (message) => {
     
-      // var channelItem =  channels.find(function(item){ 
-    //     var a = item.Channel;
-    //     var b = message.Channel;
-    //     return item.Channel.indexOf(message.Channel) > -1;
-    // });
-
     var channelItem = channels[0];
     var data = [];
 
@@ -44,8 +38,7 @@ export const onMessageRecived = (message) => {
                 store.dispatch(setFilterIds("units",null)); 
                 store.dispatch(updateFeatureAttributes(
                     data,
-                    channelItem.reduxTarget,                    
-                    channelItem.idTargetKey,
+                    channelItem.reduxTarget,                                    
                     channelItem.idSourceKey   
                     ));
                     store.dispatch(setFilterIds("units",data));                    
