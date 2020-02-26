@@ -10,6 +10,7 @@
     "@types/react-redux": "^7.1.5",
     "immer": "^4.0.2",
     "ol": "^5.3.3",
+    "ol-layerlist": "^1.1.8",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-openlayers": "^0.2.1",
