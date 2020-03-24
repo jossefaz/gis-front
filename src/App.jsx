@@ -8,12 +8,6 @@ import channels from './usefulgarbage/channels.json'
 import VisibleMap from './containers/VisibleMap';
 import { loadChannels } from './comm/communicationManager.js';
 import { fetchData } from './comm/apiManager.js'
-import LayerTree from '@terrestris/react-geo/LayerTree/LayerTree';
-
-
-
-
-
 
 class App extends Component {
 
@@ -21,13 +15,13 @@ class App extends Component {
 
     super(props);
 
-  var layers = fetchData({
-      url: "https://localhost:5001/",
-      functionName: "MetaData",
-      method: "Get"
-    });
+  // var layers = fetchData({
+  //     url: "https://localhost:5001/",
+  //     functionName: "MetaData",
+  //     method: "Get"
+  //   });
     
-    console.log(layers);
+  //   console.log(layers);
   }
 
   render() {
@@ -40,7 +34,7 @@ class App extends Component {
         {/* <div><ToolList tools={tools}></ToolList></div>             */}
         <div>
           <div><VisibleMap></VisibleMap></div>
-          <div><LayerTree></LayerTree></div>
+
         </div>
       </div>
     )

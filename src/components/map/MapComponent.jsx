@@ -2,7 +2,6 @@ import React,{ Component } from "react";
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 
-
 class MapComponent extends Component {
     constructor(props) {
         super(props);
@@ -58,10 +57,12 @@ class MapComponent extends Component {
     render() { 
      
         return (  
-            <div id = "map" 
+            <div>
+              <div id = "map" 
                 className = "map" 
                 ref = "olmap"> 
-            </div>
+             </div>             
+            </div>            
         );
     }
 }

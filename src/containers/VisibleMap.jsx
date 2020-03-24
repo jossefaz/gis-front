@@ -13,6 +13,7 @@ import CircleStyle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
 import Style from 'ol/style/Style';
 import {loadChannels , onMessageRecived}  from '../comm/communicationManager.js'
+import LayerList from '../components/layers/LayerList';
 
 const  styleFunction = function(feature, resolution){
     var styleOL = new Style( {
@@ -62,22 +63,12 @@ const  styleFunction = function(feature, resolution){
     } 
 }
 
-
-
-
-
 class VisibleMap extends React.Component {
     constructor(props) {
         super(props)
-        
     }
-    
-   
 
     handleAddLayer = () =>{
-
-        console.log('trying toadd a layer!!!!!!');
-        
         
         var proj_2039 = new Projection({
             code: 'EPSG:2039',
@@ -96,63 +87,20 @@ class VisibleMap extends React.Component {
         this.props.addLayer(fl);        
         loadChannels();  
     }
-
-
-    handleAddTzmatimLayer = () => {
-        this.props.addLayer(addMantiIntersectionLayer());  
-    }
-    handleChangeStatusTzmet = () => {
-        var ftrs = this.props.layers[1].getSource().getFeatures();
-        if(ftrs.length > 0){
-            ftrs[0].values_['CSTAT'] = 'FAIL';
-        }
-    }
-
-    sendMessage = () => {
-        onMessageRecived (
-        [{"Offset":"test","FB":2,"PH":13,"CSTAT":"OL","PLAN":3,"CYC":80,"trn_fdbk":"14320D","nCyc":6,"cycCntDn":59,"line":25,"addr":"1","tr_att":60,"n_valid":60,"err":0,"fail":0,"p_valid":100,"id":"370","LastChangeTime":"2020-01-22T08:54:02.4523236+02:00"}]
-        );
-    }
-   
     
     render() {
 
         return (
             <div>
               <button  onClick={() => { this.handleAddLayer(); }} > 
-              Health Center
+               Add manti intersections
               </button>
-              <button  onClick={() => { this.updateFeartures(); }} > 
-              update Feartures
-              </button>
-              <button  onClick={() => { this.handleAddTzmatimLayer(); }} > 
-              צמתים
-              </button>
-              <button  onClick={() => { this.handleChangeStatusTzmet(); }} > 
-              שנה סטטוס צומת
-              </button>         
-              <button  onClick={() => { this.sendMessage(); }} > 
-              שלח הודעה
-              </button>     
-              <div >
               <MapComponent layers={this.props.layers}   
              addLayer={this.props.addLayer} 
              updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent>              
-                 <MapComponent layers={this.props.layers}   
-             addLayer={this.props.addLayer} 
-             updatePublishedStatus = {this.props.updatePublishedStatus}
              units={this.props.units}></MapComponent> 
-             </div>         
-           
-                 <MapComponent layers={this.props.layers}   
-             addLayer={this.props.addLayer} 
-             updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent> 
-                 <MapComponent layers={this.props.layers}   
-             addLayer={this.props.addLayer} 
-             updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent> 
+
+             <LayerList></LayerList>                    
         </div>
         )
     }

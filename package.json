@@ -12,6 +12,7 @@
     "immer": "^4.0.2",
     "ol": "^5.3.3",
     "ol-layerlist": "^1.1.8",
+    "parsejson": "0.0.3",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-openlayers": "^0.2.1",
@@ -21,6 +22,7 @@
     "react-websocket": "^2.1.0",
     "redux-watch": "^1.1.1",
     "reselect": "^4.0.0",
+    "socket.io": "^2.3.0",
     "typescript": "3.6.3"
   },
   "scripts": {
