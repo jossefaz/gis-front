@@ -19,11 +19,13 @@ class App extends Component {
 
     super(props);
 
-    fetchData({
+  var layers = fetchData({
       url: "https://localhost:5001/",
       functionName: "MetaData",
       method: "Get"
     });
+    
+    console.log(layers);
   }
 
   render() {
