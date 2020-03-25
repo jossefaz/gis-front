@@ -98,9 +98,7 @@ class VisibleMap extends React.Component {
               <MapComponent layers={this.props.layers}   
              addLayer={this.props.addLayer} 
              updatePublishedStatus = {this.props.updatePublishedStatus}
-             units={this.props.units}></MapComponent> 
-
-             <LayerList></LayerList>                    
+             units={this.props.units}></MapComponent>                              
         </div>
         )
     }

@@ -8,6 +8,8 @@ import channels from './usefulgarbage/channels.json'
 import VisibleMap from './containers/VisibleMap';
 import { loadChannels } from './comm/communicationManager.js';
 import { fetchData } from './comm/apiManager.js'
+import LayerList from './components/layers/LayerList';
+import './general.css';
 
 class App extends Component {
 
@@ -32,9 +34,9 @@ class App extends Component {
     return (
       <div>
         {/* <div><ToolList tools={tools}></ToolList></div>             */}
-        <div>
-          <div><VisibleMap></VisibleMap></div>
-
+        <div className="rowC">
+         <VisibleMap></VisibleMap>
+         <LayerList></LayerList>
         </div>
       </div>
     )

@@ -4,15 +4,22 @@ class LayerListItem extends Component {
     
     
     
+    handleClick(cb) {
+      var a = this.props.layers;
+      alert("Clicked, new value = " + cb.checked);
+    }
     
     
-    render() { 
+    render() {
+        const  { 
+        layer
+        } = this.props; 
         return ( 
             <li><span>Food insecurity layer</span>
             <fieldset id="layer10">
               <div>
                  <label>
-                <input id="visible10" class="visible" type="checkbox"/>visibility
+                <input id="visible10" class="visible" type="checkbox" onClick={this.handleClick}  />visibility
               </label>
               </div>
               <div>
