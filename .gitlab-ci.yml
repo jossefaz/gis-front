@@ -5,7 +5,7 @@ services:
   - docker:dind
 
 variables:
-    IMAGE_TAG: yessefaz/gis_front:latest
+    IMAGE_TAG: yossefaz/gis_front:latest
 test:
   stage: build
   script:
