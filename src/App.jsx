@@ -6,7 +6,6 @@ import tools from './usefulgarbage/tools.json';
 import channels from './usefulgarbage/channels.json'
 
 import VisibleMap from './containers/VisibleMap';
-import { loadChannels } from './comm/communicationManager.js';
 import { fetchData } from './comm/apiManager.js'
 import LayerList from './components/layers/LayerList';
 import './general.css';
