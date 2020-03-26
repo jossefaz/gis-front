@@ -85,8 +85,10 @@ class VisibleMap extends React.Component {
         console.log("vectorEditingLayer declared");
         console.log('as of now the layers are:' + this.props.layers);
         this.props.addLayer(fl);        
+        
         loadChannels();  
     }
+    
     
     render() {
 
@@ -110,9 +112,6 @@ const mapStateToProps = state =>  {
         units : selectUnits(state)
     }    
 }
-
-
-
 
 const mapDispatchToProps = dispatch => {
   return {
