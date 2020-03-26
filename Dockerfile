@@ -1,3 +1,3 @@
 FROM alpine:latest
-RUN echo "Hello groups"
+RUN echo "Hello"
 CMD [ "sh" ]
