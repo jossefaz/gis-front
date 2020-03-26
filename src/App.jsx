@@ -23,6 +23,7 @@ class App extends Component {
   //   });
     
   //   console.log(layers);
+  //test
   }
 
   render() {
@@ -38,6 +39,7 @@ class App extends Component {
          <LayerList></LayerList>
         </div>
       </div>
+
     )
   }
 }
