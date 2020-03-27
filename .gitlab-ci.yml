@@ -26,8 +26,8 @@ test_react_app:
     - docker kill $(docker ps -q) || true
     - docker rm $(docker ps -a -q) || true
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker run -e CI=true $IMAGE_TAG_TEST # TODO : add "npm test -- --coverage" after building tests
-
+    - docker run -dt -e CI=true $IMAGE_TAG_TEST # TODO : add "npm test -- --coverage" after building tests
+    - docker kill $(docker ps -q) || true
 deploy_to_registry:
   stage: deploy
   script:
