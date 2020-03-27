@@ -10,28 +10,30 @@ services:
   - docker:dind
 
 variables:
-    IMAGE_TAG: yossefaz/gis_front:latest
+    IMAGE_TAG_TEST: yossefaz/gis_front_test:latest
+    IMAGE_TAG_PROD: yossefaz/gis_front:latest
 
-build:
+build_docker_image:
     stage: build
     script:
-      - docker build -t $IMAGE_TAG .
+      - docker login -u $CI_LOCAL_USER -p $CI_LOCAL_PASSWORD
+      - docker build -t $IMAGE_TAG_TEST -f Dockerfile.dev .
+      - docker push $IMAGE_TAG_TEST
 
-test:
+test_react_app:
   stage: test
   script:
-    - docker build -t $IMAGE_TAG .
-    - docker run -e CI=true $IMAGE_TAG
+    - docker kill $(docker ps -q) || true
+    - docker rm $(docker ps -a -q) || true
+    - docker login -u $CI_LOCAL_USER -p $CI_LOCAL_PASSWORD
+    - docker run -e CI=true $IMAGE_TAG_TEST npm test -- --coverage
 
-
-deploy:
-
+deploy_to_registry:
   stage: deploy
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-    - docker build -t $IMAGE_TAG .
-    - docker push $IMAGE_TAG
-
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+    - docker build -t $IMAGE_TAG_PROD .
+    - docker push $IMAGE_TAG_PROD
   only:
     - master
 
