@@ -16,7 +16,7 @@ variables:
 build_docker_image:
     stage: build
     script:
-      - docker login registry.gitlab.com -u $CI_LOCAL_USER -p $CI_LOCAL_PASSWORD
+      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
       - docker build -t $IMAGE_TAG_TEST -f Dockerfile.dev .
       - docker push $IMAGE_TAG_TEST
 
