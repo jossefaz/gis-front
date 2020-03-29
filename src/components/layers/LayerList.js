@@ -1,6 +1,6 @@
 
 import React,{ Component } from "react";
-import LayerListItem from "../layers/LayerListItem";
+import LayerListItem from "./LayerListItem";
 
 class LayerList extends Component {
     state = {  }

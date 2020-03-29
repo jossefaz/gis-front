@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import ToolList from './components/tool/ToolList.jsx';
+import ToolList from './components/tool/ToolList';
 import tools from './usefulgarbage/tools.json';
 import channels from './usefulgarbage/channels.json'
 
