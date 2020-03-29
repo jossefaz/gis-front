@@ -22,6 +22,7 @@ build_docker_image_group:
       - docker push $IMAGE_TAG_TEST_GROUP
     only : 
         - group_master
+
 test_react_app_group:
   stage: test
   script:
@@ -32,7 +33,6 @@ test_react_app_group:
     - docker kill $(docker ps -q) || true
   only : 
         - group_master
-
         
 build_docker_image_local :
     stage: build
@@ -69,5 +69,4 @@ deploy_to_registry:
     - docker push $IMAGE_TAG_PROD
   only:
     - master
-    - group_master
 
