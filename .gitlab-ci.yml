@@ -10,7 +10,7 @@ services:
   - docker:dind
 
 variables:
-    IMAGE_TAG_TEST: registry.gitlab.com/yossefaz/gis_front:latest
+    IMAGE_TAG_TEST: registry.gitlab.com/gis_manti/gis_front
     IMAGE_TAG_PROD: yossefaz/gis_front:latest
 
 build_docker_image:
