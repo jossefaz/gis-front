@@ -15,7 +15,7 @@ variables:
     IMAGE_TAG_PROD: yossefaz/gis_front:latest
 
 
-    ########GROUP#########   
+########GROUP#########   
 build_docker_image_group:
     stage: build
     script:
