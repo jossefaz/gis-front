@@ -51,6 +51,28 @@ test_react_app_local:
     - docker kill $(docker ps -q) || true
     - docker rm $(docker ps -a -q) || true
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker run -dt -e CI=true $IMAGE_TAG_TEST_GROUP # TODO : add "npm test -- --coverage" after building tests
+    - docker kill $(docker ps -q) || true
+  only : 
+        - group_master
+        
+build_docker_image_local :
+    stage: build
+    script:
+      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      - docker build -t $IMAGE_TAG_TEST_LOCAL -f Dockerfile.dev .
+      - docker push $IMAGE_TAG_TEST_LOCAL
+    only : 
+        - develop
+        - master
+
+
+test_react_app_local:
+  stage: test
+  script:
+    - docker kill $(docker ps -q) || true
+    - docker rm $(docker ps -a -q) || true
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker run -dt -e CI=true $IMAGE_TAG_TEST_LOCAL # TODO : add "npm test -- --coverage" after building tests
     - docker kill $(docker ps -q) || true
   only: 
