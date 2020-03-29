@@ -14,6 +14,8 @@ variables:
     IMAGE_TAG_TEST_LOCAL : registry.gitlab.com/yossefaz/gis_front
     IMAGE_TAG_PROD: yossefaz/gis_front:latest
 
+
+    ########GROUP#########   
 build_docker_image_group:
     stage: build
     script:
@@ -33,7 +35,7 @@ test_react_app_group:
   only : 
         - group_master
 
-        
+########LOCAL#########        
 build_docker_image_local :
     stage: build
     script:
@@ -51,10 +53,12 @@ test_react_app_local:
     - docker kill $(docker ps -q) || true
     - docker rm $(docker ps -a -q) || true
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker run -dt -e CI=true $IMAGE_TAG_TEST_GROUP # TODO : add "npm test -- --coverage" after building tests
+    - docker run -dt -e CI=true $IMAGE_TAG_TEST_LOCAL # TODO : add "npm test -- --coverage" after building tests
     - docker kill $(docker ps -q) || true
+
   only : 
-        - group_master
+      - develop
+      - master
 
 deploy_to_registry:
   stage: deploy
