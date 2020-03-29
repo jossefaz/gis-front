@@ -91,5 +91,3 @@ deploy_to_registry:
     - docker push $IMAGE_TAG_PROD
   only:
     - master
-    - group_master
-
