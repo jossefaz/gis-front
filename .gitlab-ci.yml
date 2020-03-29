@@ -23,7 +23,7 @@ build_docker_image_group:
       - docker build -t $IMAGE_TAG_TEST_GROUP -f Dockerfile.dev .
       - docker push $IMAGE_TAG_TEST_GROUP
     only : 
-        - group_master
+        - master
 test_react_app_group:
   stage: test
   script:
@@ -33,7 +33,7 @@ test_react_app_group:
     - docker run -dt -e CI=true $IMAGE_TAG_TEST_GROUP # TODO : add "npm test -- --coverage" after building tests
     - docker kill $(docker ps -q) || true
   only : 
-        - group_master
+        - master
 
 ########LOCAL#########        
 build_docker_image_local :
@@ -44,20 +44,8 @@ build_docker_image_local :
       - docker push $IMAGE_TAG_TEST_LOCAL
     only : 
         - develop
-        - master
 
 
-test_react_app_local:
-  stage: test
-  script:
-    - docker kill $(docker ps -q) || true
-    - docker rm $(docker ps -a -q) || true
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker run -dt -e CI=true $IMAGE_TAG_TEST_GROUP # TODO : add "npm test -- --coverage" after building tests
-    - docker kill $(docker ps -q) || true
-  only : 
-        - group_master
-        
 build_docker_image_local :
     stage: build
     script:
@@ -66,21 +54,6 @@ build_docker_image_local :
       - docker push $IMAGE_TAG_TEST_LOCAL
     only : 
         - develop
-        - master
-
-
-test_react_app_local:
-  stage: test
-  script:
-    - docker kill $(docker ps -q) || true
-    - docker rm $(docker ps -a -q) || true
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker run -dt -e CI=true $IMAGE_TAG_TEST_LOCAL # TODO : add "npm test -- --coverage" after building tests
-    - docker kill $(docker ps -q) || true
-
-  only : 
-      - develop
-      - master
 
 deploy_to_registry:
   stage: deploy
@@ -89,4 +62,4 @@ deploy_to_registry:
     - docker build -t $IMAGE_TAG_PROD .
     - docker push $IMAGE_TAG_PROD
   only:
-    - master
+    - develop
