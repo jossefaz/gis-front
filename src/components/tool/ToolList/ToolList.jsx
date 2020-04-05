@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ToolTask from "./ToolTask";
+import ToolTask from "../ToolTask.jsx";
 
 class  ToolList extends Component {
   

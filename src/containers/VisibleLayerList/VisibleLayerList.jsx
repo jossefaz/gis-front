@@ -1,10 +1,14 @@
-import LayerList from "../components/layers/LayerList"
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import LayerList from "../../components/layers/LayerList/LayerList";
+import  {addLayer}  from "../../redux/actions/actions";
 
 class VisibleLayerList extends Component {
     state = {  }
+    
     render() { 
         return (  
-            <div><LayerList></LayerList>
+            <div><LayerList addMapLayer = {this.props.addLayer}></LayerList>
             </div>
         );
     }
