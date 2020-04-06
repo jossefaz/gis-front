@@ -1,0 +1,107 @@
+{
+    "MapConfig" : {
+        "target" : "map",
+        "url" : "https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "proj" : "EPSG:4326",
+        "center" : [34.911, -56.788],
+        "zoom" : 8
+    },
+    "layers" : [
+        {
+            "id" : "1",
+            "name" : "מנתי צמתים",
+            "url" : "http://localhost:8080/geoserver/Jeru/wms?&LAYERS=Jeru%3Amanti_intersections"    
+        },
+        {
+            "id" : "2",
+            "name" : "יעודי קרקע",
+            "url" : "http://localhost:8080/geoserver/Jeru/wms?&LAYERS=Jeru%3Adimigcompile"    
+        }
+    ],
+    "tools" : [
+        {
+            "Id": 1,
+            "ToolName": "ZoomInOut",
+            "ToolTip" : "התמקדות",
+            "ToolImage": "i_search",
+            "ToolActionInvoker":  "ZoomInOut",
+            "ToolInvokerType":  1,
+            "ToolTypeID" : 1,
+            "ToolParams" : "",
+            "ToolLocation" : "",
+            "Order" :  1,
+            "IsAGroup" : 0,
+            "ToolGroupId" : 0
+        
+        },
+        {
+            "Id": 2,
+            "ToolName": "Coordinates",
+            "ToolTip" : "קורדינאטות",
+            "ToolImage": "print",
+            "ToolActionInvoker": "Coordinates",
+            "ToolInvokerType":  0,
+            "ToolTypeID" : 1,
+            "ToolParams" : "",
+            "ToolLocation" : "",
+            "Order" :  2,
+            "IsAGroup" : 0,
+            "ToolGroupId" : 0
+        },
+        {
+            "Id": 3,
+            "ToolName": "search",
+            "ToolTip" : "חיפוש",
+            "ToolImage": "iconArea_hover",
+            "ToolActionInvoker":  "search",
+            "ToolInvokerType":  0,
+            "ToolTypeID" : 1,
+            "ToolParams" : "",
+            "ToolLocation" : "",
+            "Order" :  3,
+            "IsAGroup" : 0,
+            "ToolGroupId" : 0
+        
+        },
+        {
+            "Id": 4,
+            "ToolName": "baseMaps",
+            "ToolTip" : "חיפוש",
+            "ToolImage": "icon_hover",
+            "ToolActionInvoker":  "js",
+            "ToolInvokerType":  0,
+            "ToolTypeID" : 1,
+            "ToolParams" : "",
+            "ToolLocation" : "",
+            "Order" :4,
+            "IsAGroup" : 0,
+            "ToolGroupId" : 0
+        
+        },
+        {
+            "Id": 5,
+            "ToolName": "layerlist",
+            "ToolTip" : "רשימת שכבות",
+            "ToolImage": "",
+            "ToolActionInvoker":  "layerlist",
+            "ToolInvokerType":  0,
+            "ToolTypeID" : 1,
+            "ToolParams" : "",
+            "ToolLocation" : "",
+            "Order" :  5,
+            "IsAGroup" : 0,
+            "ToolGroupId" : 0
+        }       
+    ],
+    "channels" :     {  "name": "MTCS.Units PubSub Channel",
+        "type": "PubSub",
+        "Channel": "MTCS.Units",
+        "reduxTarget": "units",
+        "reduxFunction" : "UPDATE_FEATURE_ATTRIBUTES",      
+        "idSourceKey" : "id",
+        "atrributeListKey" : "changes", 
+        "attributeKey" : "field-name",
+        "attributeValue": "value",
+        "description": "change is MTCS.Units attribute(s)"
+    }
+}
