@@ -10,12 +10,8 @@ services:
   - docker:dind
 
 variables:
-<<<<<<< HEAD
     IMAGE_TAG_TEST_GROUP: registry.gitlab.com/gis_manti/gis_front
     IMAGE_TAG_TEST_LOCAL : registry.gitlab.com/yossefaz/gis_front
-=======
-    IMAGE_TAG_TEST: registry.gitlab.com/yossefaz/gis_front_test:latest
->>>>>>> login to local registry in test
     IMAGE_TAG_PROD: yossefaz/gis_front:latest
 
 
@@ -43,17 +39,11 @@ test_react_app_group:
 build_docker_image_local :
     stage: build
     script:
-<<<<<<< HEAD
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
       - docker build -t $IMAGE_TAG_TEST_LOCAL -f Dockerfile.dev .
       - docker push $IMAGE_TAG_TEST_LOCAL
     only : 
         - develop
-=======
-      - docker login registry.gitlab.com -u $CI_LOCAL_USER -p $CI_LOCAL_PASSWORD
-      - docker build -t $IMAGE_TAG_TEST -f Dockerfile.dev .
-      - docker push $IMAGE_TAG_TEST
->>>>>>> login to local registry in test
 
 
 test_react_app_local:
