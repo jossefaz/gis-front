@@ -1,21 +1,20 @@
 {
     "MapConfig" : {
         "target" : "map",
-        "url" : "https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         "proj" : "EPSG:4326",
-        "center" : [34.911, -56.788],
+        "center" : [35.18, 31.76],
         "zoom" : 8
     },
     "layers" : [
         {
-            "id" : "1",
-            "name" : "מנתי צמתים",
-            "url" : "http://localhost:8080/geoserver/Jeru/wms?&LAYERS=Jeru%3Amanti_intersections"    
+            "url" : "http://localhost:8600/geoserver/Jeru/wms",
+            "params" : {"LAYERS" : "Jeru:dimigcompile"},
+            "serverType" : "geoserver"
         },
         {
-            "id" : "2",
-            "name" : "יעודי קרקע",
-            "url" : "http://localhost:8080/geoserver/Jeru/wms?&LAYERS=Jeru%3Adimigcompile"    
+            "url" : "http://localhost:8600/geoserver/Jeru/wms",
+            "params" : {"LAYERS" : "Jeru:manti_intersections"},
+            "serverType" : "geoserver" 
         }
     ],
     "tools" : [

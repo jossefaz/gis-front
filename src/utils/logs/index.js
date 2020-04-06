@@ -8,7 +8,7 @@ const _logger = new LoggerBuilder({
   WriteMessageHandlers: [
     {
       Handler: new ConsoleMessageHandler(),
-      LogLevel: LogLevel.Critical,
+      LogLevel: LogLevel.Debug,
     },
   ],
 });

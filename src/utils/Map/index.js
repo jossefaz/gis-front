@@ -31,12 +31,9 @@ export const InitMap = () => {
           })
       ]),
     layers: [
-      new TileLayer({
-        source: new XYZSource({
-          url: url,
-          projection: proj
-        })
-      })
+        new TileLayer({
+            source: new OSM()
+          }),
     ],
     // Render the tile layers in a map view with a Mercator projection
     view: new View({
