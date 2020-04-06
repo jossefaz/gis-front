@@ -3,13 +3,9 @@ import {
     SET_UPDATED_IDS   
   } from '../actions/actionsTypes';
   import produce from 'immer';
-  import mantiIntersections from '../../usefulgarbage/mantiIntersections.json';
- 
-  
-
   const initialState = {
     units: {
-      elements : mantiIntersections,
+      elements : {},
       updatedIds : []
     },
     falcon : {

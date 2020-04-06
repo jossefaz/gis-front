@@ -1,7 +1,7 @@
 
 import React,{ Component } from "react";
 import LayerListItem from "../LayerListItem/LayerListItem.jsx";
-import mdLayers from '../../../usefulgarbage/mdLayers.json';
+import config from 'react-global-configuration';
 
 class LayerList extends Component {
     state = {  }
@@ -21,9 +21,10 @@ class LayerList extends Component {
     }
     
     render() { 
+        console.log(config.get('MapConfig'))
         return ( 
           <ul>
-            {mdLayers.map(mdLayer => (
+            {config.get('layers').map(mdLayer => (
               <div key = {mdLayer.id}>          
                   <LayerListItem 
                     mdLayer = {mdLayer}
