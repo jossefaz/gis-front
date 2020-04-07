@@ -1,39 +1,46 @@
 
-import React,{ Component } from "react";
+import React, { Component } from "react";
 import LayerListItem from "../LayerListItem/LayerListItem.jsx";
-import config from 'react-global-configuration';
-
+import { connect } from 'react-redux'
 class LayerList extends Component {
-    state = {  }
-    
-    showLayer = (layer,show) => {
-   
-      
-      if(show)
-        if(layer){
 
-          console.log(layer.get('id'));
-          console.log(layer.get('name'));
-          this.props.addMapLayer(layer);
-        }        
-        else if(!show)
-          layer.setVisible(false);
-    }
-    
-    render() { 
-        console.log(config.get('MapConfig'))
-        return ( 
-          <ul>
-            {config.get('layers').map(mdLayer => (
-              <div key = {mdLayer.id}>          
-                  <LayerListItem 
-                    mdLayer = {mdLayer}
-                    showLayer = {this.showLayer}></LayerListItem>
-              </div>
-            ))}
-        </ul> 
-        );
-    }
+  renderLayerList = (layers) => {
+    return (
+      <React.Fragment>
+        {
+          Object.keys(layers).map((lyrId) =>
+            <LayerListItem
+              name={layers[lyrId].name}
+              key={layers[lyrId].id}
+              lyrID={layers[lyrId].id}
+              alias={layers[lyrId].alias}
+              visible={layers[lyrId].visible}>
+            </LayerListItem>
+          )
+        }
+      </React.Fragment>
+
+    )
+
+  }
+
+
+  render() {
+    return (
+      <React.Fragment>
+        {
+          this.props.mapLayers ? this.renderLayerList(this.props.mapLayers) : <p>ToBeRendered</p>
+        }
+      </React.Fragment>
+
+    )
+
+  }
 }
- 
-export default LayerList;
+const mapStateToProps = (state) => {
+  return { mapLayers: state.mapLayers };
+};
+
+
+export default connect(mapStateToProps, null)(LayerList);
+

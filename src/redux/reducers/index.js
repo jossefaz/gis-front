@@ -1,9 +1,9 @@
-import { combineReducers } from 'redux'
-import mapLayers from './mapLayers'
-import mantiSystems from './mantiSystems'
+import { combineReducers } from "redux";
+import mapLayers from "./layers";
+import mantiSystems from "./mantiSystems";
 
 export default combineReducers({
-    mapLayers,
-    mantiSystems,
-    // filter
-})  
+  mapLayers,
+  mantiSystems,
+  // filter
+});

@@ -1,67 +1,30 @@
 import React, { Component } from "react";
-import {Tile as TileLayer} from 'ol/layer';
-import {TileWMS} from 'ol/source';
+import { connect } from 'react-redux'
+import { addLayer } from "../../../redux/actions/layers";
+
+import { Menu } from "semantic-ui-react";
+import { Slider } from "react-semantic-ui-range";
+const settings = {
+  start: 2,
+  min: 0,
+  max: 10,
+  step: 1,
+  onChange: (value) => {
+    console.log(value);
+  },
+};
 class LayerListItem extends Component {
-  
-  state = {
-    layer: null   
-  }  
-
-  componentDidMount() {
-  
-  }
-
-  handleCheckboxChange = (event) => {
-    
-    var checked = event.target.checked;
-    if( this.layer == null)
-       this.declareLayer();
-    this.props.showLayer(this.layer,checked);
-  }
-
-  declareLayer = () => {
-   
-      this.layer  = new TileLayer({
-        visible : true ,       
-        source: new TileWMS({
-          // url: 'http://localhost:8080/geoserver/Jeru/wms?&LAYERS=Jeru%3Amanti_intersections',
-          url : this.props.mdLayer.url,
-          params: {
-            'FORMAT': 'image/png',
-            'VERSION': '1.1.0',
-            tiled: true,     
-            "exceptions": 'application/vnd.ogc.se_inimage'        
-          }
-        })
-      });
-      this.layer.set('id',this.props.mdLayer.id);
-      this.layer.set('name',this.props.mdLayer.name);
-  }
- 
-
   render() {
-    const {
-      mdLayer
-    } = this.props;
     return (
-    <div><span></span>
-        <fieldset id="layer10">
-          <div>            
-            <label>
-              <input id={this.props.mdLayer.id}
-                type="checkbox"  
-                onChange = {this.handleCheckboxChange}
-           />visibility
-              </label>              
-          </div>
-          <div>
-            <label>opacity</label>
-            <input type="range" min="0" max="1" step="0.01" />
-          </div>
-        </fieldset>
-      </div>
+      <Menu.Item as="a">
+        <div className="ui toggle checkbox">
+          <input type="checkbox" checked={!this.props.visible} name="public" onChange={() => this.props.addLayer(this.props.lyrID)} />
+          <label className="ui align left">{this.props.alias}</label>
+        </div>
+        <Slider color="blue" settings={settings} />
+      </Menu.Item>
     );
   }
 }
+export default connect(null, { addLayer })(LayerListItem);
 
-export default LayerListItem;
