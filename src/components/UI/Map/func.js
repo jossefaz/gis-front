@@ -1,6 +1,5 @@
 import { Map, View } from "ol";
 import { Tile as TileLayer } from "ol/layer";
-import { XYZ as XYZSource } from "ol/source";
 import {
   ScaleLine,
   ZoomSlider,
@@ -13,7 +12,7 @@ import OSM from 'ol/source/OSM';
 import config from 'react-global-configuration';
 
 export const InitMap = () => {
-  const {url, proj, center, zoom, target} = config.get("MapConfig")
+  const {proj, center, zoom, target} = config.get("MapConfig")
   return new Map({
     //  Display the map in the div with the id of map
     target: target,

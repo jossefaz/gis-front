@@ -3,7 +3,7 @@
         "target" : "map",
         "proj" : "EPSG:4326",
         "center" : [35.18, 31.76],
-        "zoom" : 8
+        "zoom" : 12
     },
     "layers" : [
         {

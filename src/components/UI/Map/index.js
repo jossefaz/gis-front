@@ -1,7 +1,7 @@
 import React from "react";
-import { InitMap } from '../../utils/Map'
+import { InitMap } from './func'
 import config from 'react-global-configuration';
-import {logLevel, LogIt} from '../../utils/logs';
+import {logLevel, LogIt} from '../../../utils/logs';
 import {Image as ImageLayer} from 'ol/layer';
 import ImageWMS from 'ol/source/ImageWMS';
 import './style.css'
@@ -21,8 +21,6 @@ class MapComponent extends React.Component {
       
     })
   }
-
-
 
   render() {
     const {target} = config.get("MapConfig")
