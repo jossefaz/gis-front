@@ -4,6 +4,9 @@ import LayerListItem from "../LayerListItem/LayerListItem.jsx";
 import { connect } from 'react-redux'
 class LayerList extends Component {
 
+  componentWillUpdate() {
+    console.log("LAYERLIST WILL UPDATE")
+  }
   renderLayerList = (layers) => {
     return (
       <React.Fragment>

@@ -18,6 +18,7 @@ class MapComponent extends React.Component {
   }
 
   componentDidUpdate() {
+    console.log("MAP UPDATE");
     Object.keys(this.props.mapLayers).map((lyrId) =>
       this.map.addLayer(this.props.mapLayers[lyrId])
     );

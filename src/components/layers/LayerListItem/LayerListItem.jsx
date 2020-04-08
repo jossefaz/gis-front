@@ -18,7 +18,7 @@ class LayerListItem extends Component {
     return (
       <Menu.Item as="a">
         <div className="ui toggle checkbox">
-          <input type="checkbox" checked={!this.props.visible} name="public" onChange={() => this.props.addLayer(this.props.lyrID)} />
+          <input type="checkbox" name="public" onChange={() => this.props.addLayer(this.props.lyrID)} defaultChecked={this.props.visible} />
           <label className="ui align left">{this.props.alias}</label>
         </div>
         <Slider color="blue" settings={settings} />
