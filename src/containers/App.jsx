@@ -1,7 +1,7 @@
 import React from 'react';
 import Map from "../containers/Map";
 import TopNav from "../components/UI/TopNav";
-import SideNav from "../components/UI/SideNav";
+import SideNav from "../containers/SideNav";
 
 
 
@@ -25,7 +25,6 @@ class App extends React.Component {
           <div className="row">
             <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
             <Map />
-
           </div>
         </div>
       </SideNav>
