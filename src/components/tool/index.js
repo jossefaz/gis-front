@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import Iframe from "react-iframe";
 import { connect } from "react-redux";
+import { toggleTool } from "../../redux/actions/tools";
 import PopUp from "../popup";
 class Loader extends React.Component {
   componentDidMount() {
@@ -29,4 +30,9 @@ class Loader extends React.Component {
     );
   }
 }
-export default connect(null, { addLayer, setLayerOpacity })(Loader);
+
+const mapStateToProps = (state) => {
+  return { Tools: state.Tools };
+};
+
+export default connect(mapStateToProps, { toggleTool })(Loader);

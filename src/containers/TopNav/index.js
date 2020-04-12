@@ -1,6 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
+import config from "react-global-configuration";
+import { logLevel, LogIt } from "../../utils/logs";
 import { InitTools } from "../../redux/actions/tools";
+import Tool from "../../components/tool";
 class TopNav extends React.Component {
   componentDidMount() {
     LogIt(logLevel.INFO, "TopNav init");
@@ -10,6 +13,9 @@ class TopNav extends React.Component {
   render() {
     return (
       <div className="ui top fixed menu ">
+        {Object.keys(this.props.Tools).map((toolId) => (
+          <Tool ToolID={toolId} />
+        ))}
         <div className="item align left">
           <div className="ui icon input">
             <input type="text" placeholder="...חיפוש" />
@@ -23,4 +29,8 @@ class TopNav extends React.Component {
     );
   }
 }
-export default connect(null, { InitTools })(TopNav);
+
+const mapStateToProps = (state) => {
+  return { Tools: state.Tools };
+};
+export default connect(mapStateToProps, { InitTools })(TopNav);
