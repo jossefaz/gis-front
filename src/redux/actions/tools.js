@@ -8,7 +8,9 @@ export const toggleTool = (ToolId) => (dispatch) =>
 
 export const InitTools = (ToolConfig) => (dispatch) => {
   const AllTools = {};
-
+  ToolConfig.map((tool) => {
+    AllTools[tool.Id] = tool;
+  });
   dispatch({
     type: types.INIT_TOOLS,
     payload: AllTools,

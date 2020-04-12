@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy } from "react";
 import Iframe from "react-iframe";
 import { connect } from "react-redux";
 import PopUp from "../popup";
@@ -22,7 +22,7 @@ class Loader extends React.Component {
               <Iframe url={ToolLocation} />
             </PopUp>
           ) : (
-            <PopUp>{React.lazy(() => import(ToolLocation))}</PopUp>
+            <PopUp>{lazy(() => import(ToolLocation))}</PopUp>
           )
         ) : null}
       </div>
