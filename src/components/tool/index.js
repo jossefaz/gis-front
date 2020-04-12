@@ -22,7 +22,7 @@ class Loader extends React.Component {
               <Iframe url={ToolLocation} />
             </PopUp>
           ) : (
-            React.lazy(() => import(ToolLocation))
+            <PopUp>{React.lazy(() => import(ToolLocation))}</PopUp>
           )
         ) : null}
       </div>
