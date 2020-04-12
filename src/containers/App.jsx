@@ -1,5 +1,5 @@
 import React from 'react';
-import Map from "../components/UI/Map";
+import Map from "../containers/Map";
 import TopNav from "../components/UI/TopNav";
 import SideNav from "../components/UI/SideNav";
 
