@@ -23,7 +23,6 @@ class App extends React.Component {
             <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
           </div>
           <div className="row">
-            <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
             <Map />
           </div>
         </div>

@@ -8,8 +8,8 @@ const PopUp = (props) => {
         className="box"
         style={{
           position: "absolute",
-          bottom: "100px",
-          right: "100px",
+          top: "5em",
+          right: "20em",
           zIndex: "9",
           width: "450px",
           height: "450px",

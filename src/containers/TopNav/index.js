@@ -7,15 +7,22 @@ import Tool from "../../components/tool";
 class TopNav extends React.Component {
   componentDidMount() {
     LogIt(logLevel.INFO, "TopNav init");
-    this.props.InitTools(config.get("Tools"));
+    this.props.InitTools(config.get("tools"));
   }
+  renderTools = (tools) => {
+    return tools ? (
+      <React.Fragment>
+        {Object.keys(tools).map((toolId) => (
+          <Tool key={toolId} ToolID={toolId} />
+        ))}
+      </React.Fragment>
+    ) : null;
+  };
 
   render() {
     return (
       <div className="ui top fixed menu ">
-        {Object.keys(this.props.Tools).map((toolId) => (
-          <Tool ToolID={toolId} />
-        ))}
+        {this.renderTools(this.props.Tools)}
         <div className="item align left">
           <div className="ui icon input">
             <input type="text" placeholder="...חיפוש" />

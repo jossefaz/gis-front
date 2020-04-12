@@ -5,25 +5,36 @@ import { toggleTool } from "../../redux/actions/tools";
 import PopUp from "../popup";
 class Loader extends React.Component {
   componentDidMount() {
-    window.addEventListener("message", function (e) {
-      this.console.log(e);
+    window.addEventListener("message", (e) => {
+      e.stopPropagation();
+      console.log(e);
     });
   }
 
   render() {
-    const { IsOpen, ToolInvokerType, ToolLocation } = this.props.Tools[
-      this.props.ToolID
-    ];
+    const {
+      IsOpen,
+      ToolInvokerType,
+      ToolLocation,
+      ToolName,
+    } = this.props.Tools[this.props.ToolID];
+    const InternalTool = !ToolInvokerType
+      ? lazy(() => import(ToolLocation))
+      : null;
     return (
       <div>
-        <button onClick={this.props.toggleTool}>Toggle Html</button>
+        <button onClick={() => this.props.toggleTool(this.props.ToolID)}>
+          {ToolName}
+        </button>
         {IsOpen ? (
           ToolInvokerType ? (
             <PopUp>
               <Iframe url={ToolLocation} />
             </PopUp>
           ) : (
-            <PopUp>{lazy(() => import(ToolLocation))}</PopUp>
+            <PopUp>
+              <InternalTool />
+            </PopUp>
           )
         ) : null}
       </div>
