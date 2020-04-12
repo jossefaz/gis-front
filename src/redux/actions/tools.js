@@ -1,8 +1,8 @@
 import types from "./actionsTypes";
 
-export const openTool = (ToolId) => (dispatch) =>
+export const toggleTool = (ToolId) => (dispatch) =>
   dispatch({
-    type: types.OPEN_TOOLS,
+    type: types.TOGGLE_TOOLS,
     payload: ToolId,
   });
 

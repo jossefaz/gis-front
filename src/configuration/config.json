@@ -45,7 +45,8 @@
             "ToolLocation": "",
             "Order": 1,
             "IsAGroup": 0,
-            "ToolGroupId": 0
+            "ToolGroupId": 0,
+            "IsOpen": 0
         },
         {
             "Id": 2,
@@ -59,7 +60,8 @@
             "ToolLocation": "",
             "Order": 2,
             "IsAGroup": 0,
-            "ToolGroupId": 0
+            "ToolGroupId": 0,
+            "IsOpen": 0
         },
         {
             "Id": 3,
@@ -73,7 +75,8 @@
             "ToolLocation": "",
             "Order": 3,
             "IsAGroup": 0,
-            "ToolGroupId": 0
+            "ToolGroupId": 0,
+            "IsOpen": 0
         },
         {
             "Id": 4,
@@ -87,7 +90,8 @@
             "ToolLocation": "",
             "Order": 4,
             "IsAGroup": 0,
-            "ToolGroupId": 0
+            "ToolGroupId": 0,
+            "IsOpen": 0
         },
         {
             "Id": 5,
@@ -101,7 +105,8 @@
             "ToolLocation": "",
             "Order": 5,
             "IsAGroup": 0,
-            "ToolGroupId": 0
+            "ToolGroupId": 0,
+            "IsOpen": 0
         }
     ],
     "channels": {
