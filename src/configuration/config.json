@@ -42,7 +42,7 @@
             "ToolInvokerType": 0,
             "ToolTypeID": 1,
             "ToolParams": "",
-            "ToolLocation": "./TestInternalTool",
+            "ToolLocation": "/home/yossefaz/Documents/projects/ness/gitlab.com/yossefaz/TODELETE/gis_front/src/components/tool/TestInternalTool",
             "Order": 1,
             "IsAGroup": 0,
             "ToolGroupId": 0,

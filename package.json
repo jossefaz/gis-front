@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
-    "@types/ol": "^5.3.5"
+    "@types/ol": "^5.3.5",
+    "babel-plugin-module-resolver": "^4.0.0"
   }
 }

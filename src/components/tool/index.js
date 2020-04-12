@@ -1,8 +1,9 @@
-import React, { lazy } from "react";
-import Iframe from "react-iframe";
+import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { toggleTool } from "../../redux/actions/tools";
 import PopUp from "../popup";
+import ExternalTool from "./ExternalTool";
+import InternalTool from "./InternalTool";
 class Loader extends React.Component {
   componentDidMount() {
     window.addEventListener("message", (e) => {
@@ -15,12 +16,9 @@ class Loader extends React.Component {
     const {
       IsOpen,
       ToolInvokerType,
-      ToolLocation,
       ToolName,
+      ToolLocation,
     } = this.props.Tools[this.props.ToolID];
-    const InternalTool = !ToolInvokerType
-      ? lazy(() => import(ToolLocation))
-      : null;
     return (
       <div>
         <button onClick={() => this.props.toggleTool(this.props.ToolID)}>
@@ -28,12 +26,12 @@ class Loader extends React.Component {
         </button>
         {IsOpen ? (
           ToolInvokerType ? (
-            <PopUp>
-              <Iframe url={ToolLocation} />
-            </PopUp>
+            <ExternalTool url={ToolLocation} />
           ) : (
             <PopUp>
-              <InternalTool />
+              <Suspense fallback={<div>Loading ...</div>}>
+                <InternalTool toolName={ToolName} />
+              </Suspense>
             </PopUp>
           )
         ) : null}
