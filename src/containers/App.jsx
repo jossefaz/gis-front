@@ -1,6 +1,6 @@
 import React from 'react';
 import Map from "../containers/Map";
-import TopNav from "../components/UI/TopNav";
+import TopNav from "../containers/TopNav";
 import SideNav from "../containers/SideNav";
 
 
