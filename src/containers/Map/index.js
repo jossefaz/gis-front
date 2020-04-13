@@ -1,9 +1,9 @@
 import React from "react";
-import { InitMap } from "./func";
+import { InitMap, addLayersSafely } from "./func";
 import { connect } from "react-redux";
 import config from "react-global-configuration";
 import { logLevel, LogIt } from "../../utils/logs";
-import { InitLayers } from "../../redux/actions/layers";
+import { InitLayers, addLayers } from "../../redux/actions/layers";
 import { InitRasters } from "../../redux/actions/raster";
 import "./style.css";
 class MapComponent extends React.Component {
@@ -19,15 +19,27 @@ class MapComponent extends React.Component {
     this.props.InitRasters();
   }
 
+  addLayersSafely = (layers) => {
+    const addedToMap = [];
+    Object.keys(layers).map((lyrId) => {
+      if (!layers[lyrId].addedToMap) {
+        this.map.addLayer(layers[lyrId]);
+        addedToMap.push(lyrId);
+      }
+    });
+    if (addedToMap.length > 0) {
+      this.props.addLayers(addedToMap);
+    }
+  };
+
   componentDidUpdate() {
     LogIt(logLevel.INFO, "Map Update");
-    Object.keys(this.props.mapLayers).map((lyrId) =>
-      this.map.addLayer(this.props.mapLayers[lyrId])
-    );
+    LogIt(logLevel.DEBUG, this.props.Layers);
     if (this.props.Rasters) {
       const { Catalog, Focused } = this.props.Rasters;
-      this.map.getLayers().setAt(0, Catalog[Focused]);
+      this.map.getLayers().setAt(0, Catalog[Focused].layer);
     }
+    this.addLayersSafely(this.props.Layers);
   }
 
   render() {
@@ -36,9 +48,9 @@ class MapComponent extends React.Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { mapLayers: state.mapLayers, Rasters: state.Rasters };
+  return { Layers: state.mapLayers, Rasters: state.Rasters };
 };
 
-export default connect(mapStateToProps, { InitLayers, InitRasters })(
+export default connect(mapStateToProps, { InitLayers, InitRasters, addLayers })(
   MapComponent
 );

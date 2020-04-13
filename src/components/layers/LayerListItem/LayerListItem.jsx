@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
-import { addLayer } from "../../../redux/actions/layers";
+import { setLayerVisible } from "../../../redux/actions/layers";
 
 import { Menu } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
@@ -18,7 +18,7 @@ class LayerListItem extends Component {
     return (
       <Menu.Item as="a">
         <div className="ui toggle checkbox">
-          <input type="checkbox" name="public" onChange={() => this.props.addLayer(this.props.lyrID)} defaultChecked={this.props.visible} />
+          <input type="checkbox" name="public" onChange={() => this.props.setLayerVisible(this.props.lyrID)} defaultChecked={this.props.visible} />
           <label className="ui align left">{this.props.alias}</label>
         </div>
         <Slider color="blue" settings={settings} />
@@ -26,5 +26,5 @@ class LayerListItem extends Component {
     );
   }
 }
-export default connect(null, { addLayer })(LayerListItem);
+export default connect(null, { setLayerVisible })(LayerListItem);
 

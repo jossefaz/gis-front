@@ -2,9 +2,15 @@ import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import types from "./actionsTypes";
 
-export const addLayer = (layerID) => (dispatch) =>
+export const addLayers = (arrayOfLayersID) => (dispatch) =>
   dispatch({
     type: types.ADD_LAYER,
+    payload: arrayOfLayersID,
+  });
+
+export const setLayerVisible = (layerID) => (dispatch) =>
+  dispatch({
+    type: types.SET_LAYER_VISIBLE,
     payload: layerID,
   });
 
