@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { toggleTool } from "../../redux/actions/tools";
 import PopUp from "../popup";
+
 import ExternalTool from "./ExternalTool";
 import InternalTool from "./InternalTool";
 class Loader extends React.Component {
