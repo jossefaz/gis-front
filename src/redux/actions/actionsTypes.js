@@ -7,6 +7,7 @@ const actionTypes = {
   SET_UPDATED_IDS: "SET_UPDATED_IDS",
   INIT_TOOLS: "INIT_TOOLS",
   TOGGLE_TOOLS: "OPEN_TOOLS",
+  TOGGLE_SIDENAV: "OPEN_SIDENAV",
 };
 
 export default actionTypes;

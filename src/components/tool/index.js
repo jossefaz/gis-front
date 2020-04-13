@@ -7,8 +7,10 @@ import InternalTool from "./InternalTool";
 class Loader extends React.Component {
   componentDidMount() {
     window.addEventListener("message", (e) => {
-      e.stopPropagation();
-      console.log(e);
+      if (e.origin !== "http://localhost:3000") {
+        console.log(e);
+        return;
+      }
     });
   }
 

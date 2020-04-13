@@ -6,18 +6,10 @@ import SideNav from "../containers/SideNav";
 
 
 class App extends React.Component {
-  state = {
-    visible: false
-  }
 
-  onLayerMenuOpen = () =>
-    this.setState((prevState) => ({ visible: !prevState.visible }));
   render() {
     return (
-
-
-
-      <SideNav visible={this.state.visible} onLayerMenuOpen={this.onLayerMenuOpen}>
+      <SideNav>
         <div className="ui grid">
           <div className="row">
             <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
@@ -27,8 +19,6 @@ class App extends React.Component {
           </div>
         </div>
       </SideNav>
-
-
     );
   }
 }

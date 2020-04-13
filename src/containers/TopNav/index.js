@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import config from "react-global-configuration";
 import { logLevel, LogIt } from "../../utils/logs";
 import { InitTools } from "../../redux/actions/tools";
+import { toogleSideNav } from "../../redux/actions/ui";
 import Tool from "../../components/tool";
 class TopNav extends React.Component {
   componentDidMount() {
@@ -29,7 +30,7 @@ class TopNav extends React.Component {
             <i className="search link icon"></i>
           </div>
         </div>
-        <a className="fixed item" onClick={() => this.props.onLayerMenuOpen()}>
+        <a className="fixed item" onClick={() => this.props.toogleSideNav()}>
           Layers
         </a>
       </div>
@@ -40,4 +41,4 @@ class TopNav extends React.Component {
 const mapStateToProps = (state) => {
   return { Tools: state.Tools };
 };
-export default connect(mapStateToProps, { InitTools })(TopNav);
+export default connect(mapStateToProps, { InitTools, toogleSideNav })(TopNav);
