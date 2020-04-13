@@ -1,7 +1,15 @@
 import React from "react";
+import { connect } from "react-redux";
+import { setRaster } from "../../../../redux/actions/raster";
 
-const BaseMapGallery = () => {
-  return <div>I am a basemap Gallery</div>;
+const BaseMapGallery = (props) => {
+  return (
+    <button onClick={() => props.setRaster("wms4326")}>Set new Raster</button>
+  );
 };
 
-export default BaseMapGallery;
+const mapStateToProps = (state) => {
+  return { Rasters: state.Rasters };
+};
+
+export default connect(mapStateToProps, { setRaster })(BaseMapGallery);

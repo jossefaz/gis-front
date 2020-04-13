@@ -14,6 +14,7 @@ class MapComponent extends React.Component {
   componentDidMount() {
     this.map = InitMap();
     LogIt(logLevel.INFO, "Map init");
+    LogIt(logLevel.DEBUG, this.map);
     this.props.InitLayers(config.get("layers"));
     this.props.InitRasters();
   }

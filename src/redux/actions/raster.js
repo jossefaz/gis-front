@@ -2,6 +2,12 @@ import { OSM, TileWMS } from "ol/source";
 import TileLayer from "ol/layer/Tile";
 import types from "./actionsTypes";
 
+export const setRaster = (rasterName) => (dispatch) =>
+  dispatch({
+    type: types.SET_RASTER,
+    payload: rasterName,
+  });
+
 export const InitRasters = () => (dispatch) => {
   const Rasters = {};
 
