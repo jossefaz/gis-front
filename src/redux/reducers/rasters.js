@@ -10,7 +10,7 @@ export default function (state = {}, action) {
 
     case types.INIT_RASTER:
       return {
-        Rasters: action.payload.Rasters,
+        Catalog: action.payload.Rasters,
         Focused: action.payload.Focused,
       };
     default:

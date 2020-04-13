@@ -23,6 +23,10 @@ class MapComponent extends React.Component {
     Object.keys(this.props.mapLayers).map((lyrId) =>
       this.map.addLayer(this.props.mapLayers[lyrId])
     );
+    if (this.props.Rasters) {
+      const { Catalog, Focused } = this.props.Rasters;
+      this.map.getLayers().setAt(0, Catalog[Focused]);
+    }
   }
 
   render() {
@@ -31,7 +35,7 @@ class MapComponent extends React.Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { mapLayers: state.mapLayers };
+  return { mapLayers: state.mapLayers, Rasters: state.Rasters };
 };
 
 export default connect(mapStateToProps, { InitLayers, InitRasters })(
