@@ -5,9 +5,7 @@ export default function (state = {}, action) {
   switch (action.type) {
     case types.SET_RASTER:
       return produce(state, (draftState) => {
-        const visibility = draftState[action.payload].getVisible();
-        draftState[action.payload].setVisible(!visibility);
-        draftState[action.payload].visible = !visibility;
+        draftState.Focused = action.payload;
       });
 
     case types.INIT_RASTER:

@@ -23,6 +23,9 @@ export const InitRasters = () => (dispatch) => {
 
   dispatch({
     type: types.INIT_RASTER,
-    payload: Rasters,
+    payload: {
+      Rasters,
+      Focused: "osm",
+    },
   });
 };
