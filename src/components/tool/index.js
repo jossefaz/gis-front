@@ -1,8 +1,7 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { toggleTool } from "../../redux/actions/tools";
-import PopUp from "../popup";
-
+import ToolTemplate from "./Template";
 import ExternalTool from "./ExternalTool";
 import InternalTool from "./InternalTool";
 class Loader extends React.Component {
@@ -22,20 +21,21 @@ class Loader extends React.Component {
       ToolName,
       ToolLocation,
     } = this.props.Tools[this.props.ToolID];
+    const CloseCB = () => this.props.toggleTool(this.props.ToolID);
     return (
       <div>
-        <button onClick={() => this.props.toggleTool(this.props.ToolID)}>
-          {ToolName}
-        </button>
+        <button onClick={CloseCB}>{ToolName}</button>
         {IsOpen ? (
           ToolInvokerType ? (
-            <ExternalTool url={ToolLocation} />
+            <ToolTemplate CloseTool={CloseCB}>
+              <ExternalTool url={ToolLocation} />
+            </ToolTemplate>
           ) : (
-            <PopUp>
+            <ToolTemplate CloseTool={CloseCB}>
               <Suspense fallback={<div>Loading ...</div>}>
                 <InternalTool toolName={ToolName} />
               </Suspense>
-            </PopUp>
+            </ToolTemplate>
           )
         ) : null}
       </div>

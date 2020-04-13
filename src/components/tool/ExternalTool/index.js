@@ -3,11 +3,7 @@ import PopUp from "../../popup";
 import Iframe from "react-iframe";
 
 const ExternalTool = (props) => {
-  return (
-    <PopUp>
-      <Iframe url={props.url} />
-    </PopUp>
-  );
+  return <Iframe url={props.url} />;
 };
 
 export default ExternalTool;

@@ -11,7 +11,7 @@ const PopUp = (props) => {
           top: "5em",
           right: "20em",
           zIndex: "9",
-          width: "450px",
+          width: "auto",
           height: "450px",
         }}
       >

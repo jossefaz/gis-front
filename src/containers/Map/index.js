@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import config from "react-global-configuration";
 import { logLevel, LogIt } from "../../utils/logs";
 import { InitLayers } from "../../redux/actions/layers";
+import { InitRasters } from "../../redux/actions/raster";
 import "./style.css";
 class MapComponent extends React.Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class MapComponent extends React.Component {
     this.map = InitMap();
     LogIt(logLevel.INFO, "Map init");
     this.props.InitLayers(config.get("layers"));
+    this.props.InitRasters();
   }
 
   componentDidUpdate() {
@@ -32,4 +34,6 @@ const mapStateToProps = (state) => {
   return { mapLayers: state.mapLayers };
 };
 
-export default connect(mapStateToProps, { InitLayers })(MapComponent);
+export default connect(mapStateToProps, { InitLayers, InitRasters })(
+  MapComponent
+);
