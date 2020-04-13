@@ -30,8 +30,11 @@ class TopNav extends React.Component {
             <i className="search link icon"></i>
           </div>
         </div>
-        <a className="fixed item" onClick={() => this.props.toogleSideNav()}>
-          Layers
+        <a
+          className="ui fixed item image pointerCursor"
+          onClick={() => this.props.toogleSideNav()}
+        >
+          <img src={`/img/Layers.png`} />
         </a>
       </div>
     );

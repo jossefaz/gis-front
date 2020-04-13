@@ -19,12 +19,15 @@ class Loader extends React.Component {
       IsOpen,
       ToolInvokerType,
       ToolName,
+      ToolImage,
       ToolLocation,
     } = this.props.Tools[this.props.ToolID];
     const CloseCB = () => this.props.toggleTool(this.props.ToolID);
     return (
-      <div>
-        <button onClick={CloseCB}>{ToolName}</button>
+      <React.Fragment>
+        <a className="fixed item" onClick={CloseCB}>
+          {ToolImage ? <img src={`/img/${ToolImage}`} /> : ToolName}
+        </a>
         {IsOpen ? (
           ToolInvokerType ? (
             <ToolTemplate CloseTool={CloseCB}>
@@ -38,7 +41,7 @@ class Loader extends React.Component {
             </ToolTemplate>
           )
         ) : null}
-      </div>
+      </React.Fragment>
     );
   }
 }

@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { setRaster } from "../../../../redux/actions/raster";
 import "./style.css";
 const BaseMapGallery = (props) => {
-  console.log(props);
   return (
     <div className="ui grid">
       {Object.keys(props.Rasters).map((raster) => (
