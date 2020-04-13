@@ -35,14 +35,14 @@
     "tools": [
         {
             "Id": 1,
-            "ToolName": "TestInternalTool",
-            "ToolTip": "התמקדות",
+            "ToolName": "BaseMapGallery",
+            "ToolTip": "מפות רקע",
             "ToolImage": "i_search",
             "ToolActionInvoker": "",
             "ToolInvokerType": 0,
             "ToolTypeID": 1,
             "ToolParams": "",
-            "ToolLocation": "/home/yossefaz/Documents/projects/ness/gitlab.com/yossefaz/TODELETE/gis_front/src/components/tool/TestInternalTool",
+            "ToolLocation": "",
             "Order": 1,
             "IsAGroup": 0,
             "ToolGroupId": 0,
