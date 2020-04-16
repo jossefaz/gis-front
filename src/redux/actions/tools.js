@@ -6,6 +6,12 @@ export const toggleTool = (ToolId) => (dispatch) =>
     payload: ToolId,
   });
 
+export const toggleGroupTool = (GroupToolId) => (dispatch) =>
+  dispatch({
+    type: types.TOGGLE_GROUP_TOOLS,
+    payload: GroupToolId,
+  });
+
 export const InitTools = (ToolConfig) => (dispatch) => {
   const gTools = {
     tools: {},

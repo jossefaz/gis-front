@@ -3,8 +3,9 @@ import React from "react";
 import { Menu, Sidebar } from "semantic-ui-react";
 import LayerList from "../../components/layers/LayerList/LayerList";
 import { connect } from "react-redux";
+import "./style.css";
 const SideMenu = (props) => (
-  <Sidebar.Pushable styleName="sidebar-container">
+  <Sidebar.Pushable styleName="sidebar-container" className="cSideNav">
     <Sidebar
       as={Menu}
       vertical
