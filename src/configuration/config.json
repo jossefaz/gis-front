@@ -79,14 +79,17 @@
                 "Order": 1,
                 "IsAGroup": 0,
                 "ToolGroupId": 0,
-                "ToolContainer": "Map",
+                "ToolContainer": "TopNav",
                 "IsOpen": 0
             }
         ],
         "groups": [
             {
                 "Id": 1,
-                "GroupContainer": "TopNav"
+                "GroupContainer": "TopNav",
+                "GroupName": "General",
+                "GroupImage": "basemap.png",
+                "IsOpen": 0
             }
         ]
     },

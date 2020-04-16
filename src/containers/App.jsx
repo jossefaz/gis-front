@@ -8,6 +8,7 @@ import { InitTools } from "../redux/actions/tools";
 import { connect } from "react-redux";
 import { InitLayers } from "../redux/actions/layers";
 import { InitRasters } from "../redux/actions/raster";
+import Widget from './Widget';
 class App extends React.Component {
   componentDidMount() {
     LogIt(logLevel.INFO, "App init");
@@ -17,16 +18,20 @@ class App extends React.Component {
   }
   render() {
     return (
-      <SideNav>
-        <div className="ui grid">
-          <div className="row">
-            <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
+      <React.Fragment>
+        <SideNav>
+          <div className="ui grid">
+            <div className="row">
+              <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
+            </div>
+            <div className="row">
+              <Map />
+            </div>
           </div>
-          <div className="row">
-            <Map />
-          </div>
-        </div>
-      </SideNav>
+        </SideNav>
+        <Widget />
+      </React.Fragment>
+
     );
   }
 }

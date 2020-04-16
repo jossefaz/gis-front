@@ -10,6 +10,11 @@ export default function (state = null, action) {
         const IsOpen = draftState.tools[action.payload].IsOpen;
         draftState.tools[action.payload].IsOpen = !IsOpen;
       });
+    case types.TOGGLE_GROUP_TOOLS:
+      return produce(state, (draftState) => {
+        const IsOpen = draftState.Groups[action.payload].IsOpen;
+        draftState.Groups[action.payload].IsOpen = !IsOpen;
+      });
 
     default:
       return state;

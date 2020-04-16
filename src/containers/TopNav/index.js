@@ -1,22 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toogleSideNav } from "../../redux/actions/ui";
-import Tool from "../../components/tool";
+import { renderTools } from "../../components/tool/func";
 class TopNav extends React.Component {
-  renderTools = (tools) => {
-    return tools ? (
-      <React.Fragment>
-        {Object.keys(tools.tools).map((toolId) => (
-          <Tool key={toolId} ToolID={toolId} />
-        ))}
-      </React.Fragment>
-    ) : null;
-  };
-
   render() {
     return (
       <div className="ui top fixed menu ">
-        {this.renderTools(this.props.Tools)}
+        {renderTools(this.props.Tools, "TopNav")}
         <div className="item align left">
           <div className="ui icon input">
             <input type="text" placeholder="...חיפוש" />
