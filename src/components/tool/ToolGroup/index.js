@@ -4,6 +4,7 @@ import ToolTemplate from "../Template";
 import { Dropdown, Menu } from "semantic-ui-react";
 import { toggleGroupTool } from "../../../redux/actions/tools";
 import ToolItem from "../ToolItem";
+import "./style.css";
 
 class GroupTool extends React.Component {
   render() {
@@ -18,21 +19,21 @@ class GroupTool extends React.Component {
       <Dropdown
         item
         icon={
-          <a className="ui tiny image">
-            {GroupImage ? <img src={`/img/${GroupImage}`} /> : GroupName}
+          <a>
+            {GroupImage ? (
+              <img className="imageitem" src={`/img/${GroupImage}`} />
+            ) : (
+              GroupName
+            )}
           </a>
         }
       >
         <Dropdown.Menu>
-          <Dropdown.Item icon="edit">
-            <div className="box">
-              <div className="ui grid">
-                {this.props.Tools.Groups[GroupID].tools.map((toolId) => (
-                  <ToolItem key={toolId} ToolID={toolId} />
-                ))}
-              </div>
-            </div>
-          </Dropdown.Item>
+          <div className="ui segment grouptool">
+            {this.props.Tools.Groups[GroupID].tools.map((toolId) => (
+              <ToolItem key={toolId} ToolID={toolId} />
+            ))}
+          </div>
         </Dropdown.Menu>
       </Dropdown>
     );

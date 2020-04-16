@@ -16,7 +16,7 @@ class Loader extends React.Component {
     const { ToolName, ToolImage } = this.props.Tools.tools[this.props.ToolID];
     const CloseCB = () => this.props.toggleTool(this.props.ToolID);
     return (
-      <a className="fixed item" onClick={CloseCB}>
+      <a className="item" onClick={CloseCB}>
         {ToolImage ? <img src={`/img/${ToolImage}`} /> : ToolName}
       </a>
     );

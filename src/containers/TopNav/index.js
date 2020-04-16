@@ -6,13 +6,13 @@ class TopNav extends React.Component {
   render() {
     return (
       <div className="ui top fixed menu ">
-        {renderTools(this.props.Tools, "TopNav")}
         <div className="item align left">
           <div className="ui icon input">
             <input type="text" placeholder="...חיפוש" />
             <i className="search link icon"></i>
           </div>
         </div>
+        {renderTools(this.props.Tools, "TopNav")}
         <a
           className="ui fixed item image pointerCursor"
           onClick={() => this.props.toogleSideNav()}
