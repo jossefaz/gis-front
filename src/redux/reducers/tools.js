@@ -7,8 +7,8 @@ export default function (state = null, action) {
       return action.payload;
     case types.TOGGLE_TOOLS:
       return produce(state, (draftState) => {
-        const IsOpen = draftState[action.payload].IsOpen;
-        draftState[action.payload].IsOpen = !IsOpen;
+        const IsOpen = draftState.tools[action.payload].IsOpen;
+        draftState.tools[action.payload].IsOpen = !IsOpen;
       });
 
     default:

@@ -21,7 +21,7 @@ class Loader extends React.Component {
       ToolName,
       ToolImage,
       ToolLocation,
-    } = this.props.Tools[this.props.ToolID];
+    } = this.props.Tools.tools[this.props.ToolID];
     const CloseCB = () => this.props.toggleTool(this.props.ToolID);
     return (
       <React.Fragment>

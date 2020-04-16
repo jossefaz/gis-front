@@ -8,12 +8,12 @@ import Tool from "../../components/tool";
 class TopNav extends React.Component {
   componentDidMount() {
     LogIt(logLevel.INFO, "TopNav init");
-    this.props.InitTools(config.get("tools"));
+    this.props.InitTools(config.get("Widgets"));
   }
   renderTools = (tools) => {
     return tools ? (
       <React.Fragment>
-        {Object.keys(tools).map((toolId) => (
+        {Object.keys(tools.tools).map((toolId) => (
           <Tool key={toolId} ToolID={toolId} />
         ))}
       </React.Fragment>
