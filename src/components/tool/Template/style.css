@@ -1,0 +1,53 @@
+.cSegment {
+  padding-top: 2em !important;
+}
+
+.segmentControls {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.close {
+  display: block;
+  position: fixed;
+  right: 0.5em;
+  top: 0.5em;
+  width: 15px;
+  height: 15px;
+  transition: transform 0.25s ease-in-out;
+}
+.close:hover {
+  cursor: pointer;
+  transform: rotate(180deg);
+}
+.close:before {
+  content: "";
+  position: absolute;
+  display: block;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 15px;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+.close:after {
+  content: "";
+  position: absolute;
+  display: block;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 15px;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  transform: rotate(-45deg);
+  transform-origin: center;
+}
