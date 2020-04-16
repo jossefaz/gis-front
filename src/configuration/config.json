@@ -88,7 +88,7 @@
                 "Id": 1,
                 "GroupContainer": "TopNav",
                 "GroupName": "General",
-                "GroupImage": "basemap.png",
+                "GroupImage": "toolsGroup.png",
                 "IsOpen": 0
             }
         ]
