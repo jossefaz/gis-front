@@ -1,15 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import config from "react-global-configuration";
-import { logLevel, LogIt } from "../../utils/logs";
-import { InitTools } from "../../redux/actions/tools";
 import { toogleSideNav } from "../../redux/actions/ui";
 import Tool from "../../components/tool";
 class TopNav extends React.Component {
-  componentDidMount() {
-    LogIt(logLevel.INFO, "TopNav init");
-    this.props.InitTools(config.get("Widgets"));
-  }
   renderTools = (tools) => {
     return tools ? (
       <React.Fragment>
@@ -44,4 +37,4 @@ class TopNav extends React.Component {
 const mapStateToProps = (state) => {
   return { Tools: state.Tools };
 };
-export default connect(mapStateToProps, { InitTools, toogleSideNav })(TopNav);
+export default connect(mapStateToProps, { toogleSideNav })(TopNav);

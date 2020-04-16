@@ -1,10 +1,9 @@
 import React from "react";
-import { InitMap, addLayersSafely } from "./func";
+import { InitMap } from "./func";
 import { connect } from "react-redux";
 import config from "react-global-configuration";
 import { logLevel, LogIt } from "../../utils/logs";
-import { InitLayers, addLayers } from "../../redux/actions/layers";
-import { InitRasters } from "../../redux/actions/raster";
+import { addLayers } from "../../redux/actions/layers";
 import "./style.css";
 class MapComponent extends React.Component {
   constructor(props) {
@@ -13,10 +12,6 @@ class MapComponent extends React.Component {
   }
   componentDidMount() {
     this.map = InitMap();
-    LogIt(logLevel.INFO, "Map init");
-    LogIt(logLevel.DEBUG, this.map);
-    this.props.InitLayers(config.get("layers"));
-    this.props.InitRasters();
   }
 
   addLayersSafely = (layers) => {
@@ -51,6 +46,4 @@ const mapStateToProps = (state) => {
   return { Layers: state.mapLayers, Rasters: state.Rasters };
 };
 
-export default connect(mapStateToProps, { InitLayers, InitRasters, addLayers })(
-  MapComponent
-);
+export default connect(mapStateToProps, { addLayers })(MapComponent);
