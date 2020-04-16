@@ -1,0 +1,79 @@
+{
+    "MapConfig": {
+        "target": "map",
+        "proj": "EPSG:4326",
+        "center": [
+            35.18,
+            31.76
+        ],
+        "zoom": 12
+    },
+    "layers": [
+        {
+            "id": 1,
+            "name": "dimigcompile",
+            "alias": "שכבה לדוגמא",
+            "url": "http://localhost:8600/geoserver/Jeru/wms",
+            "params": {
+                "LAYERS": "Jeru:dimigcompile"
+            },
+            "serverType": "geoserver",
+            "visible": 1
+        },
+        {
+            "id": 2,
+            "name": "manti_intersections",
+            "alias": "שכבה לדוגמא 2",
+            "url": "http://localhost:8600/geoserver/Jeru/wms",
+            "params": {
+                "LAYERS": "Jeru:manti_intersections"
+            },
+            "serverType": "geoserver",
+            "visible": 0
+        }
+    ],
+    "tools": [
+        {
+            "Id": 1,
+            "ToolName": "BaseMapGallery",
+            "ToolTip": "מפות רקע",
+            "ToolImage": "basemap.png",
+            "ToolActionInvoker": "",
+            "ToolInvokerType": 0,
+            "ToolTypeID": 1,
+            "ToolParams": "",
+            "ToolLocation": "",
+            "Order": 1,
+            "IsAGroup": 0,
+            "ToolGroupId": 0,
+            "IsOpen": 0
+        },
+        {
+            "Id": 2,
+            "ToolName": "TestExternalTool",
+            "ToolTip": "קורדינאטות",
+            "ToolImage": 0,
+            "ToolActionInvoker": "",
+            "ToolInvokerType": 1,
+            "ToolTypeID": 1,
+            "ToolParams": "",
+            "ToolLocation": "http://localhost:80",
+            "Order": 2,
+            "IsAGroup": 0,
+            "ToolGroupId": 0,
+            "IsOpen": 0
+        }
+    ],
+    "channels": {
+        "name": "MTCS.Units PubSub Channel",
+        "type": "PubSub",
+        "Channel": "MTCS.Units",
+        "reduxTarget": "units",
+        "reduxFunction": "UPDATE_FEATURE_ATTRIBUTES",
+        "idSourceKey": "id",
+        "atrributeListKey": "changes",
+        "attributeKey": "field-name",
+        "attributeValue": "value",
+        "description": "change is MTCS.Units attribute(s)"
+    }
+}

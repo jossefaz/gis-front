@@ -1,7 +1,6 @@
 import {
     SET_UPDATED_IDS,
 } from '../actions/actionsTypes';
-import produce from 'immer';
 
   const initialState = {
       updatedIds : []

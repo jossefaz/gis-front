@@ -3,27 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@terrestris/react-geo": "^13.0.3",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.9",
     "@types/react": "16.9.4",
     "@types/react-dom": "16.9.1",
     "@types/react-redux": "^7.1.5",
     "immer": "^4.0.2",
-    "ol": "^5.3.3",
+    "ol": "^6.2.1",
     "ol-layerlist": "^1.1.8",
     "parsejson": "0.0.3",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
-    "react-openlayers": "^0.2.1",
+    "react-draggable": "^4.3.0",
+    "react-global-configuration": "^1.4.0",
+    "react-iframe": "^1.8.0",
     "react-redux": "^7.1.1",
     "react-scripts": "^3.4.1",
+    "react-semantic-ui-range": "^0.7.0",
     "react-socket-io": "^0.2.5",
     "react-websocket": "^2.1.0",
-    "redux-watch": "^1.1.1",
+    "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "socket.io": "^2.3.0",
-    "typescript": "3.6.3"
+    "semantic-ui-react": "^0.88.2",
+    "simplr-logger": "^1.0.1",
+    "socket.io": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -47,6 +50,7 @@
     ]
   },
   "devDependencies": {
-    "@types/ol": "^5.3.5"
+    "@types/ol": "^5.3.5",
+    "babel-plugin-module-resolver": "^4.0.0"
   }
 }
