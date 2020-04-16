@@ -10,6 +10,11 @@ export default function (state = null, action) {
         draftState[action.payload].visible = !visibility;
       });
 
+    case types.SET_LAYER_OPACITY:
+      return produce(state, (draftState) => {
+        draftState[action.payload.Id].setOpacity(action.payload.Opacity);
+      });
+
     case types.ADD_LAYER:
       return produce(state, (draftState) => {
         action.payload.map((lyrID) => (draftState[lyrID].addedToMap = true));

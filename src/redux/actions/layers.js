@@ -14,6 +14,12 @@ export const setLayerVisible = (layerID) => (dispatch) =>
     payload: layerID,
   });
 
+export const setLayerOpacity = (Id, Opacity) => (dispatch) =>
+  dispatch({
+    type: types.SET_LAYER_OPACITY,
+    payload: { Id, Opacity },
+  });
+
 export const InitLayers = (layerConfig) => (dispatch) => {
   const AllLayer = {};
 

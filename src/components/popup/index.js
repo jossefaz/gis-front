@@ -1,20 +1,10 @@
 import React from "react";
 import Draggable from "react-draggable";
-
+import "./style.css";
 const PopUp = (props) => {
   return (
     <Draggable>
-      <div
-        className="box"
-        style={{
-          position: "absolute",
-          top: "5em",
-          right: "20em",
-          zIndex: "9",
-          width: "auto",
-          height: "450px",
-        }}
-      >
+      <div className="box" className="popup">
         {props.children}
       </div>
     </Draggable>
