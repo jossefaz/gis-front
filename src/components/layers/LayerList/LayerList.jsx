@@ -17,7 +17,7 @@ class LayerList extends Component {
               key={layers[lyrId].id}
               lyrID={layers[lyrId].id}
               alias={layers[lyrId].alias}
-              visible={layers[lyrId].visible}>
+              visible={layers[lyrId].getVisible()}>
             </LayerListItem>
           )
         }

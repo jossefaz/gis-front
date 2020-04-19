@@ -3,15 +3,22 @@ import { connect } from "react-redux";
 
 const FeatureDetail = ({ Feature }) => {
   return Feature ? (
-    <div className="ui divided list">
-      {Object.keys(Feature.properties).map((property) => (
-        <div className="item" key={property}>
-          <div className="content">
-            {property} :{Feature.properties[property]}
-          </div>
-        </div>
-      ))}
-    </div>
+    <table class="ui very basic collapsing celled table">
+      <thead>
+        <tr>
+          <th>Value</th>
+          <th>Property</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.keys(Feature.properties).map((property) => (
+          <tr>
+            <td>{Feature.properties[property]}</td>
+            <td>{property}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   ) : (
     <div>Select a Feature !</div>
   );

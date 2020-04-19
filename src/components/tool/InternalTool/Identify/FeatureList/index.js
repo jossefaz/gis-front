@@ -1,18 +1,29 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setCurrentFeature } from "../../../../../redux/actions/features";
+import "./style.css";
 class FeatureList extends Component {
   renderSelectedFeature = () => {
-    const { selectedFeatures } = this.props.Features;
+    const { selectedFeatures, currentFeature } = this.props.Features;
     return selectedFeatures ? (
       selectedFeatures.length > 0 ? (
         selectedFeatures.map((feature) => (
           <div className="item" key={feature.id}>
             <div
-              className="content"
+              className="content pointerCur"
               onClick={() => this.props.setCurrentFeature(feature.id)}
             >
-              {feature.properties.migrash}
+              <p
+                className={
+                  currentFeature
+                    ? currentFeature.id == feature.id
+                      ? "currentFeature"
+                      : ""
+                    : ""
+                }
+              >
+                {feature.properties.migrash}
+              </p>
             </div>
           </div>
         ))

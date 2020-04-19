@@ -5,8 +5,8 @@ import "./style.css";
 const Identify = (props) => {
   return (
     <div className="ui grid">
-      <FeatureList />
       <FeatureDetail />
+      <FeatureList />
     </div>
   );
 };

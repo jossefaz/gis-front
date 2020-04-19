@@ -51,6 +51,7 @@ export const Identify = (evt, mapObject, actionCB) => {
           .getSource()
           .getFeatureInfoUrl(evt.coordinate, viewResolution, "EPSG:4326", {
             INFO_FORMAT: "application/json",
+            feature_count: 100,
           });
         if (url) {
           axios.get(url).then((response) => {
