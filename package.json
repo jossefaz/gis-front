@@ -8,6 +8,7 @@
     "@types/react": "16.9.4",
     "@types/react-dom": "16.9.1",
     "@types/react-redux": "^7.1.5",
+    "axios": "^0.19.2",
     "immer": "^4.0.2",
     "ol": "^6.2.1",
     "ol-layerlist": "^1.1.8",
