@@ -17,9 +17,10 @@ class GroupTool extends React.Component {
     const CloseCB = () => this.props.toggleGroupTool(GroupID);
     return (
       <Dropdown
+        open={Boolean(IsOpen)}
         item
         icon={
-          <a>
+          <a onClick={CloseCB}>
             {GroupImage ? (
               <img className="imageitem" src={`/img/${GroupImage}`} />
             ) : (

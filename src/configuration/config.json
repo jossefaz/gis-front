@@ -18,18 +18,8 @@
                 "LAYERS": "Jeru:dimigcompile"
             },
             "serverType": "geoserver",
-            "visible": 1
-        },
-        {
-            "id": 2,
-            "name": "manti_intersections",
-            "alias": "שכבה לדוגמא 2",
-            "url": "http://localhost:8080/geoserver/Jeru/wms",
-            "params": {
-                "LAYERS": "Jeru:manti_intersections"
-            },
-            "serverType": "geoserver",
-            "visible": 0
+            "visible": 1,
+            "selectable": 1
         }
     ],
     "Widgets": {
@@ -71,6 +61,22 @@
                 "ToolName": "BaseMapGallery",
                 "ToolTip": "מפות רקע",
                 "ToolImage": "basemap.png",
+                "ToolActionInvoker": "",
+                "ToolInvokerType": 0,
+                "ToolTypeID": 1,
+                "ToolParams": "",
+                "ToolLocation": "",
+                "Order": 1,
+                "IsAGroup": 0,
+                "ToolGroupId": 0,
+                "ToolContainer": "TopNav",
+                "IsOpen": 0
+            },
+            {
+                "Id": 4,
+                "ToolName": "Identify",
+                "ToolTip": "בחירת יישות",
+                "ToolImage": "info.png",
                 "ToolActionInvoker": "",
                 "ToolInvokerType": 0,
                 "ToolTypeID": 1,
