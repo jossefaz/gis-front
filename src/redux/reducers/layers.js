@@ -9,6 +9,11 @@ export default function (state = null, action) {
         draftState[action.payload].setVisible(!visibility);
         draftState[action.payload].visible = !visibility;
       });
+    case types.SET_LAYER_SELECTABLE:
+      return produce(state, (draftState) => {
+        const selectable = draftState[action.payload].selectable;
+        draftState[action.payload].selectable = !selectable;
+      });
 
     case types.SET_LAYER_OPACITY:
       return produce(state, (draftState) => {
