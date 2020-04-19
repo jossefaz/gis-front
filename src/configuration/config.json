@@ -19,17 +19,6 @@
             },
             "serverType": "geoserver",
             "visible": 1
-        },
-        {
-            "id": 2,
-            "name": "manti_intersections",
-            "alias": "שכבה לדוגמא 2",
-            "url": "http://localhost:8600/geoserver/Jeru/wms",
-            "params": {
-                "LAYERS": "Jeru:manti_intersections"
-            },
-            "serverType": "geoserver",
-            "visible": 0
         }
     ],
     "Widgets": {

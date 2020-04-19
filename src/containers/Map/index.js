@@ -1,10 +1,11 @@
 import React from "react";
-import { InitMap } from "./func";
+import { InitMap, Identify } from "./func";
 import { connect } from "react-redux";
 import config from "react-global-configuration";
 import { logLevel, LogIt } from "../../utils/logs";
 import { addLayers } from "../../redux/actions/layers";
 import "./style.css";
+
 class MapComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -12,6 +13,7 @@ class MapComponent extends React.Component {
   }
   componentDidMount() {
     this.map = InitMap();
+    this.map.on("click", (evt) => Identify(evt, this.map));
   }
 
   addLayersSafely = (layers) => {

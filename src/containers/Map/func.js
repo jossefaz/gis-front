@@ -10,6 +10,8 @@ import {
 } from "ol/control";
 import OSM from "ol/source/OSM";
 import config from "react-global-configuration";
+import { Image as ImageLayer } from "ol/layer";
+import axios from "axios";
 
 export const InitMap = () => {
   const { proj, center, zoom, target } = config.get("MapConfig");
@@ -36,4 +38,26 @@ export const InitMap = () => {
       zoom: zoom,
     }),
   });
+};
+
+export const Identify = (evt, mapObject) => {
+  var viewResolution = mapObject.getView().getResolution();
+  mapObject
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof ImageLayer) {
+        var url = lyr
+          .getSource()
+          .getFeatureInfoUrl(evt.coordinate, viewResolution, "EPSG:4326", {
+            INFO_FORMAT: "application/json",
+          });
+        if (url) {
+          axios.get(url).then((response) => {
+            // TODO : call an action - reducer to update state, Identify component Read from
+            console.log(response.data.features);
+          });
+        }
+      }
+    });
 };
