@@ -14,7 +14,9 @@ class WidgetContainer extends React.Component {
   renderOpenedTool = (Widgets) => {
     return Widgets
       ? Object.keys(Widgets.tools).map((toolId) => {
-          return Widgets.tools[toolId].IsOpen ? <Tool ToolID={toolId} /> : null;
+          return Widgets.tools[toolId].IsOpen ? (
+            <Tool key={toolId} ToolID={toolId} />
+          ) : null;
         })
       : null;
   };
