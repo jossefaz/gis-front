@@ -4,6 +4,7 @@ import { Menu, Sidebar } from "semantic-ui-react";
 import LayerList from "../../components/layers/LayerList/LayerList";
 import { connect } from "react-redux";
 import "./style.css";
+import { renderTools } from "../../components/tool/func";
 const SideMenu = (props) => (
   <Sidebar.Pushable styleName="sidebar-container" className="cSideNav">
     <Sidebar
@@ -12,6 +13,7 @@ const SideMenu = (props) => (
       visible={props.ui.sideNavOpen}
       animation={"push"}
     >
+      {renderTools(props.Tools, "SideNav")}
       <LayerList />
     </Sidebar>
     <Sidebar.Pusher>{props.children}</Sidebar.Pusher>
@@ -22,7 +24,7 @@ SideMenu.propTypes = {
   visible: PropTypes.bool,
 };
 const mapStateToProps = (state) => {
-  return { ui: state.ui };
+  return { ui: state.ui, Tools: state.Tools };
 };
 
 export default connect(mapStateToProps, null)(SideMenu);
