@@ -36,7 +36,7 @@ export const InitLayers = (layerConfig) => (dispatch) => {
     newLyr.alias = lyr.alias;
     newLyr.visible = Boolean(lyr.visible);
     newLyr.setVisible(Boolean(lyr.visible));
-
+    newLyr.selectable = lyr.selectable;
     AllLayer[lyr.id] = newLyr;
   });
 

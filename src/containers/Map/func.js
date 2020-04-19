@@ -40,13 +40,13 @@ export const InitMap = () => {
   });
 };
 
-export const Identify = (evt, mapObject) => {
+export const Identify = (evt, mapObject, actionCB) => {
   var viewResolution = mapObject.getView().getResolution();
   mapObject
     .getLayers()
     .getArray()
     .map((lyr) => {
-      if (lyr instanceof ImageLayer) {
+      if (lyr instanceof ImageLayer && lyr.selectable) {
         var url = lyr
           .getSource()
           .getFeatureInfoUrl(evt.coordinate, viewResolution, "EPSG:4326", {
@@ -54,8 +54,7 @@ export const Identify = (evt, mapObject) => {
           });
         if (url) {
           axios.get(url).then((response) => {
-            // TODO : call an action - reducer to update state, Identify component Read from
-            console.log(response.data.features);
+            actionCB(response.data.features);
           });
         }
       }

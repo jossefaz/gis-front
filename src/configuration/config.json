@@ -18,7 +18,8 @@
                 "LAYERS": "Jeru:dimigcompile"
             },
             "serverType": "geoserver",
-            "visible": 1
+            "visible": 1,
+            "selectable": 1
         }
     ],
     "Widgets": {
