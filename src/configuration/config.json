@@ -110,5 +110,10 @@
         "attributeKey": "field-name",
         "attributeValue": "value",
         "description": "change is MTCS.Units attribute(s)"
+    },
+    "metaDataApi": {
+        "url" : "https://localhost:5001/MetaData/",
+        "layers" : "getLayers",
+        "tools" : "getTools"
     }
 }
