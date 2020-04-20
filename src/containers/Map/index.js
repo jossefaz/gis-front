@@ -21,7 +21,6 @@ class MapComponent extends React.Component {
   componentDidUpdate() {
     LogIt(logLevel.INFO, "Map Update");
     LogIt(logLevel.DEBUG, this.props.Layers);
-    LogIt(logLevel.DEBUG, this.props.Features);
     if (this.props.Rasters) {
       const { Catalog, Focused } = this.props.Rasters;
       this.map.getLayers().setAt(0, Catalog[Focused].layer);
@@ -38,7 +37,6 @@ const mapStateToProps = (state) => {
   return {
     Layers: state.mapLayers,
     Rasters: state.Rasters,
-    Features: state.Features,
   };
 };
 

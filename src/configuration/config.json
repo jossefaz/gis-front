@@ -57,7 +57,7 @@
                 "IsOpen": 0
             },
             {
-                "Id": 3,
+                "Id": 1,
                 "ToolName": "BaseMapGallery",
                 "ToolTip": "מפות רקע",
                 "ToolImage": "basemap.png",

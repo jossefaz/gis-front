@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import ToolTemplate from "../Template";
-import { Dropdown, Menu } from "semantic-ui-react";
+import { Dropdown } from "semantic-ui-react";
 import { toggleGroupTool } from "../../../redux/actions/tools";
 import ToolItem from "../ToolItem";
 import "./style.css";

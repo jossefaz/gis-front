@@ -1,5 +1,9 @@
 import { Map, View } from "ol";
-import { Tile as TileLayer } from "ol/layer";
+import {
+  Tile as TileLayer,
+  Vector as VectorLayer,
+  Image as ImageLayer,
+} from "ol/layer";
 import {
   ScaleLine,
   ZoomSlider,
@@ -8,9 +12,10 @@ import {
   FullScreen,
   defaults as DefaultControls,
 } from "ol/control";
-import OSM from "ol/source/OSM";
+import { OSM, Vector as VectorSource } from "ol/source";
 import config from "react-global-configuration";
-import { Image as ImageLayer } from "ol/layer";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+
 import axios from "axios";
 
 export const InitMap = () => {
