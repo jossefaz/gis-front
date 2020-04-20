@@ -16,18 +16,22 @@ export default function (state = null, action) {
         } else {
           const index = draftState.order.indexOf(currentToolId);
           if (index > -1) {
-            draftState.order.splice(index, 1); // remove this tool from open tool list
+            draftState.order = draftState.order.filter(
+              (id) => id != currentToolId
+            ); // remove this tool from open tool list
           }
         }
       });
 
     case types.SET_TOOL_FOCUSED:
+      // First check if this tool is open
+      const currentToolId = parseInt(action.payload);
+      const index = state.order.indexOf(currentToolId);
+      if (index == -1) {
+        return state; //if the tool was removed no need to focus it
+      }
       return produce(state, (draftState) => {
         const currentToolId = parseInt(action.payload);
-        const index = draftState.order.indexOf(currentToolId);
-        if (index > -1) {
-          draftState.order.splice(index, 1); // remove this tool from open tool list
-        }
         draftState.order.unshift(currentToolId);
       });
 
