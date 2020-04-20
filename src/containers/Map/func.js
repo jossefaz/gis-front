@@ -1,5 +1,12 @@
-import { Map, View } from "ol";
-import { Tile as TileLayer } from "ol/layer";
+import {
+  Map,
+  View
+} from "ol";
+import {
+  Tile as TileLayer,
+  Image as ImageLayer
+} from "ol/layer";
+import  ImageWMS from "ol/source/ImageWMS";
 import {
   ScaleLine,
   ZoomSlider,
@@ -10,11 +17,15 @@ import {
 } from "ol/control";
 import OSM from "ol/source/OSM";
 import config from "react-global-configuration";
-import { Image as ImageLayer } from "ol/layer";
 import axios from "axios";
 
 export const InitMap = () => {
-  const { proj, center, zoom, target } = config.get("MapConfig");
+  const {
+    proj,
+    center,
+    zoom,
+    target
+  } = config.get("MapConfig");
   return new Map({
     //  Display the map in the div with the id of map
     target: target,
@@ -63,14 +74,11 @@ export const Identify = (evt, mapObject, actionCB) => {
 };
 
 export const addLayersSafely = (layers, mapObject, actionCB) => {
-  const addedToMap = [];
-  Object.keys(layers).map((lyrId) => {
-    if (!layers[lyrId].addedToMap) {
-      mapObject.addLayer(layers[lyrId]);
-      addedToMap.push(lyrId);
-    }
-  });
-  if (addedToMap.length > 0) {
-    actionCB(addedToMap);
+  
+    if (layers) {    
+      layers.map((lyr) => {  
+      mapObject.addLayer(lyr);
+    });
   }
+   
 };

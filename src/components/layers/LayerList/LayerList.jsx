@@ -1,30 +1,43 @@
 
 import React, { Component } from "react";
 import LayerListItem from "../LayerListItem/LayerListItem.jsx";
-import { connect } from 'react-redux'
+import { getMetaData } from "../../../communication/mdFetcher.js";
 class LayerList extends Component {
+
+
+  constructor(props) {
+    super(props);
+    this.state = { layers: null }
+  }
+
+
+  componentDidMount() {
+    getMetaData("layers").then(result =>
+      this.setState({ "layers": result }));
+  }
 
   componentWillUpdate() {
     console.log("LAYERLIST WILL UPDATE")
   }
+
   renderLayerList = (layers) => {
     return (
       <React.Fragment>
         {
           Object.keys(layers).map((lyrId) =>
             <LayerListItem
-              name={layers[lyrId].name}
-              key={layers[lyrId].id}
-              lyrID={layers[lyrId].id}
-              alias={layers[lyrId].alias}
-              visible={layers[lyrId].getVisible()}>
+              name={layers[lyrId].restid}
+              key={layers[lyrId].semanticid}
+              lyrID={layers[lyrId].semanticid}
+              alias={layers[lyrId].title}
+              lyr = {layers[lyrId]}
+            //  visible={layers[lyrId].getVisible()}
+            >
             </LayerListItem>
           )
         }
       </React.Fragment>
-
     )
-
   }
 
 
@@ -32,18 +45,13 @@ class LayerList extends Component {
     return (
       <React.Fragment>
         {
-          this.props.mapLayers ? this.renderLayerList(this.props.mapLayers) : <p>ToBeRendered</p>
+          this.state.layers ? this.renderLayerList(this.state.layers) : <p>ToBeRendered</p>
         }
       </React.Fragment>
-
     )
 
   }
 }
-const mapStateToProps = (state) => {
-  return { mapLayers: state.mapLayers };
-};
 
-
-export default connect(mapStateToProps, null)(LayerList);
+export default (LayerList);
 

@@ -8,16 +8,12 @@ import { InitTools } from "./redux/actions/tools";
 import { connect } from "react-redux";
 import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
-import { getMetaData } from "./communication/mdFetcher"
 import Widget from './containers/Widget';
 class App extends React.Component {
   componentDidMount() {
-    LogIt(logLevel.INFO, "App init");
-
-    getMetaData("layers");
-
     
-    this.props.InitLayers(config.get("layers"));
+    LogIt(logLevel.INFO, "App init");
+    
     this.props.InitRasters();
     this.props.InitTools(config.get("Widgets"));
   }

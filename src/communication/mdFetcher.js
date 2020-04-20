@@ -14,7 +14,7 @@ export async function getMetaData(metaDataType) {
     if(functionName)
        url =  metaDataApi["url"];    
     
-    fetchData({
+    return fetchData({
         url: url,
         functionName: functionName,
         method: "Get"

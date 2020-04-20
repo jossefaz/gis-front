@@ -18,6 +18,7 @@ class MapComponent extends React.Component {
       Identify(evt, this.map, this.props.setSelectedFeatures)
     );
   }
+
   componentDidUpdate() {
     LogIt(logLevel.INFO, "Map Update");
     LogIt(logLevel.DEBUG, this.props.Layers);
@@ -26,7 +27,9 @@ class MapComponent extends React.Component {
       const { Catalog, Focused } = this.props.Rasters;
       this.map.getLayers().setAt(0, Catalog[Focused].layer);
     }
-    addLayersSafely(this.props.Layers, this.map, this.props.addLayers);
+  
+    // addLayersSafely(this.props.Layers, this.map, this.props.addLayers);
+    addLayersSafely(this.props.Layers, this.map);
   }
 
   render() {
@@ -36,7 +39,7 @@ class MapComponent extends React.Component {
 }
 const mapStateToProps = (state) => {
   return {
-    Layers: state.mapLayers,
+    Layers: state.mapLayers.newLayers,
     Rasters: state.Rasters,
     Features: state.Features,
   };
