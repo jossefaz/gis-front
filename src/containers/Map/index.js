@@ -14,9 +14,10 @@ class MapComponent extends React.Component {
   }
   componentDidMount() {
     this.map = InitMap();
-    this.map.on("click", (evt) =>
-      Identify(evt, this.map, this.props.setSelectedFeatures)
-    );
+    this.map.on("click", (evt) => {
+      console.log(this.props.Tools.tools[this.props.Tools.order[0]]);
+      Identify(evt, this.map, this.props.setSelectedFeatures);
+    });
   }
   componentDidUpdate() {
     LogIt(logLevel.INFO, "Map Update");
@@ -37,6 +38,7 @@ const mapStateToProps = (state) => {
   return {
     Layers: state.mapLayers,
     Rasters: state.Rasters,
+    Tools: state.Tools,
   };
 };
 
