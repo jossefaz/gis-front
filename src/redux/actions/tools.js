@@ -1,10 +1,25 @@
 import types from "./actionsTypes";
-import { getRandomInt } from "../../utils/func";
-export const toggleTool = (ToolId) => (dispatch) =>
+import { getRandomInt, isFunction } from "../../utils/func";
+import { LogIt, logLevel } from "../../utils/logs";
+export const toggleTool = (ToolId, lifeCylclefunc) => async (
+  dispatch,
+  getState
+) => {
+  const { ToolName, IsOpen } = getState().Tools.tools[ToolId];
+  if (isFunction(lifeCylclefunc)) {
+    await lifeCylclefunc(dispatch, ToolName, IsOpen);
+  }
+
   dispatch({
     type: types.TOGGLE_TOOLS,
     payload: ToolId,
   });
+};
+
+export const defaultLifeCycle = (dispatch, ToolName, IsOpen) => {
+  let lifeMessage = IsOpen ? "Will be detroyed" : "Will be created";
+  LogIt(logLevel.INFO, `${ToolName} : ${lifeMessage}`);
+};
 
 export const toggleGroupTool = (GroupToolId) => (dispatch) =>
   dispatch({

@@ -4,12 +4,17 @@ import { toggleTool, setToolFocused } from "../../redux/actions/tools";
 import ToolTemplate from "./Template";
 import ExternalTool from "./ExternalTool";
 import InternalTool from "./InternalTool";
+import LifeCycleRegistry from "./ToolLifeCycle";
 class Loader extends React.Component {
   render() {
-    const { ToolInvokerType, ToolName, ToolLocation } = this.props.Tools.tools[
-      this.props.ToolID
-    ];
-    const CloseCB = () => this.props.toggleTool(this.props.ToolID);
+    const {
+      ToolInvokerType,
+      ToolName,
+      ToolLocation,
+      OnDestroy,
+    } = this.props.Tools.tools[this.props.ToolID];
+    const CloseCB = () =>
+      this.props.toggleTool(this.props.ToolID, LifeCycleRegistry[OnDestroy]);
     const FocusMe = () => this.props.setToolFocused(this.props.ToolID);
     const focused = this.props.Tools.order[0] == this.props.ToolID;
     return (
