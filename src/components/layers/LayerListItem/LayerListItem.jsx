@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Image as ImageLayer } from "ol/layer";
 import  ImageWMS from "ol/source/ImageWMS";
 import { addLayers ,setLayerVisible, setLayerOpacity } from "../../../redux/actions/layers";
+import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter"
 
 import { Menu } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
@@ -18,26 +19,26 @@ class LayerListItem extends Component {
     },
   };
 
-  createMapLayerFromMdLayer = (mdLayer) => {
-    
-      const newLyr = new ImageLayer({
-        source: new ImageWMS({      
-          url: mdLayer.restaddress,    
-        }),
-      });
-      newLyr.name = mdLayer.restid;
-      newLyr.id = mdLayer.semanticid;
-      newLyr.alias = mdLayer.title;
-      newLyr.setVisible(Boolean(true));  
-      newLyr.selectable = mdLayer.selectable;
+  addLayer = (mdLayer) => {  
+
+    debugger    
+   
+    var currentLayers = this.props.Layers;
+
+    //checks if layer already exists     
+    var layer = currentLayers[mdLayer.semanticid]
+      
+    if(!layer){
+      var newLyr = convertMdLayerToMapLayer(mdLayer);
       this.props.addLayers([newLyr]);
+    }
   };
 
   render() {
     return (
       <Menu.Item as="a">
         <div className="ui toggle checkbox">
-          <input type="checkbox" name="public" onChange={() => this.createMapLayerFromMdLayer(this.props.lyr)} defaultChecked={this.props.visible} />
+          <input type="checkbox" name="public" onChange={() => this.addLayer(this.props.lyr)} defaultChecked={this.props.visible} />
           <label className="ui align left">{this.props.alias}</label>
         </div>
         <Slider color="blue" settings={this.settings} />
@@ -45,5 +46,13 @@ class LayerListItem extends Component {
     );
   }
 }
-export default connect(null, {addLayers, setLayerVisible, setLayerOpacity })(LayerListItem);
+
+const mapStateToProps = (state) => {
+  return {
+    Layers: state.mapLayers.currentLayers
+  };
+};
+
+export default connect(mapStateToProps, {addLayers, setLayerVisible, setLayerOpacity })
+(LayerListItem);
 
