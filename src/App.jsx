@@ -8,10 +8,14 @@ import { InitTools } from "./redux/actions/tools";
 import { connect } from "react-redux";
 import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
+import { InitIcons } from './utils/faicons'
 import Widget from './containers/Widget';
+
+
 class App extends React.Component {
   componentDidMount() {
     LogIt(logLevel.INFO, "App init");
+    InitIcons()
     this.props.InitLayers(config.get("layers"));
     this.props.InitRasters();
     this.props.InitTools(config.get("Widgets"));

@@ -29,6 +29,7 @@
                 "ToolName": "BaseMapGallery",
                 "ToolTip": "מפות רקע",
                 "ToolImage": "basemap.png",
+                "ToolIcon": "map",
                 "ToolActionInvoker": "",
                 "ToolInvokerType": 0,
                 "ToolTypeID": 1,

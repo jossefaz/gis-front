@@ -15,8 +15,15 @@ class MapComponent extends React.Component {
   componentDidMount() {
     this.map = InitMap();
     this.map.on("click", (evt) => {
-      console.log(this.props.Tools.tools[this.props.Tools.order[0]]);
-      Identify(evt, this.map, this.props.setSelectedFeatures);
+      const { tools, order: focusedTool } = this.props.Tools;
+      switch (tools[focusedTool[0]].ToolName) {
+        case "Identify":
+          Identify(evt, this.map, this.props.setSelectedFeatures);
+          break;
+
+        default:
+          break;
+      }
     });
   }
   componentDidUpdate() {
