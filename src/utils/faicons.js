@@ -4,8 +4,10 @@ import {
   faLayerGroup,
   faMap,
   faDrawPolygon,
+  faRuler,
+  faMapPin,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
-  library.add(fab, faLayerGroup, faMap, faDrawPolygon);
+  library.add(fab, faLayerGroup, faMap, faDrawPolygon, faRuler, faMapPin);
 };

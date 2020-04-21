@@ -59,9 +59,10 @@
             },
             {
                 "Id": 1,
-                "ToolName": "BaseMapGallery",
+                "ToolName": "MeasureDistance",
                 "ToolTip": "מפות רקע",
-                "ToolImage": "basemap.png",
+                "ToolImage": "",
+                "ToolIcon": "ruler",
                 "ToolActionInvoker": "",
                 "ToolInvokerType": 0,
                 "ToolTypeID": 1,
