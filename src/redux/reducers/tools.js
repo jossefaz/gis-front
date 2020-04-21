@@ -31,7 +31,7 @@ export default function (state = null, action) {
         return state; //if the tool was removed no need to focus it
       }
       return produce(state, (draftState) => {
-        const currentToolId = parseInt(action.payload);
+        draftState.order = draftState.order.filter((id) => id != currentToolId);
         draftState.order.unshift(currentToolId);
       });
 

@@ -16,6 +16,7 @@ class MapComponent extends React.Component {
     this.map = InitMap();
     this.map.on("click", (evt) => {
       const { tools, order: focusedTool } = this.props.Tools;
+      console.log(focusedTool);
       if (focusedTool.length > 0) {
         LogIt(
           logLevel.DEBUG,
