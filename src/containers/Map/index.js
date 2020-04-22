@@ -5,6 +5,7 @@ import config from "react-global-configuration";
 import { logLevel, LogIt } from "../../utils/logs";
 import { addLayers } from "../../redux/actions/layers";
 import { setSelectedFeatures } from "../../redux/actions/features";
+import { addOverlay } from "../../redux/actions/ui";
 import "./style.css";
 
 class MapComponent extends React.Component {
@@ -46,6 +47,7 @@ class MapComponent extends React.Component {
       this.map.getLayers().setAt(0, Catalog[Focused].layer);
     }
     addLayersSafely(this.props.Layers, this.map, this.props.addLayers);
+
     if (
       !this.props.Features.Draw.Session &&
       this.props.Features.Draw.DrawObject
@@ -54,6 +56,16 @@ class MapComponent extends React.Component {
     } else if (this.props.Features.Draw.Session) {
       this.map.addInteraction(this.props.Features.Draw.DrawObject);
     }
+    Object.keys(this.props.overlays.status).map((overlay) => {
+      const addOverlay = [];
+      if (!this.props.overlays.status[overlay]) {
+        this.map.addOverlay(this.props.overlays.Catalog[overlay]);
+        addOverlay.push(overlay);
+      }
+      if (addOverlay.length > 0) {
+        this.props.addOverlay(addOverlay);
+      }
+    });
   }
 
   render() {
@@ -67,10 +79,12 @@ const mapStateToProps = (state) => {
     Rasters: state.Rasters,
     Tools: state.Tools,
     Features: state.Features,
+    overlays: state.ui.overlays,
   };
 };
 
 export default connect(mapStateToProps, {
   addLayers,
   setSelectedFeatures,
+  addOverlay,
 })(MapComponent);

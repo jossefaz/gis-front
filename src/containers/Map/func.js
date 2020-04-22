@@ -79,3 +79,16 @@ export const addLayersSafely = (layers, mapObject, actionCB) => {
     actionCB(addedToMap);
   }
 };
+
+export const addOverlaysSafely = (layers, mapObject, actionCB) => {
+  const addedToMap = [];
+  Object.keys(layers).map((lyrId) => {
+    if (!layers[lyrId].addedToMap) {
+      mapObject.addLayer(layers[lyrId]);
+      addedToMap.push(lyrId);
+    }
+  });
+  if (addedToMap.length > 0) {
+    actionCB(addedToMap);
+  }
+};
