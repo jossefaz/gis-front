@@ -1,24 +1,19 @@
 import types from "./actionsTypes";
-import { getRandomInt, isFunction } from "../../utils/func";
-import { LogIt, logLevel } from "../../utils/logs";
-export const toggleTool = (ToolId, lifeCylclefunc) => async (
-  dispatch,
-  getState
-) => {
-  const { ToolName, IsOpen } = getState().Tools.tools[ToolId];
-  if (isFunction(lifeCylclefunc)) {
-    await lifeCylclefunc(dispatch, ToolName, IsOpen);
-  }
+import { getRandomInt } from "../../utils/func";
+import LifeCycleRegistry from "./LifeCycle";
+export const toggleTool = (ToolId) => async (dispatch, getState) => {
+  const toolConfig = getState().Tools.tools[ToolId];
+
+  await _getLifeCycleFunc(toolConfig)(
+    dispatch,
+    toolConfig.ToolName,
+    toolConfig.IsOpen
+  );
 
   dispatch({
     type: types.TOGGLE_TOOLS,
     payload: ToolId,
   });
-};
-
-export const defaultLifeCycle = (dispatch, ToolName, IsOpen) => {
-  let lifeMessage = IsOpen ? "Will be detroyed" : "Will be created";
-  LogIt(logLevel.INFO, `${ToolName} : ${lifeMessage}`);
 };
 
 export const toggleGroupTool = (GroupToolId) => (dispatch) =>
@@ -60,4 +55,10 @@ export const InitTools = (ToolConfig) => (dispatch) => {
     type: types.INIT_TOOLS,
     payload: gTools,
   });
+};
+
+const _getLifeCycleFunc = (toolState) => {
+  return toolState.IsOpen
+    ? LifeCycleRegistry[toolState.OnDestroy]
+    : LifeCycleRegistry[toolState.OnCreate];
 };
