@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux'
-import { Image as ImageLayer } from "ol/layer";
-import  ImageWMS from "ol/source/ImageWMS";
-import { addLayers ,setLayerVisible, setLayerOpacity } from "../../../redux/actions/layers";
-import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter"
-
+import { connect } from "react-redux";
+import {
+  addLayers,
+  setLayerVisible,
+  setLayerOpacity,
+} from "../../../redux/actions/layers";
+import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter";
 import { Menu } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
 
@@ -15,31 +16,33 @@ class LayerListItem extends Component {
     max: 1,
     step: 0.1,
     onChange: (value) => {
-      this.props.setLayerOpacity(this.props.lyrID, value)
+      this.props.setLayerOpacity(this.props.lyr.semanticid, value);
     },
   };
 
-  addLayer = (mdLayer) => {  
-
-    debugger    
-   
+  addLayer = (mdLayer) => {
     var currentLayers = this.props.Layers;
+    var layer = currentLayers[mdLayer.semanticid];
 
-    //checks if layer already exists     
-    var layer = currentLayers[mdLayer.semanticid]
-      
-    if(!layer){
+    if (layer) this.props.setLayerVisible(mdLayer.semanticid);
+    else {
       var newLyr = convertMdLayerToMapLayer(mdLayer);
       this.props.addLayers([newLyr]);
     }
   };
 
   render() {
+    const lyr = this.props.lyr;
     return (
       <Menu.Item as="a">
         <div className="ui toggle checkbox">
-          <input type="checkbox" name="public" onChange={() => this.addLayer(this.props.lyr)} defaultChecked={this.props.visible} />
-          <label className="ui align left">{this.props.alias}</label>
+          <input
+            type="checkbox"
+            name="public"
+            onChange={() => this.addLayer(lyr)}
+            defaultChecked={lyr.visible}
+          />
+          <label className="ui align left">{lyr.title}</label>
         </div>
         <Slider color="blue" settings={this.settings} />
       </Menu.Item>
@@ -49,10 +52,12 @@ class LayerListItem extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    Layers: state.mapLayers.currentLayers
+    Layers: state.mapLayers.currentLayers,
   };
 };
 
-export default connect(mapStateToProps, {addLayers, setLayerVisible, setLayerOpacity })
-(LayerListItem);
-
+export default connect(mapStateToProps, {
+  addLayers,
+  setLayerVisible,
+  setLayerOpacity,
+})(LayerListItem);

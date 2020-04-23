@@ -8,23 +8,20 @@
         ],
         "zoom": 12
     },
-    "layers": [
-        {
-            "id": 1,
-            "name": "dimigcompile",
-            "alias": "שכבה לדוגמא",
-            "url": "http://localhost:8080/geoserver/Jeru/wms",
-            "params": {
-                "LAYERS": "Jeru:dimigcompile"
-            },
-            "serverType": "geoserver",
-            "visible": 1,
-            "selectable": 1
-        }
-    ],
+    "layers": [{
+        "id": 1,
+        "name": "dimigcompile",
+        "alias": "שכבה לדוגמא",
+        "url": "http://localhost:8080/geoserver/Jeru/wms",
+        "params": {
+            "LAYERS": "Jeru:dimigcompile"
+        },
+        "serverType": "geoserver",
+        "visible": 1,
+        "selectable": 1
+    }],
     "Widgets": {
-        "tools": [
-            {
+        "tools": [{
                 "Id": 1,
                 "ToolName": "BaseMapGallery",
                 "ToolTip": "מפות רקע",
@@ -89,15 +86,13 @@
                 "IsOpen": 0
             }
         ],
-        "groups": [
-            {
-                "Id": 1,
-                "GroupContainer": "TopNav",
-                "GroupName": "General",
-                "GroupImage": "toolsGroup.png",
-                "IsOpen": 0
-            }
-        ]
+        "groups": [{
+            "Id": 1,
+            "GroupContainer": "TopNav",
+            "GroupName": "General",
+            "GroupImage": "toolsGroup.png",
+            "IsOpen": 0
+        }]
     },
     "channels": {
         "name": "MTCS.Units PubSub Channel",
@@ -112,8 +107,6 @@
         "description": "change is MTCS.Units attribute(s)"
     },
     "metaDataApi": {
-        "url" : "https://localhost:5001/MetaData/",
-        "layers" : "getLayers",
-        "tools" : "getTools"
+        "url": "https://localhost:5001/MetaData/getMetaData/"
     }
 }
