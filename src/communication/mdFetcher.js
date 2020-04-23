@@ -3,6 +3,9 @@ import {
     fetchData
 } from './apiManager'
 
+//options for metaDataType paramter
+//layers/tools/subjects/layerlist; 
+
 export async function getMetaData(metaDataType) {
 
     var url;
