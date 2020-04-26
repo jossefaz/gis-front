@@ -4,7 +4,7 @@ import {
 } from './apiManager'
 
 //options for metaDataType paramter
-//layers/tools/subjects/layerlist; 
+//layers/tools/subjects/layerlist/layerListRelations; 
 
 export async function getMetaData(metaDataType) {
 
