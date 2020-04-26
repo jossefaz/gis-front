@@ -1,5 +1,9 @@
 import { Map, View } from "ol";
-import { Tile as TileLayer } from "ol/layer";
+import {
+  Tile as TileLayer,
+  Vector as VectorLayer,
+  Image as ImageLayer,
+} from "ol/layer";
 import {
   ScaleLine,
   ZoomSlider,
@@ -8,8 +12,11 @@ import {
   FullScreen,
   defaults as DefaultControls,
 } from "ol/control";
-import OSM from "ol/source/OSM";
+import { OSM, Vector as VectorSource } from "ol/source";
 import config from "react-global-configuration";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+
+import axios from "axios";
 
 export const InitMap = () => {
   const { proj, center, zoom, target } = config.get("MapConfig");
@@ -36,4 +43,52 @@ export const InitMap = () => {
       zoom: zoom,
     }),
   });
+};
+
+export const Identify = (evt, mapObject, actionCB) => {
+  var viewResolution = mapObject.getView().getResolution();
+  mapObject
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof ImageLayer && lyr.selectable) {
+        var url = lyr
+          .getSource()
+          .getFeatureInfoUrl(evt.coordinate, viewResolution, "EPSG:4326", {
+            INFO_FORMAT: "application/json",
+            feature_count: 100,
+          });
+        if (url) {
+          axios.get(url).then((response) => {
+            actionCB(response.data.features);
+          });
+        }
+      }
+    });
+};
+
+export const addLayersSafely = (layers, mapObject, actionCB) => {
+  const addedToMap = [];
+  Object.keys(layers).map((lyrId) => {
+    if (!layers[lyrId].addedToMap) {
+      mapObject.addLayer(layers[lyrId]);
+      addedToMap.push(lyrId);
+    }
+  });
+  if (addedToMap.length > 0) {
+    actionCB(addedToMap);
+  }
+};
+
+export const addOverlaysSafely = (layers, mapObject, actionCB) => {
+  const addedToMap = [];
+  Object.keys(layers).map((lyrId) => {
+    if (!layers[lyrId].addedToMap) {
+      mapObject.addLayer(layers[lyrId]);
+      addedToMap.push(lyrId);
+    }
+  });
+  if (addedToMap.length > 0) {
+    actionCB(addedToMap);
+  }
 };

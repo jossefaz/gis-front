@@ -1,0 +1,8 @@
+.pointerCur {
+  cursor: pointer;
+}
+
+.currentFeature {
+  font-weight: bold;
+  color: red;
+}

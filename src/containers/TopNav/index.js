@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { toogleSideNav } from "../../redux/actions/ui";
 import { renderTools } from "../../components/tool/func";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 class TopNav extends React.Component {
   render() {
     return (
@@ -17,7 +18,7 @@ class TopNav extends React.Component {
           className="ui fixed item image pointerCursor"
           onClick={() => this.props.toogleSideNav()}
         >
-          <img src={`/img/Layers.png`} />
+          <FontAwesomeIcon icon="layer-group" size="lg" />
         </a>
       </div>
     );

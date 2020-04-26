@@ -1,10 +1,20 @@
 import types from "./actionsTypes";
+import { getRandomInt } from "../../utils/func";
+import LifeCycleRegistry from "./LifeCycle";
+export const toggleTool = (ToolId) => async (dispatch, getState) => {
+  const toolConfig = getState().Tools.tools[ToolId];
 
-export const toggleTool = (ToolId) => (dispatch) =>
+  await _getLifeCycleFunc(toolConfig)(
+    dispatch,
+    toolConfig.ToolName,
+    toolConfig.IsOpen
+  );
+
   dispatch({
     type: types.TOGGLE_TOOLS,
     payload: ToolId,
   });
+};
 
 export const toggleGroupTool = (GroupToolId) => (dispatch) =>
   dispatch({
@@ -12,10 +22,18 @@ export const toggleGroupTool = (GroupToolId) => (dispatch) =>
     payload: GroupToolId,
   });
 
+export const setToolFocused = (ToolId) => (dispatch) => {
+  dispatch({
+    type: types.SET_TOOL_FOCUSED,
+    payload: ToolId,
+  });
+};
+
 export const InitTools = (ToolConfig) => (dispatch) => {
   const gTools = {
     tools: {},
     Groups: {},
+    order: [],
   };
 
   ToolConfig.groups.map((group) => {
@@ -24,15 +42,23 @@ export const InitTools = (ToolConfig) => (dispatch) => {
 
   ToolConfig.tools.map((tool) => {
     const { Id, ToolGroupId } = tool;
-    gTools.tools[Id] = tool;
+    const RandomId = Id + getRandomInt();
+    tool.Id = RandomId;
+    gTools.tools[RandomId] = tool;
     if (ToolGroupId) {
       "tools" in gTools.Groups[ToolGroupId]
-        ? gTools.Groups[ToolGroupId].tools.push(Id)
-        : (gTools.Groups[ToolGroupId]["tools"] = [Id]);
+        ? gTools.Groups[ToolGroupId].tools.push(RandomId)
+        : (gTools.Groups[ToolGroupId]["tools"] = [RandomId]);
     }
   });
   dispatch({
     type: types.INIT_TOOLS,
     payload: gTools,
   });
+};
+
+const _getLifeCycleFunc = (toolState) => {
+  return toolState.IsOpen
+    ? LifeCycleRegistry[toolState.OnDestroy]
+    : LifeCycleRegistry[toolState.OnCreate];
 };
