@@ -1,12 +1,18 @@
 import React, { Component } from "react";
-import { Dropdown, Menu } from "semantic-ui-react";
+import { Dropdown } from "semantic-ui-react";
+import { logLevel, LogIt } from "../../../utils/logs";
 import LayerListItem from "../LayerListItem/LayerListItem.jsx";
 import { getMetaData } from "../../../communication/mdFetcher.js";
 import "./style.css";
 class LayerList extends Component {
   constructor(props) {
     super(props);
-    this.state = { layers: {}, subjects: {}, layerSubjectRelation: [] };
+    this.state = {
+      layers: {},
+      subjects: {},
+      layerSubjectRelation: [],
+      layerListObject: {},
+    };
   }
   componentDidMount() {
     this.fetchMetaDataFromServer();
@@ -28,6 +34,7 @@ class LayerList extends Component {
       var subjectList = {};
       var layerList = {};
       subjectsResult.map((subject) => {
+        subject.layers = {};
         subjectList[subject.subjectid] = subject;
       });
       layersResult.map((layer) => {
@@ -39,40 +46,55 @@ class LayerList extends Component {
         layerSubjectRelation: layerSubjectResult,
       });
     }
+    this.setLayerListObject();
   };
-  componentWillUpdate() {
-    console.log("LAYERLIST WILL UPDATE");
-  }
+
+  setLayerListObject = () => {
+    if (this.state.subjects) {
+      var layerListObject = this.state.subjects;
+
+      Object.keys(this.state.layers).map((lyrId) => {
+        var lyr = this.state.layers[lyrId];
+        var filteredSubjectIds = this.state.layerSubjectRelation
+          .filter((relation) => {
+            return lyrId === relation.semanticid.toString();
+          })
+          .map((relation) => {
+            return relation.subjectid;
+          });
+
+        filteredSubjectIds.map((subjectid) => {
+          //TODO change semanticid to uuid
+          layerListObject[subjectid].layers[lyr.semanticid] = lyr;
+        });
+      });
+      this.setState({ layerListObject: layerListObject });
+      LogIt(logLevel.INFO, "Map Update");
+    }
+  };
 
   renderLayerList = () => {
-    var subjects = this.state.subjects;
-    return Object.keys(subjects).map((subjectId) => (
+    var layerListObject = this.state.layerListObject;
+    return Object.keys(layerListObject).map((subjectId) => (
       <React.Fragment key={subjectId}>
-        <Dropdown item text={subjects[subjectId].description}>
-          <Dropdown.Menu>{this.createLayerListItems(subjectId)}</Dropdown.Menu>
+        <Dropdown item text={layerListObject[subjectId].description}>
+          <Dropdown.Menu>
+            {this.createLayerListItems(layerListObject[subjectId].layers)}
+          </Dropdown.Menu>
         </Dropdown>
       </React.Fragment>
     ));
   };
 
-  createLayerListItems = (subjectId) => {
-    var filteredLayerIds = this.state.layerSubjectRelation
-      .filter((relation) => {
-        return subjectId === relation.subjectid.toString();
-      })
-      .map((relation) => {
-        return relation.semanticid;
-      });
-    return filteredLayerIds.map((layerId, index) =>
-      this.state.layers[layerId] ? (
-        <Dropdown.Item key={index}>
-          <LayerListItem
-            key={index}
-            lyr={this.state.layers[layerId]}
-          ></LayerListItem>
-        </Dropdown.Item>
-      ) : null
-    );
+  createLayerListItems = (layers) => {
+    return Object.keys(layers).map((layerId, index) => (
+      <Dropdown.Item key={index}>
+        <LayerListItem
+          key={index}
+          lyr={this.state.layers[layerId]}
+        ></LayerListItem>
+      </Dropdown.Item>
+    ));
   };
 
   render() {
@@ -80,7 +102,8 @@ class LayerList extends Component {
       <React.Fragment>
         {this.state.subjects &&
         this.state.layers &&
-        this.state.layerSubjectRelation ? (
+        this.state.layerSubjectRelation &&
+        this.state.layerListObject ? (
           this.renderLayerList()
         ) : (
           <p>ToBeRendered</p>
