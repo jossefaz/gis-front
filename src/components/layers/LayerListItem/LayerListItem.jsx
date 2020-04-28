@@ -11,7 +11,7 @@ import { Slider } from "react-semantic-ui-range";
 
 class LayerListItem extends Component {
   settings = {
-    start: 0.5,
+    start: 0.7,
     min: 0,
     max: 1,
     step: 0.1,
