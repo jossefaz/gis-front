@@ -1,10 +1,8 @@
-import NessLayer from '../nessMapping/nessLayer';
-
 export const MDUtils = {
     getMDLayerById: (mdId) => {
         // TODO: access api to get metadata
 
-        if (mdId !== 'debug') {
+        if (mdId !== 999999) {
             return null;
         }
 
@@ -15,6 +13,12 @@ export const MDUtils = {
             alias: 'MockLayer',
             config: {
                 LayerType: 'OL_ImageLayer',
+                SourceType: 'OL_ImageArcGISRest',
+                SourceOptions: {
+                    ratio: 1,
+                    params: {},
+                    url: 'https://gisviewer.jerusalem.muni.il/arcgis/rest/services/BaseLayers/MapServer'
+                }
             }
         };
     }

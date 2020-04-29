@@ -3,8 +3,8 @@
 import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
 
-import {Tile as TileLayer, Image as ImageLayer} from 'ol/layer';
-import {OSM, ImageArcGISRest} from 'ol/source';
+import { Tile as TileLayer, Image as ImageLayer } from 'ol/layer';
+import { OSM, ImageArcGISRest } from 'ol/source';
 
 import { MDUtils as md } from '../utils/metadataUtils';
 import { LYRUtils as lu } from '../utils/layerUtils';
@@ -20,7 +20,10 @@ export default class NessLayer {
         var nl = md.getMDLayerById(mdId) || lu.getMDLayerByObject(lyr);
         if (nl) {
             // must-have props
-            this.uuid = GenerateUUID();
+            var uuid = { value: GenerateUUID() };
+            Object.freeze(uuid);  // freeze uuid, it is too important !
+            this.uuid = uuid;
+    
             this.metadataId = nl.metadataId;
 
             // must-have layer configuration props
@@ -67,7 +70,7 @@ export default class NessLayer {
                 this.parent.OLMap.addLayer(olLayer);
 
                 // OK, layer is in! set uuid 
-                olLayer.set(NESS_LAYER_UUID_KEY, this.uuid, true);
+                olLayer.set(NESS_LAYER_UUID_KEY, this.uuid.value, true);
 
                 // and now refresh mapIndex
                 this.RefreshMapIndex();
@@ -126,8 +129,9 @@ const _toOLLayer = (nl) => {
 
 const _getMapIndex = (nl) => {
     if (nl instanceof NessLayer && nl.uuid && nl.parent && nl.parent.OLMap) {
-        for (var i=0; i<nl.parent.OLMap.layers.length; i++) {
-            if (nl.parent.OLMap.layers[i].get(NESS_LAYER_UUID_KEY) === nl.uuid) {
+        var lyrs = nl.parent.OLMap.getLayers().getArray();
+        for (var i=0; i<lyrs.length; i++) {
+            if (lyrs[i].get(NESS_LAYER_UUID_KEY) === nl.uuid.value) {
                 return i;
             }
         }    

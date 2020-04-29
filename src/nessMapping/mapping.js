@@ -1,20 +1,26 @@
+/* eslint-disable no-undef */
 import MapProxy from "./mapProxy";
 
-export default NessMapping = (function () {
+const NessMapping = (function () {
     var instance;
  
     function createInstance() {
         var object = {
-            maps: {},
-            addMap: function (mapConfig) {
+            _mapProxies: {},
+
+            getMapProxy(uuid) {
+                return this._mapProxies[uuid];
+            },
+
+            addMapProxy(mapConfig) {
                 var mp = new MapProxy(mapConfig);
-                this.maps[mp.uuid] = mp;
+                this._mapProxies[mp.uuid.value] = mp;
                 return mp;
             },
     
-            killMap(uuid) {
-                if (this.maps[uuid]) {
-                    delete this.maps[uuid];
+            killMapProxy(uuid) {
+                if (this._mapProxies.hasOwnProperty(uuid)) {
+                    delete this._mapProxies[uuid];
                     return true;
                 }
     
@@ -33,3 +39,5 @@ export default NessMapping = (function () {
         }
     };
 })();
+
+export default NessMapping;
