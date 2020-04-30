@@ -10,10 +10,15 @@ import "./style.css";
 class MapComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.map = null;
+    this.map = null; // should not be used in the future
+    this.mapProxy = null;
   }
   componentDidMount() {
-    this.map = InitMap();
+    this.mapProxy = InitMap();
+
+    this.mapProxy.AddLayer(999999, true);
+
+    this.map = this.mapProxy.OLMap;
     this.map.on("click", (evt) =>
       Identify(evt, this.map, this.props.setSelectedFeatures)
     );
@@ -29,7 +34,9 @@ class MapComponent extends React.Component {
     }
   
     // addLayersSafely(this.props.Layers, this.map, this.props.addLayers);
-    addLayersSafely(this.props.Layers, this.map);
+    // addLayersSafely(this.props.Layers, this.map);
+    const DEBUG_METADATA_LAYER_ID = 999999;
+    this.mapProxy.AddLayer(DEBUG_METADATA_LAYER_ID);
   }
 
   render() {
