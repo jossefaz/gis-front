@@ -1,23 +1,10 @@
-import {
-  Map,
-  View
-} from "ol";
-import {
-  Tile as TileLayer,
-  Image as ImageLayer
-} from "ol/layer";
-import  ImageWMS from "ol/source/ImageWMS";
-import {
-  ScaleLine,
-  ZoomSlider,
-  MousePosition,
-  OverviewMap,
-  FullScreen,
-  defaults as DefaultControls,
-} from "ol/control";
+import { View } from "ol";
+import { Tile as TileLayer, Image as ImageLayer } from "ol/layer";
+import { ScaleLine, ZoomSlider, MousePosition, OverviewMap, FullScreen, defaults as DefaultControls } from "ol/control";
 import OSM from "ol/source/OSM";
 import config from "react-global-configuration";
 import axios from "axios";
+import NessMapping from "../../nessMapping/mapping";
 
 export const InitMap = () => {
   const {
@@ -26,7 +13,8 @@ export const InitMap = () => {
     zoom,
     target
   } = config.get("MapConfig");
-  return new Map({
+
+  return NessMapping.getInstance().addMapProxy({
     //  Display the map in the div with the id of map
     target: target,
     controls: DefaultControls().extend([
