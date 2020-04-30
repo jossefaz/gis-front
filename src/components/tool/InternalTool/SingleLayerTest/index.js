@@ -32,6 +32,7 @@ class SingleLayerTest extends React.Component {
                 serverType: LayerSample.serverType,
             }),
         });
+        newLyr.selectable = LayerSample.selectable
         const map = NessMapping.getInstance().getMapProxy(this.props.map.focused)._olmap
         map.addLayer(newLyr)
 

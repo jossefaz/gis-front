@@ -1,43 +1,8 @@
-import { View } from "ol";
-import { Tile as TileLayer, Image as ImageLayer } from "ol/layer";
-import { ScaleLine, ZoomSlider, MousePosition, OverviewMap, FullScreen, defaults as DefaultControls } from "ol/control";
-import OSM from "ol/source/OSM";
-import config from "react-global-configuration";
+import { Image as ImageLayer } from "ol/layer";
 import axios from "axios";
-import NessMapping from "../../nessMapping/mapping";
 
-export const InitMap = () => {
-  const {
-    proj,
-    center,
-    zoom,
-    target
-  } = config.get("MapConfig");
 
-  return NessMapping.getInstance().addMapProxy({
-    //  Display the map in the div with the id of map
-    target: target,
-    controls: DefaultControls().extend([
-      new ScaleLine(),
-      new FullScreen(),
-      new ZoomSlider(),
-      new OverviewMap({
-        layers: [
-          new TileLayer({
-            source: new OSM(),
-          }),
-        ],
-      }),
-    ]),
-    layers: [],
-    // Render the tile layers in a map view with a Mercator projection
-    view: new View({
-      projection: proj,
-      center: center,
-      zoom: zoom,
-    }),
-  });
-};
+
 
 export const Identify = (evt, mapObject, actionCB) => {
   var viewResolution = mapObject.getView().getResolution();
