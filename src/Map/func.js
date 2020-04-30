@@ -1,26 +1,20 @@
-import { Map, View } from "ol";
-import {
-  Tile as TileLayer,
-  Vector as VectorLayer,
-  Image as ImageLayer,
-} from "ol/layer";
-import {
-  ScaleLine,
-  ZoomSlider,
-  MousePosition,
-  OverviewMap,
-  FullScreen,
-  defaults as DefaultControls,
-} from "ol/control";
-import { OSM, Vector as VectorSource } from "ol/source";
+import { View } from "ol";
+import { Tile as TileLayer, Image as ImageLayer } from "ol/layer";
+import { ScaleLine, ZoomSlider, MousePosition, OverviewMap, FullScreen, defaults as DefaultControls } from "ol/control";
+import OSM from "ol/source/OSM";
 import config from "react-global-configuration";
-import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
-
 import axios from "axios";
+import NessMapping from "../../nessMapping/mapping";
 
 export const InitMap = () => {
-  const { proj, center, zoom, target } = config.get("MapConfig");
-  return new Map({
+  const {
+    proj,
+    center,
+    zoom,
+    target
+  } = config.get("MapConfig");
+
+  return NessMapping.getInstance().addMapProxy({
     //  Display the map in the div with the id of map
     target: target,
     controls: DefaultControls().extend([
@@ -92,3 +86,6 @@ export const addOverlaysSafely = (layers, mapObject, actionCB) => {
     actionCB(addedToMap);
   }
 };
+
+
+

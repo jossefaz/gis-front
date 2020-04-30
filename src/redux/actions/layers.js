@@ -2,25 +2,14 @@ import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import types from "./actionsTypes";
 
-export const addLayers = (arrayOfLayersID) => (dispatch) =>
+export const addLayers = (arrayOfLayersID) => (dispatch) => {
 
-  {
+  dispatch({
+    type: types.ADD_LAYER,
+    payload: arrayOfLayersID,
+  });
 
-    const map = mapSinglton.getInstance()
-
-    const layers = config.get("layers")
-
-
-    arrayOfLayersID.map(
-      id => map.addLayer(id)
-    )
-
-    dispatch({
-      type: types.ADD_LAYER,
-      payload: arrayOfLayersID,
-    });
-
-  }
+}
 
 
 export const setLayerVisible = (layerID) => (dispatch) =>
@@ -47,16 +36,16 @@ export const InitLayers = (layerConfig) => (dispatch) => {
   layerConfig.map((lyr) => {
     const newLyr = new ImageLayer({
       source: new ImageWMS({
-        params: lyr.params,
-        url: lyr.url,
-        serverType: lyr.serverType,
+        // params: lyr.params,
+        url: lyr.restaddress,
+        // serverType: lyr.serverType,
       }),
     });
-    newLyr.name = lyr.name;
-    newLyr.id = lyr.id;
-    newLyr.alias = lyr.alias;
-    newLyr.setVisible(Boolean(lyr.visible));
-    newLyr.selectable = lyr.selectable;
+    newLyr.name = lyr.restid;
+    newLyr.id = lyr.semanticid;
+    newLyr.alias = lyr.title;
+    newLyr.setVisible(Boolean(false));
+    newLyr.selectable = true //lyr.selectable;
     AllLayer[lyr.id] = newLyr;
   });
 

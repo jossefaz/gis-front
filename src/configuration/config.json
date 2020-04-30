@@ -62,15 +62,15 @@
                 "IsOpen": 0
             },
             {
-                "Id": 1,
-                "ToolName": "MeasureDistance",
-                "ToolTip": "מפות רקע",
-                "ToolImage": "",
-                "ToolIcon": "ruler",
+                "Id": 4,
+                "ToolName": "Identify",
+                "ToolTip": "בחירת יישות",
+                "ToolImage": "info.png",
+                "ToolActionInvoker": "",
                 "ToolInvokerType": 0,
                 "ToolTypeID": 1,
                 "OnCreate": "default",
-                "OnDestroy": "CloseDrawSession",
+                "OnDestroy": "default",
                 "ToolParams": "",
                 "ToolLocation": "",
                 "Order": 1,
@@ -80,10 +80,10 @@
                 "IsOpen": 0
             },
             {
-                "Id": 4,
-                "ToolName": "Identify",
+                "Id": 5,
+                "ToolName": "SingleLayerTest",
                 "ToolTip": "בחירת יישות",
-                "ToolImage": "info.png",
+                "ToolIcon": "ruler",
                 "ToolActionInvoker": "",
                 "ToolInvokerType": 0,
                 "ToolTypeID": 1,
@@ -119,5 +119,8 @@
         "attributeKey": "field-name",
         "attributeValue": "value",
         "description": "change is MTCS.Units attribute(s)"
+    },
+    "metaDataApi": {
+        "url": "https://localhost:5001/MetaData/getMetaData/"
     }
 }

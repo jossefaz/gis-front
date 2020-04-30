@@ -1,0 +1,91 @@
+import { View } from "ol";
+import { Tile as TileLayer, Image as ImageLayer } from "ol/layer";
+import { ScaleLine, ZoomSlider, MousePosition, OverviewMap, FullScreen, defaults as DefaultControls } from "ol/control";
+import OSM from "ol/source/OSM";
+import config from "react-global-configuration";
+import axios from "axios";
+import NessMapping from "../../nessMapping/mapping";
+
+export const InitMap = () => {
+  const {
+    proj,
+    center,
+    zoom,
+    target
+  } = config.get("MapConfig");
+
+  return NessMapping.getInstance().addMapProxy({
+    //  Display the map in the div with the id of map
+    target: target,
+    controls: DefaultControls().extend([
+      new ScaleLine(),
+      new FullScreen(),
+      new ZoomSlider(),
+      new OverviewMap({
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+        ],
+      }),
+    ]),
+    layers: [],
+    // Render the tile layers in a map view with a Mercator projection
+    view: new View({
+      projection: proj,
+      center: center,
+      zoom: zoom,
+    }),
+  });
+};
+
+export const Identify = (evt, mapObject, actionCB) => {
+  var viewResolution = mapObject.getView().getResolution();
+  mapObject
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof ImageLayer && lyr.selectable) {
+        var url = lyr
+          .getSource()
+          .getFeatureInfoUrl(evt.coordinate, viewResolution, "EPSG:4326", {
+            INFO_FORMAT: "application/json",
+            feature_count: 100,
+          });
+        if (url) {
+          axios.get(url).then((response) => {
+            actionCB(response.data.features);
+          });
+        }
+      }
+    });
+};
+
+export const addLayersSafely = (layers, mapObject, actionCB) => {
+  const addedToMap = [];
+  Object.keys(layers).map((lyrId) => {
+    if (!layers[lyrId].addedToMap) {
+      mapObject.addLayer(layers[lyrId]);
+      addedToMap.push(lyrId);
+    }
+  });
+  if (addedToMap.length > 0) {
+    actionCB(addedToMap);
+  }
+};
+
+export const addOverlaysSafely = (layers, mapObject, actionCB) => {
+  const addedToMap = [];
+  Object.keys(layers).map((lyrId) => {
+    if (!layers[lyrId].addedToMap) {
+      mapObject.addLayer(layers[lyrId]);
+      addedToMap.push(lyrId);
+    }
+  });
+  if (addedToMap.length > 0) {
+    actionCB(addedToMap);
+  }
+};
+
+
+

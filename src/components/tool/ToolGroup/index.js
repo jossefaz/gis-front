@@ -14,28 +14,40 @@ class GroupTool extends React.Component {
       Id: GroupID,
     } = this.props.Tools.Groups[this.props.GroupID];
     const CloseCB = () => this.props.toggleGroupTool(GroupID);
+
     return (
-      <Dropdown
-        open={Boolean(IsOpen)}
-        item
-        icon={
-          <a onClick={CloseCB}>
-            {GroupImage ? (
-              <img className="imageitem" src={`/img/${GroupImage}`} />
-            ) : (
-              GroupName
-            )}
-          </a>
-        }
-      >
-        <Dropdown.Menu>
-          <div className="ui segment grouptool">
-            {this.props.Tools.Groups[GroupID].tools.map((toolId) => (
-              <ToolItem key={toolId} ToolID={toolId} />
-            ))}
-          </div>
-        </Dropdown.Menu>
-      </Dropdown>
+      <React.Fragment>
+        <style>
+          {`
+#${"Group" + GroupID} {
+  position: absolute !important;
+}
+      `}
+        </style>
+        <Dropdown
+          open={Boolean(IsOpen)}
+          item
+          icon={
+            <a onClick={CloseCB}>
+              {GroupImage ? (
+                <img className="imageitem" src={`/img/${GroupImage}`} />
+              ) : (
+                  GroupName
+                )}
+            </a>
+          }
+        >
+
+          <Dropdown.Menu id={"Group" + GroupID}>
+            <div className="ui segment grouptool">
+              {this.props.Tools.Groups[GroupID].tools.map((toolId) => (
+                <ToolItem key={toolId} ToolID={toolId} />
+              ))}
+            </div>
+          </Dropdown.Menu>
+        </Dropdown>
+      </React.Fragment>
+
     );
   }
 }
