@@ -3,10 +3,25 @@ import ImageWMS from "ol/source/ImageWMS";
 import types from "./actionsTypes";
 
 export const addLayers = (arrayOfLayersID) => (dispatch) =>
-  dispatch({
-    type: types.ADD_LAYER,
-    payload: arrayOfLayersID,
-  });
+
+  {
+
+    const map = mapSinglton.getInstance()
+
+    const layers = config.get("layers")
+
+
+    arrayOfLayersID.map(
+      id => map.addLayer(id)
+    )
+
+    dispatch({
+      type: types.ADD_LAYER,
+      payload: arrayOfLayersID,
+    });
+
+  }
+
 
 export const setLayerVisible = (layerID) => (dispatch) =>
   dispatch({

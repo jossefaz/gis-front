@@ -68,6 +68,11 @@ class MapComponent extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    // TODO :
+    const map = map.getInstance(target).detroy()
+  }
+
   render() {
     const { target } = config.get("MapConfig");
     return <div id={target} className="map"></div>;
