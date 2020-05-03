@@ -2,6 +2,7 @@ import React from 'react'
 import { Tab } from 'semantic-ui-react'
 import { connect } from "react-redux";
 import { InitMap, setMapFocus } from "../../redux/actions/map"
+import { resetTools } from "../../redux/actions/tools"
 import NessMapping from "../../nessMapping/mapping";
 import './style.css'
 
@@ -10,6 +11,7 @@ import './style.css'
 export const MapTabs = (props) => {
 
     const handleTabChange = (uuid) => {
+        props.resetTools()
         if (uuid == "+") {
             props.InitMap()
         } else {
@@ -54,11 +56,11 @@ export const MapTabs = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-    maps: state.map
+    maps: state.map,
 })
 
 
 
 export default connect(mapStateToProps, {
-    InitMap, setMapFocus
+    InitMap, setMapFocus, resetTools
 })(MapTabs);

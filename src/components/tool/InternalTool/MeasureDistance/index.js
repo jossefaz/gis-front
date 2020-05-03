@@ -9,30 +9,31 @@ import "./style.css";
 class MeasureDistance extends React.Component {
 
   state = {
-
-    continuePolygonMsg: 'Click to continue drawing the polygon',
-    continueLineMsg: 'Click to continue drawing the line',
     measureMsg: {
       message: "",
       className: 'ol-tooltip ol-tooltip-measure',
-      uuid: ''
     },
-    drawObject: null
-
-
   }
 
-  measureTooltip = null;
-  DrawObject = null;
+  _measureToolTip = {};
   sketch = null;
   listener = null;
+  _draw = {};
 
 
-
-  componentDidMount() {
-    this.createMeasureTooltip();
-
+  addDrawObjectRef = (uuid) => {
+    this._draw[this.props.maps.focused] = uuid
   }
+  addMeasureToolTipRef = (uuid) => {
+    this._measureToolTip[this.props.maps.focused] = uuid
+  }
+  get draw() {
+    return this._draw[this.props.maps.focused]
+  }
+  get measureToolTip() {
+    return this._measureToolTip[this.props.maps.focused]
+  }
+
 
   createMeasureTooltip = () => {
     const uuid = addOverlay(
@@ -42,7 +43,15 @@ class MeasureDistance extends React.Component {
         positioning: 'bottom-center'
       }
     );
-    this.setState({ measureMsg: { ...this.state.measureMsg, uuid } });
+    this.addMeasureToolTipRef(uuid)
+  }
+
+  toogleToolTip = (show) => {
+    const className = show ? 'ol-tooltip ol-tooltip-measure' : 'hidden';
+    this.setState({
+      measureMsg: { ...this.state.measureMsg, className }
+    })
+
   }
 
   escapeHandler = (evt) => {
@@ -54,19 +63,19 @@ class MeasureDistance extends React.Component {
       isEscape = evt.keyCode === 27;
     }
     if (isEscape) {
-      const draw = getInteraction(this.state.drawObject)
-      if (draw) {
-        draw.abortDrawing();
-      }
+      getInteraction(this.draw).abortDrawing();
+      this.toogleToolTip(false)
     }
   }
 
   onOpenDrawSession = (drawtype) => {
-    this.removeDrawObject()
-    const uuid = addInteraction({ Type: "Draw", drawConfig: { type: drawtype } })
-    this.setState({ drawObject: uuid });
-    this.onDrawStart(uuid);
-    this.onDrawEnd(uuid);
+    this.removeDrawObject(false);
+    this.toogleToolTip(true)
+    this.createMeasureTooltip();
+    const uuid = addInteraction({ Type: "Draw", drawConfig: { type: drawtype } });
+    this.addDrawObjectRef(uuid)
+    this.onDrawStart(this.draw);
+    this.onDrawEnd(this.draw);
 
   }
 
@@ -89,8 +98,8 @@ class MeasureDistance extends React.Component {
               output = formatLength(geom);
               tooltipCoord = geom.getLastCoordinate();
             }
-            this.setState({ measureMsg: { ...this.state.measureMsg, message: output } })
-            getOverlay(this.state.measureMsg.uuid).setPosition(tooltipCoord);
+            this.setState({ measureMsg: { ...this.state.measureMsg, message: output, className: 'ol-tooltip ol-tooltip-measure' } })
+            getOverlay(this.measureToolTip).setPosition(tooltipCoord);
           });
         });
     }
@@ -101,33 +110,55 @@ class MeasureDistance extends React.Component {
     if (draw) {
       draw.on('drawend',
         () => {
-          this.setState({
-            measureMsg: { ...this.state.measureMsg, className: 'ol-tooltip ol-tooltip-static' }
-          })
-          getOverlay(this.state.measureMsg.uuid).setOffset([0, -7]);
+          this.toogleToolTip(true)
+          getOverlay(this.measureToolTip).setOffset([0, -7]);
         });
       unByKey(this.listener);
     }
   }
 
-  removeDrawObject = () => {
-    if (this.state.drawObject) {
-      removeInteraction(getInteraction(this.state.drawObject))
-      removeOverlay(getOverlay(this.state.measureMsg.uuid));
-      this.setState({
-        measureMsg: { ...this.state.measureMsg, className: 'ol-tooltip ol-tooltip-static hidden' }
-      })
+  removeDrawObject = (rmOverlay, closeComponent, reset) => {
+    if (closeComponent) {
+      Object.keys(this._draw).map(oid => removeInteraction(getInteraction(this._draw[oid], oid), oid));
+      Object.keys(this._measureToolTip).map(oid => removeOverlay(getOverlay(this._measureToolTip[oid], oid), oid));
+    }
+    else if (this.draw) {
+      removeInteraction(getInteraction(this.draw))
+      if (!reset) {
+        rmOverlay ? removeOverlay(getOverlay(this.measureToolTip)) : this.toogleToolTip(false)
+      }
     }
   }
 
 
+
+  // LIFECYCLE
+
+  componentDidMount() {
+    this.createMeasureTooltip();
+  }
+
+
   componentDidUpdate() {
+
     document.addEventListener("keydown", this.escapeHandler);
+    if (this.props.Tools.length > 0) {
+      this.props.Tools.map(toolid => {
+        if (toolid == this.props.toolID) {
+          this.onReset()
+        }
+      })
+    }
     // this.addDrawObject()
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
-    this.removeDrawObject()
+    this.removeDrawObject(true, true)
+  }
+
+  onReset = () => {
+    this.removeDrawObject(true, false, true)
+    this.createMeasureTooltip();
   }
 
   render() {
@@ -156,7 +187,8 @@ class MeasureDistance extends React.Component {
 const mapStateToProps = (state) => {
   return {
     Features: state.Features,
-    maps: state.map
+    maps: state.map,
+    Tools: state.Tools.reset
   };
 };
 

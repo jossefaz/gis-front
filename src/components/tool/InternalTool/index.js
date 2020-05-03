@@ -3,5 +3,5 @@ import toolRegistry from "./registry";
 
 export default (props) => {
   const InternalTool = toolRegistry[props.toolName];
-  return <InternalTool />;
+  return <InternalTool toolID={props.toolID} />;
 };
