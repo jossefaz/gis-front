@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 const FeatureDetail = ({ Feature }) => {
   return Feature ? (
-    <table class="ui very basic collapsing celled table">
+    <table className="ui very basic collapsing celled table">
       <thead>
         <tr>
           <th>Value</th>
@@ -12,7 +12,7 @@ const FeatureDetail = ({ Feature }) => {
       </thead>
       <tbody>
         {Object.keys(Feature.properties).map((property) => (
-          <tr>
+          <tr key={property}>
             <td>{Feature.properties[property]}</td>
             <td>{property}</td>
           </tr>

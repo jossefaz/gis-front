@@ -1,22 +1,30 @@
 import React from 'react';
-import Map from "./containers/Map";
+import MapTabs from "./containers/MapTabs";
+import Map from "./components/Map";
 import TopNav from "./containers/TopNav";
 import SideNav from "./containers/SideNav";
 import config from "react-global-configuration";
 import { logLevel, LogIt } from "./utils/logs";
 import { InitTools } from "./redux/actions/tools";
 import { connect } from "react-redux";
+import { InitMap } from "./redux/actions/map";
 import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
+import { InitIcons } from './utils/faicons'
 import Widget from './containers/Widget';
+
+
 class App extends React.Component {
   componentDidMount() {
-    
+
     LogIt(logLevel.INFO, "App init");
-    
+    InitIcons()
+    this.props.InitMap();
+    this.props.InitLayers(config.get("layers"));
     this.props.InitRasters();
     this.props.InitTools(config.get("Widgets"));
   }
+
   render() {
     return (
       <React.Fragment>
@@ -26,6 +34,7 @@ class App extends React.Component {
               <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
             </div>
             <div className="row">
+              <MapTabs />
               <Map />
             </div>
           </div>
@@ -37,8 +46,8 @@ class App extends React.Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { Tools: state.Tools };
+  return { Tools: state.Tools, maps: state.map };
 };
-export default connect(mapStateToProps, { InitTools, InitLayers, InitRasters })(App);
+export default connect(mapStateToProps, { InitTools, InitLayers, InitRasters, InitMap })(App);
 
 

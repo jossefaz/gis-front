@@ -5,31 +5,27 @@ import "./style.css";
 class FeatureList extends Component {
   renderSelectedFeature = () => {
     const { selectedFeatures, currentFeature } = this.props.Features;
-    return selectedFeatures ? (
-      selectedFeatures.length > 0 ? (
-        selectedFeatures.map((feature) => (
-          <div className="item" key={feature.id}>
-            <div
-              className="content pointerCur"
-              onClick={() => this.props.setCurrentFeature(feature.id)}
-            >
-              <p
-                className={
-                  currentFeature
-                    ? currentFeature.id == feature.id
-                      ? "currentFeature"
-                      : ""
+    return selectedFeatures.length > 0 ? (
+      selectedFeatures.map((feature) => (
+        <div className="item" key={feature.id}>
+          <div
+            className="content pointerCur"
+            onClick={() => this.props.setCurrentFeature(feature.id)}
+          >
+            <p
+              className={
+                currentFeature
+                  ? currentFeature.id == feature.id
+                    ? "currentFeature"
                     : ""
-                }
-              >
-                {feature.properties.migrash}
-              </p>
-            </div>
+                  : ""
+              }
+            >
+              {feature.properties.migrash}
+            </p>
           </div>
-        ))
-      ) : (
-        <div>SELECT FIRST ON MAP</div>
-      )
+        </div>
+      ))
     ) : (
       <div>SELECT FIRST ON MAP</div>
     );
