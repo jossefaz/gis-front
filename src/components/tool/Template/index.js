@@ -4,11 +4,23 @@ import "./style.css";
 const ToolTemplate = (props) => {
   return (
     <PopUp>
-      <div className="ui segment cSegment">
-        <div className="segmentControls">
-          <a className="close" onClick={() => props.CloseTool()}></a>
+      <div
+        className={`window ${props.focused ? "focusedWindow" : ""}`}
+        onClick={() => props.FocusMe()}
+      >
+        <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
+          <div className="buttons">
+            <div className="close">
+              <a className="closebutton" onClick={() => props.CloseTool()}>
+                <span>
+                  <strong>x</strong>
+                </span>
+              </a>
+            </div>
+          </div>
+          {props.toolName}
         </div>
-        {props.children}
+        <div className="content">{props.children}</div>
       </div>
     </PopUp>
   );
