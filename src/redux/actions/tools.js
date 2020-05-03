@@ -30,11 +30,22 @@ export const setToolFocused = (ToolId) => (dispatch) => {
   });
 };
 
+
+
+export const resetTools = () => async (dispatch, getState) => {
+  const tools = getState().Tools.order
+  await _resetTools(tools, dispatch)
+  dispatch({
+    type: types.TOOL_RESETED
+  });
+}
+
 export const InitTools = (ToolConfig) => (dispatch) => {
   const gTools = {
     tools: {},
     Groups: {},
     order: [],
+    reset: []
   };
 
   ToolConfig.groups.map((group) => {
@@ -63,3 +74,13 @@ const _getLifeCycleFunc = (toolState) => {
     ? LifeCycleRegistry[toolState.OnDestroy]
     : LifeCycleRegistry[toolState.OnCreate];
 };
+
+const _resetTools = (toolsList, dispatch) => {
+  return new Promise((resolve, reject) => {
+    dispatch({
+      type: types.RESET_TOOLS,
+      payload: toolsList,
+    });
+    resolve();
+  });
+}

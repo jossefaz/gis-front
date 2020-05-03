@@ -57,8 +57,8 @@ export const removeLayer = (overlay) => {
  * 
  */
 // GET
-export const getInteraction = (uuid) => {
-    return getInteractionObject(uuid, getFocusedMap())
+export const getInteraction = (uuid, map_uuid) => {
+    return getInteractionObject(uuid, _getmap(map_uuid))
 }
 // SET
 export const addInteraction = (config) => {
@@ -66,8 +66,8 @@ export const addInteraction = (config) => {
     return Interaction.AddSelfToMap(getFocusedMapProxy())
 }
 // DELETE
-export const removeInteraction = (interaction) => {
-    return deleteInteractionObject(interaction, getFocusedMap())
+export const removeInteraction = (interaction, map_uuid) => {
+    return deleteInteractionObject(interaction, _getmap(map_uuid))
 }
 
 /**
@@ -76,8 +76,8 @@ export const removeInteraction = (interaction) => {
  */
 
 // GET
-export const getOverlay = (uuid) => {
-    return getOverlayObject(uuid, getFocusedMap())
+export const getOverlay = (uuid, map_uuid) => {
+    return getOverlayObject(uuid, _getmap(map_uuid))
 }
 
 // SET
@@ -87,6 +87,10 @@ export const addOverlay = (config) => {
 }
 
 // DELETE
-export const removeOverlay = (overlay) => {
-    return deleteOverlayObject(overlay, getFocusedMap())
+export const removeOverlay = (overlay, map_uuid) => {
+    return deleteOverlayObject(overlay, _getmap(map_uuid))
+}
+
+const _getmap = (map_uuid) => {
+    return map_uuid ? NessMapping.getInstance().getMapProxy(map_uuid).OLMap : getFocusedMap()
 }

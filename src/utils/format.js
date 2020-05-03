@@ -7,9 +7,13 @@ import { getArea, getLength } from 'ol/sphere';
  */
 
 export const formatLength = (line) => {
-    var length = getLength(line);
+    var length = getLength(line, {
+        projection: 'EPSG:4326',
+        radius: 6378137
+    });
+    console.log(line)
     var output;
-    if (length > 100) {
+    if (length > 1000) {
         output = (Math.round(length / 1000 * 100) / 100) +
             ' ' + 'km';
     } else {
@@ -20,20 +24,26 @@ export const formatLength = (line) => {
 };
 
 
+
+
 /**
  * Format area output.
  * @param {Polygon} polygon The polygon.
  * @return {string} Formatted area.
  */
 export const formatArea = (polygon) => {
-    var area = getArea(polygon);
+    var area = getArea(polygon, {
+        projection: 'EPSG:4326',
+        radius: 6378137
+    });
+    console.log(area)
     var output;
-    if (area > 10000) {
+    if (area > 1000) {
         output = (Math.round(area / 1000000 * 100) / 100) +
-            ' ' + 'km<sup>2</sup>';
+            ' ' + 'km2';
     } else {
         output = (Math.round(area * 100) / 100) +
-            ' ' + 'm<sup>2</sup>';
+            ' ' + 'm2';
     }
     return output;
 };
