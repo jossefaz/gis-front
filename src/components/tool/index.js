@@ -21,20 +21,20 @@ class Loader extends React.Component {
             toolName={ToolName}
             FocusMe={FocusMe}
           >
-            <ExternalTool url={ToolLocation} />
+            <ExternalTool url={ToolLocation} toolID={this.props.ToolID} />
           </ToolTemplate>
         ) : (
-          <ToolTemplate
-            CloseTool={CloseCB}
-            focused={focused}
-            toolName={ToolName}
-            FocusMe={FocusMe}
-          >
-            <Suspense fallback={<div>Loading ...</div>}>
-              <InternalTool toolName={ToolName} />
-            </Suspense>
-          </ToolTemplate>
-        )}
+            <ToolTemplate
+              CloseTool={CloseCB}
+              focused={focused}
+              toolName={ToolName}
+              FocusMe={FocusMe}
+            >
+              <Suspense fallback={<div>Loading ...</div>}>
+                <InternalTool toolName={ToolName} toolID={this.props.ToolID} />
+              </Suspense>
+            </ToolTemplate>
+          )}
       </React.Fragment>
     );
   }

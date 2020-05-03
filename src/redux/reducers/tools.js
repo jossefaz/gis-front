@@ -1,7 +1,14 @@
 import types from "../actions/actionsTypes";
 import produce from "immer";
 
-export default function (state = null, action) {
+const InitialState = {
+  tools: {},
+  Groups: {},
+  order: [],
+  reset: []
+}
+
+export default function (state = InitialState, action) {
   switch (action.type) {
     case types.INIT_TOOLS:
       return action.payload;
@@ -21,6 +28,16 @@ export default function (state = null, action) {
             ); // remove this tool from open tool list
           }
         }
+      });
+
+    case types.RESET_TOOLS:
+      return produce(state, (draftState) => {
+        draftState.reset = action.payload;
+      });
+
+    case types.TOOL_RESETED:
+      return produce(state, (draftState) => {
+        draftState.reset = [];
       });
 
     case types.SET_TOOL_FOCUSED:

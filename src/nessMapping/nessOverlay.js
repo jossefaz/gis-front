@@ -38,6 +38,7 @@ export default class NessOverlay {
             if (olOverlay) {
                 this.parent.OLMap.addOverlay(olOverlay);
                 olOverlay.set(NessKeys.NESS_OVERLAY_UUID_KEY, this.uuid.value, true);
+                olOverlay.set(NessKeys.PARENT_UUID, this.parent.uuid.value, true);
                 return this.uuid.value;
             } else {
                 throw "AddOverlay failed - Overlay not created correctly"

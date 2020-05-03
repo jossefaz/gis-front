@@ -38,7 +38,7 @@ export default class NessInteraction {
 
                 // OK, layer is in! set uuid 
                 olInteraction.set(NessKeys.NESS_INTERACTION_UUID_KEY, this.uuid.value, true);
-
+                olInteraction.set(NessKeys.PARENT_UUID, this.parent.uuid.value, true);
                 // and now refresh mapIndex
                 this.RefreshMapIndex();
 
