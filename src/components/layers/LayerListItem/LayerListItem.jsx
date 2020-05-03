@@ -6,10 +6,18 @@ import {
   setLayerOpacity,
 } from "../../../redux/actions/layers";
 import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter";
-import { Menu } from "semantic-ui-react";
+import { Menu, Label } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
+import { Dropdown } from "semantic-ui-react";
 
 class LayerListItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLayerItemClicked: false,
+    };
+  }
+
   settings = {
     start: 0.7,
     min: 0,
@@ -31,6 +39,16 @@ class LayerListItem extends Component {
     }
   };
 
+  showLayerPanel = (title) => {
+    return;
+  };
+
+  displayLayerMenu = () => {
+    this.setState({
+      displayLayerMenu: !this.state.displayLayerMenu,
+    });
+  };
+
   render() {
     const lyr = this.props.lyr;
     return (
@@ -42,9 +60,23 @@ class LayerListItem extends Component {
             onChange={() => this.addLayer(lyr)}
             defaultChecked={lyr.visible}
           />
-          <label className="ui align left">{lyr.title}</label>
+          <label
+            className="ui align left"
+            onClick={() => this.displayLayerMenu()}
+          >
+            {lyr.title}
+          </label>
         </div>
-        <Slider color="blue" settings={this.settings} />
+
+        {this.state.displayLayerMenu ? (
+          <div>
+            {/* <label>שכבה חדשה</label>
+            <Slider color="blue" settings={this.settings} /> */}
+            <Dropdown.Menu>
+              <Slider color="blue" settings={this.settings} />
+            </Dropdown.Menu>
+          </div>
+        ) : null}
       </Menu.Item>
     );
   }
