@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import "./style.css";
-import NessMapping from "../../nessMapping/mapping";
+import { getFocusedMap } from '../../nessMapping/api'
 import { Identify } from "./func";
 import { logLevel, LogIt } from "../../utils/logs";
 import { setSelectedFeatures } from '../../redux/actions/features'
@@ -11,7 +11,7 @@ class MapComponent extends React.Component {
 
   componentDidUpdate() {
     if (this.props.map) {
-      this.map = NessMapping.getInstance().getFocusedMap()
+      this.map = getFocusedMap()
       this.map.on("click", (evt) => {
         const { tools, order: focusedTool } = this.props.Tools;
         if (focusedTool.length > 0) {

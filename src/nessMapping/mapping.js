@@ -13,15 +13,9 @@ const NessMapping = (function () {
                 return this._mapProxies[uuid];
             },
 
-            getFocusedMap() {
-                const state = store.getState();
-                return this._mapProxies[state.map.focused].OLMap
-            },
 
             addMapProxy(mapConfig) {
                 var mp = new MapProxy(mapConfig);
-                console.log(mp._olmap)
-                console.log(mp.uuid.value)
                 this._mapProxies[mp.uuid.value] = mp;
                 return mp.uuid.value;
             },

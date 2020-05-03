@@ -6,45 +6,6 @@ export const setSelectedFeatures = (features) => (dispatch) =>
     payload: features,
   });
 
-export const openDrawSession = (drawType) => (dispatch, getState) => {
-  //First close the current session
-  closeDrawSessionAsync(dispatch, getState).then((state) => {
-    const { source, vector: Layer } = getEmptyVectorLayer();
-    let Session = true;
-    let DrawObject = getDrawObject(source, drawType);
-    dispatch({
-      type: types.OPEN_DRAW_SESSION,
-      payload: { Session, Layer, DrawObject },
-    });
-  });
-};
-
-export const closeDrawSession = () => (dispatch, getState) => {
-  _safelyAbortDrawing(getState);
-  dispatch({
-    type: types.CLOSE_DRAW_SESSION,
-  });
-};
-
-export const closeDrawSessionAsync = (dispatch, getState) => {
-  _safelyAbortDrawing(getState);
-  return new Promise((resolve, reject) => {
-    dispatch({
-      type: types.CLOSE_DRAW_SESSION,
-    });
-    resolve();
-  });
-
-}
-
-const _safelyAbortDrawing = (getState) => {
-  let DrawObject = getState().Features.Draw.DrawObject
-  if (DrawObject) {
-    DrawObject.abortDrawing();
-  }
-}
-
-
 
 export const setCurrentFeature = (featureId) => (dispatch, getState) => {
   const Features = getState().Features.selectedFeatures;

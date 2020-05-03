@@ -59,3 +59,8 @@ export const getDrawObject = (source, type) => {
     }),
   });
 };
+
+export const newDraw = (drawType) => {
+  const { source, vector: Layer } = getEmptyVectorLayer();
+  return getDrawObject(source, drawType);
+}
