@@ -3,6 +3,9 @@ import GenerateUUID from '../utils/uuid';
 import NessLayer from "./nessLayer";
 import { Map } from "ol";
 
+
+
+
 export default class MapProxy {
     constructor(mapConfig) {
         var uuid = { value: GenerateUUID() };

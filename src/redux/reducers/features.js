@@ -4,7 +4,11 @@ import produce from "immer";
 const initialState = {
   selectedFeatures: [],
   currentFeature: null,
-  Draw: {},
+  Draw: {
+    Session: false,
+    Layer: null,
+    DrawObject: null
+  },
 };
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -23,6 +27,9 @@ export default function (state = initialState, action) {
     case types.CLOSE_DRAW_SESSION:
       return produce(state, (draftState) => {
         draftState.Draw.Session = false;
+        draftState.Draw.Layer = null;
+        draftState.Draw.DrawObject = null;
+
       });
 
     case types.SET_CURRENT_FEATURE:

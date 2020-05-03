@@ -11,7 +11,7 @@ class MapComponent extends React.Component {
 
   componentDidUpdate() {
     if (this.props.map) {
-      this.map = NessMapping.getInstance().getMapProxy(this.props.map.focused)._olmap
+      this.map = NessMapping.getInstance().getFocusedMap()
       this.map.on("click", (evt) => {
         const { tools, order: focusedTool } = this.props.Tools;
         if (focusedTool.length > 0) {

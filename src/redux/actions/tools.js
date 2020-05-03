@@ -6,6 +6,7 @@ export const toggleTool = (ToolId) => async (dispatch, getState) => {
 
   await _getLifeCycleFunc(toolConfig)(
     dispatch,
+    getState,
     toolConfig.ToolName,
     toolConfig.IsOpen
   );

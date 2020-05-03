@@ -11,12 +11,12 @@ class Loader extends React.Component {
     return (
       <a className="item" onClick={ToggleCB}>
         {ToolIcon ? (
-          <FontAwesomeIcon icon={ToolIcon} size="lg" />
+          <FontAwesomeIcon icon={ToolIcon} size="2x" />
         ) : ToolImage ? (
           <img src={`/img/${ToolImage}`} />
         ) : (
-          ToolName
-        )}
+              ToolName
+            )}
       </a>
     );
   }

@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import MapProxy from "./mapProxy";
+import store from '../redux/store';
 
 const NessMapping = (function () {
     var instance;
@@ -10,6 +11,11 @@ const NessMapping = (function () {
 
             getMapProxy(uuid) {
                 return this._mapProxies[uuid];
+            },
+
+            getFocusedMap() {
+                const state = store.getState();
+                return this._mapProxies[state.map.focused].OLMap
             },
 
             addMapProxy(mapConfig) {
