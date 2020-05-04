@@ -2,7 +2,11 @@ import store from '../redux/store';
 import NessMapping from "./mapping";
 import NessLayer, {
     getLayerObject,
-    deleteLayerObject
+    deleteLayerObject,
+    setVisible,
+    getVisible,
+    setOpacity,
+    getOpacity
 } from './nessLayer';
 import NessOverlay, {
     getOverlayObject,
@@ -50,6 +54,26 @@ export const addLayer = (config) => {
 // DELETE
 export const removeLayer = (overlay) => {
     return deleteLayerObject(overlay, getFocusedMap())
+}
+
+// SET VISIBLE
+export const setLayerVisiblity = (uuid, visibilty) => {
+    return setVisible(uuid, getFocusedMap(), visibilty);
+}
+
+// GET VISIBLE
+export const getLayerVisiblity = (uuid) => {
+    return getVisible(uuid, getFocusedMap());
+}
+
+// SET OPACTIY
+export const setLayerOpacity = (uuid, opacity) => {
+    return setOpacity(uuid, getFocusedMap(), opacity);
+}
+
+// GET OPACTIY
+export const getLayerOpacity = (uuid) => {
+    return getOpacity(uuid, getFocusedMap());
 }
 
 /**

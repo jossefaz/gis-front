@@ -8,8 +8,8 @@ export const MDUtils = {
 
         // this is a debug layer...
         // TODO: remove this
-        return { 
-            metadataId: mdId, 
+        return {
+            metadataId: mdId,
             alias: 'MockLayer',
             config: {
                 LayerType: 'OL_ImageLayer',

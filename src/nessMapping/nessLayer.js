@@ -158,7 +158,6 @@ export const getLayerObject = (uuid, OLMap) => {
     }
     return -1;
 }
-
 export const deleteLayerObject = (layer, OLMap) => {
     try {
         OLMap.removeLayer(layer)
@@ -167,4 +166,30 @@ export const deleteLayerObject = (layer, OLMap) => {
         return -1;
 
     }
+}
+export const setVisible = (uuid, OLMap, visibilty) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        layer.setVisible(visibilty);
+    }
+}
+export const getVisible = (uuid, OLMap) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        return layer.getVisible();
+    }
+    return -1;
+}
+export const setOpacity = (uuid, OLMap, opacity) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        layer.setOpacity(opacity);
+    }
+}
+export const getOpacity = (uuid, OLMap) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        return layer.getOpacity();
+    }
+    return -1;
 }
