@@ -4,9 +4,9 @@ import { setCurrentFeature } from "../../../../../redux/actions/features";
 import "./style.css";
 class FeatureList extends Component {
   renderSelectedFeature = () => {
-    const { selectedFeatures, currentFeature } = this.props.Features;
-    return selectedFeatures.length > 0 ? (
-      selectedFeatures.map((feature) => (
+    const { selectedFeatures, currentLayer, currentFeature } = this.props.Features;
+    return currentLayer ? selectedFeatures[currentLayer].length > 0 ? (
+      selectedFeatures[currentLayer].map((feature) => (
         <div className="item" key={feature.id}>
           <div
             className="content pointerCur"
@@ -27,8 +27,8 @@ class FeatureList extends Component {
         </div>
       ))
     ) : (
-      <div>SELECT FIRST ON MAP</div>
-    );
+        <div>SELECT FIRST ON MAP</div>
+      ) : null
   };
 
   render() {

@@ -19,9 +19,7 @@ const FeatureDetail = ({ Feature }) => {
         ))}
       </tbody>
     </table>
-  ) : (
-    <div>Select a Feature !</div>
-  );
+  ) : null;
 };
 
 const mapStateToProps = (state) => {
