@@ -5,12 +5,15 @@ import { getFocusedMap } from '../../nessMapping/api'
 import { Identify } from "./func";
 import { logLevel, LogIt } from "../../utils/logs";
 import { setSelectedFeatures } from '../../redux/actions/features'
+import { setRaster } from '../../redux/actions/raster'
+
 class MapComponent extends React.Component {
 
 
 
   componentDidUpdate() {
     if (this.props.map) {
+
       this.map = getFocusedMap()
       this.map.on("click", (evt) => {
         const { tools, order: focusedTool } = this.props.Tools;
@@ -36,10 +39,12 @@ class MapComponent extends React.Component {
       });
     }
 
-    if (this.props.Rasters) {
-      const { Catalog, Focused } = this.props.Rasters;
-      this.map.getLayers().setAt(0, Catalog[Focused].layer);
+    if (this.map.getLayers().getArray().length == 0) {
+      this.props.setRaster("osm")
     }
+
+
+
 
   }
 
@@ -51,9 +56,8 @@ class MapComponent extends React.Component {
 const mapStateToProps = (state) => {
   return {
     map: state.map,
-    Rasters: state.Rasters,
     Tools: state.Tools
   };
 };
 
-export default connect(mapStateToProps, { setSelectedFeatures })(MapComponent);
+export default connect(mapStateToProps, { setSelectedFeatures, setRaster })(MapComponent);
