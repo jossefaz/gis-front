@@ -45,7 +45,8 @@ export const InitTools = (ToolConfig) => (dispatch) => {
     tools: {},
     Groups: {},
     order: [],
-    reset: []
+    reset: [],
+    blueprint: {}
   };
 
   ToolConfig.groups.map((group) => {
@@ -63,6 +64,8 @@ export const InitTools = (ToolConfig) => (dispatch) => {
         : (gTools.Groups[ToolGroupId]["tools"] = [RandomId]);
     }
   });
+  gTools.blueprint.tools = JSON.parse(JSON.stringify(gTools.tools))
+  gTools.blueprint.Groups = JSON.parse(JSON.stringify(gTools.Groups))
   dispatch({
     type: types.INIT_TOOLS,
     payload: gTools,

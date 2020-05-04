@@ -5,7 +5,8 @@ const InitialState = {
   tools: {},
   Groups: {},
   order: [],
-  reset: []
+  reset: [],
+  blueprint: {}
 }
 
 export default function (state = InitialState, action) {
@@ -37,6 +38,8 @@ export default function (state = InitialState, action) {
 
     case types.TOOL_RESETED:
       return produce(state, (draftState) => {
+        draftState.tools = JSON.parse(JSON.stringify(draftState.blueprint.tools))
+        draftState.Groups = JSON.parse(JSON.stringify(draftState.blueprint.Groups))
         draftState.reset = [];
       });
 

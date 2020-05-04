@@ -1,7 +1,7 @@
 import store from '../redux/store';
 import NessMapping from "./mapping";
 import NessOverlay, { getOverlayObject, deleteOverlayObject } from "./nessOverlay";
-import NessInteraction, { getInteractionObject, deleteInteractionObject } from "./nessInteraction";
+import NessInteraction, { getInteractionObject, deleteInteractionObject } from "./interaction";
 
 
 /**
@@ -25,17 +25,21 @@ export const getFocusedMapProxy = () => {
  * 
  */
 // GET
-export const getInteraction = (uuid, map_uuid) => {
-    return getInteractionObject(uuid, _getmap(map_uuid))
+export const getInteraction = (uuid) => {
+    return NessInteraction.getInstance().getInteractionProxy(uuid)
 }
 // SET
 export const addInteraction = (config) => {
-    const Interaction = new NessInteraction(config)
-    return Interaction.AddSelfToMap(getFocusedMapProxy())
+    const InteractionProxy = NessInteraction.getInstance().addInteractionProxy(config)
+    return InteractionProxy.AddSelfToMap(getFocusedMapProxy())
 }
+
 // DELETE
-export const removeInteraction = (interaction, map_uuid) => {
-    return deleteInteractionObject(interaction, _getmap(map_uuid))
+export const removeInteraction = (uuid) => {
+    const InteractionProxy = NessInteraction.getInstance().getInteractionProxy(uuid)
+    InteractionProxy.RemoveSelfFromMap()
+    NessInteraction.getInstance().killInteractionProxy(uuid)
+    return true
 }
 
 /**
