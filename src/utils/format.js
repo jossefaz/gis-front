@@ -11,7 +11,6 @@ export const formatLength = (line) => {
         projection: 'EPSG:4326',
         radius: 6378137
     });
-    console.log(line)
     var output;
     if (length > 1000) {
         output = (Math.round(length / 1000 * 100) / 100) +
@@ -36,7 +35,6 @@ export const formatArea = (polygon) => {
         projection: 'EPSG:4326',
         radius: 6378137
     });
-    console.log(area)
     var output;
     if (area > 1000) {
         output = (Math.round(area / 1000000 * 100) / 100) +
