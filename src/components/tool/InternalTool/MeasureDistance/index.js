@@ -10,7 +10,6 @@ class MeasureDistance extends React.Component {
 
   state = {
     measureMsg: {
-      message: "",
       className: 'ol-tooltip ol-tooltip-measure',
     },
   }
@@ -38,7 +37,7 @@ class MeasureDistance extends React.Component {
   createMeasureTooltip = () => {
     const uuid = addOverlay(
       {
-        element: document.getElementById('measureTooltip'),
+        element: this.generateOverlayDiv(),
         offset: [0, -15],
         positioning: 'bottom-center'
       }
@@ -69,11 +68,12 @@ class MeasureDistance extends React.Component {
   }
 
   onOpenDrawSession = (drawtype) => {
-    this.removeDrawObject(false);
+    this.removeDrawObject();
     this.toogleToolTip(true)
-    this.createMeasureTooltip();
     const uuid = addInteraction({ Type: "Draw", drawConfig: { type: drawtype } });
     this.addDrawObjectRef(uuid)
+    debugger
+    this.createMeasureTooltip();
     this.onDrawStart(this.draw);
     this.onDrawEnd(this.draw);
 
@@ -98,7 +98,8 @@ class MeasureDistance extends React.Component {
               output = formatLength(geom);
               tooltipCoord = geom.getLastCoordinate();
             }
-            this.setState({ measureMsg: { ...this.state.measureMsg, message: output, className: 'ol-tooltip ol-tooltip-measure' } })
+            console.log(this.state)
+            this.setState({ measureMsg: { ...this.state.measureMsg, [this.props.maps.focused]: output, className: 'ol-tooltip ol-tooltip-measure' } })
             getOverlay(this.measureToolTip).setPosition(tooltipCoord);
           });
         });
@@ -125,7 +126,7 @@ class MeasureDistance extends React.Component {
     else if (this.draw) {
       removeInteraction(getInteraction(this.draw))
       if (!reset) {
-        rmOverlay ? removeOverlay(getOverlay(this.measureToolTip)) : this.toogleToolTip(false)
+        removeOverlay(getOverlay(this.measureToolTip))
       }
     }
   }
@@ -133,10 +134,6 @@ class MeasureDistance extends React.Component {
 
 
   // LIFECYCLE
-
-  componentDidMount() {
-    this.createMeasureTooltip();
-  }
 
 
   componentDidUpdate() {
@@ -157,14 +154,29 @@ class MeasureDistance extends React.Component {
   }
 
   onReset = () => {
-    this.removeDrawObject(true, false, true)
-    this.createMeasureTooltip();
+    this.renderOverlayDiv();
+  }
+
+  generateOverlayDiv() {
+    const overlayDiv = document.createElement("div")
+    overlayDiv.setAttribute("id", `measureToolTip${this.props.maps.focused}`)
+    overlayDiv.setAttribute("class", "ol-tooltip ol-tooltip-measure")
+    return overlayDiv;
+  }
+
+  renderOverlayDiv() {
+
+    if (this.draw && document.querySelector(`#measureToolTip${this.props.maps.focused}`)) {
+      const overlayDiv = document.querySelector(`#measureToolTip${this.props.maps.focused}`)
+      overlayDiv.innerHTML = this.state.measureMsg[this.props.maps.focused]
+      overlayDiv.className = this.state.measureMsg.className
+    }
   }
 
   render() {
+    this.renderOverlayDiv();
     return (
       <React.Fragment>
-        <div className={this.state.measureMsg.className} id="measureTooltip">{this.state.measureMsg.message}</div>
         <div className="ui grid">
           <button
             className="ui icon button"
