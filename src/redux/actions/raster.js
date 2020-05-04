@@ -1,12 +1,22 @@
 import { OSM, XYZ } from "ol/source";
 import TileLayer from "ol/layer/Tile";
 import types from "./actionsTypes";
+import { getFocusedMap } from '../../nessMapping/api'
 
-export const setRaster = (rasterName) => (dispatch) =>
+export const setRaster = (rasterName) => (dispatch, getState) => {
+
+  const { Catalog } = getState().Rasters;
+  getFocusedMap().getLayers().setAt(0, Catalog[rasterName].layer);
+
   dispatch({
     type: types.SET_RASTER,
     payload: rasterName,
   });
+
+}
+
+
+
 
 export const InitRasters = () => (dispatch) => {
   const Rasters = {};

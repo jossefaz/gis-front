@@ -4,7 +4,7 @@ import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
 import NessMapping from './mapping'
 import NessKeys from './keys'
-import { newDraw } from '../utils/func'
+import { newDraw } from '../utils/interactions'
 export default class NessInteraction {
     constructor(config) {
         this.uuid = { value: GenerateUUID() };
@@ -15,12 +15,13 @@ export default class NessInteraction {
     }
     RefreshMapIndex() {
         this.mapIndex = -1;
-
         if (this.parent && this.parent.OLMap && this.uuid) {
             this.mapIndex = _getMapIndex(this);
         }
-
         return this.mapIndex;
+    }
+    get OLInteraction() {
+        return this._olInteraction;
     }
     AddSelfToMap(parent) {
         var okToAdd = false;
@@ -30,7 +31,7 @@ export default class NessInteraction {
         }
 
         if (okToAdd) {
-            var olInteraction = _toOLInteraction(this);
+            const { olInteraction, sourceLayer } = _toOLInteraction(this);
 
             if (olInteraction) {
                 // add the layer to the map
@@ -39,6 +40,8 @@ export default class NessInteraction {
                 // OK, layer is in! set uuid 
                 olInteraction.set(NessKeys.NESS_INTERACTION_UUID_KEY, this.uuid.value, true);
                 olInteraction.set(NessKeys.PARENT_UUID, this.parent.uuid.value, true);
+                this._olInteraction = olInteraction
+                this.sourceLayer = sourceLayer
                 // and now refresh mapIndex
                 this.RefreshMapIndex();
 
@@ -50,6 +53,9 @@ export default class NessInteraction {
             }
         }
     }
+    RemoveSelfFromMap() {
+        this.parent.OLMap.removeInteraction(this._olInteraction);
+    }
 
 }
 
@@ -58,16 +64,18 @@ export default class NessInteraction {
 ////////////////////////////////////////////////////////
 const _toOLInteraction = (ni) => {
     // TODO: init a propper OpenLayers Layer object and return it
-    var newInteraction = null;
+    let olInteraction, sourceLayer = null;
     switch (ni.config.Type) {
         case "Draw":
-            newInteraction = newDraw(ni.config.drawConfig.type)
+            const { Interaction, Layer } = newDraw(ni.config.drawConfig.type, ni.config.sourceLayer)
+            olInteraction = Interaction
+            sourceLayer = Layer
             break;
     }
-    if (!newInteraction) {
+    if (!olInteraction) {
         throw "Failed creating OL Interaction";
     }
-    return newInteraction;
+    return { olInteraction, sourceLayer };
 }
 
 const _getMapIndex = (ni) => {
@@ -78,20 +86,3 @@ const _getMapIndex = (ni) => {
     return -1;
 }
 
-export const getInteractionObject = (uuid, OLMap) => {
-    if (uuid) {
-        const interactions = OLMap.getInteractions().getArray();
-        return interactions.find(interaction => interaction.get(NessKeys.NESS_INTERACTION_UUID_KEY) === uuid)
-    }
-    return -1;
-}
-
-export const deleteInteractionObject = (interaction, OLMap) => {
-    try {
-        OLMap.removeInteraction(interaction)
-        return true
-    } catch (error) {
-        return -1;
-
-    }
-}

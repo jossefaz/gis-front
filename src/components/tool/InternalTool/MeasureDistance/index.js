@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { addOverlay, addInteraction, getInteraction, getOverlay, removeInteraction, removeOverlay } from '../../../../nessMapping/api'
-import { unByKey } from 'ol/Observable';
+import { addOverlay, addInteraction, getInteraction, getOverlay, removeInteraction, removeOverlay, getFocusedMap } from '../../../../nessMapping/api'
+
 import { formatArea, formatLength } from '../../../../utils/format'
 import { LineString, Polygon } from 'ol/geom';
 import "./style.css";
@@ -10,7 +10,6 @@ class MeasureDistance extends React.Component {
 
   state = {
     measureMsg: {
-      message: "",
       className: 'ol-tooltip ol-tooltip-measure',
     },
   }
@@ -38,7 +37,7 @@ class MeasureDistance extends React.Component {
   createMeasureTooltip = () => {
     const uuid = addOverlay(
       {
-        element: document.getElementById('measureTooltip'),
+        element: this.generateOverlayDiv(),
         offset: [0, -15],
         positioning: 'bottom-center'
       }
@@ -46,8 +45,14 @@ class MeasureDistance extends React.Component {
     this.addMeasureToolTipRef(uuid)
   }
 
-  toogleToolTip = (show) => {
-    const className = show ? 'ol-tooltip ol-tooltip-measure' : 'hidden';
+  toogleToolTip = (show, finishdraw = null) => {
+    const className =
+      finishdraw ?
+        show ?
+          'ol-tooltip ol-tooltip-static' :
+          show ?
+            'ol-tooltip ol-tooltip-measure' : 'hidden'
+        : 'hidden';
     this.setState({
       measureMsg: { ...this.state.measureMsg, className }
     })
@@ -63,24 +68,36 @@ class MeasureDistance extends React.Component {
       isEscape = evt.keyCode === 27;
     }
     if (isEscape) {
-      getInteraction(this.draw).abortDrawing();
+      getInteraction(this.draw).OLInteraction.abortDrawing();
       this.toogleToolTip(false)
     }
   }
 
+  retrieveDrawLayer = () => {
+
+    if (this.draw) {
+      return getInteraction(this.draw).sourceLayer
+    }
+    return null
+
+  }
+
   onOpenDrawSession = (drawtype) => {
-    this.removeDrawObject(false);
+    const DrawLayer = this.retrieveDrawLayer()
+    console.log(DrawLayer)
+    this.removeDrawObject();
     this.toogleToolTip(true)
-    this.createMeasureTooltip();
-    const uuid = addInteraction({ Type: "Draw", drawConfig: { type: drawtype } });
+    const uuid = addInteraction({ Type: "Draw", drawConfig: { type: drawtype }, sourceLayer: DrawLayer });
     this.addDrawObjectRef(uuid)
+    debugger
+    this.createMeasureTooltip();
     this.onDrawStart(this.draw);
     this.onDrawEnd(this.draw);
 
   }
 
   onDrawStart = (uuid) => {
-    const draw = getInteraction(uuid)
+    const draw = getInteraction(uuid).OLInteraction
     if (draw) {
       draw.on('drawstart',
         (evt) => {
@@ -88,7 +105,7 @@ class MeasureDistance extends React.Component {
           this.sketch = evt.feature
           /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
           let tooltipCoord = evt.coordinate;
-          this.listener = this.sketch.getGeometry().on('change', (evt) => {
+          this.sketch.getGeometry().on('change', (evt) => {
             const geom = evt.target;
             let output;
             if (geom instanceof Polygon) {
@@ -98,7 +115,7 @@ class MeasureDistance extends React.Component {
               output = formatLength(geom);
               tooltipCoord = geom.getLastCoordinate();
             }
-            this.setState({ measureMsg: { ...this.state.measureMsg, message: output, className: 'ol-tooltip ol-tooltip-measure' } })
+            this.setState({ measureMsg: { ...this.state.measureMsg, [this.props.maps.focused]: output, className: 'ol-tooltip ol-tooltip-measure' } })
             getOverlay(this.measureToolTip).setPosition(tooltipCoord);
           });
         });
@@ -106,26 +123,26 @@ class MeasureDistance extends React.Component {
   }
 
   onDrawEnd = (uuid) => {
-    const draw = getInteraction(uuid)
+    const draw = getInteraction(uuid).OLInteraction
     if (draw) {
       draw.on('drawend',
         () => {
-          this.toogleToolTip(true)
+          this.toogleToolTip(true, true)
           getOverlay(this.measureToolTip).setOffset([0, -7]);
         });
-      unByKey(this.listener);
+
     }
   }
 
   removeDrawObject = (rmOverlay, closeComponent, reset) => {
     if (closeComponent) {
-      Object.keys(this._draw).map(oid => removeInteraction(getInteraction(this._draw[oid], oid), oid));
+      Object.keys(this._draw).map(oid => removeInteraction(this._draw[oid]));
       Object.keys(this._measureToolTip).map(oid => removeOverlay(getOverlay(this._measureToolTip[oid], oid), oid));
     }
     else if (this.draw) {
-      removeInteraction(getInteraction(this.draw))
+      removeInteraction(this.draw)
       if (!reset) {
-        rmOverlay ? removeOverlay(getOverlay(this.measureToolTip)) : this.toogleToolTip(false)
+        removeOverlay(getOverlay(this.measureToolTip))
       }
     }
   }
@@ -133,10 +150,6 @@ class MeasureDistance extends React.Component {
 
 
   // LIFECYCLE
-
-  componentDidMount() {
-    this.createMeasureTooltip();
-  }
 
 
   componentDidUpdate() {
@@ -157,14 +170,29 @@ class MeasureDistance extends React.Component {
   }
 
   onReset = () => {
-    this.removeDrawObject(true, false, true)
-    this.createMeasureTooltip();
+    this.renderOverlayDiv();
+  }
+
+  generateOverlayDiv() {
+    const overlayDiv = document.createElement("div")
+    overlayDiv.setAttribute("id", `measureToolTip${this.props.maps.focused}`)
+    overlayDiv.setAttribute("class", "ol-tooltip ol-tooltip-measure")
+    return overlayDiv;
+  }
+
+  renderOverlayDiv() {
+
+    if (this.draw && document.querySelector(`#measureToolTip${this.props.maps.focused}`)) {
+      const overlayDiv = document.querySelector(`#measureToolTip${this.props.maps.focused}`)
+      overlayDiv.innerHTML = this.state.measureMsg[this.props.maps.focused]
+      overlayDiv.className = this.state.measureMsg.className
+    }
   }
 
   render() {
+    this.renderOverlayDiv();
     return (
       <React.Fragment>
-        <div className={this.state.measureMsg.className} id="measureTooltip">{this.state.measureMsg.message}</div>
         <div className="ui grid">
           <button
             className="ui icon button"
