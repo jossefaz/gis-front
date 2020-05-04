@@ -3,16 +3,26 @@
 import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
 
-import { Tile as TileLayer, Image as ImageLayer } from 'ol/layer';
-import { OSM, ImageArcGISRest } from 'ol/source';
+import {
+    Tile as TileLayer,
+    Image as ImageLayer
+} from 'ol/layer';
+import {
+    OSM,
+    ImageArcGISRest
+} from 'ol/source';
 
-import { MDUtils as md } from '../utils/metadataUtils';
-import { LYRUtils as lu } from '../utils/layerUtils';
+import {
+    MDUtils as md
+} from '../utils/metadataUtils';
+import {
+    LYRUtils as lu
+} from '../utils/layerUtils';
+import NessKeys from './keys'
 
-export const NESS_LAYER_UUID_KEY = "__NessUUID__";
 
 export default class NessLayer {
-    constructor (mdId, alias, lyr) {
+    constructor(mdId, alias, lyr) {
         this.uuid = null;
         this.mapIndex = -1;
         this.parent = null;
@@ -20,15 +30,17 @@ export default class NessLayer {
         var nl = md.getMDLayerById(mdId) || lu.getMDLayerByObject(lyr);
         if (nl) {
             // must-have props
-            var uuid = { value: GenerateUUID() };
-            Object.freeze(uuid);  // freeze uuid, it is too important !
+            var uuid = {
+                value: GenerateUUID()
+            };
+            Object.freeze(uuid); // freeze uuid, it is too important !
             this.uuid = uuid;
-    
+
             this.metadataId = nl.metadataId;
 
             // must-have layer configuration props
             this.config = nl.config;
-            
+
             // LayerList props
             this.alias = alias || nl.alias;
         } else {
@@ -70,7 +82,7 @@ export default class NessLayer {
                 this.parent.OLMap.addLayer(olLayer);
 
                 // OK, layer is in! set uuid 
-                olLayer.set(NESS_LAYER_UUID_KEY, this.uuid.value, true);
+                olLayer.set(NessKeys.NESS_LAYER_UUID_KEY, this.uuid.value, true);
 
                 // and now refresh mapIndex
                 this.RefreshMapIndex();
@@ -120,7 +132,7 @@ const _toOLLayer = (nl) => {
             break;
     }
 
-    if (!newLyr){
+    if (!newLyr) {
         throw "Failed creating OL layer";
     }
 
@@ -130,12 +142,29 @@ const _toOLLayer = (nl) => {
 const _getMapIndex = (nl) => {
     if (nl instanceof NessLayer && nl.uuid && nl.parent && nl.parent.OLMap) {
         var lyrs = nl.parent.OLMap.getLayers().getArray();
-        for (var i=0; i<lyrs.length; i++) {
-            if (lyrs[i].get(NESS_LAYER_UUID_KEY) === nl.uuid.value) {
+        for (var i = 0; i < lyrs.length; i++) {
+            if (lyrs[i].get(NessKeys.NESS_LAYER_UUID_KEY) === nl.uuid.value) {
                 return i;
             }
-        }    
+        }
     }
 
     return -1;
+}
+export const getLayerObject = (uuid, OLMap) => {
+    if (uuid) {
+        const layers = OLMap.getLayers().getArray();
+        return layers.find(layer => layer.get(NessKeys.NESS_OVERLAY_UUID_KEY) === uuid)
+    }
+    return -1;
+}
+
+export const deleteLayerObject = (layer, OLMap) => {
+    try {
+        OLMap.removeLayer(layer)
+        return true
+    } catch (error) {
+        return -1;
+
+    }
 }
