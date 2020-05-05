@@ -2,7 +2,6 @@
 /* eslint-disable no-throw-literal */
 import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
-import NessMapping from './mapping';
 import Overlay from 'ol/Overlay';
 import NessKeys from './keys'
 
@@ -24,6 +23,9 @@ export default class NessOverlay {
 
         return this.mapIndex;
     }
+    get OLOverlay() {
+        return this._OLOverlay;
+    }
 
     AddSelfToMap(parent) {
         var okToAdd = false;
@@ -39,11 +41,15 @@ export default class NessOverlay {
                 this.parent.OLMap.addOverlay(olOverlay);
                 olOverlay.set(NessKeys.NESS_OVERLAY_UUID_KEY, this.uuid.value, true);
                 olOverlay.set(NessKeys.PARENT_UUID, this.parent.uuid.value, true);
+                this._OLOverlay = this.OLOverlay;
                 return this.uuid.value;
             } else {
                 throw "AddOverlay failed - Overlay not created correctly"
             }
         }
+    }
+    RemoveSelfFromMap() {
+        this.parent.OLMap.removeOverlay(this._OLOverlay);
     }
 }
 

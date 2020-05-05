@@ -2,7 +2,6 @@
 /* eslint-disable no-throw-literal */
 import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
-import NessMapping from './mapping'
 import NessKeys from './keys'
 import { newDraw } from '../utils/interactions'
 export default class NessInteraction {

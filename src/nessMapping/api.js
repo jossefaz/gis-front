@@ -4,14 +4,8 @@ import NessLayer, {
     getLayerObject,
     deleteLayerObject
 } from './nessLayer';
-import NessOverlay, {
-    getOverlayObject,
-    deleteOverlayObject
-} from "./nessOverlay";
-import NessInteraction, {
-    getInteractionObject,
-    deleteInteractionObject
-} from "./interaction";
+import NessOverlay from "./overlay";
+import NessInteraction from "./interaction";
 
 
 
@@ -85,18 +79,25 @@ export const removeInteraction = (uuid) => {
 
 // GET
 export const getOverlay = (uuid, map_uuid) => {
-    return getOverlayObject(uuid, _getmap(map_uuid))
+    return NessOverlay.getInstance().getOverlayProxy(uuid).OLOverlay
+}
+
+export const getOverlayProxy = (uuid) => {
+    return NessOverlay.getInstance().getOverlayProxy(uuid)
 }
 
 // SET
 export const addOverlay = (config) => {
-    const Overlay = new NessOverlay(config)
-    return Overlay.AddSelfToMap(getFocusedMapProxy())
+    const OverlayProxy = NessOverlay.getInstance().addOverlayProxy(config)
+    return OverlayProxy.AddSelfToMap(getFocusedMapProxy())
 }
 
 // DELETE
-export const removeOverlay = (overlay, map_uuid) => {
-    return deleteOverlayObject(overlay, _getmap(map_uuid))
+export const removeOverlay = (uuid) => {
+    const OverlayProxy = NessInteraction.getInstance().getOverlayProxy(uuid)
+    OverlayProxy.RemoveSelfFromMap()
+    OverlayProxy.getInstance().killOverlayProxy(uuid)
+    return true
 }
 
 const _getmap = (map_uuid) => {
