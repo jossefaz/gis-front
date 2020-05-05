@@ -26,7 +26,8 @@ class MeasureDistance extends React.Component {
       content: "האם ברצונך למחוק את כלל המדידות שביצת ?",
       confirmBtn: "כן",
       cancelBtn: "לא"
-    }
+    },
+    view: true
 
   }
   sketch = null;
@@ -91,6 +92,18 @@ class MeasureDistance extends React.Component {
         }
       )
     }
+  }
+
+  toogleView = () => {
+    if (this.DrawLayer) {
+      this.DrawLayer.setVisible(!this.state.view)
+    }
+    if (this.selfOverlay) {
+      this.ToggleOverlays(!this.state.view)
+    }
+    this.setState({
+      view: !this.state.view
+    })
   }
 
   toogleToolTip = (show, finishdraw = null) => {
@@ -187,14 +200,8 @@ class MeasureDistance extends React.Component {
 
   }
 
-  componentDidMount() {
-    if (this.DrawLayer) {
-      this.DrawLayer.setVisible(true)
-    }
-    if (this.selfOverlay) {
-      this.ToggleOverlays(true)
-    }
-  }
+
+
   // LIFECYCLE
   componentDidUpdate() {
     document.addEventListener("keydown", this.escapeHandler);
@@ -205,16 +212,9 @@ class MeasureDistance extends React.Component {
         }
       })
     }
-    // this.addDrawObject()
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
-    if (this.DrawLayer) {
-      this.DrawLayer.setVisible(false)
-    }
-    if (this.selfOverlay) {
-      this.ToggleOverlays(false)
-    }
     if (this.draw) {
       removeInteraction(this.draw)
     }
@@ -269,6 +269,12 @@ class MeasureDistance extends React.Component {
             onClick={() => this.setState({ open: true })}
           >
             <FontAwesomeIcon icon="trash-alt" size="lg" />
+          </button>
+          <button
+            className="ui icon button pointer"
+            onClick={() => this.toogleView()}
+          >
+            <FontAwesomeIcon icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
           </button>
           <Confirm
             open={this.state.open}

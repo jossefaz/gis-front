@@ -7,9 +7,11 @@ import {
   faRuler,
   faMapPin,
   faVial,
-  faTrashAlt
+  faTrashAlt,
+  faEye,
+  faEyeSlash
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
-  library.add(fab, faLayerGroup, faMap, faDrawPolygon, faRuler, faMapPin, faVial, faTrashAlt);
+  library.add(fab, faLayerGroup, faMap, faDrawPolygon, faRuler, faMapPin, faVial, faTrashAlt, faEye, faEyeSlash);
 };
