@@ -68,7 +68,6 @@ export const addInteraction = (config) => {
 export const removeInteraction = (uuid) => {
     const InteractionProxy = NessInteraction.getInstance().getInteractionProxy(uuid)
     InteractionProxy.RemoveSelfFromMap()
-    NessInteraction.getInstance().killInteractionProxy(uuid)
     return true
 }
 

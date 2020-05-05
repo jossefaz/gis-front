@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getInteractionProxy, getInteraction, getOverlay, removeInteraction, removeOverlay } from '../../../../nessMapping/api'
+import { getInteractionProxy, getInteraction, getOverlay, removeInteraction } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays } from "../../../../redux/actions/overlay";
 import { generateOutput } from "./func";
@@ -54,10 +54,14 @@ class MeasureDistance extends React.Component {
     }
   }
   get measureToolTip() {
-    return this.selfOverlay ? this.selfOverlay[this.map].focused : null
+    return this.selfOverlay && this.map in this.selfOverlay ? this.selfOverlay[this.map].focused : null
   }
 
   get DrawLayer() {
+    return this.draw ? getInteractionProxy(this.draw).Layer : null
+  }
+
+  get DrawSource() {
     return this.draw ? getInteractionProxy(this.draw).sourceLayer : null
   }
 
@@ -74,6 +78,19 @@ class MeasureDistance extends React.Component {
       selector
     }
     );
+  }
+
+  ToggleOverlays = (show) => {
+    if (this.selfOverlay && this.map in this.selfOverlay) {
+      console.log(this.selfOverlay)
+      Object.keys(this.selfOverlay[this.map].overlays).map(
+        overlay => {
+          const selector = this.selfOverlay[this.map].overlays[overlay].selector
+          const overlayDiv = document.querySelector(`#${selector}`)
+          overlayDiv.className = show ? this.CLASSNAMES.FINISH : this.CLASSNAMES.HIDDEN
+        }
+      )
+    }
   }
 
   toogleToolTip = (show, finishdraw = null) => {
@@ -93,18 +110,20 @@ class MeasureDistance extends React.Component {
       isEscape = evt.keyCode === 27;
     }
     if (isEscape) {
-      getInteraction(this.draw).abortDrawing();
+      this.abortDrawing();
       this.toogleToolTip(false)
     }
   }
 
   addInteraction = async (drawtype) => {
-    const sourceLayer = this.DrawLayer // save it before it will be deleted !!
+    const sourceLayer = this.DrawSource // save it before it will be deleted !!
+    const Layer = this.DrawLayer
     this.removeDrawObject();
     await this.props.setInteraction({
       Type: "Draw",
       drawConfig: { type: drawtype },
       sourceLayer,
+      Layer,
       widgetName: this.WIDGET_NAME
     });
   }
@@ -145,18 +164,30 @@ class MeasureDistance extends React.Component {
   }
 
   onClearDrawing = async () => {
-    this.DrawLayer.clear()
+    this.DrawSource.clear()
     this.setState({ open: false })
-    await this.props.unsetOverlays({ overlays: this.selfOverlay[this.map].overlays, widgetName: this.WIDGET_NAME })
-    await this.props.unsetInteraction({ uuid: this.selfInteraction[this.map].uuid, widgetName: this.WIDGET_NAME })
+    await this.removeDrawObject()
+    await this.removeOverlays()
   }
-  removeDrawObject = (rmOverlay, closeComponent, reset) => {
-    if (closeComponent) {
-      Object.keys(this.selfInteraction).map(oid => removeInteraction(this.selfInteraction[oid].uuid));
-
+  removeDrawObject = async () => {
+    if (this.selfInteraction && this.map in this.selfInteraction) {
+      this.props.unsetInteraction({ uuid: this.selfInteraction[this.map].uuid, widgetName: this.WIDGET_NAME })
     }
-    else if (this.draw) {
-      removeInteraction(this.draw)
+
+  }
+  removeOverlays = async () => {
+    if (this.selfOverlay) {
+      this.props.unsetOverlays({ overlays: this.selfOverlay[this.map].overlays, widgetName: this.WIDGET_NAME })
+    }
+
+  }
+
+  componentDidMount() {
+    if (this.DrawLayer) {
+      this.DrawLayer.setVisible(true)
+    }
+    if (this.selfOverlay) {
+      this.ToggleOverlays(true)
     }
   }
   // LIFECYCLE
@@ -173,10 +204,26 @@ class MeasureDistance extends React.Component {
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
-    this.removeDrawObject(true, true)
+    if (this.DrawLayer) {
+      this.DrawLayer.setVisible(false)
+    }
+    if (this.selfOverlay) {
+      this.ToggleOverlays(false)
+    }
+    if (this.draw) {
+      removeInteraction(this.draw)
+    }
+
+
   }
   onReset = () => {
-    this.renderOverlayDiv();
+    this.abortDrawing();
+  }
+
+  abortDrawing = () => {
+    if (this.draw) {
+      getInteraction(this.draw).abortDrawing();
+    }
   }
 
   generateOverlayDiv(selector) {

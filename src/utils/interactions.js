@@ -52,12 +52,13 @@ export const getDrawObject = (source, type) => {
     });
 };
 
-export const newDraw = (drawType, Layer) => {
-    if (!Layer) {
+export const newDraw = (drawType, vectorSource, Layer) => {
+    if (!vectorSource) {
         const { source, vector } = getEmptyVectorLayer();
         getFocusedMap().addLayer(vector)
-        Layer = source
+        vectorSource = source
+        Layer = vector
     }
-    const Interaction = getDrawObject(Layer, drawType)
-    return { Interaction, Layer };
+    const Interaction = getDrawObject(vectorSource, drawType)
+    return { Interaction, vectorSource, Layer };
 }
