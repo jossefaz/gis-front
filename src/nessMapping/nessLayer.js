@@ -71,6 +71,7 @@ export default class NessLayer {
         } else if (parent instanceof MapProxy && parent.OLMap) {
             // no parent, set parent and add
             this.parent = parent;
+            this.parent._layers.push(this);
             okToAdd = true;
         }
 
@@ -171,7 +172,9 @@ export const setVisible = (uuid, OLMap, visibilty) => {
     var layer = getLayerObject(uuid, OLMap);
     if (layer !== -1) {
         layer.setVisible(visibilty);
+        return true;
     }
+    return false;
 }
 export const getVisible = (uuid, OLMap) => {
     var layer = getLayerObject(uuid, OLMap);
@@ -184,7 +187,9 @@ export const setOpacity = (uuid, OLMap, opacity) => {
     var layer = getLayerObject(uuid, OLMap);
     if (layer !== -1) {
         layer.setOpacity(opacity);
+        return true;
     }
+    return false;
 }
 export const getOpacity = (uuid, OLMap) => {
     var layer = getLayerObject(uuid, OLMap);

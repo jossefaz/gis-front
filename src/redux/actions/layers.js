@@ -1,81 +1,112 @@
-import NessLayer from "../../nessMapping/nessLayer"
 import types from "./actionsTypes";
+import NessLayer from "../../nessMapping/nessLayer"
+import {
+  getFocusedMapProxy,
+  getNessLayers,
+  getLayer,
+  getNessLayer,
+  addLayerToMap,
+  setLayerVisiblity,
+  setLayerOpacity
+} from "../../nessMapping/api"
+import convertNessLayerToReduxLayer from "../../utils/convertors/layerConverter"
 
-export const addLayers = (arrayOfLayersID) => (dispatch) => {
+
+export const addLayers = (arrayOfNessLayers) => (dispatch) => {
+  const addedLayers = [];
+  const map = getFocusedMapProxy();
+  const mapId = map.uuid;
+  arrayOfNessLayers.map((lyr) => {
+    var nessLyr = new NessLayer(lyr);
+    if (nessLyr) {
+      if (map.AddLayer(nessLyr, false)) {
+        addedLayers.push(convertNessLayerToReduxLayer(nessLyr));
+      }
+    }
+  });
 
   dispatch({
     type: types.ADD_LAYER,
-    payload: arrayOfLayersID,
+    payload: {
+      mapId,
+      addedLayers
+    }
   });
-
 }
 
 
-// export const setLayerVisible = (layerID) => (dispatch) =>
-//   dispatch({
-//     type: types.SET_LAYER_VISIBLE,
-//     payload: layerID,
-//   });
+export const addLayerToOLMap = (layerId, visible) => (dispatch) => {
 
-// export const setLayerSelectable = (layerID) => (dispatch) =>
-//   dispatch({
-//     type: types.SET_LAYER_SELECTABLE,
-//     payload: layerID,
-//   });
+  const mapId = getFocusedMapProxy().uuid;
+  var layerExists = false;
+  if (getNessLayer(layerId)) {
+    if (addLayerToMap(layerId, visible)) {
+      if (layerExists)
+        dispatch({
+          type: types.SET_LAYER_VISIBLE,
+          payload: {
+            mapId,
+            layerId,
+            visible
+          }
+        });
+    }
+  }
+}
 
-// export const setLayerOpacity = (Id, Opacity) => (dispatch) =>
-//   dispatch({
-//     type: types.SET_LAYER_OPACITY,
-//     payload: { Id, Opacity },
-//   });
+export const setMapLayerVisible = (layerId, visible) => (dispatch) => {
+  const mapId = getFocusedMapProxy().uuid;
 
-// export const InitLayers = (layerConfig) => (dispatch) => {
-//   const AllLayer = {};
-
-//   layerConfig.map((lyr) => {
-//     const newLyr = new ImageLayer({
-//       source: new ImageWMS({
-//         // params: lyr.params,
-//         url: lyr.restaddress,
-//         // serverType: lyr.serverType,
-//       }),
-//     });
-//     newLyr.name = lyr.restid;
-//     newLyr.id = lyr.semanticid;
-//     newLyr.alias = lyr.title;
-//     newLyr.setVisible(Boolean(false));
-//     newLyr.selectable = true //lyr.selectable;
-//     AllLayer[lyr.id] = newLyr;
-//   });
-
-//   dispatch({
-//     type: types.INIT_LAYERS,
-//     payload: AllLayer,
-//   });
-export const InitLayers = (layerConfig) => (dispatch) => {
-    const AllLayer = {};
-
-    layerConfig.map((lyr) => {
-      const newLyr = new NessLayer(
-
-      )
+  if (setLayerVisiblity(layerId, visible)) {
+    dispatch({
+      type: types.SET_LAYER_VISIBLE,
+      payload: {
+        mapId,
+        layerId,
+        visible
+      },
     });
-    //     const newLyr = new ImageLayer({
-    //       source: new ImageWMS({
-    //         // params: lyr.params,
-    //         url: lyr.restaddress,
-    //         // serverType: lyr.serverType,
-    //       }),
-    //     });
-    //     newLyr.name = lyr.restid;
-    //     newLyr.id = lyr.semanticid;
-    //     newLyr.alias = lyr.title;
-    //     newLyr.setVisible(Boolean(false));
-    //     newLyr.selectable = true //lyr.selectable;
-    //     AllLayer[lyr.id] = newLyr;
-    //   });
+  }
+}
 
-    //   dispatch({
-    //     type: types.INIT_LAYERS,
-    //     payload: AllLayer,
-    //   });
+export const setMapLayerOpacity = (layerId, Opacity) => (dispatch) => {
+
+  const mapId = getFocusedMapProxy().uuid;
+
+  if (setLayerOpacity(layerId, Opacity)) {
+    dispatch({
+      type: types.SET_LAYER_OPACITY,
+      payload: {
+        mapId,
+        layerId,
+        Opacity
+      },
+    });
+  }
+}
+
+
+export const InitLayers = () => (dispatch) => {
+  const allLayersForMap = {};
+
+  //TODO check of cycle stars from redux 
+  //or from mapproxy adding layers
+  //  layerConfig.map((lyr) => {
+  // const newLyr = new NessLayer(
+  const nessLayers = getNessLayers();
+  const mapId = getFocusedMapProxy().uuid;
+
+  if (nessLayers) {
+    nessLayers.map((lyr) => {
+      allLayersForMap[lyr.uuid] = convertNessLayerToReduxLayer(lyr);
+    });
+  };
+
+  dispatch({
+    type: types.INIT_LAYERS,
+    payload: {
+      mapId,
+      allLayersForMap
+    },
+  });
+}

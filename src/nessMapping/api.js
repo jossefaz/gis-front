@@ -16,8 +16,7 @@ import NessInteraction, {
     getInteractionObject,
     deleteInteractionObject
 } from "./interaction";
-
-
+import NessKeys from './keys'
 
 /**
  * Map API
@@ -40,15 +39,36 @@ export const getFocusedMapProxy = () => {
  * 
  */
 
-// GET
+// GET Layer
 export const getLayer = (uuid) => {
     return getLayerObject(uuid, getFocusedMap())
 }
+// GET Ness Layer
+export const getNessLayer = ((uuid) => {
+    return getFocusedMapProxy()._layers.find(layer =>
+        layer.get(NessKeys.NESS_OVERLAY_UUID_KEY) === uuid)
+});
 
-// SET
-export const addLayer = (config) => {
+// GET OL Layers
+export const getLayers = () => {
+    return getFocusedMap().getLayers().getArray();
+}
+
+// SET add layer to map proxy object
+export const addLayerToMapProxy = (config, addToMap) => {
     const Layer = new NessLayer(config)
-    return Layer.AddSelfToMap(getFocusedMapProxy())
+    const MapProxy = getFocusedMapProxy();
+    return MapProxy.AddLayer(Layer);
+}
+
+//SET add layer to OL map
+export const addLayerToMap = (uuid, visible = true) => {
+    const lyr = getLayer(uuid);
+    if (lyr !== -1) {
+        const MapProxy = getFocusedMapProxy();
+        if (lyr.AddSelfToMap(MapProxy))
+            lyr.setVisible(visible);
+    }
 }
 
 // DELETE
