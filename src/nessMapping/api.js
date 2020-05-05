@@ -58,8 +58,12 @@ export const removeLayer = (overlay) => {
  */
 // GET
 export const getInteraction = (uuid) => {
+    return NessInteraction.getInstance().getInteractionProxy(uuid).OLInteraction
+}
+export const getInteractionProxy = (uuid) => {
     return NessInteraction.getInstance().getInteractionProxy(uuid)
 }
+
 // SET
 export const addInteraction = (config) => {
     const InteractionProxy = NessInteraction.getInstance().addInteractionProxy(config)

@@ -2,35 +2,46 @@ import React from "react";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addOverlay, addInteraction, getInteraction, getOverlay, removeInteraction, removeOverlay, getFocusedMap } from '../../../../nessMapping/api'
-
-import { formatArea, formatLength } from '../../../../utils/format'
-import { LineString, Polygon } from 'ol/geom';
+import { setInteraction } from "../../../../redux/actions/interaction";
+import { generateOutput } from "./func";
 import "./style.css";
 class MeasureDistance extends React.Component {
 
   state = {
     measureMsg: {
       className: 'ol-tooltip ol-tooltip-measure',
+      current_uuid: ''
     },
   }
 
   _measureToolTip = {};
   sketch = null;
   listener = null;
-  _draw = {};
+  WIDGET_NAME = "Measure"
 
-
-  addDrawObjectRef = (uuid) => {
-    this._draw[this.props.maps.focused] = uuid
-  }
   addMeasureToolTipRef = (uuid) => {
-    this._measureToolTip[this.props.maps.focused] = uuid
+    const mapfocused = this.map
+    if (!(mapfocused in this._measureToolTip)) {
+      this._measureToolTip[mapfocused] = []
+    }
+    this._measureToolTip[mapfocused].push(uuid)
+  }
+  get map() {
+    return this.props.maps.focused
+  }
+  get selfInteraction() {
+    if (this.WIDGET_NAME in this.props.Interactions) {
+      return this.props.Interactions[this.WIDGET_NAME]
+    }
+    return false
   }
   get draw() {
-    return this._draw[this.props.maps.focused]
+    if (this.selfInteraction) {
+      return this.selfInteraction[this.map].uuid
+    }
   }
   get measureToolTip() {
-    return this._measureToolTip[this.props.maps.focused]
+    return this.map in this._measureToolTip ? this._measureToolTip[this.map].filter(uuid => uuid == this.state.measureMsg.current_uuid)[0] : null
   }
 
 
@@ -42,7 +53,11 @@ class MeasureDistance extends React.Component {
         positioning: 'bottom-center'
       }
     );
+    this.setUUIDtoOverlay(this.map, uuid)
     this.addMeasureToolTipRef(uuid)
+    this.setState({
+      measureMsg: { ...this.state.measureMsg, current_uuid: uuid }
+    })
   }
 
   toogleToolTip = (show, finishdraw = null) => {
@@ -68,67 +83,53 @@ class MeasureDistance extends React.Component {
       isEscape = evt.keyCode === 27;
     }
     if (isEscape) {
-      getInteraction(this.draw).OLInteraction.abortDrawing();
+      getInteraction(this.draw).abortDrawing();
       this.toogleToolTip(false)
     }
   }
 
   retrieveDrawLayer = () => {
-
-    if (this.draw) {
-      return getInteraction(this.draw).sourceLayer
-    }
-    return null
-
+    return this.draw ? getInteraction(this.draw).sourceLayer : null
   }
 
-  onOpenDrawSession = (drawtype) => {
+  addInteraction = async (drawtype) => {
     const DrawLayer = this.retrieveDrawLayer()
-    console.log(DrawLayer)
     this.removeDrawObject();
-    this.toogleToolTip(true)
-    const uuid = addInteraction({ Type: "Draw", drawConfig: { type: drawtype }, sourceLayer: DrawLayer });
-    this.addDrawObjectRef(uuid)
-    debugger
-    this.createMeasureTooltip();
-    this.onDrawStart(this.draw);
-    this.onDrawEnd(this.draw);
-
+    await this.props.setInteraction({ Type: "Draw", drawConfig: { type: drawtype }, sourceLayer: DrawLayer, widgetName: this.WIDGET_NAME });
   }
 
-  onDrawStart = (uuid) => {
-    const draw = getInteraction(uuid).OLInteraction
+  onOpenDrawSession = async (drawtype) => {
+    await this.addInteraction(drawtype)
+    this.createMeasureTooltip();
+    this.toogleToolTip(true)
+    this.onDrawStart();
+    this.onDrawEnd();
+  }
+
+  onDrawStart = () => {
+    const draw = getInteraction(this.draw)
     if (draw) {
       draw.on('drawstart',
         (evt) => {
-          // set sketch
           this.sketch = evt.feature
-          /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
-          let tooltipCoord = evt.coordinate;
+          let coord = evt.coordinate;
           this.sketch.getGeometry().on('change', (evt) => {
-            const geom = evt.target;
-            let output;
-            if (geom instanceof Polygon) {
-              output = formatArea(geom);
-              tooltipCoord = geom.getInteriorPoint().getCoordinates();
-            } else if (geom instanceof LineString) {
-              output = formatLength(geom);
-              tooltipCoord = geom.getLastCoordinate();
-            }
-            this.setState({ measureMsg: { ...this.state.measureMsg, [this.props.maps.focused]: output, className: 'ol-tooltip ol-tooltip-measure' } })
+            const { output, tooltipCoord } = generateOutput(evt, coord)
+            this.setState({ measureMsg: { ...this.state.measureMsg, [this.map]: output, className: 'ol-tooltip ol-tooltip-measure' } })
             getOverlay(this.measureToolTip).setPosition(tooltipCoord);
           });
         });
     }
   }
 
-  onDrawEnd = (uuid) => {
-    const draw = getInteraction(uuid).OLInteraction
+  onDrawEnd = () => {
+    const draw = getInteraction(this.draw)
     if (draw) {
       draw.on('drawend',
         () => {
           this.toogleToolTip(true, true)
           getOverlay(this.measureToolTip).setOffset([0, -7]);
+          this.createMeasureTooltip();
         });
 
     }
@@ -136,14 +137,11 @@ class MeasureDistance extends React.Component {
 
   removeDrawObject = (rmOverlay, closeComponent, reset) => {
     if (closeComponent) {
-      Object.keys(this._draw).map(oid => removeInteraction(this._draw[oid]));
+      Object.keys(this.selfInteraction).map(oid => removeInteraction(this.selfInteraction[oid].uuid));
       Object.keys(this._measureToolTip).map(oid => removeOverlay(getOverlay(this._measureToolTip[oid], oid), oid));
     }
     else if (this.draw) {
       removeInteraction(this.draw)
-      if (!reset) {
-        removeOverlay(getOverlay(this.measureToolTip))
-      }
     }
   }
 
@@ -175,16 +173,20 @@ class MeasureDistance extends React.Component {
 
   generateOverlayDiv() {
     const overlayDiv = document.createElement("div")
-    overlayDiv.setAttribute("id", `measureToolTip${this.props.maps.focused}`)
+    overlayDiv.setAttribute("id", `${this.WIDGET_NAME}${this.map}`)
     overlayDiv.setAttribute("class", "ol-tooltip ol-tooltip-measure")
     return overlayDiv;
   }
 
-  renderOverlayDiv() {
+  setUUIDtoOverlay(previd, nextid) {
+    const overlayDiv = document.querySelector(`#${this.WIDGET_NAME}${previd}`)
+    overlayDiv.setAttribute("id", `${this.WIDGET_NAME}${nextid}`)
+  }
 
-    if (this.draw && document.querySelector(`#measureToolTip${this.props.maps.focused}`)) {
-      const overlayDiv = document.querySelector(`#measureToolTip${this.props.maps.focused}`)
-      overlayDiv.innerHTML = this.state.measureMsg[this.props.maps.focused]
+  renderOverlayDiv() {
+    if (this.draw && document.querySelector(`#${this.WIDGET_NAME}${this.measureToolTip}`)) {
+      const overlayDiv = document.querySelector(`#${this.WIDGET_NAME}${this.measureToolTip}`)
+      overlayDiv.innerHTML = this.state.measureMsg[this.map]
       overlayDiv.className = this.state.measureMsg.className
     }
   }
@@ -216,8 +218,10 @@ const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     maps: state.map,
-    Tools: state.Tools.reset
+    Tools: state.Tools.reset,
+    Interactions: state.Interactions
+
   };
 };
 
-export default connect(mapStateToProps)(MeasureDistance);
+export default connect(mapStateToProps, { setInteraction })(MeasureDistance);
