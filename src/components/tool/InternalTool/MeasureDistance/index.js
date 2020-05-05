@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getInteractionProxy, getInteraction, getOverlay, removeInteraction } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays } from "../../../../redux/actions/overlay";
-import { generateOutput } from "./func";
+import { generateOutput, generateNewStyle } from "./func";
 import { Confirm } from 'semantic-ui-react'
 import "./style.css";
 class MeasureDistance extends React.Component {
@@ -158,6 +158,11 @@ class MeasureDistance extends React.Component {
           this.toogleToolTip(true, true)
           getOverlay(this.measureToolTip).setOffset([0, -7]);
           this.createMeasureTooltip();
+          const features = this.DrawSource.getFeatures()
+          if (features.length > 0) {
+            features[features.length - 1].setStyle(generateNewStyle())
+          }
+
         });
 
     }
