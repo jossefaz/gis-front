@@ -147,11 +147,13 @@ class MeasureDistance extends React.Component {
   onClearDrawing = () => {
     this.DrawLayer.clear()
     this.setState({ open: false })
+    this.selfOverlay[this.map].overlays.map(overlay => removeOverlay(overlay.uuid))
+    removeInteraction(this.selfInteraction[this.map].uuid)
   }
   removeDrawObject = (rmOverlay, closeComponent, reset) => {
     if (closeComponent) {
       Object.keys(this.selfInteraction).map(oid => removeInteraction(this.selfInteraction[oid].uuid));
-      Object.keys(this.props.Overlays).map(oid => removeOverlay(getOverlay(this.props.Overlays[oid], oid), oid));
+
     }
     else if (this.draw) {
       removeInteraction(this.draw)

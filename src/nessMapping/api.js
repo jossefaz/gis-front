@@ -95,9 +95,9 @@ export const addOverlay = (config) => {
 
 // DELETE
 export const removeOverlay = (uuid) => {
-    const OverlayProxy = NessInteraction.getInstance().getOverlayProxy(uuid)
+    const OverlayProxy = NessOverlay.getInstance().getOverlayProxy(uuid)
     OverlayProxy.RemoveSelfFromMap()
-    OverlayProxy.getInstance().killOverlayProxy(uuid)
+    NessOverlay.getInstance().killOverlayProxy(uuid)
     return true
 }
 
