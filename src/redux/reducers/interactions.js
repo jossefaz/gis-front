@@ -14,6 +14,19 @@ const interactionsReducer = (state = {}, action) => {
                 }
                 draftState[config.widgetName][focusedmap] = config
             });
+        case types.UNSET_INTERACTION:
+            return produce(state, (draftState) => {
+                const { uuid, widgetName } = action.payload
+                Object.keys(draftState[widgetName]).map(mapId => {
+                    if (draftState[widgetName][mapId].uuid == uuid) {
+                        delete draftState[widgetName][mapId]
+                    }
+                })
+                if (Object.keys(draftState[widgetName]).length == 0) {
+                    delete draftState[widgetName]
+                }
+            });
+
 
         default:
             return state;

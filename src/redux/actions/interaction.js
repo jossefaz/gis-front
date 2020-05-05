@@ -24,3 +24,11 @@ export const setInteraction = (config) => (dispatch) => {
     })
 }
 
+export const unsetInteraction = (config) => (dispatch) => {
+    removeInteraction(config.uuid)
+    dispatch({
+        type: types.UNSET_INTERACTION,
+        payload: config
+    })
+}
+

@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getInteractionProxy, getInteraction, getOverlay, removeInteraction, removeOverlay } from '../../../../nessMapping/api'
-import { setInteraction } from "../../../../redux/actions/interaction";
-import { setOverlay } from "../../../../redux/actions/overlay";
+import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
+import { setOverlay, unsetOverlays } from "../../../../redux/actions/overlay";
 import { generateOutput } from "./func";
 import { Confirm } from 'semantic-ui-react'
 import "./style.css";
@@ -49,7 +49,7 @@ class MeasureDistance extends React.Component {
     return false
   }
   get draw() {
-    if (this.selfInteraction) {
+    if (this.selfInteraction && this.map in this.selfInteraction) {
       return this.selfInteraction[this.map].uuid
     }
   }
@@ -144,11 +144,11 @@ class MeasureDistance extends React.Component {
     }
   }
 
-  onClearDrawing = () => {
+  onClearDrawing = async () => {
     this.DrawLayer.clear()
     this.setState({ open: false })
-    this.selfOverlay[this.map].overlays.map(overlay => removeOverlay(overlay.uuid))
-    removeInteraction(this.selfInteraction[this.map].uuid)
+    await this.props.unsetOverlays({ overlays: this.selfOverlay[this.map].overlays, widgetName: this.WIDGET_NAME })
+    await this.props.unsetInteraction({ uuid: this.selfInteraction[this.map].uuid, widgetName: this.WIDGET_NAME })
   }
   removeDrawObject = (rmOverlay, closeComponent, reset) => {
     if (closeComponent) {
@@ -243,4 +243,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setInteraction, setOverlay })(MeasureDistance);
+export default connect(mapStateToProps, { setInteraction, unsetInteraction, setOverlay, unsetOverlays })(MeasureDistance);
