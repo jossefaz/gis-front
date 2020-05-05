@@ -15,23 +15,6 @@ const uiReducer = (state = initialState, action) => {
         const IsOpen = draftState.sideNavOpen;
         draftState.sideNavOpen = !IsOpen;
       });
-    case types.SET_OVERLAY:
-      return produce(state, (draftState) => {
-        draftState.overlays.Catalog = Object.assign(
-          draftState.overlays,
-          action.payload.overlays
-        );
-        action.payload.names.map(
-          (overlay) => (draftState.overlays.status[overlay] = 0)
-        );
-      });
-
-    case types.ADD_OVERLAYS:
-      return produce(state, (draftState) => {
-        action.payload.map(
-          (overlay) => (draftState.overlays.status[overlay] = 1)
-        );
-      });
 
     default:
       return state;

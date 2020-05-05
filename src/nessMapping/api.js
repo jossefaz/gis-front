@@ -78,8 +78,9 @@ export const removeInteraction = (uuid) => {
  */
 
 // GET
-export const getOverlay = (uuid, map_uuid) => {
-    return NessOverlay.getInstance().getOverlayProxy(uuid).OLOverlay
+export const getOverlay = (uuid) => {
+    const olp = NessOverlay.getInstance().getOverlayProxy(uuid)
+    return olp.OLOverlay
 }
 
 export const getOverlayProxy = (uuid) => {

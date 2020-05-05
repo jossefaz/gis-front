@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import mapLayers from "./layers";
 import Interactions from "./interactions"
+import Overlays from "./overlay"
 import Features from "./features";
 import Rasters from "./rasters";
 import map from "./map";
@@ -16,6 +17,7 @@ export default combineReducers({
   map,
   Tools,
   Interactions,
+  Overlays,
   ui,
   // filter
 });

@@ -35,3 +35,10 @@
   .hidden {
       display: none;
   } 
+
+  .pointer {
+    cursor: pointer;
+  }
+  .ui.modal>.content {
+    width: auto !important;
+  }
