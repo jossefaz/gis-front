@@ -3,19 +3,17 @@ import {
 } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 
-export const convertNessLayerToReduxLayer = (nessLayer) => {
+export const nessLayerToReduxLayer = (nessLayer) => {
   if (nessLayer) {
     const newLayer = {};
     newLayer.name = nessLayer.alias;
     newLayer.semanticId = nessLayer.semanticId;
-    newLayer.visible = true;
+    newLayer.visible = false;
     newLayer.opacity = 0.5;
     newLayer.uuid = nessLayer.uuid;
     return newLayer;
   }
 }
-
-
 
 export const convertMdLayerToMapLayer = (mdLayer) => {
   //TODO add all types of layers coming from MD

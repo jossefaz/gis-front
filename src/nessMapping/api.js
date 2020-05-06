@@ -48,17 +48,22 @@ export const getNessLayer = ((uuid) => {
     return getFocusedMapProxy()._layers.find(layer =>
         layer.get(NessKeys.NESS_OVERLAY_UUID_KEY) === uuid)
 });
-
+// GET Ness Layers
+export const getNessLayers = ((uuid) => {
+    return getFocusedMapProxy()._layers;
+});
 // GET OL Layers
 export const getLayers = () => {
     return getFocusedMap().getLayers().getArray();
 }
 
 // SET add layer to map proxy object
-export const addLayerToMapProxy = (config, addToMap) => {
-    const Layer = new NessLayer(config)
+export const addLayerToMapProxy = (mdId, alias, lyr, lyrConfig, addToMap) => {
+    const Layer = new NessLayer(mdId, alias, lyr, lyrConfig);
     const MapProxy = getFocusedMapProxy();
-    return MapProxy.AddLayer(Layer);
+    if (MapProxy.AddLayer(Layer))
+        return Layer;
+    return -1;
 }
 
 //SET add layer to OL map

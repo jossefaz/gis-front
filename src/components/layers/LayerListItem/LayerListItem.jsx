@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   addLayers,
-  setLayerVisible,
-  setLayerOpacity,
+  setMapLayerVisible,
+  setMapLayerOpacity,
 } from "../../../redux/actions/layers";
 import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter";
 import { Menu, Label } from "semantic-ui-react";
@@ -24,19 +24,18 @@ class LayerListItem extends Component {
     max: 1,
     step: 0.1,
     onChange: (value) => {
-      this.props.setLayerOpacity(this.props.lyr.semanticid, value);
+      this.props.setMapLayerOpacity(this.props.lyr.semanticid, value);
     },
   };
 
   addLayer = (mdLayer) => {
-    var currentLayers = this.props.Layers;
-    var layer = currentLayers[mdLayer.semanticid];
-
-    if (layer) this.props.setLayerVisible(mdLayer.semanticid);
-    else {
-      var newLyr = convertMdLayerToMapLayer(mdLayer);
-      this.props.addLayers([newLyr]);
-    }
+    // var currentLayers = this.props.Layers;
+    // var layer = currentLayers[mdLayer.semanticid];
+    // if (layer) this.props.setLayerVisiblty(mdLayer.semanticid);
+    // else {
+    //   var newLyr = convertMdLayerToMapLayer(mdLayer);
+    //   this.props.addLayers([newLyr]);
+    // }
   };
 
   showLayerPanel = (title) => {
@@ -64,7 +63,7 @@ class LayerListItem extends Component {
             className="ui align left"
             onClick={() => this.displayLayerMenu()}
           >
-            {lyr.title}
+            {lyr.name}
           </label>
         </div>
 
@@ -82,14 +81,14 @@ class LayerListItem extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    Layers: state.mapLayers.currentLayers,
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     Layers: state.mapLayers.currentLayers,
+//   };
+// };
 
-export default connect(mapStateToProps, {
+export default connect(null, {
   addLayers,
-  setLayerVisible,
-  setLayerOpacity,
+  setMapLayerVisible,
+  setMapLayerOpacity,
 })(LayerListItem);

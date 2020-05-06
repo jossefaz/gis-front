@@ -1,4 +1,25 @@
 export const MDUtils = {
+    getMDLayerFromJson: (jsonLayer) => {
+
+        if (jsonLayer) {
+            return {
+                semanticId: jsonLayer.semanticid,
+                alias: jsonLayer.title,
+                displayExpression: jsonLayer.displayexpression,
+                config: {
+                    LayerType: "OL_ImageLayer",
+                    // SourceType: 'OL_ImageArcGISRest',
+                    SourceOptions: {
+                        ratio: 1,
+                        params: {},
+                        url: jsonLayer.restaddress
+                    }
+                }
+            }
+        } else
+            return null;
+    },
+
     getMDLayerById: (mdId) => {
         // TODO: access api to get metadata
 
@@ -20,6 +41,6 @@ export const MDUtils = {
                     url: 'https://gisviewer.jerusalem.muni.il/arcgis/rest/services/BaseLayers/MapServer'
                 }
             }
-        };
+        }
     }
 }

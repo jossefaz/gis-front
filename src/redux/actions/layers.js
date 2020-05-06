@@ -3,13 +3,16 @@ import NessLayer from "../../nessMapping/nessLayer"
 import {
   getFocusedMapProxy,
   getNessLayers,
-  getLayer,
   getNessLayer,
   addLayerToMap,
+  addLayerToMapProxy,
   setLayerVisiblity,
   setLayerOpacity
 } from "../../nessMapping/api"
-import convertNessLayerToReduxLayer from "../../utils/convertors/layerConverter"
+import {
+  nessLayerToReduxLayer
+}
+from "../../utils/convertors/layerConverter"
 
 
 export const addLayers = (arrayOfNessLayers) => (dispatch) => {
@@ -20,7 +23,7 @@ export const addLayers = (arrayOfNessLayers) => (dispatch) => {
     var nessLyr = new NessLayer(lyr);
     if (nessLyr) {
       if (map.AddLayer(nessLyr, false)) {
-        addedLayers.push(convertNessLayerToReduxLayer(nessLyr));
+        addedLayers.push(nessLayerToReduxLayer(nessLyr));
       }
     }
   });
@@ -36,7 +39,6 @@ export const addLayers = (arrayOfNessLayers) => (dispatch) => {
 
 
 export const addLayerToOLMap = (layerId, visible) => (dispatch) => {
-
   const mapId = getFocusedMapProxy().uuid;
   var layerExists = false;
   if (getNessLayer(layerId)) {
@@ -74,6 +76,7 @@ export const setMapLayerOpacity = (layerId, Opacity) => (dispatch) => {
   const mapId = getFocusedMapProxy().uuid;
 
   if (setLayerOpacity(layerId, Opacity)) {
+
     dispatch({
       type: types.SET_LAYER_OPACITY,
       payload: {
@@ -85,28 +88,22 @@ export const setMapLayerOpacity = (layerId, Opacity) => (dispatch) => {
   }
 }
 
-
-export const InitLayers = () => (dispatch) => {
-  const allLayersForMap = {};
-
-  //TODO check of cycle stars from redux 
-  //or from mapproxy adding layers
-  //  layerConfig.map((lyr) => {
-  // const newLyr = new NessLayer(
-  const nessLayers = getNessLayers();
-  const mapId = getFocusedMapProxy().uuid;
-
-  if (nessLayers) {
-    nessLayers.map((lyr) => {
-      allLayersForMap[lyr.uuid] = convertNessLayerToReduxLayer(lyr);
+export const InitLayers = (layersConfig) => (dispatch) => {
+  var allLayersForMap = {};
+  const mapId = getFocusedMapProxy().uuid.value;
+  if (layersConfig) {
+    layersConfig.map((lyrConfig) => {
+      var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
+      if (nessLyr !== -1)
+        allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);
     });
-  };
 
-  dispatch({
-    type: types.INIT_LAYERS,
-    payload: {
-      mapId,
-      allLayersForMap
-    },
-  });
+    dispatch({
+      type: types.INIT_LAYERS,
+      payload: {
+        mapId,
+        allLayersForMap
+      },
+    });
+  }
 }

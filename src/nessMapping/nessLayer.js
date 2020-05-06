@@ -7,6 +7,8 @@ import {
     Tile as TileLayer,
     Image as ImageLayer
 } from 'ol/layer';
+import ImageWMS
+from "ol/source/ImageWMS";
 import {
     OSM,
     ImageArcGISRest
@@ -22,12 +24,12 @@ import NessKeys from './keys'
 
 
 export default class NessLayer {
-    constructor(mdId, alias, lyr) {
+    constructor(mdId = null, alias = null, lyr = null, json = null) {
         this.uuid = null;
         this.mapIndex = -1;
         this.parent = null;
 
-        var nl = md.getMDLayerById(mdId) || lu.getMDLayerByObject(lyr);
+        var nl = md.getMDLayerFromJson(json) || md.getMDLayerById(mdId) || lu.getMDLayerByObject(lyr);
         if (nl) {
             // must-have props
             var uuid = {
@@ -36,7 +38,8 @@ export default class NessLayer {
             Object.freeze(uuid); // freeze uuid, it is too important !
             this.uuid = uuid;
 
-            this.metadataId = nl.metadataId;
+            this.semanticId = nl.semanticId;
+            this.displayExpression = nl.displayExpression;
 
             // must-have layer configuration props
             this.config = nl.config;
@@ -118,8 +121,11 @@ const _toOLLayer = (nl) => {
             break;
         case "OL_ImageLayer":
             newLyr = new ImageLayer({
-                source: newSrc
+                source: new ImageWMS({
+                    url: nl.config.SourceOptions.url,
+                }),
             });
+            newLyr.alias = nl.title;
             break;
         case "OL_VectorLayer":
             break;

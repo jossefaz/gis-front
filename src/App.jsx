@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import MapTabs from "./containers/MapTabs";
 import Map from "./components/Map";
 import TopNav from "./containers/TopNav";
@@ -10,20 +10,26 @@ import { connect } from "react-redux";
 import { InitMap } from "./redux/actions/map";
 import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
-import { InitIcons } from './utils/faicons'
-import Widget from './containers/Widget';
-
+import { InitIcons } from "./utils/faicons";
+import { getMetaData } from "./communication/mdFetcher";
+import Widget from "./containers/Widget";
 
 class App extends React.Component {
   componentDidMount() {
-
     LogIt(logLevel.INFO, "App init");
-    InitIcons()
+    InitIcons();
     this.props.InitMap();
-    this.props.InitLayers(config.get("layers"));
     this.props.InitRasters();
     this.props.InitTools(config.get("Widgets"));
+    this.fetchDataFromServer();
   }
+
+  fetchDataFromServer = async () => {
+    const [layersResult] = await Promise.all([getMetaData("layers")]);
+    if (layersResult) {
+      this.props.InitLayers(layersResult);
+    }
+  };
 
   render() {
     return (
@@ -41,13 +47,15 @@ class App extends React.Component {
         </SideNav>
         <Widget />
       </React.Fragment>
-
     );
   }
 }
 const mapStateToProps = (state) => {
   return { Tools: state.Tools, maps: state.map };
 };
-export default connect(mapStateToProps, { InitTools, InitLayers, InitRasters, InitMap })(App);
-
-
+export default connect(mapStateToProps, {
+  InitTools,
+  InitLayers,
+  InitRasters,
+  InitMap,
+})(App);
