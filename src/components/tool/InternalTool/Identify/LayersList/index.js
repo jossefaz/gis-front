@@ -9,31 +9,40 @@ class FeatureList extends Component {
 
         if (Object.keys(this.props.SelectedLayers).length > 0) {
             return Object.keys(this.props.SelectedLayers).map((layer) => (
-                <div className="item" key={layer}>
-                    <div
-                        className="content pointerCur"
+                <tr key={layer}>
+                    <td
+                        className={
+                            this.props.currentLayer
+                                ? this.props.currentLayer == layer
+                                    ? "currentLayer pointerCur"
+                                    : "pointerCur"
+                                : "pointerCur"
+                        }
                         onClick={() => this.props.setCurrentLayer(layer)}
                     >
-                        <p
-                            className={
-                                this.props.currentLayer
-                                    ? this.props.currentLayer == layer
-                                        ? "currentLayer"
-                                        : ""
-                                    : ""
-                            }
-                        >
-                            {layer}
-                        </p>
-                    </div>
-                </div>
+                        {layer}
+                    </td>
+                </tr>
             ))
         }
     }
 
     render() {
         return (
-            <div className="ui divided list">{this.renderSelectedFeature()}</div>
+            <React.Fragment>
+                <table class="ui table">
+                    <thead>
+                        <tr>
+                            <th>Layers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.renderSelectedFeature()}
+                    </tbody>
+                </table>
+
+            </React.Fragment>
+
         );
     }
 }

@@ -7,24 +7,25 @@ class FeatureList extends Component {
     const { selectedFeatures, currentLayer, currentFeature } = this.props.Features;
     return currentLayer ? selectedFeatures[currentLayer].length > 0 ? (
       selectedFeatures[currentLayer].map((feature) => (
-        <div className="item" key={feature.id}>
-          <div
-            className="content pointerCur"
+
+        <tr key={feature.id}>
+
+
+          <td
+            className={
+              currentFeature
+                ? currentFeature.id == feature.id
+                  ? "currentFeature pointerCur"
+                  : "pointerCur"
+                : "pointerCur"
+            }
             onClick={() => this.props.setCurrentFeature(feature.id)}
           >
-            <p
-              className={
-                currentFeature
-                  ? currentFeature.id == feature.id
-                    ? "currentFeature"
-                    : ""
-                  : ""
-              }
-            >
-              {feature.properties.migrash}
-            </p>
-          </div>
-        </div>
+
+            {feature.properties.migrash}
+
+          </td>
+        </tr>
       ))
     ) : (
         <div>SELECT FIRST ON MAP</div>
@@ -33,7 +34,22 @@ class FeatureList extends Component {
 
   render() {
     return (
-      <div className="ui divided list">{this.renderSelectedFeature()}</div>
+      <React.Fragment>
+        <table class="ui table">
+          <thead>
+            <tr>
+              <th>Features</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            {this.renderSelectedFeature()}
+
+          </tbody>
+        </table>
+
+      </React.Fragment>
+
     );
   }
 }

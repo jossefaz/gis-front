@@ -3,22 +3,29 @@ import { connect } from "react-redux";
 
 const FeatureDetail = ({ Feature }) => {
   return Feature ? (
-    <table className="ui very basic collapsing celled table">
-      <thead>
-        <tr>
-          <th>Value</th>
-          <th>Property</th>
-        </tr>
-      </thead>
-      <tbody>
-        {Object.keys(Feature.properties).map((property) => (
-          <tr key={property}>
-            <td>{Feature.properties[property]}</td>
-            <td>{property}</td>
+    <React.Fragment>
+      <table class="ui table">
+        <thead>
+          <tr>
+            <th>Value</th>
+            <th>Column</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+
+
+          {Object.keys(Feature.properties).map((property) => (
+            <tr key={property}>
+              <td>{Feature.properties[property]}</td>
+              <td>{property}</td>
+            </tr>
+          ))}
+
+        </tbody>
+      </table>
+
+    </React.Fragment>
+
   ) : null;
 };
 
