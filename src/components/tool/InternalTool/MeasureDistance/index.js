@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getInteractionProxy, getInteraction, getOverlay, removeInteraction } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
-import { setOverlay, unsetOverlays } from "../../../../redux/actions/overlay";
+import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import { generateOutput, generateNewStyle } from "./func";
 import { Confirm } from 'semantic-ui-react'
 import "./style.css";
@@ -23,7 +23,7 @@ class MeasureDistance extends React.Component {
     },
     eraseDraw: {
       openAlert: false,
-      content: "האם ברצונך למחוק את כלל המדידות שביצת ?",
+      content: "? האם ברצונך למחוק את כלל המדידות שביצת",
       confirmBtn: "כן",
       cancelBtn: "לא"
     },
@@ -200,31 +200,6 @@ class MeasureDistance extends React.Component {
 
   }
 
-
-
-  // LIFECYCLE
-  componentDidUpdate() {
-    document.addEventListener("keydown", this.escapeHandler);
-    if (this.props.Tools.length > 0) {
-      this.props.Tools.map(toolid => {
-        if (toolid == this.props.toolID) {
-          this.onReset()
-        }
-      })
-    }
-  }
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.escapeHandler);
-    if (this.draw) {
-      removeInteraction(this.draw)
-    }
-
-
-  }
-  onReset = () => {
-    this.abortDrawing();
-  }
-
   abortDrawing = () => {
     if (this.draw) {
       getInteraction(this.draw).abortDrawing();
@@ -247,32 +222,63 @@ class MeasureDistance extends React.Component {
     }
   }
 
+
+
+  // LIFECYCLE
+  componentDidUpdate() {
+    document.addEventListener("keydown", this.escapeHandler);
+    if (this.props.Tools.length > 0) {
+      this.props.Tools.map(toolid => {
+        if (toolid == this.props.toolID) {
+          this.onReset()
+        }
+      })
+    }
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.escapeHandler);
+    if (this.draw) {
+      removeInteraction(this.draw)
+    }
+
+
+  }
+  onReset = () => {
+    if (this.selfOverlay && this.map && this.map in this.selfOverlay && this.measureToolTip in this.selfOverlay[this.map].overlays) {
+      this.props.unsetOverlay({ uuid: this.measureToolTip, widgetName: this.WIDGET_NAME })
+    }
+    this.abortDrawing();
+  }
+
+
   render() {
     this.renderOverlayDiv();
     return (
       <React.Fragment>
         <div className="ui grid">
           <button
-            className="ui icon button pointer"
+            className="ui icon button primary pointer"
             onClick={() => this.onOpenDrawSession("Polygon")}
           >
             <FontAwesomeIcon icon="draw-polygon" size="lg" />
           </button>
           <button
-            className="ui icon button pointer"
+            className="ui icon button primary pointer"
             onClick={() => this.onOpenDrawSession("LineString")}
           >
-            <FontAwesomeIcon icon="map-pin" size="lg" />
+            <FontAwesomeIcon icon="ruler" size="lg" />
           </button>
           <button
-            className="ui icon button pointer"
+            className={`ui icon button pointer ${this.DrawLayer ? 'negative' : 'disabled'}`}
             onClick={() => this.setState({ open: true })}
+            disabled={!this.DrawLayer}
           >
             <FontAwesomeIcon icon="trash-alt" size="lg" />
           </button>
           <button
-            className="ui icon button pointer"
+            className={`ui icon button pointer ${this.DrawLayer ? 'positive' : 'disabled'}`}
             onClick={() => this.toogleView()}
+            disabled={!this.DrawLayer}
           >
             <FontAwesomeIcon icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
           </button>
@@ -301,4 +307,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setInteraction, unsetInteraction, setOverlay, unsetOverlays })(MeasureDistance);
+export default connect(mapStateToProps, { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay })(MeasureDistance);

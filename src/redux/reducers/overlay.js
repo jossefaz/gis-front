@@ -22,9 +22,10 @@ const overlayReducer = (state = {}, action) => {
             return produce(state, (draftState) => {
                 const { uuid, widgetName } = action.payload
                 Object.keys(draftState[widgetName]).map(mapId => {
-                    draftState[widgetName][mapId].overlays =
-                        draftState[widgetName][mapId].overlays.filter(overlay => overlay.uuid !== uuid)
-                    if (draftState[widgetName][mapId].overlays.length == 0) {
+                    if (uuid in draftState[widgetName][mapId].overlays) {
+                        delete draftState[widgetName][mapId].overlays[uuid]
+                    }
+                    if (Object.keys(draftState[widgetName][mapId].overlays).length == 0) {
                         delete draftState[widgetName][mapId]
                     }
                 })
