@@ -3,6 +3,21 @@ import { connect } from "react-redux";
 import { setCurrentFeature } from "../../../../../redux/actions/features";
 import "./style.css";
 class FeatureList extends Component {
+  state = {
+    current_field: null
+  }
+
+  renderFieldsSelect = () => {
+    const { selectedFeatures, currentLayer, currentFeature } = this.props.Features;
+    return currentLayer ? selectedFeatures[currentLayer].length > 0 ? (
+      <select className="ui fluid dropdown" onChange={(event) => this.setState({ current_field: event.target.value })}>
+        {
+          Object.keys(selectedFeatures[currentLayer][0].properties).map((field) => typeof selectedFeatures[currentLayer][0].properties[field] == "string" ? < option key={field} value={field} > {field}</option> : null)
+        }
+      </select>
+    )
+      : null : null
+  }
   renderSelectedFeature = () => {
     const { selectedFeatures, currentLayer, currentFeature } = this.props.Features;
     return currentLayer ? selectedFeatures[currentLayer].length > 0 ? (
@@ -22,7 +37,7 @@ class FeatureList extends Component {
             onClick={() => this.props.setCurrentFeature(feature.id)}
           >
 
-            {feature.properties.migrash}
+            {this.state.current_field ? feature.properties[this.state.current_field] : feature.id}
 
           </td>
         </tr>
@@ -34,21 +49,24 @@ class FeatureList extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <table class="ui table">
-          <thead>
-            <tr>
-              <th>Features</th>
-            </tr>
-          </thead>
-          <tbody>
+      this.props.Features.currentLayer ?
+        <React.Fragment>
+          <table class="ui table">
+            <thead>
+              <tr>
+                <th>Features</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.renderFieldsSelect()}
+              {this.renderSelectedFeature()}
 
-            {this.renderSelectedFeature()}
+            </tbody>
+          </table>
 
-          </tbody>
-        </table>
-
-      </React.Fragment>
+        </React.Fragment>
+        :
+        null
 
     );
   }
