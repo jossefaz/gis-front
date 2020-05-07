@@ -6,30 +6,48 @@ class FeatureList extends Component {
   state = {
     current_field: null
   }
+  focusedmap = this.props.focusedmap
+
+  sanityCheck = () => {
+    return this.focusedmap in this.props.Features &&
+      "selectedFeatures" in this.props.Features[this.focusedmap] &&
+      this.props.Features[this.focusedmap].currentLayer in this.props.Features[this.focusedmap].selectedFeatures &&
+      this.props.Features[this.focusedmap].selectedFeatures.length > 0
+  }
+
+  get selectedFeatures() {
+    return this.sanityCheck ? this.props.Features[this.focusedmap].selectedFeatures : null
+  }
+
+  get currentLayer() {
+    return this.sanityCheck ? this.props.Features[this.focusedmap].currentLayer : null
+  }
+
+  get currentFeature() {
+    return this.sanityCheck ? this.props.Features[this.focusedmap].currentFeature : null
+  }
 
   renderFieldsSelect = () => {
-    const { selectedFeatures, currentLayer, currentFeature } = this.props.Features;
-    return currentLayer ? selectedFeatures[currentLayer].length > 0 ? (
+    return this.sanityCheck ? (
       <select className="ui fluid dropdown" onChange={(event) => this.setState({ current_field: event.target.value })}>
         {
-          Object.keys(selectedFeatures[currentLayer][0].properties).map((field) => typeof selectedFeatures[currentLayer][0].properties[field] == "string" ? < option key={field} value={field} > {field}</option> : null)
+          Object.keys(this.selectedFeatures[this.currentLayer][0].properties).map((field) => typeof this.selectedFeatures[this.currentLayer][0].properties[field] == "string" ? < option key={field} value={field} > {field}</option> : null)
         }
       </select>
     )
-      : null : null
+      : null
   }
   renderSelectedFeature = () => {
-    const { selectedFeatures, currentLayer, currentFeature } = this.props.Features;
-    return currentLayer ? selectedFeatures[currentLayer].length > 0 ? (
-      selectedFeatures[currentLayer].map((feature) => (
+    return this.sanityCheck ? this.selectedFeatures[this.currentLayer].length > 0 ? (
+      this.selectedFeatures[this.currentLayer].map((feature) => (
 
         <tr key={feature.id}>
 
 
           <td
             className={
-              currentFeature
-                ? currentFeature.id == feature.id
+              this.currentFeature
+                ? this.currentFeature.id == feature.id
                   ? "currentFeature pointerCur"
                   : "pointerCur"
                 : "pointerCur"
@@ -49,9 +67,9 @@ class FeatureList extends Component {
 
   render() {
     return (
-      this.props.Features.currentLayer ?
+      this.currentLayer ?
         <React.Fragment>
-          <table class="ui table">
+          <table className="ui table">
             <thead>
               <tr>
                 <th>Features</th>

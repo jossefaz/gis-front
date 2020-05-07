@@ -1,6 +1,7 @@
 import types from "./actionsTypes";
-import { getEmptyVectorLayer, getDrawObject } from "../../utils/func";
+import { getFocusedMapProxy } from '../../nessMapping/api'
 export const setSelectedFeatures = (features) => (dispatch) => {
+  const focusedmap = getFocusedMapProxy().uuid.value
   const featuresByLayers = {}
   features.map(f => {
     const layer = f.id.split(".")[0]
@@ -12,24 +13,30 @@ export const setSelectedFeatures = (features) => (dispatch) => {
   )
   dispatch({
     type: types.SET_SELECTED_FEATURES,
-    payload: featuresByLayers,
+    payload: { focusedmap, featuresByLayers }
   });
 }
 
 
 
 export const setCurrentFeature = (featureId) => (dispatch, getState) => {
-  const { selectedFeatures, currentLayer } = getState().Features;
-  const currentFeature = selectedFeatures[currentLayer].filter((feature) => feature.id == featureId);
-  dispatch({
-    type: types.SET_CURRENT_FEATURE,
-    payload: currentFeature[0],
-  });
+  const focusedmap = getFocusedMapProxy().uuid.value
+  if (focusedmap in getState().Features) {
+    const { selectedFeatures, currentLayer } = getState().Features[focusedmap];
+    const currentFeature = selectedFeatures[currentLayer].filter((feature) => feature.id == featureId);
+    dispatch({
+      type: types.SET_CURRENT_FEATURE,
+      payload: { focusedmap, currentFeature: currentFeature[0] }
+    });
+
+  }
+
 };
 
-export const setCurrentLayer = (LayerName) => (dispatch) => {
+export const setCurrentLayer = (currentLayer) => (dispatch) => {
+  const focusedmap = getFocusedMapProxy().uuid.value
   dispatch({
     type: types.SET_CURRENT_LAYER,
-    payload: LayerName,
+    payload: { currentLayer, focusedmap },
   });
 };

@@ -4,33 +4,43 @@ import { setCurrentLayer } from "../../../../../redux/actions/features";
 import "./style.css";
 class FeatureList extends Component {
 
+    focusedmap = this.props.focusedmap
+
+    sanityCheck = () => {
+        return this.focusedmap in this.props.Features &&
+            "selectedFeatures" in this.props.Features[this.focusedmap] &&
+            Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0
+    }
 
     renderSelectedFeature = () => {
-
-        if (Object.keys(this.props.SelectedLayers).length > 0) {
-            return Object.keys(this.props.SelectedLayers).map((layer) => (
-                <tr key={layer}>
-                    <td
-                        className={
-                            this.props.currentLayer
-                                ? this.props.currentLayer == layer
-                                    ? "currentLayer pointerCur"
+        return this.sanityCheck ?
+            (
+                Object.keys(this.props.Features[this.focusedmap].selectedFeatures).map((layer) => (
+                    <tr key={layer}>
+                        <td
+                            className={
+                                this.props.Features[this.focusedmap].currentLayer
+                                    ? this.props.Features[this.focusedmap].currentLayer == layer
+                                        ? "currentLayer pointerCur"
+                                        : "pointerCur"
                                     : "pointerCur"
-                                : "pointerCur"
-                        }
-                        onClick={() => this.props.setCurrentLayer(layer)}
-                    >
-                        {layer}
-                    </td>
-                </tr>
-            ))
-        }
+                            }
+                            onClick={() => this.props.setCurrentLayer(layer)}
+                        >
+                            {layer}
+                        </td>
+                    </tr>
+                ))
+
+            ) : null
+
+
     }
 
     render() {
         return (
             <React.Fragment>
-                <table class="ui table">
+                <table className="ui table">
                     <thead>
                         <tr>
                             <th>Layers</th>
@@ -48,7 +58,7 @@ class FeatureList extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return { SelectedLayers: state.Features.selectedFeatures, currentLayer: state.Features.currentLayer };
+    return { Features: state.Features };
 };
 
 export default connect(mapStateToProps, { setCurrentLayer })(FeatureList);

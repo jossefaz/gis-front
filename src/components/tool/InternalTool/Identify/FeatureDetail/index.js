@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 const FeatureDetail = ({ Feature }) => {
   return Feature ? (
     <React.Fragment>
-      <table class="ui table">
+      <table className="ui table">
         <thead>
           <tr>
             <th>Value</th>
