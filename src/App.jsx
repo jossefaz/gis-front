@@ -10,7 +10,8 @@ import { connect } from "react-redux";
 import { InitMap } from "./redux/actions/map";
 import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
-import { InitIcons } from './utils/faicons'
+import { InitIcons } from "./utils/faicons";
+import { InitSearches } from "./utils/searchUtils";
 import Widget from './containers/Widget';
 
 
@@ -18,11 +19,15 @@ class App extends React.Component {
   componentDidMount() {
 
     LogIt(logLevel.INFO, "App init");
-    InitIcons()
+
+    InitIcons();
+    
     this.props.InitMap();
     this.props.InitLayers(config.get("layers"));
     this.props.InitRasters();
     this.props.InitTools(config.get("Widgets"));
+
+    InitSearches(config.get("SearchConfigs"));
   }
 
   render() {
@@ -49,5 +54,3 @@ const mapStateToProps = (state) => {
   return { Tools: state.Tools, maps: state.map };
 };
 export default connect(mapStateToProps, { InitTools, InitLayers, InitRasters, InitMap })(App);
-
-
