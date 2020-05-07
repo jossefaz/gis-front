@@ -2,9 +2,8 @@ import types from "./actionsTypes";
 import NessLayer from "../../nessMapping/nessLayer"
 import {
   getFocusedMapProxy,
-  getNessLayers,
   getNessLayer,
-  addLayerToMap,
+  addOlLayerToMap,
   addLayerToMapProxy,
   setLayerVisiblity,
   setLayerOpacity
@@ -18,7 +17,7 @@ from "../../utils/convertors/layerConverter"
 export const addLayers = (arrayOfNessLayers) => (dispatch) => {
   const addedLayers = [];
   const map = getFocusedMapProxy();
-  const mapId = map.uuid;
+  const mapId = map.uuid.value;
   arrayOfNessLayers.map((lyr) => {
     var nessLyr = new NessLayer(lyr);
     if (nessLyr) {
@@ -37,29 +36,30 @@ export const addLayers = (arrayOfNessLayers) => (dispatch) => {
   });
 }
 
-
 export const addLayerToOLMap = (layerId, visible) => (dispatch) => {
-  const mapId = getFocusedMapProxy().uuid;
-  var layerExists = false;
+  const mapId = getFocusedMapProxy().uuid.value;
   if (getNessLayer(layerId)) {
-    if (addLayerToMap(layerId, visible)) {
-      if (layerExists)
-        dispatch({
-          type: types.SET_LAYER_VISIBLE,
-          payload: {
-            mapId,
-            layerId,
-            visible
-          }
-        });
+    if (addOlLayerToMap(layerId, visible)) {
+      console.log("action add to layer");
+      layerId = layerId.value;
+      dispatch({
+        type: types.SET_LAYER_VISIBLE,
+        payload: {
+          mapId,
+          layerId,
+          visible
+        }
+      });
+
     }
   }
 }
 
 export const setMapLayerVisible = (layerId, visible) => (dispatch) => {
-  const mapId = getFocusedMapProxy().uuid;
+  const mapId = getFocusedMapProxy().uuid.value;
 
   if (setLayerVisiblity(layerId, visible)) {
+    layerId = layerId.value;
     dispatch({
       type: types.SET_LAYER_VISIBLE,
       payload: {
@@ -72,11 +72,9 @@ export const setMapLayerVisible = (layerId, visible) => (dispatch) => {
 }
 
 export const setMapLayerOpacity = (layerId, Opacity) => (dispatch) => {
-
-  const mapId = getFocusedMapProxy().uuid;
-
+  const mapId = getFocusedMapProxy().uuid.value;
   if (setLayerOpacity(layerId, Opacity)) {
-
+    layerId = layerId.value;
     dispatch({
       type: types.SET_LAYER_OPACITY,
       payload: {

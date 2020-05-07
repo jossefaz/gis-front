@@ -4,13 +4,11 @@ import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
 
 import {
-    Tile as TileLayer,
     Image as ImageLayer
 } from 'ol/layer';
 import ImageWMS
 from "ol/source/ImageWMS";
 import {
-    OSM,
     ImageArcGISRest
 } from 'ol/source';
 
@@ -161,7 +159,7 @@ const _getMapIndex = (nl) => {
 export const getLayerObject = (uuid, OLMap) => {
     if (uuid) {
         const layers = OLMap.getLayers().getArray();
-        return layers.find(layer => layer.get(NessKeys.NESS_OVERLAY_UUID_KEY) === uuid)
+        return layers.find(layer => layer.get(NessKeys.NESS_LAYER_UUID_KEY) === uuid.value)
     }
     return -1;
 }

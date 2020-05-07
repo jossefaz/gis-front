@@ -40,25 +40,25 @@ export const getFocusedMapProxy = () => {
  */
 
 // GET Layer
-export const getLayer = (uuid) => {
+export const getOlLayer = (uuid) => {
     return getLayerObject(uuid, getFocusedMap())
+}
+// GET OL Layers
+export const getOlLayers = () => {
+    return getFocusedMap().getLayers().getArray();
 }
 // GET Ness Layer
 export const getNessLayer = ((uuid) => {
     return getFocusedMapProxy()._layers.find(layer =>
-        layer.get(NessKeys.NESS_OVERLAY_UUID_KEY) === uuid)
+        layer.uuid === uuid)
 });
 // GET Ness Layers
 export const getNessLayers = ((uuid) => {
     return getFocusedMapProxy()._layers;
 });
-// GET OL Layers
-export const getLayers = () => {
-    return getFocusedMap().getLayers().getArray();
-}
 
 // SET add layer to map proxy object
-export const addLayerToMapProxy = (mdId, alias, lyr, lyrConfig, addToMap) => {
+export const addLayerToMapProxy = (mdId, alias, lyr, lyrConfig) => {
     const Layer = new NessLayer(mdId, alias, lyr, lyrConfig);
     const MapProxy = getFocusedMapProxy();
     if (MapProxy.AddLayer(Layer))
@@ -66,14 +66,20 @@ export const addLayerToMapProxy = (mdId, alias, lyr, lyrConfig, addToMap) => {
     return -1;
 }
 
-//SET add layer to OL map
-export const addLayerToMap = (uuid, visible = true) => {
-    const lyr = getLayer(uuid);
-    if (lyr !== -1) {
+//SET add ness layer to OL map
+export const addOlLayerToMap = (uuid, visible = true) => {
+    const nessLyr = getNessLayer(uuid);
+    if (nessLyr !== -1) {
         const MapProxy = getFocusedMapProxy();
-        if (lyr.AddSelfToMap(MapProxy))
-            lyr.setVisible(visible);
+        if (nessLyr.AddSelfToMap(MapProxy)) {
+            var olLyr = getOlLayer(uuid)
+            if (olLyr && olLyr !== -1)
+                olLyr.setVisible(visible);
+            return true;
+        } else
+            return false
     }
+    return false;
 }
 
 // DELETE
