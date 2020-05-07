@@ -10,7 +10,7 @@ export const nessLayerToReduxLayer = (nessLayer) => {
     newLayer.semanticId = nessLayer.semanticId;
     newLayer.visible = false;
     newLayer.opacity = 0.5;
-    newLayer.uuid = nessLayer.uuid;
+    newLayer.uuid = nessLayer.uuid.value;
     return newLayer;
   }
 }
