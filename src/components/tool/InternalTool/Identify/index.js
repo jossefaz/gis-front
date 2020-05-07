@@ -12,7 +12,7 @@ const Identify = (props) => {
     focusedmap in props.Features && "selectedFeatures" in props.Features[focusedmap] ?
       Object.keys(props.Features[focusedmap].selectedFeatures).length > 0 ?
         <div className="flexDisplay">
-          {/* <FeatureDetail focusedmap={focusedmap} /> */}
+          <FeatureDetail focusedmap={focusedmap} />
           <FeatureList focusedmap={focusedmap} />
           <LayersList focusedmap={focusedmap} />
         </div>
