@@ -6,6 +6,10 @@ import NessLayer, {
 } from './nessLayer';
 import NessOverlay from "./overlay";
 import NessInteraction from "./interaction";
+import { getEmptyVectorLayer } from '../utils/interactions'
+import { Point, MultiPoint, Polygon, MultiLineString, LineString, MultiPolygon } from 'ol/geom';
+import Feature from 'ol/Feature';
+import mapStyle from './mapStyle'
 
 
 
@@ -23,6 +27,57 @@ export const getFocusedMap = () => {
 export const getFocusedMapProxy = () => {
     const state = store.getState();
     return NessMapping.getInstance().getMapProxy(state.map.focused)
+}
+
+// ZOOM TO
+
+export const zoomTo = (config) => {
+    const { type, coordinates } = config
+    let newGeometry = null
+    switch (type) {
+        case "MultiPolygon":
+            newGeometry = new MultiPolygon(coordinates);
+            break;
+        case "Point":
+            newGeometry = new Point(coordinates);
+            break;
+
+        case "Polygon":
+            newGeometry = new Polygon(coordinates);
+            break;
+
+        case "MultiLineString":
+            newGeometry = new MultiLineString(coordinates);
+            break;
+        case "LineString":
+            newGeometry = new LineString(coordinates);
+            break;
+
+        case "MultiPoint":
+            newGeometry = new MultiPoint(coordinates);
+            break;
+        default:
+            break;
+    }
+    if (newGeometry) {
+        const view = getFocusedMap().getView()
+        highlightFeature(newGeometry)
+        view.fit(newGeometry, { padding: [170, 50, 30, 150] })
+    }
+    else {
+        throw "the config object provided to ZoomTo function does not match any geometry type"
+    }
+}
+
+export const highlightFeature = (geometry) => {
+
+    // TODO : make a uniq layer for highlighting features....now it add as many layers as higlighted features
+
+    const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
+    getFocusedMap().addLayer(vector)
+    source.addFeature(new Feature(geometry))
+
+
 }
 
 /**

@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getInteractionProxy, getInteraction, getOverlay, removeInteraction } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
+import IconButton from "../../../UI/Buttons/IconButton"
 import { generateOutput, generateNewStyle } from "./func";
 import { Confirm } from 'semantic-ui-react'
 import "./style.css";
@@ -256,32 +256,24 @@ class MeasureDistance extends React.Component {
     return (
       <React.Fragment>
         <div className="ui grid">
-          <button
+          <IconButton
             className="ui icon button primary pointer"
             onClick={() => this.onOpenDrawSession("Polygon")}
-          >
-            <FontAwesomeIcon icon="draw-polygon" size="lg" />
-          </button>
-          <button
+            icon="draw-polygon" size="lg" />
+          <IconButton
             className="ui icon button primary pointer"
             onClick={() => this.onOpenDrawSession("LineString")}
-          >
-            <FontAwesomeIcon icon="ruler" size="lg" />
-          </button>
-          <button
+            icon="ruler" size="lg" />
+          <IconButton
             className={`ui icon button pointer ${this.DrawLayer ? 'negative' : 'disabled'}`}
             onClick={() => this.setState({ open: true })}
             disabled={!this.DrawLayer}
-          >
-            <FontAwesomeIcon icon="trash-alt" size="lg" />
-          </button>
-          <button
+            icon="trash-alt" size="lg" />
+          <IconButton
             className={`ui icon button pointer ${this.DrawLayer ? 'positive' : 'disabled'}`}
             onClick={() => this.toogleView()}
             disabled={!this.DrawLayer}
-          >
-            <FontAwesomeIcon icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
-          </button>
+            icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
           <Confirm
             open={this.state.open}
             size='mini'

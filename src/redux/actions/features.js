@@ -1,20 +1,24 @@
 import types from "./actionsTypes";
 import { getFocusedMapProxy } from '../../nessMapping/api'
 export const setSelectedFeatures = (features) => (dispatch) => {
-  const focusedmap = getFocusedMapProxy().uuid.value
-  const featuresByLayers = {}
-  features.map(f => {
-    const layer = f.id.split(".")[0]
-    if (!(layer in featuresByLayers)) {
-      featuresByLayers[layer] = []
+  if (features) {
+    const focusedmap = getFocusedMapProxy().uuid.value
+    const featuresByLayers = {}
+    features.map(f => {
+      const layer = f.id.split(".")[0]
+      if (!(layer in featuresByLayers)) {
+        featuresByLayers[layer] = []
+      }
+      featuresByLayers[layer].push(f)
     }
-    featuresByLayers[layer].push(f)
+    )
+    dispatch({
+      type: types.SET_SELECTED_FEATURES,
+      payload: { focusedmap, featuresByLayers }
+    });
+
   }
-  )
-  dispatch({
-    type: types.SET_SELECTED_FEATURES,
-    payload: { focusedmap, featuresByLayers }
-  });
+
 }
 
 

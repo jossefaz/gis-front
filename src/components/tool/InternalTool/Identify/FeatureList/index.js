@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { setCurrentFeature } from "../../../../../redux/actions/features";
+import { zoomTo } from '../../../../../nessMapping/api'
+import IconButton from "../../../../UI/Buttons/IconButton"
 import "./style.css";
 class FeatureList extends Component {
   state = {
@@ -29,11 +32,17 @@ class FeatureList extends Component {
 
   renderFieldsSelect = () => {
     return this.sanityCheck ? (
-      <select className="ui fluid dropdown" onChange={(event) => this.setState({ current_field: event.target.value })}>
-        {
-          Object.keys(this.selectedFeatures[this.currentLayer][0].properties).map((field) => typeof this.selectedFeatures[this.currentLayer][0].properties[field] == "string" ? < option key={field} value={field} > {field}</option> : null)
-        }
-      </select>
+      <tr><td>
+        <select className="ui fluid dropdown" onChange={(event) => this.setState({ current_field: event.target.value })}>
+          {
+            Object.keys(this.selectedFeatures[this.currentLayer][0].properties).map((field) => typeof this.selectedFeatures[this.currentLayer][0].properties[field] == "string" ? < option key={field} value={field} > {field}</option> : null)
+          }
+        </select>
+
+      </td>
+
+      </tr>
+
     )
       : null
   }
@@ -48,14 +57,25 @@ class FeatureList extends Component {
             className={
               this.currentFeature
                 ? this.currentFeature.id == feature.id
-                  ? "currentFeature pointerCur"
-                  : "pointerCur"
-                : "pointerCur"
+                  ? "currentFeature pointerCur flexDisplay"
+                  : "pointerCur flexDisplay"
+                : "pointerCur flexDisplay"
             }
             onClick={() => this.props.setCurrentFeature(feature.id)}
           >
 
+
             {this.state.current_field ? feature.properties[this.state.current_field] : feature.id}
+            <IconButton
+              className="ui icon button primary pointer margin05em"
+              onClick={() => {
+                zoomTo(feature.geometry)
+                // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
+              }}
+              icon="crosshairs" size="1x" />
+
+
+
 
           </td>
         </tr>
