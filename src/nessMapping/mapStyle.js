@@ -1,5 +1,5 @@
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
-const _drawstyle = new Style({
+const _drawEndstyle = new Style({
     fill: new Fill({
         color: "rgba(255, 255, 255, 0.2)",
     }),
@@ -14,6 +14,28 @@ const _drawstyle = new Style({
         }),
     }),
 })
+
+const _drawStartStyle = new Style({
+    fill: new Fill({
+        color: "rgba(255, 255, 255, 0.2)",
+    }),
+    stroke: new Stroke({
+        color: "rgba(0, 0, 0, 0.5)",
+        lineDash: [10, 10],
+        width: 2,
+    }),
+    image: new CircleStyle({
+        radius: 5,
+        stroke: new Stroke({
+            color: "rgba(0, 0, 0, 0.7)",
+        }),
+        fill: new Fill({
+            color: "rgba(255, 255, 255, 0.2)",
+        }),
+    }),
+}),
+
+
 
 const _highlight = new Style({
     fill: new Fill({
@@ -37,6 +59,7 @@ const _highlight = new Style({
 
 
 export default {
-    DRAW: _drawstyle,
+    DRAW_START: _drawStartStyle,
+    DRAW_END: _drawEndstyle,
     HIGHLIGHT: _highlight
 }

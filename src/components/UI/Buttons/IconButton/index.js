@@ -10,7 +10,7 @@ export default (props) => {
             onClick={props.onClick}
             disabled={props.disabled}
             style={{
-                margin: "0.5em"
+                margin: "0.1em"
             }}
         >
             <FontAwesomeIcon icon={props.icon} size={props.size} />

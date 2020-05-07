@@ -240,8 +240,6 @@ class MeasureDistance extends React.Component {
     if (this.draw) {
       removeInteraction(this.draw)
     }
-
-
   }
   onReset = () => {
     if (this.selfOverlay && this.map && this.map in this.selfOverlay && this.measureToolTip in this.selfOverlay[this.map].overlays) {
