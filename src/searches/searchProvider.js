@@ -1,7 +1,7 @@
 /* eslint-disable no-throw-literal */
 import GenerateUUID from '../utils/uuid';
 import SearchKeys from './keys';
-import promiseTimeout from '../utils/promise-timeout';
+import { promiseTimeout } from '../utils/promise-timeout';
 
 export default class SearchProvider {
 
@@ -16,19 +16,19 @@ export default class SearchProvider {
     _generateItems(query, intoArray) {
         return new Promise( (resolve, reject) => {
             switch (this._config.type) {
-                case SearchKeys.SEARCH_TYPE_DATA:
-                    intoArray.concat(
-                        this._config.data.filter(item => {
-                            return item[this._config.field].indexOf(query)>=0;
-                        }).map(item => {
-                            // this returns an item
-                            return {
-                                item: item,
-                                title: this._config.itemTitlePrefix + item[this._config.itemTitleField] + this._config.itemTitlePostfix,
-                                invoker: (typeof this._config.invokerFunc === 'function' ? this._config.invokerFunc : this,this._defaultInvoker)
-                            }
-                        })
-                    );
+                case SearchKeys.SEARCH_TYPE_OBJ_ARRAY:
+                    var res = this._config.data.filter(item => {
+                        return item[this._config.field].indexOf(query)>=0;
+                    }).map(item => {
+                        // this returns an item
+                        return {
+                            item: item,
+                            title: this._config.itemTitlePrefix + item[this._config.itemTitleField] + this._config.itemTitlePostfix,
+                            invoker: (typeof this._config.invokerFunc === 'function' ? this._config.invokerFunc : this,this._defaultInvoker)
+                        }
+                    });
+
+                    intoArray.push(...res);
                     resolve(true);
                     break;
                 default:
@@ -38,7 +38,7 @@ export default class SearchProvider {
     }
 
     _defaultInvoker(item) {
-        console.log(JSON.stringify(item));
+        console.log("  ..default invoker invoked on item " + JSON.stringify(item));
     }
 
     GenerateItems(query, intoArray, timeoutMs = 1000) {

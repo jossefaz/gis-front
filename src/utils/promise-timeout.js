@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-undef
-export default promiseTimeout = function(promise, timeoutMs) {
+export const promiseTimeout = (promise, timeoutMs) => {
     let timeout = new Promise((resolve, reject) => {
         let id = setTimeout(() => {
             clearTimeout(id);

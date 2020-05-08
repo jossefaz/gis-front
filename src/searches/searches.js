@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 
+import SearchProvider from "./searchProvider";
+
 const NessSearching = (function () {
     var instance;
 
@@ -24,25 +26,24 @@ const NessSearching = (function () {
             },
 
             InitSearch(query, timeoutMs = 1000) {
-                if (this._searchReady) {
-                    this._searchReady = false;
+                return new Promise( (resolve, reject) => {
+                    if (this._searchReady) {
+                        this._searchReady = false;
 
-                    var qts = [];
-                    var result = [];
-                    for (k in this._searchProviders) {
-                        qts.push(this._searchProviders[k].GenerateItems(query, result, timeoutMs));
+                        var qts = [];
+                        var result = [];
+                        for (var k in this._searchProviders) {
+                            qts.push(this._searchProviders[k].GenerateItems(query, result, timeoutMs));
+                        }
+
+                        Promise.allSettled(qts).finally(() => {
+                            this._searchReady = true;
+                            resolve(result);
+                        });
+                    } else {
+                        reject('previous search still active...');
                     }
-
-                    var res = Promise.allSettled(qts);
-                    
-                    res.finally(() => {
-                        this._searchReady = true;
-                    });
-
-                    return res;
-                } else {
-                    return null;
-                }
+                });
             }
         };
 
