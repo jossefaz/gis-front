@@ -5,9 +5,6 @@ import {
     Map
 } from "ol";
 
-
-
-
 export default class MapProxy {
     constructor(mapConfig) {
         var uuid = {
