@@ -2,7 +2,11 @@ import store from '../redux/store';
 import NessMapping from "./mapping";
 import NessLayer, {
     getLayerObject,
-    deleteLayerObject
+    deleteLayerObject,
+    setVisible,
+    getVisible,
+    setOpacity,
+    getOpacity
 } from './nessLayer';
 import NessOverlay from "./overlay";
 import NessInteraction from "./interaction";
@@ -85,20 +89,72 @@ export const highlightFeature = (geometry) => {
  * 
  */
 
-// GET
-export const getLayer = (uuid) => {
+// GET Layer
+export const getOlLayer = (uuid) => {
     return getLayerObject(uuid, getFocusedMap())
 }
+// GET OL Layers
+export const getOlLayers = () => {
+    return getFocusedMap().getLayers().getArray();
+}
+// GET Ness Layer
+export const getNessLayer = ((uuid) => {
+    return getFocusedMapProxy()._layers.find(layer =>
+        layer.uuid === uuid)
+});
+// GET Ness Layers
+export const getNessLayers = ((uuid) => {
+    return getFocusedMapProxy()._layers;
+});
 
-// SET
-export const addLayer = (config) => {
-    const Layer = new NessLayer(config)
-    return Layer.AddSelfToMap(getFocusedMapProxy())
+// SET add layer to map proxy object
+export const addLayerToMapProxy = (mdId, alias, lyr, lyrConfig) => {
+    const Layer = new NessLayer(mdId, alias, lyr, lyrConfig);
+    const MapProxy = getFocusedMapProxy();
+    if (MapProxy.AddLayer(Layer))
+        return Layer;
+    return -1;
+}
+
+//SET add ness layer to OL map
+export const addOlLayerToMap = (uuid, visible = true) => {
+    const nessLyr = getNessLayer(uuid);
+    if (nessLyr !== -1) {
+        const MapProxy = getFocusedMapProxy();
+        if (nessLyr.AddSelfToMap(MapProxy)) {
+            var olLyr = getOlLayer(uuid)
+            if (olLyr && olLyr !== -1)
+                olLyr.setVisible(visible);
+            return true;
+        } else
+            return false
+    }
+    return false;
 }
 
 // DELETE
 export const removeLayer = (overlay) => {
     return deleteLayerObject(overlay, getFocusedMap())
+}
+
+// SET VISIBLE
+export const setLayerVisiblity = (uuid, visibilty) => {
+    return setVisible(uuid, getFocusedMap(), visibilty);
+}
+
+// GET VISIBLE
+export const getLayerVisiblity = (uuid) => {
+    return getVisible(uuid, getFocusedMap());
+}
+
+// SET OPACTIY
+export const setLayerOpacity = (uuid, opacity) => {
+    return setOpacity(uuid, getFocusedMap(), opacity);
+}
+
+// GET OPACTIY
+export const getLayerOpacity = (uuid) => {
+    return getOpacity(uuid, getFocusedMap());
 }
 
 /**

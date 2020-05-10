@@ -4,11 +4,11 @@ import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
 
 import {
-    Tile as TileLayer,
     Image as ImageLayer
 } from 'ol/layer';
+import ImageWMS
+from "ol/source/ImageWMS";
 import {
-    OSM,
     ImageArcGISRest
 } from 'ol/source';
 
@@ -22,12 +22,12 @@ import NessKeys from './keys'
 
 
 export default class NessLayer {
-    constructor(mdId, alias, lyr) {
+    constructor(mdId = null, alias = null, lyr = null, json = null) {
         this.uuid = null;
         this.mapIndex = -1;
         this.parent = null;
 
-        var nl = md.getMDLayerById(mdId) || lu.getMDLayerByObject(lyr);
+        var nl = md.getMDLayerFromJson(json) || md.getMDLayerById(mdId) || lu.getMDLayerByObject(lyr);
         if (nl) {
             // must-have props
             var uuid = {
@@ -36,7 +36,8 @@ export default class NessLayer {
             Object.freeze(uuid); // freeze uuid, it is too important !
             this.uuid = uuid;
 
-            this.metadataId = nl.metadataId;
+            this.semanticId = nl.semanticId;
+            this.displayExpression = nl.displayExpression;
 
             // must-have layer configuration props
             this.config = nl.config;
@@ -71,6 +72,7 @@ export default class NessLayer {
         } else if (parent instanceof MapProxy && parent.OLMap) {
             // no parent, set parent and add
             this.parent = parent;
+            this.parent._layers.push(this);
             okToAdd = true;
         }
 
@@ -117,8 +119,11 @@ const _toOLLayer = (nl) => {
             break;
         case "OL_ImageLayer":
             newLyr = new ImageLayer({
-                source: newSrc
+                source: new ImageWMS({
+                    url: nl.config.SourceOptions.url,
+                }),
             });
+            newLyr.alias = nl.title;
             break;
         case "OL_VectorLayer":
             break;
@@ -154,11 +159,10 @@ const _getMapIndex = (nl) => {
 export const getLayerObject = (uuid, OLMap) => {
     if (uuid) {
         const layers = OLMap.getLayers().getArray();
-        return layers.find(layer => layer.get(NessKeys.NESS_OVERLAY_UUID_KEY) === uuid)
+        return layers.find(layer => layer.get(NessKeys.NESS_LAYER_UUID_KEY) === uuid.value)
     }
     return -1;
 }
-
 export const deleteLayerObject = (layer, OLMap) => {
     try {
         OLMap.removeLayer(layer)
@@ -167,4 +171,34 @@ export const deleteLayerObject = (layer, OLMap) => {
         return -1;
 
     }
+}
+export const setVisible = (uuid, OLMap, visibilty) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        layer.setVisible(visibilty);
+        return true;
+    }
+    return false;
+}
+export const getVisible = (uuid, OLMap) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        return layer.getVisible();
+    }
+    return -1;
+}
+export const setOpacity = (uuid, OLMap, opacity) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        layer.setOpacity(opacity);
+        return true;
+    }
+    return false;
+}
+export const getOpacity = (uuid, OLMap) => {
+    var layer = getLayerObject(uuid, OLMap);
+    if (layer !== -1) {
+        return layer.getOpacity();
+    }
+    return -1;
 }
