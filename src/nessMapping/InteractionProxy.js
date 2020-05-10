@@ -2,7 +2,6 @@
 /* eslint-disable no-throw-literal */
 import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
-import NessMapping from './mapping'
 import NessKeys from './keys'
 import { newDraw } from '../utils/interactions'
 export default class NessInteraction {
@@ -31,7 +30,7 @@ export default class NessInteraction {
         }
 
         if (okToAdd) {
-            const { olInteraction, sourceLayer } = _toOLInteraction(this);
+            const { olInteraction, sourceLayer, vLayer } = _toOLInteraction(this);
 
             if (olInteraction) {
                 // add the layer to the map
@@ -42,6 +41,7 @@ export default class NessInteraction {
                 olInteraction.set(NessKeys.PARENT_UUID, this.parent.uuid.value, true);
                 this._olInteraction = olInteraction
                 this.sourceLayer = sourceLayer
+                this.Layer = vLayer
                 // and now refresh mapIndex
                 this.RefreshMapIndex();
 
@@ -64,18 +64,19 @@ export default class NessInteraction {
 ////////////////////////////////////////////////////////
 const _toOLInteraction = (ni) => {
     // TODO: init a propper OpenLayers Layer object and return it
-    let olInteraction, sourceLayer = null;
+    let olInteraction, sourceLayer, vLayer = null;
     switch (ni.config.Type) {
         case "Draw":
-            const { Interaction, Layer } = newDraw(ni.config.drawConfig.type, ni.config.sourceLayer)
+            const { Interaction, vectorSource, Layer } = newDraw(ni.config.drawConfig.type, ni.config.sourceLayer, ni.config.Layer)
             olInteraction = Interaction
-            sourceLayer = Layer
+            sourceLayer = vectorSource
+            vLayer = Layer
             break;
     }
     if (!olInteraction) {
         throw "Failed creating OL Interaction";
     }
-    return { olInteraction, sourceLayer };
+    return { olInteraction, sourceLayer, vLayer };
 }
 
 const _getMapIndex = (ni) => {

@@ -1,27 +1,27 @@
 /* eslint-disable no-undef */
-import InteractionProxy from "./InteractionProxy";
+import OverlayProxy from "./OverlayProxy";
 
 const NessMapping = (function () {
     var instance;
 
     function createInstance() {
         var object = {
-            _InteractionProxies: {},
+            _OverlayProxies: {},
 
-            getInteractionProxy(uuid) {
-                return this._InteractionProxies[uuid];
+            getOverlayProxy(uuid) {
+                return this._OverlayProxies[uuid];
             },
 
 
-            addInteractionProxy(config) {
-                const ip = new InteractionProxy(config);
-                this._InteractionProxies[ip.uuid.value] = ip;
+            addOverlayProxy(config) {
+                const ip = new OverlayProxy(config);
+                this._OverlayProxies[ip.uuid.value] = ip;
                 return ip;
             },
 
-            killInteractionProxy(uuid) {
-                if (this._InteractionProxies.hasOwnProperty(uuid)) {
-                    delete this._InteractionProxies[uuid];
+            killOverlayProxy(uuid) {
+                if (this._OverlayProxies.hasOwnProperty(uuid)) {
+                    delete this._OverlayProxies[uuid];
                     return true;
                 }
 

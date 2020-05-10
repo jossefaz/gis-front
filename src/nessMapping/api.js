@@ -8,15 +8,14 @@ import NessLayer, {
     setOpacity,
     getOpacity
 } from './nessLayer';
-import NessOverlay, {
-    getOverlayObject,
-    deleteOverlayObject
-} from "./nessOverlay";
-import NessInteraction, {
-    getInteractionObject,
-    deleteInteractionObject
-} from "./interaction";
-import NessKeys from './keys'
+import NessOverlay from "./overlay";
+import NessInteraction from "./interaction";
+import { getEmptyVectorLayer } from '../utils/interactions'
+import { Point, MultiPoint, Polygon, MultiLineString, LineString, MultiPolygon } from 'ol/geom';
+import Feature from 'ol/Feature';
+import mapStyle from './mapStyle'
+
+
 
 /**
  * Map API
@@ -32,6 +31,57 @@ export const getFocusedMap = () => {
 export const getFocusedMapProxy = () => {
     const state = store.getState();
     return NessMapping.getInstance().getMapProxy(state.map.focused)
+}
+
+// ZOOM TO
+
+export const zoomTo = (config) => {
+    const { type, coordinates } = config
+    let newGeometry = null
+    switch (type) {
+        case "MultiPolygon":
+            newGeometry = new MultiPolygon(coordinates);
+            break;
+        case "Point":
+            newGeometry = new Point(coordinates);
+            break;
+
+        case "Polygon":
+            newGeometry = new Polygon(coordinates);
+            break;
+
+        case "MultiLineString":
+            newGeometry = new MultiLineString(coordinates);
+            break;
+        case "LineString":
+            newGeometry = new LineString(coordinates);
+            break;
+
+        case "MultiPoint":
+            newGeometry = new MultiPoint(coordinates);
+            break;
+        default:
+            break;
+    }
+    if (newGeometry) {
+        const view = getFocusedMap().getView()
+        highlightFeature(newGeometry)
+        view.fit(newGeometry, { padding: [170, 50, 30, 150] })
+    }
+    else {
+        throw "the config object provided to ZoomTo function does not match any geometry type"
+    }
+}
+
+export const highlightFeature = (geometry) => {
+
+    // TODO : make a uniq layer for highlighting features....now it add as many layers as higlighted features
+
+    const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
+    getFocusedMap().addLayer(vector)
+    source.addFeature(new Feature(geometry))
+
+
 }
 
 /**
@@ -113,8 +163,12 @@ export const getLayerOpacity = (uuid) => {
  */
 // GET
 export const getInteraction = (uuid) => {
+    return NessInteraction.getInstance().getInteractionProxy(uuid).OLInteraction
+}
+export const getInteractionProxy = (uuid) => {
     return NessInteraction.getInstance().getInteractionProxy(uuid)
 }
+
 // SET
 export const addInteraction = (config) => {
     const InteractionProxy = NessInteraction.getInstance().addInteractionProxy(config)
@@ -125,7 +179,6 @@ export const addInteraction = (config) => {
 export const removeInteraction = (uuid) => {
     const InteractionProxy = NessInteraction.getInstance().getInteractionProxy(uuid)
     InteractionProxy.RemoveSelfFromMap()
-    NessInteraction.getInstance().killInteractionProxy(uuid)
     return true
 }
 
@@ -135,19 +188,27 @@ export const removeInteraction = (uuid) => {
  */
 
 // GET
-export const getOverlay = (uuid, map_uuid) => {
-    return getOverlayObject(uuid, _getmap(map_uuid))
+export const getOverlay = (uuid) => {
+    const olp = NessOverlay.getInstance().getOverlayProxy(uuid)
+    return olp.OLOverlay
+}
+
+export const getOverlayProxy = (uuid) => {
+    return NessOverlay.getInstance().getOverlayProxy(uuid)
 }
 
 // SET
 export const addOverlay = (config) => {
-    const Overlay = new NessOverlay(config)
-    return Overlay.AddSelfToMap(getFocusedMapProxy())
+    const OverlayProxy = NessOverlay.getInstance().addOverlayProxy(config)
+    return OverlayProxy.AddSelfToMap(getFocusedMapProxy())
 }
 
 // DELETE
-export const removeOverlay = (overlay, map_uuid) => {
-    return deleteOverlayObject(overlay, _getmap(map_uuid))
+export const removeOverlay = (uuid) => {
+    const OverlayProxy = NessOverlay.getInstance().getOverlayProxy(uuid)
+    OverlayProxy.RemoveSelfFromMap()
+    NessOverlay.getInstance().killOverlayProxy(uuid)
+    return true
 }
 
 const _getmap = (map_uuid) => {

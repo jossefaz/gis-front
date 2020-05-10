@@ -36,7 +36,7 @@ export const formatArea = (polygon) => {
         radius: 6378137
     });
     var output;
-    if (area > 1000) {
+    if (area > 100000) {
         output = (Math.round(area / 1000000 * 100) / 100) +
             ' ' + 'km2';
     } else {

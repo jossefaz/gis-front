@@ -10,8 +10,8 @@ import './style.css'
 
 export const MapTabs = (props) => {
 
-    const handleTabChange = (uuid) => {
-        props.resetTools()
+    const handleTabChange = async (uuid) => {
+        await props.resetTools()
         if (uuid == "+") {
             props.InitMap()
         } else {

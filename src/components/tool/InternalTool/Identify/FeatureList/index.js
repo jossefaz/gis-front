@@ -1,30 +1,84 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { setCurrentFeature } from "../../../../../redux/actions/features";
+import { zoomTo } from '../../../../../nessMapping/api'
+import IconButton from "../../../../UI/Buttons/IconButton"
 import "./style.css";
 class FeatureList extends Component {
+  state = {
+    current_field: null
+  }
+  focusedmap = this.props.focusedmap
+
+  sanityCheck = () => {
+    return this.focusedmap in this.props.Features &&
+      "selectedFeatures" in this.props.Features[this.focusedmap] &&
+      this.props.Features[this.focusedmap].currentLayer in this.props.Features[this.focusedmap].selectedFeatures &&
+      this.props.Features[this.focusedmap].selectedFeatures.length > 0
+  }
+
+  get selectedFeatures() {
+    return this.sanityCheck ? this.props.Features[this.focusedmap].selectedFeatures : null
+  }
+
+  get currentLayer() {
+    return this.sanityCheck ? this.props.Features[this.focusedmap].currentLayer : null
+  }
+
+  get currentFeature() {
+    return this.sanityCheck ? this.props.Features[this.focusedmap].currentFeature : null
+  }
+
+  renderFieldsSelect = () => {
+    return this.sanityCheck ? (
+      <tr><td>
+        <select className="ui fluid dropdown" onChange={(event) => this.setState({ current_field: event.target.value })}>
+          {
+            Object.keys(this.selectedFeatures[this.currentLayer][0].properties).map((field) => typeof this.selectedFeatures[this.currentLayer][0].properties[field] == "string" ? < option key={field} value={field} > {field}</option> : null)
+          }
+        </select>
+
+      </td>
+
+      </tr>
+
+    )
+      : null
+  }
   renderSelectedFeature = () => {
-    const { selectedFeatures, currentLayer, currentFeature } = this.props.Features;
-    return currentLayer ? selectedFeatures[currentLayer].length > 0 ? (
-      selectedFeatures[currentLayer].map((feature) => (
-        <div className="item" key={feature.id}>
-          <div
-            className="content pointerCur"
+    return this.sanityCheck ? this.selectedFeatures[this.currentLayer].length > 0 ? (
+      this.selectedFeatures[this.currentLayer].map((feature) => (
+
+        <tr key={feature.id}>
+
+
+          <td
+            className={
+              this.currentFeature
+                ? this.currentFeature.id == feature.id
+                  ? "currentFeature pointerCur flexDisplay"
+                  : "pointerCur flexDisplay"
+                : "pointerCur flexDisplay"
+            }
             onClick={() => this.props.setCurrentFeature(feature.id)}
           >
-            <p
-              className={
-                currentFeature
-                  ? currentFeature.id == feature.id
-                    ? "currentFeature"
-                    : ""
-                  : ""
-              }
-            >
-              {feature.properties.migrash}
-            </p>
-          </div>
-        </div>
+
+
+            {this.state.current_field ? feature.properties[this.state.current_field] : feature.id}
+            <IconButton
+              className="ui icon button primary pointer margin05em"
+              onClick={() => {
+                zoomTo(feature.geometry)
+                // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
+              }}
+              icon="crosshairs" size="1x" />
+
+
+
+
+          </td>
+        </tr>
       ))
     ) : (
         <div>SELECT FIRST ON MAP</div>
@@ -33,7 +87,25 @@ class FeatureList extends Component {
 
   render() {
     return (
-      <div className="ui divided list">{this.renderSelectedFeature()}</div>
+      this.currentLayer ?
+        <React.Fragment>
+          <table className="ui table">
+            <thead>
+              <tr>
+                <th>Features</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.renderFieldsSelect()}
+              {this.renderSelectedFeature()}
+
+            </tbody>
+          </table>
+
+        </React.Fragment>
+        :
+        null
+
     );
   }
 }

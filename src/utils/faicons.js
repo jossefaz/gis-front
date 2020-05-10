@@ -6,9 +6,13 @@ import {
   faDrawPolygon,
   faRuler,
   faMapPin,
-  faVial
+  faVial,
+  faTrashAlt,
+  faEye,
+  faEyeSlash,
+  faCrosshairs
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
-  library.add(fab, faLayerGroup, faMap, faDrawPolygon, faRuler, faMapPin, faVial);
+  library.add(fab, faLayerGroup, faMap, faDrawPolygon, faRuler, faMapPin, faVial, faTrashAlt, faEye, faCrosshairs, faEyeSlash);
 };

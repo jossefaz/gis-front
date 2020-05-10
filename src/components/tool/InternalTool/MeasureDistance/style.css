@@ -35,3 +35,13 @@
   .hidden {
       display: none;
   } 
+
+  .pointer {
+    cursor: pointer;
+  }
+  .disabled {
+    cursor: not-allowed;
+  }
+  .ui.modal>.content {
+    width: auto !important;
+  }

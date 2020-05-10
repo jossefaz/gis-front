@@ -51,8 +51,13 @@ export default function (state = InitialState, action) {
         return state; //if the tool was removed no need to focus it
       }
       return produce(state, (draftState) => {
+        const unfocus = draftState.order[0]
+        if (unfocus && unfocus !== currentToolId) {
+          draftState.unfocus = unfocus
+        }
         draftState.order = draftState.order.filter((id) => id != currentToolId);
         draftState.order.unshift(currentToolId);
+
       });
 
     case types.TOGGLE_GROUP_TOOLS:
