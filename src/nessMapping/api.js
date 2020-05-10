@@ -14,6 +14,7 @@ import { getEmptyVectorLayer } from '../utils/interactions'
 import { Point, MultiPoint, Polygon, MultiLineString, LineString, MultiPolygon } from 'ol/geom';
 import Feature from 'ol/Feature';
 import mapStyle from './mapStyle'
+import NessKeys from "./keys"
 
 
 
@@ -78,6 +79,7 @@ export const highlightFeature = (geometry) => {
     // TODO : make a uniq layer for highlighting features....now it add as many layers as higlighted features
 
     const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
+    console.log(vector)
     getFocusedMap().addLayer(vector)
     source.addFeature(new Feature(geometry))
 
@@ -167,6 +169,15 @@ export const getInteraction = (uuid) => {
 }
 export const getInteractionProxy = (uuid) => {
     return NessInteraction.getInstance().getInteractionProxy(uuid)
+}
+export const getInteractionVectorSource = (uuid) => {
+    const vsuid = getInteractionProxy(uuid).OLInteraction.get(NessKeys.VECTOR_SOURCE);
+    return getFocusedMapProxy().getVectorSource(vsuid)
+}
+
+export const getInteractionGraphicLayer = (uuid) => {
+    const gluid = getInteractionProxy(uuid).OLInteraction.get(NessKeys.GRAPHIC_LAYER);
+    return getFocusedMapProxy().getGraphicLayer(gluid)
 }
 
 // SET

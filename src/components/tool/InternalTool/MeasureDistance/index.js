@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getInteractionProxy, getInteraction, getOverlay, removeInteraction } from '../../../../nessMapping/api'
+import { getInteraction, getOverlay, removeInteraction, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
@@ -59,11 +59,11 @@ class MeasureDistance extends React.Component {
   }
 
   get DrawLayer() {
-    return this.draw ? getInteractionProxy(this.draw).Layer : null
+    return this.draw ? getInteractionGraphicLayer(this.draw) : null
   }
 
   get DrawSource() {
-    return this.draw ? getInteractionProxy(this.draw).sourceLayer : null
+    return this.draw ? getInteractionVectorSource(this.draw) : null
   }
 
 
@@ -243,6 +243,7 @@ class MeasureDistance extends React.Component {
     if (this.draw) {
       removeInteraction(this.draw)
     }
+    this.onReset();
   }
   onReset = () => {
     if (this.selfOverlay && this.map && this.map in this.selfOverlay && this.measureToolTip in this.selfOverlay[this.map].overlays) {
@@ -252,7 +253,9 @@ class MeasureDistance extends React.Component {
   }
   onUnfocus = () => {
     this.onReset();
-    removeInteraction(this.draw)
+    if (this.draw) {
+      removeInteraction(this.draw)
+    }
   }
 
 

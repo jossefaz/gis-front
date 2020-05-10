@@ -7,8 +7,8 @@ export const setInteraction = (config) => (dispatch) => {
         if (config.sourceLayer) {
             config.sourceLayer = config.sourceLayer.get("ol_uid")
         } else {
-            const ip = getInteractionProxy(uuid)
-            config.sourceLayer = ip.sourceLayer.ol_uid
+            const sourceLayer = getInteractionProxy(uuid).OLInteraction.get("__VECTOR_SOURCE__")
+            config.sourceLayer = sourceLayer
         }
 
     }

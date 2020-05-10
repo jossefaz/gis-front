@@ -14,6 +14,8 @@ const NessMapping = (function () {
             },
 
 
+
+
             addMapProxy(mapConfig) {
                 var mp = new MapProxy(mapConfig);
                 this._mapProxies[mp.uuid.value] = mp;
