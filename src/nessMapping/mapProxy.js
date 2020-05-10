@@ -16,6 +16,8 @@ export default class MapProxy {
 
         this._layers = [];
 
+        this._graphicLayers = {};
+
         mapConfig.layers = []; // ensure we begin with an empty layers array
         this._olmap = new Map(mapConfig);
     }
@@ -24,6 +26,14 @@ export default class MapProxy {
     get OLMap() {
         return this._olmap;
     }
+
+    getGraphicLayers(ol_id) {
+        return this._graphicLayers[ol_id]
+    }
+
+
+
+
 
     AddLayer(lyrOrId, addToMap = false) {
         var nl = null;

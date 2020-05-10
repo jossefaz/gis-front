@@ -78,6 +78,7 @@ export const highlightFeature = (geometry) => {
     // TODO : make a uniq layer for highlighting features....now it add as many layers as higlighted features
 
     const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
+    console.log(vector)
     getFocusedMap().addLayer(vector)
     source.addFeature(new Feature(geometry))
 

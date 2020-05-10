@@ -18,6 +18,10 @@ export default function (state = InitialState, action) {
       return produce(state, (draftState) => {
         const currentToolId = parseInt(action.payload);
         const IsOpen = draftState.tools[currentToolId].IsOpen;
+        const unfocus = draftState.order[0]
+        if (unfocus && unfocus !== currentToolId) {
+          draftState.unfocus = unfocus
+        }
         draftState.tools[currentToolId].IsOpen = !IsOpen;
         if (!IsOpen) {
           draftState.order.unshift(currentToolId); // This tool is now Focused

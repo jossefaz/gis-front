@@ -251,8 +251,12 @@ class MeasureDistance extends React.Component {
     this.abortDrawing();
   }
   onUnfocus = () => {
+
     this.onReset();
-    removeInteraction(this.draw)
+    if (this.draw) {
+      removeInteraction(this.draw)
+    }
+
   }
 
 
