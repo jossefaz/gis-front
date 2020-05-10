@@ -47,6 +47,12 @@ export default function (state = InitialState, action) {
         draftState.reset = [];
       });
 
+    case types.SET_TOOL_PROP:
+      return produce(state, (draftState) => {
+        draftState.tools[action.payload.toolID][action.payload.key] = action.payload.value;
+      });
+
+
     case types.SET_TOOL_FOCUSED:
       // First check if this tool is open
       const currentToolId = parseInt(action.payload);

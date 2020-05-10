@@ -10,10 +10,10 @@ import NessLayer, {
 } from './nessLayer';
 import NessOverlay from "./overlay";
 import NessInteraction from "./interaction";
-import { getEmptyVectorLayer } from '../utils/interactions'
+
 import { Point, MultiPoint, Polygon, MultiLineString, LineString, MultiPolygon } from 'ol/geom';
 import Feature from 'ol/Feature';
-import mapStyle from './mapStyle'
+
 import NessKeys from "./keys"
 
 
@@ -36,7 +36,7 @@ export const getFocusedMapProxy = () => {
 
 // ZOOM TO
 
-export const zoomTo = (config) => {
+export const geoserverFeatureToOLGeom = (config) => {
     const { type, coordinates } = config
     let newGeometry = null
     switch (type) {
@@ -64,9 +64,15 @@ export const zoomTo = (config) => {
         default:
             break;
     }
+    return newGeometry
+
+}
+
+export const zoomTo = (config) => {
+    const newGeometry = geoserverFeatureToOLGeom(config)
     if (newGeometry) {
         const view = getFocusedMap().getView()
-        highlightFeature(newGeometry)
+        highlightFeature(config)
         view.fit(newGeometry, { padding: [170, 50, 30, 150] })
     }
     else {
@@ -74,14 +80,20 @@ export const zoomTo = (config) => {
     }
 }
 
-export const highlightFeature = (geometry) => {
+export const highlightFeature = (config) => {
+    let Highlight = getFocusedMapProxy().Highlight
+    if (!Highlight) {
+        getFocusedMapProxy().setHighLight()
+        Highlight = getFocusedMapProxy().Highlight
+    }
+    const source = getFocusedMapProxy().getVectorSource(Highlight.source)
+    source.clear();
+    const newGeometry = geoserverFeatureToOLGeom(config)
+    if (newGeometry) {
+        source.addFeature(new Feature(newGeometry))
+    }
 
-    // TODO : make a uniq layer for highlighting features....now it add as many layers as higlighted features
 
-    const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
-    console.log(vector)
-    getFocusedMap().addLayer(vector)
-    source.addFeature(new Feature(geometry))
 
 
 }

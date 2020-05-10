@@ -30,6 +30,15 @@ export const setToolFocused = (ToolId) => (dispatch) => {
   });
 };
 
+export const setToolProp = (config) => (dispatch) => {
+  dispatch({
+    type: types.SET_TOOL_PROP,
+    payload: { config },
+  });
+}
+
+
+
 
 
 export const resetTools = () => async (dispatch, getState) => {

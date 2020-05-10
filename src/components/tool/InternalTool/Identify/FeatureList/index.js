@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { setCurrentFeature } from "../../../../../redux/actions/features";
-import { zoomTo } from '../../../../../nessMapping/api'
+import { setToolProp } from "../../../../../redux/actions/tools";
+import { zoomTo, highlightFeature } from '../../../../../nessMapping/api'
 import IconButton from "../../../../UI/Buttons/IconButton"
 import "./style.css";
 class FeatureList extends Component {
@@ -72,6 +73,7 @@ class FeatureList extends Component {
                 zoomTo(feature.geometry)
                 // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
               }}
+              onHover={() => highlightFeature(feature.geometry)}
               icon="crosshairs" size="1x" />
 
 
