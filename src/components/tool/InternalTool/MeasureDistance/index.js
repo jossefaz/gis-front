@@ -227,8 +227,11 @@ class MeasureDistance extends React.Component {
   // LIFECYCLE
   componentDidUpdate() {
     document.addEventListener("keydown", this.escapeHandler);
-    if (this.props.Tools.length > 0) {
-      this.props.Tools.map(toolid => {
+    if (this.props.Tools.unfocus == this.props.toolID) {
+      this.onUnfocus()
+    }
+    if (this.props.Tools.reset.length > 0) {
+      this.props.Tools.reset.map(toolid => {
         if (toolid == this.props.toolID) {
           this.onReset()
         }
@@ -247,6 +250,11 @@ class MeasureDistance extends React.Component {
     }
     this.abortDrawing();
   }
+  onUnfocus = () => {
+    this.onReset();
+    removeInteraction(this.draw)
+  }
+
 
 
   render() {
@@ -291,7 +299,7 @@ const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     maps: state.map,
-    Tools: state.Tools.reset,
+    Tools: state.Tools,
     Interactions: state.Interactions,
     Overlays: state.Overlays
   };
