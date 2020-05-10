@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  addLayers,
-  setLayerVisible,
-  setLayerOpacity,
-} from "../../../redux/actions/layers";
-import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter";
 import { Menu, Label } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
 import { Dropdown } from "semantic-ui-react";
+import {
+  addLayerToOLMap,
+  setMapLayerVisible,
+  setMapLayerOpacity,
+} from "../../../redux/actions/layers";
+import { getOlLayer } from "../../../nessMapping/api";
+import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter";
 
 class LayerListItem extends Component {
   constructor(props) {
@@ -24,23 +25,17 @@ class LayerListItem extends Component {
     max: 1,
     step: 0.1,
     onChange: (value) => {
-      this.props.setLayerOpacity(this.props.lyr.semanticid, value);
+      this.props.setMapLayerOpacity(this.props.lyr.uuid, value);
     },
   };
 
-  addLayer = (mdLayer) => {
-    var currentLayers = this.props.Layers;
-    var layer = currentLayers[mdLayer.semanticid];
-
-    if (layer) this.props.setLayerVisible(mdLayer.semanticid);
-    else {
-      var newLyr = convertMdLayerToMapLayer(mdLayer);
-      this.props.addLayers([newLyr]);
+  setLayerVisibilty = (visiblity, lyr) => {
+    var foundLyr = getOlLayer(lyr.uuid);
+    if (foundLyr && foundLyr !== -1) {
+      this.props.setMapLayerVisible(lyr.uuid, visiblity);
+    } else {
+      this.props.addLayerToOLMap(lyr.uuid, visiblity);
     }
-  };
-
-  showLayerPanel = (title) => {
-    return;
   };
 
   displayLayerMenu = () => {
@@ -57,21 +52,23 @@ class LayerListItem extends Component {
           <input
             type="checkbox"
             name="public"
-            onChange={() => this.addLayer(lyr)}
+            onChange={(event) =>
+              this.setLayerVisibilty(event.target.checked, lyr)
+            }
             defaultChecked={lyr.visible}
           />
           <label
             className="ui align left"
             onClick={() => this.displayLayerMenu()}
           >
-            {lyr.title}
+            {lyr.name}
           </label>
         </div>
 
         {this.state.displayLayerMenu ? (
           <div>
-            {/* <label>שכבה חדשה</label>
-            <Slider color="blue" settings={this.settings} /> */}
+            <Slider color="blue" settings={this.settings} />
+            <label>פתיחת מקרא</label>
             <Dropdown.Menu>
               <Slider color="blue" settings={this.settings} />
             </Dropdown.Menu>
@@ -81,15 +78,8 @@ class LayerListItem extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => {
-  return {
-    Layers: state.mapLayers.currentLayers,
-  };
-};
-
-export default connect(mapStateToProps, {
-  addLayers,
-  setLayerVisible,
-  setLayerOpacity,
+export default connect(null, {
+  addLayerToOLMap,
+  setMapLayerVisible,
+  setMapLayerOpacity,
 })(LayerListItem);

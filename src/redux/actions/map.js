@@ -1,6 +1,17 @@
-import { View } from "ol";
-import { Tile as TileLayer } from "ol/layer";
-import { ScaleLine, ZoomSlider, MousePosition, OverviewMap, FullScreen, defaults as DefaultControls } from "ol/control";
+import {
+    View
+} from "ol";
+import {
+    Tile as TileLayer
+} from "ol/layer";
+import {
+    ScaleLine,
+    ZoomSlider,
+    MousePosition,
+    OverviewMap,
+    FullScreen,
+    defaults as DefaultControls
+} from "ol/control";
 import OSM from "ol/source/OSM";
 import config from "react-global-configuration";
 import NessMapping from "../../nessMapping/mapping";
@@ -34,8 +45,6 @@ export const InitMap = () => (dispatch, getState) => {
             payload: uuid,
         });
     }
-
-
 }
 
 export const setMapFocus = (uuid) => (dispatch, getState) => {

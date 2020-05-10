@@ -1,5 +1,7 @@
-import { combineReducers } from "redux";
-import mapLayers from "./layers";
+import {
+  combineReducers
+} from "redux";
+import MapLayers from "./layers";
 import Features from "./features";
 import Rasters from "./rasters";
 import map from "./map";
@@ -8,7 +10,7 @@ import mantiSystems from "./mantiSystems";
 import ui from "./ui";
 
 export default combineReducers({
-  mapLayers,
+  MapLayers,
   Features,
   Rasters,
   mantiSystems,

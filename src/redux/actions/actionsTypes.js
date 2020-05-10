@@ -1,6 +1,7 @@
 //actionTypes
 const actionTypes = {
   ADD_LAYER: "ADD_LAYER",
+  ADD_LAYER_TO_MAP: "ADD_LAYER_TO_MAP",
   ADD_OVERLAYS: "ADD_OVERLAYS",
 
   INIT_LAYERS: "INIT_LAYERS",

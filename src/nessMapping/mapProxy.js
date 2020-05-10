@@ -1,17 +1,22 @@
 /* eslint-disable no-throw-literal */
 import GenerateUUID from '../utils/uuid';
 import NessLayer from "./nessLayer";
-import { Map } from "ol";
+import {
+    Map
+} from "ol";
 
 export default class MapProxy {
     constructor(mapConfig) {
-        var uuid = { value: GenerateUUID() };
-        Object.freeze(uuid);  // freeze uuid, it is too important !
+        var uuid = {
+            value: GenerateUUID()
+        };
+        Object.freeze(uuid); // freeze uuid, it is too important !
+
         this.uuid = uuid;
 
         this._layers = [];
 
-        mapConfig.layers = [];  // ensure we begin with an empty layers array
+        mapConfig.layers = []; // ensure we begin with an empty layers array
         this._olmap = new Map(mapConfig);
     }
 
