@@ -1,10 +1,12 @@
 /* eslint-disable no-throw-literal */
 import GenerateUUID from '../utils/uuid';
 import NessLayer from "./nessLayer";
+import { getEmptyVectorLayer } from '../utils/interactions'
 import Nesskeys from "./keys"
 import {
     Map
 } from "ol";
+import mapStyle from './mapStyle';
 
 export default class MapProxy {
     constructor(mapConfig) {
@@ -19,6 +21,7 @@ export default class MapProxy {
 
         this._graphicLayers = {};
         this._vectorSource = {};
+        this._highlight = {}
 
         mapConfig.layers = []; // ensure we begin with an empty layers array
         this._olmap = new Map(mapConfig);
@@ -35,6 +38,20 @@ export default class MapProxy {
 
     getVectorSource(ol_id) {
         return this._vectorSource[ol_id]
+    }
+
+    get Highlight() {
+        return 'vector' in this._highlight ? this._highlight : null
+    }
+
+    setHighLight() {
+        const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
+        this.setGraphicLayer(vector, source.ol_uid)
+        this.setVectorSource(source)
+        this._highlight.source = source.ol_uid
+        this._highlight.vector = vector.ol_uid
+        this.OLMap.addLayer(vector)
+
     }
 
     setGraphicLayer(ol_layer, source_uid = null) {

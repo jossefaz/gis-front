@@ -9,6 +9,7 @@ export default (props) => {
             className={props.className}
             onClick={props.onClick}
             disabled={props.disabled}
+            onMouseOver={props.onHover}
             style={{
                 margin: "0.1em"
             }}
