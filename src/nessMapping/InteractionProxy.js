@@ -36,17 +36,15 @@ export default class NessInteraction {
                 // add the layer to the map
                 this.parent.OLMap.addInteraction(olInteraction);
 
-                // OK, layer is in! set uuid 
                 olInteraction.set(NessKeys.NESS_INTERACTION_UUID_KEY, this.uuid.value, true);
                 olInteraction.set(NessKeys.PARENT_UUID, this.parent.uuid.value, true);
+                olInteraction.set(NessKeys.GRAPHIC_LAYER, this.parent.setGraphicLayer(vLayer), true);
+                olInteraction.set(NessKeys.VECTOR_SOURCE, this.parent.setVectorSource(sourceLayer), true);
+
                 this._olInteraction = olInteraction
-                this.sourceLayer = sourceLayer
-                this.Layer = vLayer
                 // and now refresh mapIndex
                 this.RefreshMapIndex();
-
                 // TODO: register to removeInteraction event on map
-
                 return this.uuid.value;
             } else {
                 throw "AddInteraction failed - Interaction not created correctly"
