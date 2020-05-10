@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getInteraction, getOverlay, removeInteraction, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
+import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
@@ -14,6 +14,9 @@ class MeasureDistance extends React.Component {
     MEASURE: 'ol-tooltip ol-tooltip-measure',
     HIDDEN: 'hidden',
     FINISH: 'ol-tooltip ol-tooltip-static'
+  }
+  INTERACTIONS = {
+    Draw: "Draw"
   }
 
   state = {
@@ -50,9 +53,10 @@ class MeasureDistance extends React.Component {
     return false
   }
   get draw() {
-    if (this.selfInteraction && this.map in this.selfInteraction) {
-      return this.selfInteraction[this.map].uuid
+    if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+      return this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid
     }
+    return false
   }
   get measureToolTip() {
     return this.selfOverlay && this.map in this.selfOverlay ? this.selfOverlay[this.map].focused : null
@@ -188,8 +192,8 @@ class MeasureDistance extends React.Component {
     await this.removeOverlays()
   }
   removeDrawObject = async () => {
-    if (this.selfInteraction && this.map in this.selfInteraction) {
-      this.props.unsetInteraction({ uuid: this.selfInteraction[this.map].uuid, widgetName: this.WIDGET_NAME })
+    if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+      this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
     }
 
   }
@@ -241,7 +245,7 @@ class MeasureDistance extends React.Component {
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
     if (this.draw) {
-      removeInteraction(this.draw)
+      this.removeDrawObject()
     }
     this.onReset();
   }
@@ -254,7 +258,7 @@ class MeasureDistance extends React.Component {
   onUnfocus = () => {
     this.onReset();
     if (this.draw) {
-      removeInteraction(this.draw)
+      this.removeDrawObject()
     }
   }
 
@@ -274,12 +278,12 @@ class MeasureDistance extends React.Component {
             onClick={() => this.onOpenDrawSession("LineString")}
             icon="ruler" size="lg" />
           <IconButton
-            className={`ui icon button pointer ${this.DrawLayer ? 'negative' : 'disabled'}`}
+            className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'negative' : 'disabled'}`}
             onClick={() => this.setState({ open: true })}
             disabled={!this.DrawLayer}
             icon="trash-alt" size="lg" />
           <IconButton
-            className={`ui icon button pointer ${this.DrawLayer ? 'positive' : 'disabled'}`}
+            className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
             onClick={() => this.toogleView()}
             disabled={!this.DrawLayer}
             icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />

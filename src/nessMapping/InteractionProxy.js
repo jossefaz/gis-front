@@ -3,7 +3,7 @@
 import GenerateUUID from '../utils/uuid';
 import MapProxy from './mapProxy';
 import NessKeys from './keys'
-import { newDraw } from '../utils/interactions'
+import { newDraw, newDragBox, newSelect } from '../utils/interactions'
 export default class NessInteraction {
     constructor(config) {
         this.uuid = { value: GenerateUUID() };
@@ -38,8 +38,14 @@ export default class NessInteraction {
 
                 olInteraction.set(NessKeys.NESS_INTERACTION_UUID_KEY, this.uuid.value, true);
                 olInteraction.set(NessKeys.PARENT_UUID, this.parent.uuid.value, true);
-                olInteraction.set(NessKeys.GRAPHIC_LAYER, this.parent.setGraphicLayer(vLayer), true);
-                olInteraction.set(NessKeys.VECTOR_SOURCE, this.parent.setVectorSource(sourceLayer), true);
+                if (sourceLayer) {
+                    olInteraction.set(NessKeys.VECTOR_SOURCE, this.parent.setVectorSource(sourceLayer), true);
+                }
+                if (vLayer) {
+                    olInteraction.set(NessKeys.GRAPHIC_LAYER, this.parent.setGraphicLayer(vLayer), true);
+                }
+
+
 
                 this._olInteraction = olInteraction
                 // and now refresh mapIndex
@@ -70,6 +76,12 @@ const _toOLInteraction = (ni) => {
             sourceLayer = vectorSource
             vLayer = Layer
             break;
+
+        case "Select":
+            olInteraction = newSelect();
+            break;
+        case "DragBox":
+            olInteraction = newDragBox();
     }
     if (!olInteraction) {
         throw "Failed creating OL Interaction";
