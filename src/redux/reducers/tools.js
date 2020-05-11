@@ -76,6 +76,13 @@ export default function (state = InitialState, action) {
         draftState.Groups[action.payload].IsOpen = !IsOpen;
       });
 
+    case types.UNSET_UNFOCUSED:
+      return produce(state, (draftState) => {
+        if (action.payload == draftState.unfocus) {
+          draftState.unfocus = ""
+        }
+      });
+
     default:
       return state;
   }

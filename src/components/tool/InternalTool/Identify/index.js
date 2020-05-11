@@ -3,9 +3,10 @@ import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from '../../../../nessMapping/api'
-import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
-import { removeInteraction } from '../../../../nessMapping/api'
+import { getFocusedMapProxy, getFocusedMap, getInteraction } from '../../../../nessMapping/api'
+import { unsetInteractions, setInteractions } from "../../../../redux/actions/interaction";
+import { unsetUnfocused } from "../../../../redux/actions/tools";
+import { Vector as VectorSource } from 'ol/source';
 import "./style.css";
 
 class Identify extends Component {
@@ -27,19 +28,67 @@ class Identify extends Component {
     return false
   }
 
+  onBoxEnd = () => {
+    if (this.selfInteraction && this.INTERACTIONS.DragBox in this.selfInteraction) {
+      const dragBox = getInteraction(this.selfInteraction[this.INTERACTIONS.DragBox].uuid)
+      if (dragBox) {
+        dragBox.on('boxend',
+          () => {
+            var extent = dragBox.getGeometry().getExtent();
+            console.log(extent)
+
+          });
+
+      }
+
+    }
+
+  }
+
+  // createSources = () => {
+  //   var viewResolution = mapObject.getView().getResolution();
+  //   getFocusedMap()
+  //     .getLayers()
+  //     .getArray()
+  //     .map((lyr) => {
+  //       new VectorSource({
+  //         url: 'data/geojson/countries.geojson',
+  //         format: new GeoJSON()
+  //       });
+  //       if (lyr instanceof ImageLayer && lyr.selectable) {
+  //         var url = lyr
+  //           .getSource()
+  //           .getFeatureInfoUrl(evt.coordinate, viewResolution, "EPSG:4326", {
+  //             INFO_FORMAT: "application/json",
+  //             feature_count: 100,
+  //           });
+  //         if (url) {
+  //           axios.get(url).then((response) => {
+  //             actionCB(response.data.features);
+  //           });
+  //         }
+  //       }
+  //     });
+  // };
+
+
+
 
 
 
 
   addInteraction = async (drawtype) => {
-    await this.props.setInteraction({
-      Type: this.INTERACTIONS.Select,
-      widgetName: this.WIDGET_NAME
-    });
-    await this.props.setInteraction({
-      Type: this.INTERACTIONS.DragBox,
-      widgetName: this.WIDGET_NAME
-    });
+    await this.props.setInteractions([
+      {
+        Type: this.INTERACTIONS.Select,
+        widgetName: this.WIDGET_NAME
+      },
+      {
+        Type: this.INTERACTIONS.DragBox,
+        widgetName: this.WIDGET_NAME
+      }
+    ]);
+    this.onBoxEnd();
   }
 
   componentDidMount() {
@@ -49,23 +98,34 @@ class Identify extends Component {
   onReset = () => {
     console.log(this.selfInteraction)
   }
-  onUnfocus = () => {
-    this.onReset();
+  onUnfocus = async () => {
     if (this.selfInteraction) {
+      const InteractionArray = []
       for (let [interactionName, InteractionData] of Object.entries(this.selfInteraction)) {
-        this.props.unsetInteraction({ uuid: InteractionData.uuid, widgetName: this.WIDGET_NAME, Type: InteractionData.Type })
+        InteractionArray.push({ uuid: InteractionData.uuid, widgetName: this.WIDGET_NAME, Type: InteractionData.Type })
+      }
+      if (InteractionArray.length > 0) {
+        await this.props.unsetUnfocused(this.props.toolID)
+        await this.props.unsetInteractions(InteractionArray);
+
       }
     }
+
   }
 
   onFocus = () => {
+    const InteractionArray = []
     for (let [interactionName, InteractionData] of Object.entries(this.selfInteraction)) {
       if (!InteractionData.status) {
-        this.props.setInteraction({
+        InteractionArray.push({
           Type: InteractionData.Type,
           widgetName: this.WIDGET_NAME
-        });
+        })
+
       }
+    }
+    if (InteractionArray.length > 0) {
+      this.props.setInteractions(InteractionArray);
     }
   }
 
@@ -83,6 +143,10 @@ class Identify extends Component {
         }
       })
     }
+  }
+
+  componentWillUnmount() {
+    this.onUnfocus()
   }
 
   render() {
@@ -115,5 +179,5 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setInteraction, unsetInteraction })(Identify);
+export default connect(mapStateToProps, { setInteractions, unsetInteractions, unsetUnfocused })(Identify);
 

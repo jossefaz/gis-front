@@ -37,6 +37,13 @@ export const setToolProp = (config) => (dispatch) => {
   });
 }
 
+export const unsetUnfocused = (toolID) => (dispatch) => {
+  dispatch({
+    type: types.UNSET_UNFOCUSED,
+    payload: toolID,
+  });
+}
+
 
 
 
