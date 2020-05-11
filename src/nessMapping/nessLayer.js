@@ -156,10 +156,10 @@ const _getMapIndex = (nl) => {
 
     return -1;
 }
-export const getLayerObject = (uuid, OLMap) => {
-    if (uuid) {
+export const getLayerObject = (layerId, OLMap) => {
+    if (layerId) {
         const layers = OLMap.getLayers().getArray();
-        return layers.find(layer => layer.get(NessKeys.NESS_LAYER_UUID_KEY) === uuid.value)
+        return layers.find(layer => layer.get(NessKeys.NESS_LAYER_UUID_KEY) === layerId)
     }
     return -1;
 }

@@ -41,7 +41,6 @@ export const addLayerToOLMap = (layerId, visible) => (dispatch) => {
   if (getNessLayer(layerId)) {
     if (addOlLayerToMap(layerId, visible)) {
       console.log("action add to layer");
-      layerId = layerId.value;
       dispatch({
         type: types.SET_LAYER_VISIBLE,
         payload: {
@@ -59,7 +58,6 @@ export const setMapLayerVisible = (layerId, visible) => (dispatch) => {
   const mapId = getFocusedMapProxy().uuid.value;
 
   if (setLayerVisiblity(layerId, visible)) {
-    layerId = layerId.value;
     dispatch({
       type: types.SET_LAYER_VISIBLE,
       payload: {

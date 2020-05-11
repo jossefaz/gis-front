@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Dropdown } from "semantic-ui-react";
+import { Accordion, Icon } from "semantic-ui-react";
 import { logLevel, LogIt } from "../../../utils/logs";
 import LayerListItem from "../LayerListItem/LayerListItem.jsx";
 import { getMetaData } from "../../../communication/mdFetcher.js";
@@ -9,12 +10,20 @@ class LayerList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeIndex: -1,
       layers: {},
       subjects: {},
       layerSubjectRelation: [],
       layerListObject: {},
     };
   }
+  handleClick = (e, titleProps) => {
+    const { index } = titleProps;
+    var activeIndex = this.state.activeIndex;
+    const newIndex = activeIndex === index ? -1 : index;
+
+    this.setState({ activeIndex: newIndex });
+  };
   componentDidMount() {
     this.fetchMetaDataFromServer();
   }
@@ -44,6 +53,8 @@ class LayerList extends Component {
   };
 
   renderLayerList = () => {
+    var activeIndex = this.state.activeIndex;
+
     if (this.state.subjects) {
       var layerListObject = this.state.subjects;
 
@@ -64,23 +75,40 @@ class LayerList extends Component {
         });
       }
 
-      return Object.keys(layerListObject).map((subjectId) => (
-        <React.Fragment key={subjectId}>
-          <Dropdown item text={layerListObject[subjectId].description}>
-            <Dropdown.Menu>
-              {this.createLayerListItems(layerListObject[subjectId].layers)}
-            </Dropdown.Menu>
-          </Dropdown>
-        </React.Fragment>
-      ));
+      return (
+        <Accordion>
+          {Object.keys(layerListObject).map((subjectId, index) => (
+            //
+            //       {/* <Dropdown item text={layerListObject[subjectId].description}>
+            //         <Dropdown.Menu>
+            //           {this.createLayerListItems(layerListObject[subjectId].layers)}
+            //         </Dropdown.Menu>
+            //       </Dropdown> */}
+            <React.Fragment>
+              <Accordion.Title
+                active={activeIndex === index}
+                index={index}
+                onClick={this.handleClick}
+              >
+                <Icon name="dropdown" />
+                {layerListObject[subjectId].description}
+              </Accordion.Title>
+              <Accordion.Content active={activeIndex === index}>
+                {this.createLayerListItems(layerListObject[subjectId].layers)}
+              </Accordion.Content>
+            </React.Fragment>
+          ))}
+        </Accordion>
+      );
     }
   };
 
   createLayerListItems = (layers) => {
     return Object.keys(layers).map((layerId, index) => (
-      <Dropdown.Item key={index}>
-        <LayerListItem key={index} lyr={layers[layerId]}></LayerListItem>
-      </Dropdown.Item>
+      <LayerListItem key={index} lyr={layers[layerId]}></LayerListItem>
+      // <Dropdown.Item key={index}>
+      //   <LayerListItem key={index} lyr={layers[layerId]}></LayerListItem>
+      // </Dropdown.Item>
     ));
   };
 

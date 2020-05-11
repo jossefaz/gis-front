@@ -8,7 +8,7 @@ import {
   setMapLayerVisible,
   setMapLayerOpacity,
 } from "../../../redux/actions/layers";
-import { getOlLayer } from "../../../nessMapping/api";
+import { getOlLayer, getFocusedMap } from "../../../nessMapping/api";
 import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter";
 
 class LayerListItem extends Component {
@@ -36,6 +36,11 @@ class LayerListItem extends Component {
     } else {
       this.props.addLayerToOLMap(lyr.uuid, visiblity);
     }
+  };
+  zoomToLayer = (lyr) => {
+    var map = getFocusedMap();
+    var layer = getOlLayer(lyr.uuid);
+    if (layer) map.zoomToExtent(layer.getDataExtent());
   };
 
   displayLayerMenu = () => {
@@ -69,6 +74,7 @@ class LayerListItem extends Component {
           <div>
             <Slider color="blue" settings={this.settings} />
             <label>פתיחת מקרא</label>
+            <label onClick={() => this.zoomToLayer(lyr)}>מבט מלא לשכבה</label>
             <Dropdown.Menu>
               <Slider color="blue" settings={this.settings} />
             </Dropdown.Menu>
