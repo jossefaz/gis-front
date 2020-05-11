@@ -3,11 +3,17 @@ import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import { getFocusedMapProxy, getFocusedMap, getInteraction } from '../../../../nessMapping/api'
+import { getFocusedMapProxy, getFocusedMap, getInteraction } from '../../../../nessMapping/api';
+import { getCenter } from 'ol/extent';
+import { getSize, getWidth, getArea } from 'ol/extent';
+import { Image as ImageLayer } from "ol/layer";
+import GeoJSON from 'ol/format/GeoJSON';
+import { setSelectedFeatures } from '../../../../redux/actions/features';
 import { unsetInteractions, setInteractions } from "../../../../redux/actions/interaction";
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { Vector as VectorSource } from 'ol/source';
 import "./style.css";
+import axios from "axios";
 
 class Identify extends Component {
 
@@ -35,41 +41,40 @@ class Identify extends Component {
         dragBox.on('boxend',
           () => {
             var extent = dragBox.getGeometry().getExtent();
-            console.log(extent)
+            getFocusedMap()
+              .getLayers()
+              .getArray()
+              .map(lyr => {
+                if (lyr instanceof ImageLayer) {
+                  var viewResolution = getFocusedMap().getView().getResolution();
+                  var buffer = Math.round(getWidth(extent) * 1000)
+                  var url = lyr.getSource()
+                    .getFeatureInfoUrl(getCenter(extent), viewResolution, "EPSG:4326", {
+                      INFO_FORMAT: "application/json",
+                      feature_count: 100,
+                      buffer: buffer
+
+                    });
+                  if (url) {
+                    axios.get(url).then((response) => {
+                      this.props.setSelectedFeatures(response.data.features);
+                    });
+                  }
+
+                }
+              })
+
 
           });
 
+
       }
+
 
     }
 
   }
 
-  // createSources = () => {
-  //   var viewResolution = mapObject.getView().getResolution();
-  //   getFocusedMap()
-  //     .getLayers()
-  //     .getArray()
-  //     .map((lyr) => {
-  //       new VectorSource({
-  //         url: 'data/geojson/countries.geojson',
-  //         format: new GeoJSON()
-  //       });
-  //       if (lyr instanceof ImageLayer && lyr.selectable) {
-  //         var url = lyr
-  //           .getSource()
-  //           .getFeatureInfoUrl(evt.coordinate, viewResolution, "EPSG:4326", {
-  //             INFO_FORMAT: "application/json",
-  //             feature_count: 100,
-  //           });
-  //         if (url) {
-  //           axios.get(url).then((response) => {
-  //             actionCB(response.data.features);
-  //           });
-  //         }
-  //       }
-  //     });
-  // };
 
 
 
@@ -149,6 +154,30 @@ class Identify extends Component {
     this.onUnfocus()
   }
 
+  // Identify = (coordinate) => {
+  //   var viewResolution = this.focusedmap.getView().getResolution();
+  //   this.focusedmap
+  //     .getLayers()
+  //     .getArray()
+  //     .map((lyr) => {
+  //       if (lyr instanceof ImageLayer) {
+  //         var url = lyr
+  //           .getSource()
+  //           .getFeatureInfoUrl(coordinate, viewResolution, "EPSG:4326", {
+  //             INFO_FORMAT: "application/json",
+  //             feature_count: 100,
+  //           });
+  //         if (url) {
+  //           axios.get(url).then((response) => {
+  //             this.props.setSelectedFeatures(response.data.features);
+  //           });
+  //         }
+  //       }
+  //     });
+  // };
+
+
+
   render() {
 
     return (
@@ -179,5 +208,5 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setInteractions, unsetInteractions, unsetUnfocused })(Identify);
+export default connect(mapStateToProps, { setInteractions, unsetInteractions, unsetUnfocused, setSelectedFeatures })(Identify);
 
