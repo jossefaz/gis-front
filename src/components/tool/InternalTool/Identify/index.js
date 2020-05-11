@@ -118,7 +118,7 @@ class Identify extends Component {
 
   }
 
-  onFocus = () => {
+  onFocus = async () => {
     const InteractionArray = []
     for (let [interactionName, InteractionData] of Object.entries(this.selfInteraction)) {
       if (!InteractionData.status) {
@@ -130,7 +130,8 @@ class Identify extends Component {
       }
     }
     if (InteractionArray.length > 0) {
-      this.props.setInteractions(InteractionArray);
+      await this.props.setInteractions(InteractionArray);
+      this.onBoxEnd();
     }
   }
 
