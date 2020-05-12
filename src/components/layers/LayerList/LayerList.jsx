@@ -25,6 +25,7 @@ class LayerList extends Component {
     this.setState({ activeIndex: newIndex });
   };
   componentDidMount() {
+    LogIt(logLevel.INFO, "layer list componentDidMount");
     this.fetchMetaDataFromServer();
   }
 
@@ -48,17 +49,18 @@ class LayerList extends Component {
     }
   };
 
-  componentDidUpdate = () => {
-    this.renderLayerList();
-  };
-
   renderLayerList = () => {
+    LogIt(logLevel.INFO, "got to this function how many times?");
     var activeIndex = this.state.activeIndex;
 
     if (this.state.subjects) {
       var layerListObject = this.state.subjects;
 
-      if (this.props.mapId && JSON.stringify(this.props.Layers) !== "{}") {
+      if (
+        this.props.mapId &&
+        JSON.stringify(this.props.Layers) !== "{}" &&
+        JSON.stringify(this.state.subjects) !== "{}"
+      ) {
         var layers = this.props.Layers[this.props.mapId];
         Object.keys(layers).map((lyrId) => {
           var lyr = layers[lyrId];
@@ -70,7 +72,7 @@ class LayerList extends Component {
               return relation.subjectid;
             });
           filteredSubjectIds.map((subjectid) => {
-            layerListObject[subjectid].layers[lyr.uuid.value] = lyr;
+            layerListObject[subjectid].layers[lyr.uuid] = lyr;
           });
         });
       }
@@ -78,13 +80,7 @@ class LayerList extends Component {
       return (
         <Accordion>
           {Object.keys(layerListObject).map((subjectId, index) => (
-            //
-            //       {/* <Dropdown item text={layerListObject[subjectId].description}>
-            //         <Dropdown.Menu>
-            //           {this.createLayerListItems(layerListObject[subjectId].layers)}
-            //         </Dropdown.Menu>
-            //       </Dropdown> */}
-            <React.Fragment>
+            <React.Fragment key={index}>
               <Accordion.Title
                 active={activeIndex === index}
                 index={index}
@@ -106,29 +102,16 @@ class LayerList extends Component {
   createLayerListItems = (layers) => {
     return Object.keys(layers).map((layerId, index) => (
       <LayerListItem key={index} lyr={layers[layerId]}></LayerListItem>
-      // <Dropdown.Item key={index}>
-      //   <LayerListItem key={index} lyr={layers[layerId]}></LayerListItem>
-      // </Dropdown.Item>
     ));
   };
 
   render() {
-    return (
-      <React.Fragment>
-        {this.state.subjects &&
-        this.props.Layers &&
-        this.state.layerSubjectRelation ? (
-          this.renderLayerList()
-        ) : (
-          <p>ToBeRendered</p>
-        )}
-      </React.Fragment>
-    );
+    return <React.Fragment>{this.renderLayerList()}</React.Fragment>;
   }
 }
 
 const mapStateToProps = (state) => {
-  return { Layers: state.MapLayers.Layers, mapId: state.map.focused };
+  return { Layers: state.Layers, mapId: state.map.focused };
 };
 
 export default connect(mapStateToProps)(LayerList);
