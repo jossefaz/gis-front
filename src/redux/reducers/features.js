@@ -9,15 +9,16 @@ export default function (state = {}, action) {
   switch (action.type) {
     case types.SET_SELECTED_FEATURES:
       return produce(state, (draftState) => {
-
-        if (!(action.payload.focusedmap in state)) {
-          draftState[action.payload.focusedmap] = {}
+        const { focusedmap, featuresByLayers } = action.payload
+        if (!(focusedmap in state)) {
+          draftState[focusedmap] = {}
         }
 
-        draftState[action.payload.focusedmap].selectedFeatures = action.payload.featuresByLayers;
-        // if (action.payload.length == 1) {
-        //   draftState[action.payload.focusedmap].currentFeature = action.payload[0];
-        // }
+        draftState[focusedmap].selectedFeatures = featuresByLayers;
+        draftState[focusedmap].currentLayer = Object.keys(featuresByLayers)[0];
+        if (Object.keys(featuresByLayers[Object.keys(featuresByLayers)[0]]).length == 1) {
+          draftState[focusedmap].currentFeature = featuresByLayers[Object.keys(featuresByLayers)[0]][0]
+        }
       });
 
 

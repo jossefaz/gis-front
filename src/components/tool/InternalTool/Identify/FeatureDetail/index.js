@@ -20,22 +20,23 @@ class FeatureDetail extends React.Component {
   render() {
     return this.currentFeature ? (
       <React.Fragment>
-        <table className="ui table">
+        <table className="ui celled table">
           <thead>
             <tr>
-              <th>Value</th>
-              <th>Column</th>
+              <th>Details</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="scrollContent">
 
+            <div className="scrollContent">
+              {Object.keys(this.currentFeature.properties).map((property) => (
+                <tr key={property}>
+                  <td>{this.currentFeature.properties[property]}</td>
+                  <td><b>{property}</b></td>
+                </tr>
+              ))}
+            </div>
 
-            {Object.keys(this.currentFeature.properties).map((property) => (
-              <tr key={property}>
-                <td>{this.currentFeature.properties[property]}</td>
-                <td>{property}</td>
-              </tr>
-            ))}
 
           </tbody>
         </table>

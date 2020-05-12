@@ -45,14 +45,17 @@ class FeatureList extends Component {
     render() {
         return (
             <React.Fragment>
-                <table className="ui table">
+                <table className="ui table" style={{ height: "100%", overflow: "scroll" }}>
                     <thead>
                         <tr>
                             <th>Layers</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.renderSelectedFeature()}
+                        <div className="scrollContent">
+                            {this.renderSelectedFeature()}
+                        </div>
+
                     </tbody>
                 </table>
 

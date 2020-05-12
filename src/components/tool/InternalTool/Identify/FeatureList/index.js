@@ -97,15 +97,19 @@ class FeatureList extends Component {
     return (
       this.currentLayer ?
         <React.Fragment>
-          <table className="ui table">
+          <table className="ui table ">
             <thead>
               <tr>
                 <th>Features</th>
               </tr>
             </thead>
-            <tbody>
+
+            <tbody >
               {this.renderFieldsSelect()}
-              {this.renderSelectedFeature()}
+              <div className="scrollContent">
+                {this.renderSelectedFeature()}
+              </div>
+
 
             </tbody>
           </table>
