@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { InitMap, setMapFocus } from "../../redux/actions/map"
 import { getFocusedMap } from '../../nessMapping/api'
 import { resetTools } from "../../redux/actions/tools"
-import NessMapping from "../../nessMapping/mapping";
 import './style.css'
 
 

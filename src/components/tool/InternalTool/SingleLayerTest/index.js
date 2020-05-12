@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
-import NessMapping from "../../../../nessMapping/mapping";
+import { getFocusedMap } from "../../../../nessMapping/api";
 
 
 
@@ -33,8 +33,7 @@ class SingleLayerTest extends React.Component {
             }),
         });
         newLyr.selectable = LayerSample.selectable
-        const map = NessMapping.getInstance().getMapProxy(this.props.map.focused)._olmap
-        map.addLayer(newLyr)
+        getFocusedMap().addLayer(newLyr)
 
 
 
