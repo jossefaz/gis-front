@@ -1,17 +1,22 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { toggleTool, setToolFocused } from "../../redux/actions/tools";
+import { getFocusedMapProxy } from '../../nessMapping/api'
 import ToolTemplate from "./Template";
 import ExternalTool from "./ExternalTool";
 import InternalTool from "./InternalTool";
 class Loader extends React.Component {
+  get Tools() {
+    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
+    return currentMapId ? this.props.Tools[currentMapId] : null
+  }
   render() {
-    const { ToolInvokerType, ToolName, ToolLocation } = this.props.Tools.tools[
+    const { ToolInvokerType, ToolName, ToolLocation } = this.Tools.tools[
       this.props.ToolID
     ];
     const CloseCB = () => this.props.toggleTool(this.props.ToolID);
     const FocusMe = () => this.props.setToolFocused(this.props.ToolID);
-    const focused = this.props.Tools.order[0] == this.props.ToolID;
+    const focused = this.Tools.order[0] == this.props.ToolID;
     return (
       <React.Fragment>
         {ToolInvokerType ? (
@@ -41,6 +46,7 @@ class Loader extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+
   return { Tools: state.Tools };
 };
 

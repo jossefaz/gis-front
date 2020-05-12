@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
+import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMapProxy } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
@@ -17,6 +17,11 @@ class MeasureDistance extends React.Component {
   }
   INTERACTIONS = {
     Draw: "Draw"
+  }
+
+  get Tools() {
+    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
+    return currentMapId ? this.props.Tools[currentMapId] : null
   }
 
   state = {
@@ -231,16 +236,19 @@ class MeasureDistance extends React.Component {
   // LIFECYCLE
   componentDidUpdate() {
     document.addEventListener("keydown", this.escapeHandler);
-    if (this.props.Tools.unfocus == this.props.toolID) {
-      this.onUnfocus()
+    if (this.Tools) {
+      if (this.Tools.unfocus == this.props.toolID) {
+        this.onUnfocus()
+      }
+      if (this.Tools.reset.length > 0) {
+        this.Tools.reset.map(toolid => {
+          if (toolid == this.props.toolID) {
+            this.onReset()
+          }
+        })
+      }
     }
-    if (this.props.Tools.reset.length > 0) {
-      this.props.Tools.reset.map(toolid => {
-        if (toolid == this.props.toolID) {
-          this.onReset()
-        }
-      })
-    }
+
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);

@@ -21,14 +21,22 @@ import NessSearching from "./searches/searches";
 // REMOVE: this is just for searching debug
 
 class App extends React.Component {
+
+  bootstrap = async () => {
+    await this.props.InitRasters();
+    await this.props.InitMap();
+    await this.props.InitTools(config.get("Widgets"));
+
+  }
+
   componentDidMount() {
     LogIt(logLevel.INFO, "App init");
 
     InitIcons();
+    this.bootstrap()
 
-    this.props.InitMap();
-    this.props.InitRasters();
-    this.props.InitTools(config.get("Widgets"));
+
+
 
     InitSearching(config.get("SearchConfigs"));
 
@@ -48,6 +56,8 @@ class App extends React.Component {
 
     this.fetchDataFromServer();
   }
+
+
 
   fetchDataFromServer = async () => {
     const [layersResult] = await Promise.all([getMetaData("layers")]);
@@ -76,7 +86,7 @@ class App extends React.Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { Tools: state.Tools, maps: state.map };
+  return { maps: state.map };
 };
 
 export default connect(mapStateToProps, { InitTools, InitLayers, InitRasters, InitMap })(App);

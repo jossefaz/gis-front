@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Tool from "../../components/tool";
+import { getFocusedMapProxy } from "../../nessMapping/api";
 class WidgetContainer extends React.Component {
   componentDidMount() {
     window.addEventListener("message", (e) => {
@@ -11,13 +12,16 @@ class WidgetContainer extends React.Component {
     });
   }
 
+
+
   renderOpenedTool = (Widgets) => {
-    return Widgets
-      ? Object.keys(Widgets.tools).map((toolId) => {
-          return Widgets.tools[toolId].IsOpen ? (
-            <Tool key={toolId} ToolID={toolId} />
-          ) : null;
-        })
+    const currentMapId = Widgets && getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
+    return currentMapId
+      ? Object.keys(Widgets[currentMapId].tools).map((toolId) => {
+        return Widgets[currentMapId].tools[toolId].IsOpen ? (
+          <Tool key={toolId} ToolID={toolId} />
+        ) : null;
+      })
       : null;
   };
 

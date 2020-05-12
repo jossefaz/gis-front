@@ -20,6 +20,7 @@ export default function (state = {}, action) {
         // }
       });
 
+
     case types.SET_CURRENT_FEATURE:
       return produce(state, (draftState) => {
         if (!(action.payload.focusedmap in state)) {

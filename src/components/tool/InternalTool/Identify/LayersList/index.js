@@ -1,19 +1,24 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setCurrentLayer } from "../../../../../redux/actions/features";
+import { getFocusedMapProxy } from '../../../../../nessMapping/api';
 import "./style.css";
 class FeatureList extends Component {
 
-    focusedmap = this.props.focusedmap
+    get focusedmap() {
+        return getFocusedMapProxy().uuid.value
+    }
+
 
     sanityCheck = () => {
-        return this.focusedmap in this.props.Features &&
-            "selectedFeatures" in this.props.Features[this.focusedmap] &&
-            Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0
+        const focusedmapInFeatures = this.focusedmap in this.props.Features
+        const selectedFeaturesInFeatures = focusedmapInFeatures ? "selectedFeatures" in this.props.Features[this.focusedmap] : false
+        return focusedmapInFeatures && selectedFeaturesInFeatures
+
     }
 
     renderSelectedFeature = () => {
-        return this.sanityCheck ?
+        return this.sanityCheck() ?
             (
                 Object.keys(this.props.Features[this.focusedmap].selectedFeatures).map((layer) => (
                     <tr key={layer}>
@@ -58,7 +63,7 @@ class FeatureList extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return { Features: state.Features };
+    return { Features: state.Features, map: state.map.focused };
 };
 
 export default connect(mapStateToProps, { setCurrentLayer })(FeatureList);

@@ -5,13 +5,11 @@ import LayersList from "./LayersList";
 import { connect } from "react-redux";
 import { getFocusedMapProxy, getFocusedMap, getInteraction } from '../../../../nessMapping/api';
 import { getCenter } from 'ol/extent';
-import { getSize, getWidth, getArea } from 'ol/extent';
+import { getWidth } from 'ol/extent';
 import { Image as ImageLayer } from "ol/layer";
-import GeoJSON from 'ol/format/GeoJSON';
 import { setSelectedFeatures } from '../../../../redux/actions/features';
 import { unsetInteractions, setInteractions } from "../../../../redux/actions/interaction";
 import { unsetUnfocused } from "../../../../redux/actions/tools";
-import { Vector as VectorSource } from 'ol/source';
 import "./style.css";
 import axios from "axios";
 
@@ -27,12 +25,19 @@ class Identify extends Component {
     return getFocusedMapProxy().uuid.value
   }
 
+  get Tools() {
+    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
+    return currentMapId ? this.props.Tools[currentMapId] : null
+  }
+
   get selfInteraction() {
     if (this.WIDGET_NAME in this.props.Interactions && this.focusedmap in this.props.Interactions[this.WIDGET_NAME]) {
       return this.props.Interactions[this.WIDGET_NAME][this.focusedmap]
     }
     return false
   }
+
+
 
   onBoxEnd = () => {
     if (this.selfInteraction && this.INTERACTIONS.DragBox in this.selfInteraction) {
@@ -136,48 +141,27 @@ class Identify extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.Tools.unfocus == this.props.toolID) {
-      this.onUnfocus()
+    if (this.Tools) {
+      if (this.Tools.unfocus == this.props.toolID) {
+        this.onUnfocus()
+      }
+      if (this.Tools.order[0] == this.props.toolID) {
+        this.onFocus()
+      }
+      if (this.Tools.reset.length > 0) {
+        this.Tools.reset.map(toolid => {
+          if (toolid == this.props.toolID) {
+            this.onReset()
+          }
+        })
+      }
     }
-    if (this.props.Tools.order[0] == this.props.toolID) {
-      this.onFocus()
-    }
-    if (this.props.Tools.reset.length > 0) {
-      this.props.Tools.reset.map(toolid => {
-        if (toolid == this.props.toolID) {
-          this.onReset()
-        }
-      })
-    }
+
   }
 
   componentWillUnmount() {
     this.onUnfocus()
   }
-
-  // Identify = (coordinate) => {
-  //   var viewResolution = this.focusedmap.getView().getResolution();
-  //   this.focusedmap
-  //     .getLayers()
-  //     .getArray()
-  //     .map((lyr) => {
-  //       if (lyr instanceof ImageLayer) {
-  //         var url = lyr
-  //           .getSource()
-  //           .getFeatureInfoUrl(coordinate, viewResolution, "EPSG:4326", {
-  //             INFO_FORMAT: "application/json",
-  //             feature_count: 100,
-  //           });
-  //         if (url) {
-  //           axios.get(url).then((response) => {
-  //             this.props.setSelectedFeatures(response.data.features);
-  //           });
-  //         }
-  //       }
-  //     });
-  // };
-
-
 
   render() {
 
@@ -187,9 +171,9 @@ class Identify extends Component {
           this.focusedmap in this.props.Features && "selectedFeatures" in this.props.Features[this.focusedmap] ?
             Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0 ?
               <div className="flexDisplay">
-                <FeatureDetail focusedmap={this.focusedmap} />
-                <FeatureList focusedmap={this.focusedmap} />
-                <LayersList focusedmap={this.focusedmap} />
+                <FeatureDetail />
+                <FeatureList />
+                <LayersList />
               </div>
               : <p>SELECT FEATURES ON MAP</p> : <p>SELECT FEATURES ON MAP</p>
 
@@ -206,6 +190,7 @@ const mapStateToProps = (state) => {
     Features: state.Features,
     Tools: state.Tools,
     Interactions: state.Interactions,
+
   };
 };
 

@@ -1,15 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
-
+import { getFocusedMapProxy } from '../../../../../nessMapping/api';
 class FeatureDetail extends React.Component {
-  focusedmap = this.props.focusedmap
+  get focusedmap() {
+    return getFocusedMapProxy().uuid.value
+  }
   sanityCheck = () => {
-    return this.focusedmap in this.props.Features &&
-      "currentFeature" in this.props.Features[this.focusedmap] &&
-      this.props.Features[this.focusedmap].currentFeature
+    const focusedmapInFeatures = this.focusedmap in this.props.Features
+    const currentFeatureInFeatures = focusedmapInFeatures ? "currentFeature" in this.props.Features[this.focusedmap] : false
+    const currentFeatureNotNull = currentFeatureInFeatures ? this.props.Features[this.focusedmap].currentFeature : false
+    return focusedmapInFeatures && currentFeatureInFeatures && currentFeatureNotNull
+
+
   }
   get currentFeature() {
-    return this.sanityCheck ? this.props.Features[this.focusedmap].currentFeature : null
+    return this.sanityCheck() ? this.props.Features[this.focusedmap].currentFeature : null
   }
 
   render() {
@@ -44,7 +49,7 @@ class FeatureDetail extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-  return { Features: state.Features };
+  return { Features: state.Features, map: state.map.focused };
 };
 
 export default connect(mapStateToProps)(FeatureDetail);
