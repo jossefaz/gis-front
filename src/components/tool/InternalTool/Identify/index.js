@@ -68,16 +68,9 @@ class Identify extends Component {
 
                 }
               })
-
-
           });
-
-
       }
-
-
     }
-
   }
 
 

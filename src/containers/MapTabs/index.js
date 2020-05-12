@@ -10,13 +10,10 @@ import './style.css'
 
 
 class MapTabs extends React.Component {
-
     state = {
         panes: [],
         focused: ''
     }
-
-
     handleTabChange = async (uuid) => {
         if (uuid != this.state.focused) {
             if (uuid == "+") {
@@ -28,17 +25,10 @@ class MapTabs extends React.Component {
             }
             await this.props.resetTools()
         }
-
-
-
     }
-
-
-
     renderPanes = () => {
         const panes = []
         if (this.props.maps.uuids) {
-
             this.props.maps.uuids.map(
 
                 uuid => panes.push(
@@ -52,7 +42,6 @@ class MapTabs extends React.Component {
                 menuItem: '+',
                 pane: <div key={'addmap'}></div>,
             })
-
         }
         if (this.props.maps.focused) {
             getFocusedMap().setTarget("map")
@@ -67,30 +56,19 @@ class MapTabs extends React.Component {
         const nextFocused = nextProps.maps.focused
         return uuids != nextStatepanes || prevFocused != nextFocused
     }
-
     componentDidMount() {
         this.renderPanes()
     }
 
-
-
     componentDidUpdate() {
         this.renderPanes()
     }
-
-
-
-
 
     render() {
         return (
             <Tab menu={{ attached: 'top' }} panes={this.state.panes} className="mapTab" onTabChange={(e, meta) => this.handleTabChange(meta.panes[meta.activeIndex].menuItem)} />
         )
     }
-
-
-
-
 }
 
 const mapStateToProps = (state) => ({
