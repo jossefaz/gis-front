@@ -1,71 +1,246 @@
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from '../../../../nessMapping/api';
-import { setInteractions } from '../../../../redux/actions/interaction'
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
+import { getInteraction, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
+import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
+import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
+import IconButton from "../../../UI/Buttons/IconButton"
+import { unsetUnfocused } from "../../../../redux/actions/tools";
+import { generateNewStyle } from "../MeasureDistance/func";
+import { Confirm } from 'semantic-ui-react'
 import "./style.css";
+class Draw extends React.Component {
 
-class Identify extends Component {
+    WIDGET_NAME = "Draw"
+    INTERACTIONS = {
+        Draw: "Draw",
+        Select: "Select",
+        Modify: "Modify"
+    }
+    state = {
+        eraseDraw: {
+            openAlert: false,
+            content: "? האם ברצונך למחוק את כלל המדידות שביצת",
+            confirmBtn: "כן",
+            cancelBtn: "לא"
+        },
+        view: true,
+        drawn: false
 
-    WIDGET_NAME = "PUT HERE THE WIDGET NAME"
-
-    //EXAMPLE of NessMapping API USE
-    get focusedMapUUID() {
-        return getFocusedMapProxy().uuid.value
-        //Now you can access this property by doing : this.focusedMapUUID
     }
 
-    componentDidMount() {
-        // Put here the logic when the Widget Component mounted to the DOM
+    get map() {
+        return this.props.maps.focused
     }
 
-    onReset = () => {
-        // Put here the logic when the user switched map : you could alert the user before switching map to save aany data
+    get selfInteraction() {
+        if (this.WIDGET_NAME in this.props.Interactions) {
+            return this.props.Interactions[this.WIDGET_NAME]
+        }
+        return false
+    }
+
+    get draw() {
+        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+            return this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid
+        }
+        return false
+    }
+
+    get select() {
+        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Select in this.selfInteraction[this.map]) {
+            return this.selfInteraction[this.map][this.INTERACTIONS.Select].uuid
+        }
+        return false
+    }
+
+    get modify() {
+        this.getSelfInteraction(this.INTERACTIONS.Modify)
+    }
+    getSelfInteraction = (interaction) => {
+        if (this.selfInteraction && this.map in this.selfInteraction && interaction in this.selfInteraction[this.map]) {
+            return this.selfInteraction[this.map][interaction].uuid
+        }
+        return false
+    }
+
+    get DrawLayer() {
+        return this.draw ? getInteractionGraphicLayer(this.draw) : null
+    }
+
+    get DrawSource() {
+        return this.draw ? getInteractionVectorSource(this.draw) : null
     }
 
 
-    onUnfocus = () => {
-        // Put here the logic when the user click on another widget an this one will be unfocused :
-        // For example, if you add Interaction to the map, this is the place to remove those interaction in order to let the others 
-        // widget to add their own interactions
+    toogleView = () => {
+        if (this.DrawLayer) {
+            this.DrawLayer.setVisible(!this.state.view)
+        }
+        this.setState({
+            view: !this.state.view
+        })
     }
 
-    onFocus = async () => {
-        // Put here the logic when the user click on this widget window :
-        // For example, this is the place to add interactions, layers, overlays to the map
+    escapeHandler = (evt) => {
+        evt = evt || window.event;
+        var isEscape = false;
+        if ("key" in evt) {
+            isEscape = evt.key === "Escape" || evt.key === "Esc";
+        } else {
+            isEscape = evt.keyCode === 27;
+        }
+        if (isEscape) {
+            this.abortDrawing();
+        }
     }
 
+    addInteraction = async (drawtype) => {
+        const sourceLayer = this.DrawSource // save it before it will be deleted !!
+        const Layer = this.DrawLayer
+        this.removeDrawObject();
+        await this.props.setInteraction({
+            Type: "Draw",
+            drawConfig: { type: drawtype },
+            sourceLayer,
+            Layer,
+            widgetName: this.WIDGET_NAME
+        });
+    }
+
+    onOpenDrawSession = async (drawtype) => {
+        await this.addInteraction(drawtype)
+        this.onDrawEnd()
+    }
+
+    onClearDrawing = () => {
+        this.DrawSource.clear()
+        this.setState({ open: false, drawn: false })
+        this.removeDrawObject()
+    }
+    removeDrawObject = () => {
+        if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
+        }
+
+    }
+
+    onEditOpen = async () => {
+        this.removeDrawObject()
+        await this.props.setInteraction({
+            Type: this.INTERACTIONS.Select,
+            interactionConfig: {
+                wrapX: false,
+                layers: [this.DrawLayer]
+            },
+            widgetName: this.WIDGET_NAME
+        });
+        await this.props.setInteraction({
+            Type: this.INTERACTIONS.Modify,
+            interactionConfig: {
+                features: getInteraction(this.select).getFeatures()
+            },
+            widgetName: this.WIDGET_NAME
+        });
+
+
+    }
+
+    onDrawEnd = () => {
+        const draw = getInteraction(this.draw)
+        if (draw) {
+            draw.on('drawend',
+                () => {
+                    const features = this.DrawSource.getFeatures()
+                    if (features.length > 0) {
+                        features[features.length - 1].setStyle(generateNewStyle())
+                    }
+                    this.setState({ drawn: true })
+
+
+                });
+
+        }
+    }
+
+    abortDrawing = () => {
+        if (this.draw) {
+            getInteraction(this.draw).abortDrawing();
+        }
+    }
+    // LIFECYCLE
+    componentDidUpdate() {
+        document.addEventListener("keydown", this.escapeHandler);
+    }
     componentWillUnmount() {
-        // Put here the logic when the user close the widget window : 
-        // For example this is a good place to alert the user from saving data or keep any state
+        document.removeEventListener("keydown", this.escapeHandler);
+        this.onReset();
+    }
+    onReset = () => {
+        this.abortDrawing();
+        this.removeDrawObject()
+    }
+    onUnfocus = () => {
+        this.onReset();
     }
 
     render() {
         return (
             <React.Fragment>
-                {/* JSX code goes here */}
-            </React.Fragment>
+                <div className="ui grid">
+                    <IconButton
+                        className="ui icon button primary pointer"
+                        onClick={() => this.onOpenDrawSession("Polygon")}
+                        icon="draw-polygon" size="lg" />
+                    <IconButton
+                        className="ui icon button primary pointer"
+                        onClick={() => this.onOpenDrawSession("LineString")}
+                        icon="grip-lines" size="lg" />
+                    <IconButton
+                        className="ui icon button primary pointer"
+                        onClick={() => this.onOpenDrawSession("Circle")}
+                        icon="circle" size="lg" />
+                    <IconButton
+                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'negative' : 'disabled'}`}
+                        onClick={() => this.setState({ open: true })}
+                        disabled={!this.state.drawn}
+                        icon="trash-alt" size="lg" />
+                    <IconButton
+                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
+                        onClick={() => this.toogleView()}
+                        disabled={!this.state.drawn}
+                        icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
 
+                    <IconButton
+                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
+                        onClick={() => this.onEditOpen()}
+                        disabled={!this.state.drawn}
+                        icon="edit" size="lg" />
+                    <Confirm
+                        open={this.state.open}
+                        size='mini'
+                        content={this.state.eraseDraw.content}
+                        cancelButton={this.state.eraseDraw.cancelBtn}
+                        confirmButton={this.state.eraseDraw.confirmBtn}
+                        onCancel={() => this.setState({ ...this.state.eraseDraw, open: false })}
+                        onConfirm={this.onClearDrawing}
+                    />
+                </div>
+            </React.Fragment>
         );
     }
+}
 
-};
+
+
 const mapStateToProps = (state) => {
     return {
-        // Write here which part of the Redux Global State you need. Whenever this part of the state change, the widget will rerender
-        // Here for example I call the property "Interaction" of the state, i could now access to int in my component code by doing "this.props.Interaction"
+        Features: state.Features,
+        maps: state.map,
         Interactions: state.Interactions,
-
     };
 };
 
-// This object will connect a redux action to the component
-const mapDispatchToProps = { setInteractions }
+const mapDispatchToProps = { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused }
 
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(
-    //Here We call the HOC withWidgetLifeCycle in order to make him taking care of the lifecycle method of a widget (onFocus, onUnfocus, onReaset...etc) that we previously defined
-    withWidgetLifeCycle(Identify)
-);
-
+export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Draw));

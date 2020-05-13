@@ -5,7 +5,6 @@ import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionV
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
-import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateOutput, generateNewStyle } from "./func";
 import { Confirm } from 'semantic-ui-react'
 import "./style.css";
@@ -319,6 +318,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused }
+const mapDispatchToProps = { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(MeasureDistance));
