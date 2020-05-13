@@ -1,9 +1,10 @@
 import types from "./actionsTypes";
 import { getRandomInt } from "../../utils/func";
 import LifeCycleRegistry from "./LifeCycle";
+import { getFocusedMapProxy } from "../../nessMapping/api";
 export const toggleTool = (ToolId) => async (dispatch, getState) => {
-  const toolConfig = getState().Tools.tools[ToolId];
-
+  const mapId = getFocusedMapProxy().uuid.value;
+  const toolConfig = getState().Tools[mapId].tools[ToolId];
   await _getLifeCycleFunc(toolConfig)(
     dispatch,
     getState,
@@ -13,27 +14,40 @@ export const toggleTool = (ToolId) => async (dispatch, getState) => {
 
   dispatch({
     type: types.TOGGLE_TOOLS,
-    payload: ToolId,
+    payload: { ToolId, mapId }
   });
 };
 
-export const toggleGroupTool = (GroupToolId) => (dispatch) =>
+export const toggleGroupTool = (GroupToolId) => (dispatch) => {
+  const mapId = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.TOGGLE_GROUP_TOOLS,
-    payload: GroupToolId,
+    payload: { GroupToolId, mapId },
   });
+}
+
 
 export const setToolFocused = (ToolId) => (dispatch) => {
+  const mapId = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.SET_TOOL_FOCUSED,
-    payload: ToolId,
+    payload: { ToolId, mapId },
   });
 };
 
 export const setToolProp = (config) => (dispatch) => {
+  const mapId = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.SET_TOOL_PROP,
-    payload: { config },
+    payload: { config, mapId },
+  });
+}
+
+export const unsetUnfocused = (toolID) => (dispatch) => {
+  const mapId = getFocusedMapProxy().uuid.value;
+  dispatch({
+    type: types.UNSET_UNFOCUSED,
+    payload: { toolID, mapId },
   });
 }
 
@@ -42,21 +56,24 @@ export const setToolProp = (config) => (dispatch) => {
 
 
 export const resetTools = () => async (dispatch, getState) => {
-  const tools = getState().Tools.order
-  await _resetTools(tools, dispatch)
+  const mapId = getFocusedMapProxy().uuid.value;
+  const tools = getState().Tools[mapId].order
+  await _resetTools({ tools, mapId }, dispatch)
   dispatch({
-    type: types.TOOL_RESETED
+    type: types.TOOL_RESETED,
+    payload: mapId
   });
 }
 
-export const InitTools = (ToolConfig) => (dispatch) => {
+export const InitTools = (ToolConfig) => (dispatch, getState) => {
   const gTools = {
     tools: {},
     Groups: {},
     order: [],
     reset: [],
-    blueprint: {}
   };
+  const blueprint = {}
+  const mapId = getFocusedMapProxy().uuid.value;
 
   ToolConfig.groups.map((group) => {
     gTools.Groups[group.Id] = group;
@@ -73,11 +90,13 @@ export const InitTools = (ToolConfig) => (dispatch) => {
         : (gTools.Groups[ToolGroupId]["tools"] = [RandomId]);
     }
   });
-  gTools.blueprint.tools = JSON.parse(JSON.stringify(gTools.tools))
-  gTools.blueprint.Groups = JSON.parse(JSON.stringify(gTools.Groups))
+
+  blueprint.tools = JSON.parse(JSON.stringify(gTools.tools))
+  blueprint.Groups = JSON.parse(JSON.stringify(gTools.Groups))
+
   dispatch({
     type: types.INIT_TOOLS,
-    payload: gTools,
+    payload: { gTools, mapId, blueprint }
   });
 };
 
@@ -87,11 +106,11 @@ const _getLifeCycleFunc = (toolState) => {
     : LifeCycleRegistry[toolState.OnCreate];
 };
 
-const _resetTools = (toolsList, dispatch) => {
+const _resetTools = ({ tools, mapId }, dispatch) => {
   return new Promise((resolve, reject) => {
     dispatch({
       type: types.RESET_TOOLS,
-      payload: toolsList,
+      payload: { tools, mapId }
     });
     resolve();
   });

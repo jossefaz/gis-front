@@ -2,78 +2,113 @@ import types from "../actions/actionsTypes";
 import produce from "immer";
 
 const InitialState = {
-  tools: {},
-  Groups: {},
-  order: [],
-  reset: [],
   blueprint: {}
 }
 
 export default function (state = InitialState, action) {
   switch (action.type) {
     case types.INIT_TOOLS:
-      return action.payload;
+      return produce(state, (draftState) => {
+        const { gTools, mapId, blueprint } = action.payload
+        draftState[mapId] = gTools
+        draftState.blueprint = blueprint;
+      });
 
     case types.TOGGLE_TOOLS:
       return produce(state, (draftState) => {
-        const currentToolId = parseInt(action.payload);
-        const IsOpen = draftState.tools[currentToolId].IsOpen;
-        const unfocus = draftState.order[0]
-        if (unfocus && unfocus !== currentToolId) {
-          draftState.unfocus = unfocus
+        const { ToolId, mapId } = action.payload
+        if (!(mapId in draftState)) {
+          return state
         }
-        draftState.tools[currentToolId].IsOpen = !IsOpen;
+
+        const currentMapTools = draftState[mapId]
+        const currentToolId = parseInt(ToolId);
+        const IsOpen = currentMapTools.tools[currentToolId].IsOpen;
+        const unfocus = currentMapTools.order[0]
+
+        if (unfocus && unfocus !== currentToolId) {
+          currentMapTools.unfocus = unfocus
+        }
+
+        currentMapTools.tools[currentToolId].IsOpen = !IsOpen;
         if (!IsOpen) {
-          draftState.order.unshift(currentToolId); // This tool is now Focused
+          currentMapTools.order.unshift(currentToolId); // This tool is now Focused
         } else {
-          const index = draftState.order.indexOf(currentToolId);
+          const index = currentMapTools.order.indexOf(currentToolId);
           if (index > -1) {
-            draftState.order = draftState.order.filter(
+            currentMapTools.order = currentMapTools.order.filter(
               (id) => id != currentToolId
             ); // remove this tool from open tool list
           }
         }
       });
 
-    case types.RESET_TOOLS:
+    case types.RESET_TOOLS || types.INIT_MAP:
       return produce(state, (draftState) => {
-        draftState.reset = action.payload;
+        const { tools, mapId } = action.payload
+        draftState[mapId].reset = tools;
       });
 
     case types.TOOL_RESETED:
       return produce(state, (draftState) => {
-        draftState.tools = JSON.parse(JSON.stringify(draftState.blueprint.tools))
-        draftState.Groups = JSON.parse(JSON.stringify(draftState.blueprint.Groups))
-        draftState.reset = [];
+        draftState[action.payload].reset = [];
+      });
+
+    case types.INIT_MAP:
+      return produce(state, (draftState) => {
+        draftState[action.payload] = {
+          tools: {},
+          Groups: {},
+          order: [],
+          reset: [],
+          unfocus: ""
+        }
+        if (draftState.blueprint.tools) {
+          draftState[action.payload].tools = JSON.parse(JSON.stringify(draftState.blueprint.tools))
+          draftState[action.payload].Groups = JSON.parse(JSON.stringify(draftState.blueprint.Groups))
+        }
+
       });
 
     case types.SET_TOOL_PROP:
       return produce(state, (draftState) => {
-        draftState.tools[action.payload.toolID][action.payload.key] = action.payload.value;
+        const { config, mapId } = action.payload
+        draftState[mapId].tools[config.toolID][config.key] = config.value;
       });
 
 
     case types.SET_TOOL_FOCUSED:
       // First check if this tool is open
-      const currentToolId = parseInt(action.payload);
-      const index = state.order.indexOf(currentToolId);
+      const { ToolId, mapId } = action.payload
+      const currentToolId = parseInt(ToolId);
+      const index = state[mapId].order.indexOf(currentToolId);
       if (index == -1) {
         return state; //if the tool was removed no need to focus it
       }
       return produce(state, (draftState) => {
-        const unfocus = draftState.order[0]
+        const currentMapTools = draftState[mapId]
+        const unfocus = currentMapTools.order[0]
         if (unfocus && unfocus !== currentToolId) {
-          draftState.unfocus = unfocus
+          currentMapTools.unfocus = unfocus
         }
-        draftState.order = draftState.order.filter((id) => id != currentToolId);
-        draftState.order.unshift(currentToolId);
+        currentMapTools.order = currentMapTools.order.filter((id) => id != currentToolId);
+        currentMapTools.order.unshift(currentToolId);
 
       });
 
     case types.TOGGLE_GROUP_TOOLS:
       return produce(state, (draftState) => {
-        const IsOpen = draftState.Groups[action.payload].IsOpen;
-        draftState.Groups[action.payload].IsOpen = !IsOpen;
+        const { GroupToolId, mapId } = action.payload
+        const IsOpen = draftState[mapId].Groups[GroupToolId].IsOpen;
+        draftState[mapId].Groups[GroupToolId].IsOpen = !IsOpen;
+      });
+
+    case types.UNSET_UNFOCUSED:
+      return produce(state, (draftState) => {
+        const { toolID, mapId } = action.payload
+        if (toolID == draftState[mapId].unfocus) {
+          draftState[mapId].unfocus = ""
+        }
       });
 
     default:

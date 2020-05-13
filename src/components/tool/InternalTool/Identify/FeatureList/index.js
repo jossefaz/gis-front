@@ -3,36 +3,42 @@ import { connect } from "react-redux";
 
 import { setCurrentFeature } from "../../../../../redux/actions/features";
 import { setToolProp } from "../../../../../redux/actions/tools";
-import { zoomTo, highlightFeature } from '../../../../../nessMapping/api'
+import { zoomTo, highlightFeature, getFocusedMapProxy } from '../../../../../nessMapping/api'
 import IconButton from "../../../../UI/Buttons/IconButton"
 import "./style.css";
 class FeatureList extends Component {
   state = {
     current_field: null
   }
-  focusedmap = this.props.focusedmap
+  get focusedmap() {
+    return getFocusedMapProxy().uuid.value
+  }
 
   sanityCheck = () => {
-    return this.focusedmap in this.props.Features &&
-      "selectedFeatures" in this.props.Features[this.focusedmap] &&
-      this.props.Features[this.focusedmap].currentLayer in this.props.Features[this.focusedmap].selectedFeatures &&
-      this.props.Features[this.focusedmap].selectedFeatures.length > 0
+    const focusedmapInFeatures = this.focusedmap in this.props.Features
+    const selectedFeaturesInFeatures = focusedmapInFeatures ? "selectedFeatures" in this.props.Features[this.focusedmap] : false
+    const currentLayerInFeatures = focusedmapInFeatures ? "currentLayer" in this.props.Features[this.focusedmap] : false
+    const currentLayer = currentLayerInFeatures ? this.props.Features[this.focusedmap].currentLayer : false
+    const currentLayerInSelectedFeatures = currentLayer ? this.props.Features[this.focusedmap].currentLayer in this.props.Features[this.focusedmap].selectedFeatures : false
+    const lengthOfSelectedFeatures = selectedFeaturesInFeatures ? Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0 : false
+    return focusedmapInFeatures && selectedFeaturesInFeatures && currentLayerInFeatures && currentLayer && currentLayerInSelectedFeatures && lengthOfSelectedFeatures
+
   }
 
   get selectedFeatures() {
-    return this.sanityCheck ? this.props.Features[this.focusedmap].selectedFeatures : null
+    return this.sanityCheck() ? this.props.Features[this.focusedmap].selectedFeatures : null
   }
 
   get currentLayer() {
-    return this.sanityCheck ? this.props.Features[this.focusedmap].currentLayer : null
+    return this.sanityCheck() ? this.props.Features[this.focusedmap].currentLayer : null
   }
 
   get currentFeature() {
-    return this.sanityCheck ? this.props.Features[this.focusedmap].currentFeature : null
+    return this.sanityCheck() ? this.props.Features[this.focusedmap].currentFeature : null
   }
 
   renderFieldsSelect = () => {
-    return this.sanityCheck ? (
+    return this.sanityCheck() ? (
       <tr><td>
         <select className="ui fluid dropdown" onChange={(event) => this.setState({ current_field: event.target.value })}>
           {
@@ -91,15 +97,19 @@ class FeatureList extends Component {
     return (
       this.currentLayer ?
         <React.Fragment>
-          <table className="ui table">
+          <table className="ui table ">
             <thead>
               <tr>
                 <th>Features</th>
               </tr>
             </thead>
-            <tbody>
+
+            <tbody >
               {this.renderFieldsSelect()}
-              {this.renderSelectedFeature()}
+              <div className="scrollContent">
+                {this.renderSelectedFeature()}
+              </div>
+
 
             </tbody>
           </table>
@@ -113,7 +123,7 @@ class FeatureList extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { Features: state.Features };
+  return { Features: state.Features, map: state.map.focused };
 };
 
 export default connect(mapStateToProps, { setCurrentFeature })(FeatureList);
