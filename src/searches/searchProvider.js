@@ -14,17 +14,17 @@ export default class SearchProvider {
     }
 
     _generateItems(query, intoArray) {
-        return new Promise( (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             switch (this._config.type) {
                 case SearchKeys.SEARCH_TYPE_OBJ_ARRAY:
                     var res = this._config.data.filter(item => {
-                        return item[this._config.field].indexOf(query)>=0;
+                        return item[this._config.field].indexOf(query) >= 0;
                     }).map(item => {
                         // this returns an item
                         return {
                             item: item,
                             title: this._config.itemTitlePrefix + item[this._config.itemTitleField] + this._config.itemTitlePostfix,
-                            invoker: (typeof this._config.invokerFunc === 'function' ? this._config.invokerFunc : this,this._defaultInvoker)
+                            invoker: (typeof this._config.invokerFunc === 'function' ? this._config.invokerFunc : this, this._defaultInvoker)
                         }
                     });
 

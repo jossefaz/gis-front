@@ -4,6 +4,7 @@ import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionV
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
+import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateOutput, generateNewStyle } from "./func";
 import { Confirm } from 'semantic-ui-react'
 import "./style.css";
@@ -92,7 +93,6 @@ class MeasureDistance extends React.Component {
 
   ToggleOverlays = (show) => {
     if (this.selfOverlay && this.map in this.selfOverlay) {
-      console.log(this.selfOverlay)
       Object.keys(this.selfOverlay[this.map].overlays).map(
         overlay => {
           const selector = this.selfOverlay[this.map].overlays[overlay].selector
@@ -267,7 +267,9 @@ class MeasureDistance extends React.Component {
     this.onReset();
     if (this.draw) {
       this.removeDrawObject()
+
     }
+    this.props.unsetUnfocused(this.props.toolID)
   }
 
 
@@ -320,4 +322,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay })(MeasureDistance);
+export default connect(mapStateToProps, { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused })(MeasureDistance);

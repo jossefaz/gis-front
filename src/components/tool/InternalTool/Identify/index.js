@@ -99,7 +99,7 @@ class Identify extends Component {
   }
 
   onReset = () => {
-    console.log(this.selfInteraction)
+
   }
   onUnfocus = async () => {
     if (this.selfInteraction) {
