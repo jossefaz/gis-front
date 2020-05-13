@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Menu, Label } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
 import { Dropdown } from "semantic-ui-react";
 import {
@@ -8,8 +7,7 @@ import {
   setMapLayerVisible,
   setMapLayerOpacity,
 } from "../../../redux/actions/layers";
-import { getOlLayer } from "../../../nessMapping/api";
-import { convertMdLayerToMapLayer } from "../../../utils/convertors/layerConverter";
+import { getOlLayer, getFocusedMap } from "../../../nessMapping/api";
 
 class LayerListItem extends Component {
   constructor(props) {
@@ -37,6 +35,11 @@ class LayerListItem extends Component {
       this.props.addLayerToOLMap(lyr.uuid, visiblity);
     }
   };
+  zoomToLayer = (lyr) => {
+    var map = getFocusedMap();
+    var layer = getOlLayer(lyr.uuid);
+    if (layer) map.zoomToExtent(layer.getDataExtent());
+  };
 
   displayLayerMenu = () => {
     this.setState({
@@ -47,7 +50,7 @@ class LayerListItem extends Component {
   render() {
     const lyr = this.props.lyr;
     return (
-      <Menu.Item as="a">
+      <div>
         <div className="ui toggle checkbox">
           <input
             type="checkbox"
@@ -57,24 +60,29 @@ class LayerListItem extends Component {
             }
             defaultChecked={lyr.visible}
           />
-          <label
-            className="ui align left"
-            onClick={() => this.displayLayerMenu()}
-          >
-            {lyr.name}
-          </label>
+          <label>{lyr.name}</label>
         </div>
-
-        {this.state.displayLayerMenu ? (
-          <div>
-            <Slider color="blue" settings={this.settings} />
-            <label>פתיחת מקרא</label>
+        <div>
+          <Dropdown closeOnChange={false}>
             <Dropdown.Menu>
-              <Slider color="blue" settings={this.settings} />
+              <Dropdown.Item>
+                <label>פתיחת מקרא</label>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <div>
+                  <label>שקיפות</label>
+                  <Slider color="blue" settings={this.settings} />
+                </div>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <label onClick={() => this.zoomToLayer(lyr)}>
+                  מבט מלא לשכבה
+                </label>
+              </Dropdown.Item>
             </Dropdown.Menu>
-          </div>
-        ) : null}
-      </Menu.Item>
+          </Dropdown>
+        </div>
+      </div>
     );
   }
 }

@@ -11,7 +11,14 @@ import NessLayer, {
 import NessOverlay from "./overlay";
 import NessInteraction from "./interaction";
 
-import { Point, MultiPoint, Polygon, MultiLineString, LineString, MultiPolygon } from 'ol/geom';
+import {
+    Point,
+    MultiPoint,
+    Polygon,
+    MultiLineString,
+    LineString,
+    MultiPolygon
+} from 'ol/geom';
 import Feature from 'ol/Feature';
 
 import NessKeys from "./keys"
@@ -37,7 +44,10 @@ export const getFocusedMapProxy = () => {
 // ZOOM TO
 
 export const geoserverFeatureToOLGeom = (config) => {
-    const { type, coordinates } = config
+    const {
+        type,
+        coordinates
+    } = config
     let newGeometry = null
     switch (type) {
         case "MultiPolygon":
@@ -73,9 +83,10 @@ export const zoomTo = (config) => {
     if (newGeometry) {
         const view = getFocusedMap().getView()
         highlightFeature(config)
-        view.fit(newGeometry, { padding: [170, 50, 30, 150] })
-    }
-    else {
+        view.fit(newGeometry, {
+            padding: [170, 50, 30, 150]
+        })
+    } else {
         throw "the config object provided to ZoomTo function does not match any geometry type"
     }
 }
@@ -114,7 +125,7 @@ export const getOlLayers = () => {
 // GET Ness Layer
 export const getNessLayer = ((uuid) => {
     return getFocusedMapProxy()._layers.find(layer =>
-        layer.uuid === uuid)
+        layer.uuid.value === uuid)
 });
 // GET Ness Layers
 export const getNessLayers = ((uuid) => {

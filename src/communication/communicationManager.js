@@ -1,5 +1,5 @@
-import channels from "../usefulgarbage/channels";
-import tools from "../usefulgarbage/tools";
+// import channels from "../usefulgarbage/channels";
+// import tools from "../usefulgarbage/tools";
 import {
   addLayer,
   updateFeatureAttributes,
@@ -7,52 +7,58 @@ import {
   udpatedInfo,
 } from "../redux/actions/actions";
 // import {ADD_LAYER,UPDATE_FEATURE_ATTRIBUTES} from '../actions/actionsTypes';
-import { WSkubeMQ } from "../comm/WSkubeMQ.js";
-import { Base64 } from "../convertors/base64";
+// import {
+//   WSkubeMQ
+// } from "../comm/WSkubeMQ.js";
+// import NATS from "../communication/WSnatsMQ"
+import {
+  Base64
+} from "../utils/convertors/base64";
 import store from "../redux/store.js";
 
 export const loadChannels = () => {
-  channels.map(function (channel) {
-    var ws = new WSkubeMQ(
-      "172.17.22.215:9090",
-      "MTCS.Units.*",
-      "DataServer",
-      "",
-      {
-        onMessage: onMessageRecived,
-        onError: onErrorRecived,
-        decoder: Base64.decode,
-      }
-    );
-  });
+  // channels.map(function (channel) {
+  //   var ws = new WSkubeMQ(
+  //     "172.17.22.215:9090",
+  //     "MTCS.Units.*",
+  //     "DataServer",
+  //     "",
+  //     {
+  //       onMessage: onMessageRecived,
+  //       onError: onErrorRecived,
+  //       decoder: Base64.decode,
+  //     }
+  //   );
+  // });
+  // var nats = NATS.connect('ws://localhost:4223');
 };
 
-export const onMessageRecived = (message) => {
-  var channelItem = channels[0];
-  var data = [];
+// export const onMessageRecived = (message) => {
+//   var channelItem = channels[0];
+//   var data = [];
 
-  if (channelItem) {
-    var newMessage = JSON.parse(message.Body.replace(" - (1)", ""));
+//   if (channelItem) {
+//     var newMessage = JSON.parse(message.Body.replace(" - (1)", ""));
 
-    data.push(newMessage);
-    switch (channelItem.reduxFunction) {
-      case "UPDATE_FEATURE_ATTRIBUTES":
-        store.dispatch(setFilterIds("units", null));
-        store.dispatch(
-          updateFeatureAttributes(
-            data,
-            channelItem.reduxTarget,
-            channelItem.idSourceKey
-          )
-        );
-        store.dispatch(setFilterIds("units", data));
-        break;
-      default:
-        break;
-    }
-  }
-};
+//     data.push(newMessage);
+//     switch (channelItem.reduxFunction) {
+//       case "UPDATE_FEATURE_ATTRIBUTES":
+//         store.dispatch(setFilterIds("units", null));
+//         store.dispatch(
+//           updateFeatureAttributes(
+//             data,
+//             channelItem.reduxTarget,
+//             channelItem.idSourceKey
+//           )
+//         );
+//         store.dispatch(setFilterIds("units", data));
+//         break;
+//       default:
+//         break;
+//     }
+//   }
+// };
 
-export const onErrorRecived = (error) => {
-  console.log(error);
-};
+// export const onErrorRecived = (error) => {
+//   console.log(error);
+// };
