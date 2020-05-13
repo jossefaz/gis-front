@@ -17,6 +17,7 @@ import config from "react-global-configuration";
 import NessMapping from "../../nessMapping/mapping";
 import { getFocusedMap } from "../../nessMapping/api";
 import types from "./actionsTypes";
+import { resetTools } from './tools'
 
 export const InitMap = () => (dispatch, getState) => {
     const {

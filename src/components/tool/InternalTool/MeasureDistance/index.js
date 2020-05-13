@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
 import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMapProxy } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
@@ -20,10 +21,7 @@ class MeasureDistance extends React.Component {
     Draw: "Draw"
   }
 
-  get Tools() {
-    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
-    return currentMapId ? this.props.Tools[currentMapId] : null
-  }
+
 
   state = {
     measureMsg: {
@@ -42,6 +40,11 @@ class MeasureDistance extends React.Component {
   sketch = null;
 
 
+
+
+  static get MeasureDistance() {
+    return new MeasureDistance()
+  }
 
   get map() {
     return this.props.maps.focused
@@ -196,13 +199,13 @@ class MeasureDistance extends React.Component {
     await this.removeDrawObject()
     await this.removeOverlays()
   }
-  removeDrawObject = async () => {
-    if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+  removeDrawObject = () => {
+    if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
       this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
     }
 
   }
-  removeOverlays = async () => {
+  removeOverlays = () => {
     if (this.selfOverlay) {
       this.props.unsetOverlays({ overlays: this.selfOverlay[this.map].overlays, widgetName: this.WIDGET_NAME })
     }
@@ -236,26 +239,24 @@ class MeasureDistance extends React.Component {
   // LIFECYCLE
   componentDidUpdate() {
     document.addEventListener("keydown", this.escapeHandler);
-    if (this.Tools) {
-      if (this.Tools.unfocus == this.props.toolID) {
-        this.onUnfocus()
-      }
-      if (this.Tools.reset.length > 0) {
-        this.Tools.reset.map(toolid => {
-          if (toolid == this.props.toolID) {
-            this.onReset()
-          }
-        })
-      }
-    }
+    // if (this.Tools) {
+    //   if (this.Tools.unfocus == this.props.toolID) {
+    //     this.onUnfocus()
+    //   }
+    //   if (this.Tools.reset.length > 0) {
+    //     this.Tools.reset.map(toolid => {
+    //       if (toolid == this.props.toolID) {
+    //         this.onReset()
+    //       }
+    //     })
+    //   }
+    // }
 
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
-    if (this.draw) {
-      this.removeDrawObject()
-    }
     this.onReset();
+    this.removeDrawObject()
   }
   onReset = () => {
     if (this.selfOverlay && this.map && this.map in this.selfOverlay && this.measureToolTip in this.selfOverlay[this.map].overlays) {
@@ -265,11 +266,7 @@ class MeasureDistance extends React.Component {
   }
   onUnfocus = () => {
     this.onReset();
-    if (this.draw) {
-      this.removeDrawObject()
-
-    }
-    this.props.unsetUnfocused(this.props.toolID)
+    this.removeDrawObject()
   }
 
 
@@ -312,14 +309,17 @@ class MeasureDistance extends React.Component {
   }
 }
 
+
+
 const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     maps: state.map,
-    Tools: state.Tools,
     Interactions: state.Interactions,
     Overlays: state.Overlays
   };
 };
 
-export default connect(mapStateToProps, { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused })(MeasureDistance);
+const mapDispatchToProps = { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused }
+
+export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(MeasureDistance));

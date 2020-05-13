@@ -10,6 +10,7 @@ import { Image as ImageLayer } from "ol/layer";
 import { setSelectedFeatures } from '../../../../redux/actions/features';
 import { unsetInteractions, setInteractions } from "../../../../redux/actions/interaction";
 import { unsetUnfocused } from "../../../../redux/actions/tools";
+import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
 import "./style.css";
 import axios from "axios";
 
@@ -99,7 +100,7 @@ class Identify extends Component {
   }
 
   onReset = () => {
-
+    alert("Hiii")
   }
   onUnfocus = async () => {
     if (this.selfInteraction) {
@@ -108,7 +109,6 @@ class Identify extends Component {
         InteractionArray.push({ uuid: InteractionData.uuid, widgetName: this.WIDGET_NAME, Type: InteractionData.Type })
       }
       if (InteractionArray.length > 0) {
-        await this.props.unsetUnfocused(this.props.toolID)
         await this.props.unsetInteractions(InteractionArray);
 
       }
@@ -133,24 +133,7 @@ class Identify extends Component {
     }
   }
 
-  componentDidUpdate() {
-    if (this.Tools) {
-      if (this.Tools.unfocus == this.props.toolID) {
-        this.onUnfocus()
-      }
-      if (this.Tools.order[0] == this.props.toolID) {
-        this.onFocus()
-      }
-      if (this.Tools.reset.length > 0) {
-        this.Tools.reset.map(toolid => {
-          if (toolid == this.props.toolID) {
-            this.onReset()
-          }
-        })
-      }
-    }
 
-  }
 
   componentWillUnmount() {
     this.onUnfocus()
@@ -187,5 +170,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setInteractions, unsetInteractions, unsetUnfocused, setSelectedFeatures })(Identify);
+
+
+const mapDispatchToProps = { setInteractions, unsetInteractions, unsetUnfocused, setSelectedFeatures }
+
+export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Identify));
 

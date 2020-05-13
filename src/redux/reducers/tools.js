@@ -43,7 +43,7 @@ export default function (state = InitialState, action) {
         }
       });
 
-    case types.RESET_TOOLS:
+    case types.RESET_TOOLS || types.INIT_MAP:
       return produce(state, (draftState) => {
         const { tools, mapId } = action.payload
         draftState[mapId].reset = tools;
