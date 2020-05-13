@@ -15,8 +15,9 @@ import {
 import OSM from "ol/source/OSM";
 import config from "react-global-configuration";
 import NessMapping from "../../nessMapping/mapping";
-
+import { getFocusedMap } from "../../nessMapping/api";
 import types from "./actionsTypes";
+import { resetTools } from './tools'
 
 export const InitMap = () => (dispatch, getState) => {
     const {
@@ -37,7 +38,7 @@ export const InitMap = () => (dispatch, getState) => {
 
     const uuidFocused = getState().map.focused
     if (uuidFocused) {
-        NessMapping.getInstance().getMapProxy(uuidFocused)._olmap.unset('target')
+        getFocusedMap().unset('target')
     }
     if (uuid) {
         dispatch({
@@ -50,7 +51,7 @@ export const InitMap = () => (dispatch, getState) => {
 export const setMapFocus = (uuid) => (dispatch, getState) => {
     const uuidFocused = getState().map.focused
     if (uuidFocused) {
-        NessMapping.getInstance().getMapProxy(uuidFocused)._olmap.unset('target')
+        getFocusedMap().unset('target')
     }
     dispatch({
         type: types.SET_MAP_FOCUSED,

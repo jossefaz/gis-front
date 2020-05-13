@@ -3,16 +3,21 @@ import { connect } from "react-redux";
 import { Dropdown } from "semantic-ui-react";
 import { toggleGroupTool } from "../../../redux/actions/tools";
 import ToolItem from "../ToolItem";
+import { getFocusedMapProxy } from '../../../nessMapping/api'
 import "./style.css";
 
 class GroupTool extends React.Component {
+  get Tools() {
+    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
+    return currentMapId ? this.props.Tools[currentMapId] : null
+  }
   render() {
     const {
       IsOpen,
       GroupImage,
       GroupName,
       Id: GroupID,
-    } = this.props.Tools.Groups[this.props.GroupID];
+    } = this.Tools.Groups[this.props.GroupID];
     const CloseCB = () => this.props.toggleGroupTool(GroupID);
 
     return (
@@ -40,7 +45,7 @@ class GroupTool extends React.Component {
 
           <Dropdown.Menu id={"Group" + GroupID}>
             <div className="ui segment grouptool">
-              {this.props.Tools.Groups[GroupID].tools.map((toolId) => (
+              {this.Tools.Groups[GroupID].tools.map((toolId) => (
                 <ToolItem key={toolId} ToolID={toolId} />
               ))}
             </div>
@@ -52,6 +57,7 @@ class GroupTool extends React.Component {
   }
 }
 const mapStateToProps = (state) => {
+
   return { Tools: state.Tools };
 };
 

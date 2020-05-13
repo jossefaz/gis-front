@@ -1,9 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getInteraction, getOverlay, removeInteraction, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
+import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
+import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMapProxy } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
+import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateOutput, generateNewStyle } from "./func";
 import { Confirm } from 'semantic-ui-react'
 import "./style.css";
@@ -15,6 +17,11 @@ class MeasureDistance extends React.Component {
     HIDDEN: 'hidden',
     FINISH: 'ol-tooltip ol-tooltip-static'
   }
+  INTERACTIONS = {
+    Draw: "Draw"
+  }
+
+
 
   state = {
     measureMsg: {
@@ -34,6 +41,11 @@ class MeasureDistance extends React.Component {
 
 
 
+
+  static get MeasureDistance() {
+    return new MeasureDistance()
+  }
+
   get map() {
     return this.props.maps.focused
   }
@@ -50,9 +62,10 @@ class MeasureDistance extends React.Component {
     return false
   }
   get draw() {
-    if (this.selfInteraction && this.map in this.selfInteraction) {
-      return this.selfInteraction[this.map].uuid
+    if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+      return this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid
     }
+    return false
   }
   get measureToolTip() {
     return this.selfOverlay && this.map in this.selfOverlay ? this.selfOverlay[this.map].focused : null
@@ -83,7 +96,6 @@ class MeasureDistance extends React.Component {
 
   ToggleOverlays = (show) => {
     if (this.selfOverlay && this.map in this.selfOverlay) {
-      console.log(this.selfOverlay)
       Object.keys(this.selfOverlay[this.map].overlays).map(
         overlay => {
           const selector = this.selfOverlay[this.map].overlays[overlay].selector
@@ -187,13 +199,13 @@ class MeasureDistance extends React.Component {
     await this.removeDrawObject()
     await this.removeOverlays()
   }
-  removeDrawObject = async () => {
-    if (this.selfInteraction && this.map in this.selfInteraction) {
-      this.props.unsetInteraction({ uuid: this.selfInteraction[this.map].uuid, widgetName: this.WIDGET_NAME })
+  removeDrawObject = () => {
+    if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+      this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
     }
 
   }
-  removeOverlays = async () => {
+  removeOverlays = () => {
     if (this.selfOverlay) {
       this.props.unsetOverlays({ overlays: this.selfOverlay[this.map].overlays, widgetName: this.WIDGET_NAME })
     }
@@ -227,23 +239,24 @@ class MeasureDistance extends React.Component {
   // LIFECYCLE
   componentDidUpdate() {
     document.addEventListener("keydown", this.escapeHandler);
-    if (this.props.Tools.unfocus == this.props.toolID) {
-      this.onUnfocus()
-    }
-    if (this.props.Tools.reset.length > 0) {
-      this.props.Tools.reset.map(toolid => {
-        if (toolid == this.props.toolID) {
-          this.onReset()
-        }
-      })
-    }
+    // if (this.Tools) {
+    //   if (this.Tools.unfocus == this.props.toolID) {
+    //     this.onUnfocus()
+    //   }
+    //   if (this.Tools.reset.length > 0) {
+    //     this.Tools.reset.map(toolid => {
+    //       if (toolid == this.props.toolID) {
+    //         this.onReset()
+    //       }
+    //     })
+    //   }
+    // }
+
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
-    if (this.draw) {
-      removeInteraction(this.draw)
-    }
     this.onReset();
+    this.removeDrawObject()
   }
   onReset = () => {
     if (this.selfOverlay && this.map && this.map in this.selfOverlay && this.measureToolTip in this.selfOverlay[this.map].overlays) {
@@ -253,9 +266,7 @@ class MeasureDistance extends React.Component {
   }
   onUnfocus = () => {
     this.onReset();
-    if (this.draw) {
-      removeInteraction(this.draw)
-    }
+    this.removeDrawObject()
   }
 
 
@@ -274,12 +285,12 @@ class MeasureDistance extends React.Component {
             onClick={() => this.onOpenDrawSession("LineString")}
             icon="ruler" size="lg" />
           <IconButton
-            className={`ui icon button pointer ${this.DrawLayer ? 'negative' : 'disabled'}`}
+            className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'negative' : 'disabled'}`}
             onClick={() => this.setState({ open: true })}
             disabled={!this.DrawLayer}
             icon="trash-alt" size="lg" />
           <IconButton
-            className={`ui icon button pointer ${this.DrawLayer ? 'positive' : 'disabled'}`}
+            className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
             onClick={() => this.toogleView()}
             disabled={!this.DrawLayer}
             icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
@@ -298,14 +309,17 @@ class MeasureDistance extends React.Component {
   }
 }
 
+
+
 const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     maps: state.map,
-    Tools: state.Tools,
     Interactions: state.Interactions,
     Overlays: state.Overlays
   };
 };
 
-export default connect(mapStateToProps, { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay })(MeasureDistance);
+const mapDispatchToProps = { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused }
+
+export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(MeasureDistance));
