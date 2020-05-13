@@ -6,5 +6,5 @@ export default {
   Identify: lazy(() => import("./Identify")),
   MeasureDistance: lazy(() => import("./MeasureDistance")),
   SingleLayerTest: lazy(() => import("./SingleLayerTest")),
-  MantiIntersectionLayer: lazy(() => import("./MantiIntersectionLayer/index.jsx")),
+  MantiIntersectionLayer: lazy(() => import("./MantiIntersectionLayer")),
 };
