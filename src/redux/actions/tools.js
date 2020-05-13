@@ -55,13 +55,20 @@ export const unsetUnfocused = (toolID) => (dispatch) => {
 
 
 
-export const resetTools = () => async (dispatch, getState) => {
+export const resetTools = () => (dispatch, getState) => {
   const mapId = getFocusedMapProxy().uuid.value;
   const tools = getState().Tools[mapId].order
-  await _resetTools({ tools, mapId }, dispatch)
+  dispatch({
+    type: types.RESET_TOOLS,
+    payload: { tools, mapId }
+  });
+}
+
+export const toolsReseted = () => (dispatch) => {
+  const mapId = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.TOOL_RESETED,
-    payload: mapId
+    payload: mapId,
   });
 }
 
@@ -106,12 +113,3 @@ const _getLifeCycleFunc = (toolState) => {
     : LifeCycleRegistry[toolState.OnCreate];
 };
 
-const _resetTools = ({ tools, mapId }, dispatch) => {
-  return new Promise((resolve, reject) => {
-    dispatch({
-      type: types.RESET_TOOLS,
-      payload: { tools, mapId }
-    });
-    resolve();
-  });
-}

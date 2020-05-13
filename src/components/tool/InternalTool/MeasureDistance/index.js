@@ -256,17 +256,16 @@ class MeasureDistance extends React.Component {
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
     this.onReset();
-    this.removeDrawObject()
   }
   onReset = () => {
     if (this.selfOverlay && this.map && this.map in this.selfOverlay && this.measureToolTip in this.selfOverlay[this.map].overlays) {
       this.props.unsetOverlay({ uuid: this.measureToolTip, widgetName: this.WIDGET_NAME })
     }
     this.abortDrawing();
+    this.removeDrawObject()
   }
   onUnfocus = () => {
     this.onReset();
-    this.removeDrawObject()
   }
 
 
