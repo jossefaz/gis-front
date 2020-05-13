@@ -7,4 +7,5 @@ export default {
   MeasureDistance: lazy(() => import("./MeasureDistance")),
   SingleLayerTest: lazy(() => import("./SingleLayerTest")),
   MantiIntersectionLayer: lazy(() => import("./MantiIntersectionLayer")),
+  Draw: lazy(() => import("./Draw")),
 };
