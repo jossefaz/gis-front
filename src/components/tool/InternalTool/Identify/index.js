@@ -99,9 +99,7 @@ class Identify extends Component {
     this.addInteraction();
   }
 
-  onReset = () => {
-    alert("Hiii")
-  }
+
   onUnfocus = async () => {
     if (this.selfInteraction) {
       const InteractionArray = []
