@@ -12,9 +12,13 @@ import {
   faEye,
   faEyeSlash,
   faCrosshairs,
-  faTrafficLight
+  faTrafficLight,
+  faPencilRuler,
+  faEdit,
+  faCircle,
+  faGripLines
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
-  library.add(fab, faLayerGroup, faMap, faDrawPolygon, faMapMarkerAlt, faRuler, faMapPin, faVial, faTrashAlt, faEye, faCrosshairs, faEyeSlash, faTrafficLight);
+  library.add(fab, faGripLines, faEdit, faCircle, faPencilRuler, faLayerGroup, faMap, faDrawPolygon, faMapMarkerAlt, faRuler, faMapPin, faVial, faTrashAlt, faEye, faCrosshairs, faEyeSlash, faTrafficLight);
 };

@@ -2,7 +2,7 @@ import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { getFocusedMap } from '../nessMapping/api'
 import mapStyle from '../nessMapping/mapStyle'
-import { Draw, DragBox, Select } from "ol/interaction";
+import { Draw, DragBox, Select, Modify } from "ol/interaction";
 
 export const getEmptyVectorLayer = (inStyle) => {
     const style = inStyle || mapStyle.draw
@@ -42,4 +42,11 @@ export const newDragBox = (config) => {
         return new DragBox(config);
     }
     return new DragBox();
+}
+
+export const newModify = (config) => {
+    if (config) {
+        return new Modify(config);
+    }
+    return new Modify();
 }
