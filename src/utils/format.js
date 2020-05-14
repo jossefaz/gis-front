@@ -8,7 +8,7 @@ import { getArea, getLength } from 'ol/sphere';
 
 export const formatLength = (line) => {
     var length = getLength(line, {
-        projection: 'EPSG:4326',
+        projection: 'EPSG:2039',
         radius: 6378137
     });
     var output;
@@ -32,7 +32,7 @@ export const formatLength = (line) => {
  */
 export const formatArea = (polygon) => {
     var area = getArea(polygon, {
-        projection: 'EPSG:4326',
+        projection: 'EPSG:2039',
         radius: 6378137
     });
     var output;

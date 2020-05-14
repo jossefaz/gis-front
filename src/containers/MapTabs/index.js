@@ -3,7 +3,7 @@ import { Tab } from 'semantic-ui-react'
 import { connect } from "react-redux";
 import { InitMap, setMapFocus } from "../../redux/actions/map"
 import { getFocusedMap } from '../../nessMapping/api'
-import { resetTools } from "../../redux/actions/tools"
+import { resetTools, toolsReseted } from "../../redux/actions/tools"
 import './style.css'
 
 
@@ -15,14 +15,15 @@ class MapTabs extends React.Component {
     }
     handleTabChange = async (uuid) => {
         if (uuid != this.state.focused) {
+            await this.props.resetTools()
             if (uuid == "+") {
                 await this.props.InitMap()
             } else {
                 await this.props.setMapFocus(uuid)
                 getFocusedMap().setTarget("map")
-
             }
-            await this.props.resetTools()
+            await this.props.toolsReseted()
+
         }
     }
     renderPanes = () => {
@@ -77,5 +78,5 @@ const mapStateToProps = (state) => ({
 
 
 export default connect(mapStateToProps, {
-    InitMap, setMapFocus, resetTools
+    InitMap, setMapFocus, resetTools, toolsReseted
 })(MapTabs);

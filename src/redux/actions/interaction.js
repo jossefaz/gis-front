@@ -12,6 +12,9 @@ export const setInteraction = (config) => (dispatch) => {
         }
 
     }
+    if ('interactionConfig' in config) {
+        delete config.interactionConfig
+    }
     config.uuid = uuid
 
     const focusedmap = getFocusedMapProxy().uuid.value
@@ -36,6 +39,10 @@ export const setInteractions = (interactionsArray) => (dispatch) => {
                 config.sourceLayer = sourceLayer
             }
 
+        }
+
+        if ('interactionConfig' in config) {
+            delete config.interactionConfig
         }
         config.uuid = uuid
         newArray.push(config)

@@ -4,6 +4,7 @@ import React, {
 import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
+<<<<<<< HEAD
 import {
   connect
 } from "react-redux";
@@ -31,6 +32,15 @@ import {
 import {
   unsetUnfocused
 } from "../../../../redux/actions/tools";
+=======
+import { connect } from "react-redux";
+import { getFocusedMapProxy, getFocusedMap, getInteraction } from '../../../../nessMapping/api';
+import { getCenter } from 'ol/extent';
+import { getWidth } from 'ol/extent';
+import { Image as ImageLayer } from "ol/layer";
+import { setSelectedFeatures } from '../../../../redux/actions/features';
+import { unsetInteractions, setInteractions } from "../../../../redux/actions/interaction";
+>>>>>>> upstream/master
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
 import "./style.css";
 import axios from "axios";
@@ -73,13 +83,13 @@ class Identify extends Component {
               .getArray()
               .map(lyr => {
                 if (lyr instanceof ImageLayer) {
+                  console.log(lyr)
                   var viewResolution = getFocusedMap().getView().getResolution();
-                  var buffer = Math.round(getWidth(extent) * 1000)
+                  var buffer = Math.round(getWidth(extent))
                   var url = lyr.getSource()
                     .getFeatureInfoUrl(getCenter(extent), viewResolution, "EPSG:2039", {
                       INFO_FORMAT: "application/json",
                       feature_count: 100,
-                      buffer: buffer
 
                     });
                   if (url) {
@@ -200,11 +210,17 @@ const mapStateToProps = (state) => {
 
 
 
+<<<<<<< HEAD
 const mapDispatchToProps = {
   setInteractions,
   unsetInteractions,
   unsetUnfocused,
   setSelectedFeatures
 }
+=======
+const mapDispatchToProps = { setInteractions, unsetInteractions, setSelectedFeatures }
+
+export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Identify));
+>>>>>>> upstream/master
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Identify));

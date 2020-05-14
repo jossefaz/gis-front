@@ -32,7 +32,7 @@ export const InitRasters = () => (dispatch) => {
     },
   };
 
-  Rasters["WorldMap"] = {
+  Rasters["viewr"] = {
     layer: new TileLayer({
       source: new XYZ({
         attributions:
