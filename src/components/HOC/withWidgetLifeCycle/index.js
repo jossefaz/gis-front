@@ -22,6 +22,7 @@ export default (WrappedComponent) => {
             const { onFocus, onReset, onUnfocus } = this.child.current
             if (this.Tools) {
                 if (this.Tools.unfocus == this.props.toolID && typeof onUnfocus === "function") {
+
                     onUnfocus()
                     this.props.unsetUnfocused(this.props.toolID)
                 }

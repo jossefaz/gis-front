@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
 import { getInteraction, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
-import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
+import { setInteraction, unsetInteraction, unsetInteractions } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
@@ -113,19 +113,7 @@ class Draw extends React.Component {
         this.onDrawEnd()
     }
 
-    onClearDrawing = () => {
-        this.DrawSource.clear()
-        this.setState({ open: false, drawn: false })
-        this.removeDrawObject()
-    }
-    removeDrawObject = () => {
-        if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
-            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
-        }
-
-    }
-
-    onEditOpen = async () => {
+    onOpenEditSession = async () => {
         this.removeDrawObject()
         await this.props.setInteraction({
             Type: this.INTERACTIONS.Select,
@@ -145,6 +133,26 @@ class Draw extends React.Component {
 
 
     }
+
+    onClearDrawing = () => {
+        this.DrawSource.clear()
+        this.setState({ open: false, drawn: false })
+        this.removeDrawObject()
+    }
+    removeDrawObject = () => {
+        if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
+            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
+        }
+
+    }
+
+    removeSelectAndEdit = () => {
+        if (this.select && this.modify && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.select in this.selfInteraction[this.map] && this.INTERACTIONS.Modify in this.selfInteraction[this.map]) {
+            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
+        }
+    }
+
+
 
     onDrawEnd = () => {
         const draw = getInteraction(this.draw)
@@ -178,10 +186,25 @@ class Draw extends React.Component {
     }
     onReset = () => {
         this.abortDrawing();
-        this.removeDrawObject()
+        this.removeAllInteractions()
     }
+
+    removeAllInteractions = async () => {
+        if (this.selfInteraction && this.map in this.selfInteraction) {
+            const InteractionArray = []
+            Object.keys(this.selfInteraction[this.map]).map(InteractionName => {
+                const { uuid, Type } = this.selfInteraction[this.map][InteractionName]
+                InteractionArray.push({ uuid, widgetName: this.WIDGET_NAME, Type })
+            })
+            if (InteractionArray.length > 0) {
+                await this.props.unsetInteractions(InteractionArray);
+            }
+        }
+
+    }
+
     onUnfocus = () => {
-        this.onReset();
+        this.onReset()
     }
 
     render() {
@@ -213,7 +236,7 @@ class Draw extends React.Component {
 
                     <IconButton
                         className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
-                        onClick={() => this.onEditOpen()}
+                        onClick={() => this.onOpenEditSession()}
                         disabled={!this.state.drawn}
                         icon="edit" size="lg" />
                     <Confirm
@@ -241,6 +264,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused }
+const mapDispatchToProps = { setInteraction, unsetInteraction, unsetInteractions, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Draw));
