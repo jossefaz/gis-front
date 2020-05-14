@@ -83,8 +83,10 @@ const _toOLInteraction = (ni) => {
             break;
         case "DragBox":
             olInteraction = newDragBox(interactionConfig);
+            break;
         case "Modify":
             olInteraction = newModify(interactionConfig)
+            break;
     }
     if (!olInteraction) {
         throw "Failed creating OL Interaction";
