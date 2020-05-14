@@ -10,7 +10,7 @@ const LayerSample = {
     "id": 1,
     "name": "dimigcompile",
     "alias": "שכבה לדוגמא",
-    "url": "http://localhost:8600/geoserver/Jeru/wms",
+    "url": "http://localhost:8080/geoserver/Jeru/wms",
     "params": {
         "LAYERS": "Jeru:dimigcompile"
     },

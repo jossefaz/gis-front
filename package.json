@@ -18,6 +18,7 @@
     "ol": "^6.2.1",
     "ol-layerlist": "^1.1.8",
     "parsejson": "0.0.3",
+    "proj4": "^2.6.1",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-draggable": "^4.3.1",

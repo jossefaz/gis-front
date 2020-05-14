@@ -51,13 +51,13 @@ class Identify extends Component {
               .getArray()
               .map(lyr => {
                 if (lyr instanceof ImageLayer) {
+                  console.log(lyr)
                   var viewResolution = getFocusedMap().getView().getResolution();
-                  var buffer = Math.round(getWidth(extent) * 1000)
+                  var buffer = Math.round(getWidth(extent))
                   var url = lyr.getSource()
-                    .getFeatureInfoUrl(getCenter(extent), viewResolution, "EPSG:4326", {
+                    .getFeatureInfoUrl(getCenter(extent), viewResolution, "EPSG:2039", {
                       INFO_FORMAT: "application/json",
                       feature_count: 100,
-                      buffer: buffer
 
                     });
                   if (url) {
