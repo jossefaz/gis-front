@@ -46,7 +46,7 @@ const styleFunction = function (feature, resolution) {
     }),
   });
 
-  switch (feature.get("CSTAT")) {
+  switch (feature.get("cstat")) {
     case "OL":
       return [styleOL];
     case "CPS":
@@ -66,8 +66,11 @@ class MantiIntersectionLayer extends React.Component {
 
   handleClick = () => {
     this.mantiLayer = new FeatureLayer(
-      new GeoJSON().readFeatures(geoJsonMantiIntersection),
+      //  new GeoJSON().readFeatures(http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Azomet_manti&maxFeatures=50&outputFormat=application%2Fjson),
+      null,
       {
+        url:
+          "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Azomet_manti&maxFeatures=500&outputFormat=application%2Fjson",
         format: new GeoJSON(),
         style: styleFunction,
       }
@@ -84,7 +87,7 @@ class MantiIntersectionLayer extends React.Component {
 
       if (this.mantiLayer) {
         this.mantiLayer.setProperties(this.props.changedUnits, {
-          targetId: "NUM",
+          targetId: "num",
           sourceId: "id",
         });
       }

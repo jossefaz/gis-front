@@ -14,17 +14,18 @@ import {
 export var FeatureLayer = (function () {
     var _this = null;
     var _props = null;
-    var _source = null;
+    var _features = null;
     var _vectorLayer = null;
 
-    function FeatureLayer(source, props) {
+    function FeatureLayer(features, props) {
         _this = this;
         _props = props;
-        _source = source;
+        _features = features;
 
-        if (source != null) {
+        if (features != null || props.url != null) {
             var vectorSource = new VectorSource({
-                features: source,
+                // features: _features,
+                url: props.url != null ? props.url : null,
                 format: props.format != null ? props.format : sourceFormat,
 
             });
@@ -56,6 +57,7 @@ export var FeatureLayer = (function () {
             if (lyr) {
 
                 var ftrs = lyr.getSource().getFeatures();
+                var st = lyr.getStyleFunction();
 
 
                 data.map(function (sourceItem) {
@@ -66,9 +68,8 @@ export var FeatureLayer = (function () {
                         return feature.values_[targetId] == id;
                     });
 
-                    if (f) {
-                        f.set("CSTAT", sourceItem["CSTAT"]);
-                    }
+                    if (f)
+                        f.set("cstat", sourceItem["CSTAT"]);
                 });
             }
         }
