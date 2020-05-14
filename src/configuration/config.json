@@ -1,12 +1,10 @@
 {
     "MapConfig": {
         "target": "map",
-        "proj": "EPSG:4326",
-        "center": [
-            35.18,
-            31.76
-        ],
-        "zoom": 12
+        "projection": "EPSG:2039",
+        "center": [207000, 624000],
+        "zoom": 12,
+        "extent": [207000.0, 624000.0, 234525.12, 651525.12]
     },
     "SearchConfigs": [{
             "name": "חיפוש לדוגמא",

@@ -11,7 +11,9 @@ export const MDUtils = {
                     // SourceType: 'OL_ImageArcGISRest',
                     SourceOptions: {
                         ratio: 1,
-                        params: {},
+                        params: {
+                            "LAYERS": jsonLayer.restid
+                        },
                         url: jsonLayer.restaddress
                     }
                 }

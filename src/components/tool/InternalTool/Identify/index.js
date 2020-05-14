@@ -1,15 +1,36 @@
-import React, { Component } from "react";
+import React, {
+  Component
+} from "react";
 import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
-import { connect } from "react-redux";
-import { getFocusedMapProxy, getFocusedMap, getInteraction } from '../../../../nessMapping/api';
-import { getCenter } from 'ol/extent';
-import { getWidth } from 'ol/extent';
-import { Image as ImageLayer } from "ol/layer";
-import { setSelectedFeatures } from '../../../../redux/actions/features';
-import { unsetInteractions, setInteractions } from "../../../../redux/actions/interaction";
-import { unsetUnfocused } from "../../../../redux/actions/tools";
+import {
+  connect
+} from "react-redux";
+import {
+  getFocusedMapProxy,
+  getFocusedMap,
+  getInteraction
+} from '../../../../nessMapping/api';
+import {
+  getCenter
+} from 'ol/extent';
+import {
+  getWidth
+} from 'ol/extent';
+import {
+  Image as ImageLayer
+} from "ol/layer";
+import {
+  setSelectedFeatures
+} from '../../../../redux/actions/features';
+import {
+  unsetInteractions,
+  setInteractions
+} from "../../../../redux/actions/interaction";
+import {
+  unsetUnfocused
+} from "../../../../redux/actions/tools";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
 import "./style.css";
 import axios from "axios";
@@ -55,7 +76,7 @@ class Identify extends Component {
                   var viewResolution = getFocusedMap().getView().getResolution();
                   var buffer = Math.round(getWidth(extent) * 1000)
                   var url = lyr.getSource()
-                    .getFeatureInfoUrl(getCenter(extent), viewResolution, "EPSG:4326", {
+                    .getFeatureInfoUrl(getCenter(extent), viewResolution, "EPSG:2039", {
                       INFO_FORMAT: "application/json",
                       feature_count: 100,
                       buffer: buffer
@@ -82,8 +103,7 @@ class Identify extends Component {
 
 
   addInteraction = async (drawtype) => {
-    await this.props.setInteractions([
-      {
+    await this.props.setInteractions([{
         Type: this.INTERACTIONS.Select,
         widgetName: this.WIDGET_NAME
       },
@@ -106,7 +126,11 @@ class Identify extends Component {
     if (this.selfInteraction) {
       const InteractionArray = []
       for (let [interactionName, InteractionData] of Object.entries(this.selfInteraction)) {
-        InteractionArray.push({ uuid: InteractionData.uuid, widgetName: this.WIDGET_NAME, Type: InteractionData.Type })
+        InteractionArray.push({
+          uuid: InteractionData.uuid,
+          widgetName: this.WIDGET_NAME,
+          Type: InteractionData.Type
+        })
       }
       if (InteractionArray.length > 0) {
         await this.props.unsetInteractions(InteractionArray);
@@ -141,20 +165,24 @@ class Identify extends Component {
 
   render() {
 
-    return (
-      <React.Fragment>
-        {
-          this.focusedmap in this.props.Features && "selectedFeatures" in this.props.Features[this.focusedmap] ?
-            Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0 ?
-              <div className="flexDisplay">
-                <FeatureDetail />
-                <FeatureList />
-                <LayersList />
-              </div>
-              : <p>SELECT FEATURES ON MAP</p> : <p>SELECT FEATURES ON MAP</p>
+    return ( <
+      React.Fragment > {
+        this.focusedmap in this.props.Features && "selectedFeatures" in this.props.Features[this.focusedmap] ?
+        Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0 ?
+        <
+        div className = "flexDisplay" >
+        <
+        FeatureDetail / >
+        <
+        FeatureList / >
+        <
+        LayersList / >
+        <
+        /div> : <
+        p > SELECT FEATURES ON MAP < /p> : <p>SELECT FEATURES ON MAP</p >
 
-        }
-      </React.Fragment>
+      } <
+      /React.Fragment>
 
     );
 
@@ -172,7 +200,11 @@ const mapStateToProps = (state) => {
 
 
 
-const mapDispatchToProps = { setInteractions, unsetInteractions, unsetUnfocused, setSelectedFeatures }
+const mapDispatchToProps = {
+  setInteractions,
+  unsetInteractions,
+  unsetUnfocused,
+  setSelectedFeatures
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Identify));
-

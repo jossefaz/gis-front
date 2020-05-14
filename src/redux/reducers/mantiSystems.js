@@ -1,8 +1,9 @@
 import types from "../actions/actionsTypes";
 import produce from "immer";
+import mantiIntersections from "../../configuration/mockData.json"
 const initialState = {
   units: {
-    elements: {},
+    elements: mantiIntersections,
     updatedIds: [],
   },
   falcon: {

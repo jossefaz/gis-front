@@ -1,13 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import GeoJSON from "ol/format/GeoJSON.js";
-import NessMapping from "../../../../nessMapping/mapping";
-import { loadChannels } from "../../../../communication/communicationManager";
-import { geoJsonMantiIntersection } from "../../../../configuration/mantiIntersections";
-import { FeatureLayer } from "../../../../components/layers/FeatureLayer.js";
 import CircleStyle from "ol/style/Circle";
 import Fill from "ol/style/Fill";
 import Style from "ol/style/Style";
+import NessMapping from "../../../../nessMapping/mapping";
+import { loadChannels } from "../../../../communication/communicationManager";
+import { geoJsonMantiIntersection } from "../../../../configuration/mantiIntersections";
+import { selectUnits } from "../../../../redux/selectors/mantiSystemsSelector";
+import { FeatureLayer } from "../../../../components/layers/FeatureLayer.js";
 
 const styleFunction = function (feature, resolution) {
   var styleOL = new Style({
@@ -58,8 +59,13 @@ const styleFunction = function (feature, resolution) {
 };
 
 class MantiIntersectionLayer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.mantiLayer = null;
+  }
+
   handleClick = () => {
-    var fl = new FeatureLayer(
+    this.mantiLayer = new FeatureLayer(
       new GeoJSON().readFeatures(geoJsonMantiIntersection),
       {
         format: new GeoJSON(),
@@ -67,12 +73,22 @@ class MantiIntersectionLayer extends React.Component {
       }
     );
 
-    console.log("vectorEditingLayer declared");
-
     const map = NessMapping.getInstance().getMapProxy(this.props.map.focused)
       ._olmap;
-    map.addLayer(fl.vl);
+    map.addLayer(this.mantiLayer.vl);
     loadChannels();
+  };
+  componentDidUpdate = () => {
+    if (this.props.changedUnits != null && this.props.changedUnits.length > 0) {
+      console.log("new units:" + this.props.changedUnits);
+
+      if (this.mantiLayer) {
+        this.mantiLayer.setProperties(this.props.changedUnits, {
+          targetId: "NUM",
+          sourceId: "id",
+        });
+      }
+    }
   };
 
   render() {
@@ -87,6 +103,7 @@ class MantiIntersectionLayer extends React.Component {
 const mapStateToProps = (state) => {
   return {
     map: state.map,
+    changedUnits: selectUnits(state),
   };
 };
 
