@@ -1,9 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import "./style.css";
-import { getFocusedMap, getFocusedMapProxy } from '../../nessMapping/api'
-import { Identify } from "./func";
-import { logLevel, LogIt } from "../../utils/logs";
+import { getFocusedMap } from '../../nessMapping/api'
 import { setSelectedFeatures } from '../../redux/actions/features'
 import { setRaster } from '../../redux/actions/raster'
 

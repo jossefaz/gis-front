@@ -1,12 +1,12 @@
 {
     "MapConfig": {
         "target": "map",
-        "proj": "EPSG:4326",
+        "proj": "EPSG:2039",
         "center": [
-            35.18,
-            31.76
+            221102,
+            631882
         ],
-        "zoom": 12
+        "zoom": 6
     },
     "SearchConfigs": [
         {

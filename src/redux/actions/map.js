@@ -17,11 +17,10 @@ import config from "react-global-configuration";
 import NessMapping from "../../nessMapping/mapping";
 import { getFocusedMap } from "../../nessMapping/api";
 import types from "./actionsTypes";
-import { resetTools } from './tools'
+import { projIsrael } from '../../utils/projections'
 
 export const InitMap = () => (dispatch, getState) => {
     const {
-        proj,
         center,
         zoom,
     } = config.get("MapConfig");
@@ -29,8 +28,9 @@ export const InitMap = () => (dispatch, getState) => {
     const uuid = NessMapping.getInstance().addMapProxy({
         //  Display the map in the div with the id of map
         // Render the tile layers in a map view with a Mercator projection
+        projection: projIsrael,
         view: new View({
-            projection: proj,
+            projection: projIsrael,
             center: center,
             zoom: zoom,
         }),
