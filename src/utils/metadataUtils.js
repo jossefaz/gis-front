@@ -8,7 +8,6 @@ export const MDUtils = {
                 displayExpression: jsonLayer.displayexpression,
                 config: {
                     LayerType: "OL_ImageLayer",
-                    // SourceType: 'OL_ImageArcGISRest',
                     SourceOptions: {
                         ratio: 1,
                         params: {
