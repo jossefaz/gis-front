@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import GeoJSON from "ol/format/GeoJSON.js";
+import config from "react-global-configuration";
 import CircleStyle from "ol/style/Circle";
 import Fill from "ol/style/Fill";
 import Style from "ol/style/Style";
@@ -82,8 +83,8 @@ class MantiIntersectionLayer extends React.Component {
 
   handleClick = () => {
     this.mantiLayer = new FeatureLayer(null, {
-      url:
-        "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Amanti_intersections&maxFeatures=500&outputFormat=application%2Fjson",
+      url: config.get("mantiLayerUrl"),
+      // "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Amanti_intersections&maxFeatures=500&outputFormat=application%2Fjson",
       format: new GeoJSON(),
       style: styleFunction,
     });
