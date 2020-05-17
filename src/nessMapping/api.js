@@ -80,15 +80,17 @@ export const geoserverFeatureToOLGeom = (config) => {
 
 const InstanceOfGeometryClass = (geometry) => {
     if (geometry.constructor && geometry.constructor.name) {
-        switch (geometry.constructor.name) {
-            case "MultiPolygon" || "Point" || "Polygon" || "MultiLineString" || "LineString" || "MultiPoint":
-                return true;
-            default:
-                break;
-        }
-    }
-    return false
+        if (geometry instanceof MultiPolygon
+            || geometry instanceof Point
+            || geometry instanceof Polygon
+            || geometry instanceof MultiLineString
+            || geometry instanceof LineString
+            || geometry instanceof MultiPoint)
+            return true;
 
+        return false
+
+    }
 }
 
 export const zoomTo = (config) => {
@@ -100,6 +102,7 @@ export const zoomTo = (config) => {
             padding: [170, 50, 30, 150]
         })
     } else {
+        console.log(config)
         throw "the config object provided to ZoomTo function does not match any geometry type"
     }
 }

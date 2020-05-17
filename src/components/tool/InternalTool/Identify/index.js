@@ -61,12 +61,6 @@ class Identify extends Component {
   }
   createSources = () => {
 
-    // var vectorSource = new VectorSource({
-    //   url: "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Adimigcompile&maxFeatures=50&outputFormat=application%2Fjson",
-    //   format: new GeoJSON({
-    //     dataProjection: projIsrael
-    //   }),
-    // });
 
     if (this.sources.length > 0) {
       this.sources.map(vl => getFocusedMap().removeLayer(vl))
