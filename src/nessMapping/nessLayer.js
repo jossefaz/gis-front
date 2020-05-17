@@ -121,8 +121,12 @@ const _toOLLayer = (nl) => {
             newLyr = new ImageLayer({
                 source: new ImageWMS({
                     url: nl.config.SourceOptions.url,
+<<<<<<< HEAD
                     params: nl.config.SourceOptions.params,
                     serverType: "geoserver"
+=======
+                    params: nl.config.SourceOptions.params
+>>>>>>> upstream/master
                 }),
 
             });
