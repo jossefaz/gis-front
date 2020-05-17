@@ -68,6 +68,11 @@ class Identify extends Component {
     //   }),
     // });
 
+    if (this.sources.length > 0) {
+      this.sources.map(vl => getFocusedMap().removeLayer(vl))
+      this.sources = []
+    }
+
     getFocusedMap().getLayers()
       .getArray()
       .map((lyr) => {
@@ -110,7 +115,8 @@ class Identify extends Component {
             }
             )
           });
-          this.props.setSelectedFeatures(selectedFeatures)
+          if (selectedFeatures.length > 0)
+            this.props.setSelectedFeatures(selectedFeatures)
 
         }
 
@@ -187,6 +193,9 @@ class Identify extends Component {
   componentWillUnmount() {
     this.onUnfocus();
   }
+  componentDidUpdate() {
+    this.createSources();
+  }
 
   render() {
     return (
@@ -214,6 +223,7 @@ const mapStateToProps = (state) => {
     Features: state.Features,
     Tools: state.Tools,
     Interactions: state.Interactions,
+    Layers: state.Layers
   };
 };
 

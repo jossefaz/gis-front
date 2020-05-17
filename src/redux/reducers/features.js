@@ -24,6 +24,8 @@ export default function (state = {}, action) {
               if (layer in featuresByLayers) {
                 // give to this layer its new selection
                 draftState[focusedmap].selectedFeatures[layer] = featuresByLayers[layer];
+              } else {
+                delete draftState[focusedmap].selectedFeatures[layer]
               }
             }
           )
