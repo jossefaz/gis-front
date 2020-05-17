@@ -78,8 +78,21 @@ export const geoserverFeatureToOLGeom = (config) => {
 
 }
 
+const InstanceOfGeometryClass = (geometry) => {
+    if (geometry.constructor && geometry.constructor.name) {
+        switch (geometry.constructor.name) {
+            case "MultiPolygon" || "Point" || "Polygon" || "MultiLineString" || "LineString" || "MultiPoint":
+                return true;
+            default:
+                break;
+        }
+    }
+    return false
+
+}
+
 export const zoomTo = (config) => {
-    const newGeometry = geoserverFeatureToOLGeom(config)
+    const newGeometry = InstanceOfGeometryClass(config) ? config : geoserverFeatureToOLGeom(config)
     if (newGeometry) {
         const view = getFocusedMap().getView()
         highlightFeature(config)
@@ -99,7 +112,7 @@ export const highlightFeature = (config) => {
     }
     const source = getFocusedMapProxy().getVectorSource(Highlight.source)
     source.clear();
-    const newGeometry = geoserverFeatureToOLGeom(config)
+    const newGeometry = InstanceOfGeometryClass(config) ? config : geoserverFeatureToOLGeom(config)
     if (newGeometry) {
         source.addFeature(new Feature(newGeometry))
     }

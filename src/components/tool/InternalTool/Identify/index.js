@@ -61,19 +61,32 @@ class Identify extends Component {
   }
   createSources = () => {
 
-    var vectorSource = new VectorSource({
-      url: "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Adimigcompile&maxFeatures=50&outputFormat=application%2Fjson",
-      format: new GeoJSON({
-        dataProjection: projIsrael
-      }),
-    });
-    getFocusedMap().addLayer(new VectorLayer({
-      source: vectorSource
-    }))
-    this.sources.push(vectorSource)
-    this.selectedFeatures = getInteraction(this.select).getFeatures();
+    // var vectorSource = new VectorSource({
+    //   url: "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Adimigcompile&maxFeatures=50&outputFormat=application%2Fjson",
+    //   format: new GeoJSON({
+    //     dataProjection: projIsrael
+    //   }),
+    // });
 
-
+    getFocusedMap().getLayers()
+      .getArray()
+      .map((lyr) => {
+        if (lyr instanceof ImageLayer) {
+          const vectorSource = new VectorSource({
+            url: `${lyr.getSource().getUrl()}&service=WMS&version=1.1.0&request=GetMap&bbox=208971.15625%2C628413.125%2C224400.078125%2C634831.9375&width=768&height=330&srs=EPSG%3A2039&format=geojson`,
+            format: new GeoJSON({
+              dataProjection: projIsrael
+            }),
+          });
+          getFocusedMap()
+            .addLayer(new VectorLayer({
+              source: vectorSource,
+              opacity: 0
+            }))
+          this.sources.push(vectorSource)
+          this.selectedFeatures = getInteraction(this.select).getFeatures();
+        }
+      })
   }
   onBoxEnd = () => {
     if (
@@ -88,14 +101,20 @@ class Identify extends Component {
           getInteraction(this.select).getFeatures().clear();
         });
         dragBox.on("boxend", () => {
+          var selectedFeatures = []
           var extent = dragBox.getGeometry().getExtent();
           this.sources.map(vs => {
-            vs.forEachFeatureIntersectingExtent(extent, (feature) =>
+            vs.forEachFeatureInExtent(extent, (feature) => {
               this.selectedFeatures.push(feature)
+              selectedFeatures.push(feature)
+            }
             )
           });
-          console.log(this.selectedFeatures)
-        });
+          this.props.setSelectedFeatures(selectedFeatures)
+
+        }
+
+        );
       }
     }
   };
@@ -105,6 +124,9 @@ class Identify extends Component {
     await this.props.setInteractions([
       {
         Type: this.INTERACTIONS.Select,
+        interactionConfig: {
+          multi: true
+        },
         widgetName: this.WIDGET_NAME,
       },
       {
@@ -151,6 +173,7 @@ class Identify extends Component {
         InteractionArray.push({
           Type: InteractionData.Type,
           widgetName: this.WIDGET_NAME,
+          interactionConfig: InteractionData.interactionConfig
         });
       }
     }
@@ -204,3 +227,6 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withWidgetLifeCycle(Identify));
+
+
+
