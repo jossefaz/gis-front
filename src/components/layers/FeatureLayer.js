@@ -30,21 +30,37 @@ export var FeatureLayer = (function () {
 
             });
 
+            vectorSource.once('change', function (e) {
+                if (vectorSource.getState() === 'ready') {
+                    setIds();
+                }
+            });
+
             _vectorLayer = new VectorLayer({
                 source: vectorSource,
                 projection: props.projection != null ? props.projection : projection,
                 style: props.style != null ? props.style : null
             });
+
         }
 
         return {
             vl: _vectorLayer,
             drawSymbolgy: drawSymbolgy,
             setProperties: setProperties,
+            setIds: setIds,
             filter: filter
         }
     };
 
+    var setIds = () => {
+
+        if (_vectorLayer && _vectorLayer.getSource().getFeatures().length > 0) {
+            _vectorLayer.getSource().getFeatures().map((feature) => {
+                feature.setId(feature.values_["num"]);
+            });
+        }
+    }
 
     var setProperties = (data, props) => {
         var lyr = _vectorLayer;
@@ -55,25 +71,21 @@ export var FeatureLayer = (function () {
             var sourceId = props.sourceId;
 
             if (lyr) {
-
-                var ftrs = lyr.getSource().getFeatures();
                 var st = lyr.getStyleFunction();
-
+                var ftrs = lyr.getSource();
 
                 data.map(function (sourceItem) {
 
                     var id = parseInt(sourceItem[sourceId]);
-
-                    var f = ftrs.find(function (feature) {
-                        return feature.values_[targetId] == id;
-                    });
-
-                    if (f)
+                    var f = ftrs.getFeatureById(id)
+                    if (f) {
+                        console.log("was set!");
                         f.set("cstat", sourceItem["CSTAT"]);
+                    }
                 });
+
             }
         }
-
     }
 
     var filter = (expression) => {

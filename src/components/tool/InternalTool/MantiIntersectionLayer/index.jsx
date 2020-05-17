@@ -58,6 +58,22 @@ const styleFunction = function (feature, resolution) {
   }
 };
 
+const styleFunctionFilter = function (feature, resolution) {
+  var styleFAIL = new Style({
+    image: new CircleStyle({
+      radius: 10,
+      fill: new Fill({
+        color: "red",
+      }),
+    }),
+  });
+
+  switch (feature.get("cstat")) {
+    case "FAIL":
+      return [styleFAIL];
+  }
+};
+
 class MantiIntersectionLayer extends React.Component {
   constructor(props) {
     super(props);
@@ -65,26 +81,24 @@ class MantiIntersectionLayer extends React.Component {
   }
 
   handleClick = () => {
-    this.mantiLayer = new FeatureLayer(
-      //  new GeoJSON().readFeatures(http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Azomet_manti&maxFeatures=50&outputFormat=application%2Fjson),
-      null,
-      {
-        url:
-          "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Azomet_manti&maxFeatures=500&outputFormat=application%2Fjson",
-        format: new GeoJSON(),
-        style: styleFunction,
-      }
-    );
+    this.mantiLayer = new FeatureLayer(null, {
+      url:
+        "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Amanti_intersections&maxFeatures=500&outputFormat=application%2Fjson",
+      format: new GeoJSON(),
+      style: styleFunction,
+    });
 
     const map = NessMapping.getInstance().getMapProxy(this.props.map.focused)
       ._olmap;
     map.addLayer(this.mantiLayer.vl);
+
     loadChannels();
+  };
+  filterLayer = () => {
+    this.mantiLayer.vl.setStyle(styleFunctionFilter);
   };
   componentDidUpdate = () => {
     if (this.props.changedUnits != null && this.props.changedUnits.length > 0) {
-      console.log("new units:" + this.props.changedUnits);
-
       if (this.mantiLayer) {
         this.mantiLayer.setProperties(this.props.changedUnits, {
           targetId: "num",
@@ -96,9 +110,14 @@ class MantiIntersectionLayer extends React.Component {
 
   render() {
     return (
-      <button className="ui icon button" onClick={() => this.handleClick()}>
-        Add Manti Layer
-      </button>
+      <React.Fragment>
+        <button className="ui icon button" onClick={() => this.filterLayer()}>
+          סנן צמתים מרומזרים
+        </button>
+        <button className="ui icon button" onClick={() => this.handleClick()}>
+          הוסף צמתים מרומזרים
+        </button>
+      </React.Fragment>
     );
   }
 }
