@@ -30,11 +30,12 @@ export var FeatureLayer = (function () {
 
             });
 
-            vectorSource.once('change', function (e) {
-                if (vectorSource.getState() === 'ready') {
-                    setIds();
-                }
-            });
+            if (props.idKey != null)
+                vectorSource.once('change', function (e) {
+                    if (vectorSource.getState() === 'ready') {
+                        setIds(props.idKey);
+                    }
+                });
 
             _vectorLayer = new VectorLayer({
                 source: vectorSource,
@@ -53,11 +54,11 @@ export var FeatureLayer = (function () {
         }
     };
 
-    var setIds = () => {
+    var setIds = (idKey) => {
 
         if (_vectorLayer && _vectorLayer.getSource().getFeatures().length > 0) {
             _vectorLayer.getSource().getFeatures().map((feature) => {
-                feature.setId(feature.values_["num"]);
+                feature.setId(feature.values_[idKey]);
             });
         }
     }

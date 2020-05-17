@@ -7,7 +7,6 @@ import Fill from "ol/style/Fill";
 import Style from "ol/style/Style";
 import NessMapping from "../../../../nessMapping/mapping";
 import { loadChannels } from "../../../../communication/communicationManager";
-import { geoJsonMantiIntersection } from "../../../../configuration/mantiIntersections";
 import { selectUnits } from "../../../../redux/selectors/mantiSystemsSelector";
 import { FeatureLayer } from "../../../../components/layers/FeatureLayer.js";
 
@@ -84,9 +83,9 @@ class MantiIntersectionLayer extends React.Component {
   handleClick = () => {
     this.mantiLayer = new FeatureLayer(null, {
       url: config.get("mantiLayerUrl"),
-      // "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Amanti_intersections&maxFeatures=500&outputFormat=application%2Fjson",
       format: new GeoJSON(),
       style: styleFunction,
+      idKey: "num",
     });
 
     const map = NessMapping.getInstance().getMapProxy(this.props.map.focused)
