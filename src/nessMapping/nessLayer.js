@@ -121,8 +121,9 @@ const _toOLLayer = (nl) => {
             newLyr = new ImageLayer({
                 source: new ImageWMS({
                     url: nl.config.SourceOptions.url,
+                    params: nl.config.SourceOptions.params
                 }),
-                params: nl.config.SourceOptions.params
+
             });
             newLyr.alias = nl.title;
             break;
