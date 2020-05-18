@@ -17,6 +17,7 @@ export default function (state = {}, action) {
         draftState[focusedmap].selectedFeatures = featuresByLayers;
         draftState[focusedmap].currentLayer = Object.keys(featuresByLayers)[0];
         if (Object.keys(featuresByLayers[Object.keys(featuresByLayers)[0]]).length == 1) {
+          // if there is only one feature : select it
           draftState[focusedmap].currentFeature = featuresByLayers[Object.keys(featuresByLayers)[0]][0]
         }
       });

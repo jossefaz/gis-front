@@ -57,7 +57,7 @@ class LayerList extends Component {
       var layerListObject = this.state.subjects;
 
       if (
-        this.props.mapId &&
+        this.props.mapId && this.props.mapId in this.props.Layers &&
         JSON.stringify(this.props.Layers) !== "{}" &&
         JSON.stringify(this.state.subjects) !== "{}"
       ) {

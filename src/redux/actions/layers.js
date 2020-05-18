@@ -11,7 +11,7 @@ import {
 import {
   nessLayerToReduxLayer
 }
-from "../../utils/convertors/layerConverter"
+  from "../../utils/convertors/layerConverter"
 
 
 export const addLayers = (arrayOfNessLayers) => (dispatch) => {
