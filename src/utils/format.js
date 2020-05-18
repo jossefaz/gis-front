@@ -22,7 +22,18 @@ export const formatLength = (line) => {
     return output;
 };
 
+export const formatRadius = (circle) => {
+    var output;
+    if (circle > 1000) {
+        output = (Math.round(circle / 1000 * 100) / 100) +
+            ' ' + 'km';
+    } else {
+        output = (Math.round(circle * 100) / 100) +
+            ' ' + 'm';
+    }
+    return `Radius : ${output}`;
 
+}
 
 
 /**

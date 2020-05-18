@@ -283,6 +283,10 @@ class MeasureDistance extends React.Component {
             onClick={() => this.onOpenDrawSession("LineString")}
             icon="ruler" size="lg" />
           <IconButton
+            className="ui icon button primary pointer"
+            onClick={() => this.onOpenDrawSession("Circle")}
+            icon="circle" size="lg" />
+          <IconButton
             className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'negative' : 'disabled'}`}
             onClick={() => this.setState({ open: true })}
             disabled={!this.DrawLayer}
