@@ -3,26 +3,11 @@ import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import {
-  getFocusedMapProxy,
-  getFocusedMap,
-  getInteraction,
-} from "../../../../nessMapping/api";
-import { getCenter } from "ol/extent";
-import { getWidth } from "ol/extent";
-import { Image as ImageLayer } from "ol/layer";
+import { getFocusedMapProxy, getFocusedMap, getInteraction } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
-import {
-  unsetInteractions,
-  setInteractions,
-} from "../../../../redux/actions/interaction";
+import { unsetInteractions, setInteractions, } from "../../../../redux/actions/interaction";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
-import { Vector as VectorSource } from 'ol/source';
-import { Vector as VectorLayer } from 'ol/layer';
-import GeoJSON from 'ol/format/GeoJSON';
-import axios from "axios";
-import { projIsrael } from '../../../../utils/projections'
 import { getCurrentLayersSource, getFeaturesByExtent } from '../../../../utils/features'
 class Identify extends Component {
   WIDGET_NAME = "Identify";

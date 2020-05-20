@@ -51,6 +51,10 @@ export const getCurrentExtent = () => {
     return getFocusedMap().getView().calculateExtent()
 }
 
+export const getCurrentProjection = () => {
+    return getFocusedMap().getView().getProjection()
+}
+
 // ZOOM TO
 
 export const geoserverFeatureToOLGeom = (config) => {

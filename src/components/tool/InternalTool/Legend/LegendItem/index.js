@@ -8,10 +8,11 @@ export default (props) => {
     getFocusedMap().getView().on('change:resolution', function (event) {
         setResolution(getCurrentResolution());
     });
+    getFocusedMap().on('moveend', () => setResolution(getCurrentResolution()));
     const renderLegendItem = () => {
         const layer = getOlLayer(props.uuid)
         const name = layer.getSource().getParams().LAYERS.split(':')[1]
-        const baseurl = layer.getSource().getLegendUrl(resolution)
+        const baseurl = layer.getSource().getLegendUrl()
         const cql = `&CQL_FILTER=BBOX(geom, ${getCurrentExtent().join(',')} )`
         const url = `${baseurl}${cql}&legend_options=countMatched:true;hideEmptyRules:true&forceLabels=true`
         console.log(url)
