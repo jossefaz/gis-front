@@ -7,7 +7,7 @@ import {
     Image as ImageLayer
 } from 'ol/layer';
 import ImageWMS
-from "ol/source/ImageWMS";
+    from "ol/source/ImageWMS";
 import {
     ImageArcGISRest
 } from 'ol/source';
@@ -121,7 +121,8 @@ const _toOLLayer = (nl) => {
             newLyr = new ImageLayer({
                 source: new ImageWMS({
                     url: nl.config.SourceOptions.url,
-                    params: nl.config.SourceOptions.params
+                    params: nl.config.SourceOptions.params,
+                    serverType: "geoserver"
                 }),
 
             });

@@ -11,12 +11,13 @@ export default function (state = {}, action) {
       return produce(state, (draftState) => {
         const { focusedmap, featuresByLayers } = action.payload
         if (!(focusedmap in state)) {
-          draftState[focusedmap] = {}
+          // if the current map does not have any selected feature yet : add the mapID in the state
+          draftState[focusedmap] = {};
         }
-
         draftState[focusedmap].selectedFeatures = featuresByLayers;
         draftState[focusedmap].currentLayer = Object.keys(featuresByLayers)[0];
         if (Object.keys(featuresByLayers[Object.keys(featuresByLayers)[0]]).length == 1) {
+          // if there is only one feature : select it
           draftState[focusedmap].currentFeature = featuresByLayers[Object.keys(featuresByLayers)[0]][0]
         }
       });

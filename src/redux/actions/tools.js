@@ -1,7 +1,12 @@
 import types from "./actionsTypes";
 import { getRandomInt } from "../../utils/func";
 import LifeCycleRegistry from "./LifeCycle";
-import { getFocusedMapProxy } from "../../nessMapping/api";
+import { getFocusedMapProxy, addLayerToMapProxy } from "../../nessMapping/api";
+import {
+  nessLayerToReduxLayer
+}
+  from "../../utils/convertors/layerConverter"
+import { getMetaData } from "../../communication/mdFetcher";
 export const toggleTool = (ToolId) => async (dispatch, getState) => {
   const mapId = getFocusedMapProxy().uuid.value;
   const toolConfig = getState().Tools[mapId].tools[ToolId];
@@ -64,7 +69,7 @@ export const resetTools = () => (dispatch, getState) => {
   });
 }
 
-export const toolsReseted = () => (dispatch) => {
+export const toolsReseted = () => async (dispatch) => {
   const mapId = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.TOOL_RESETED,
@@ -113,3 +118,29 @@ const _getLifeCycleFunc = (toolState) => {
     : LifeCycleRegistry[toolState.OnCreate];
 };
 
+// const _InitLayers = (layersConfig) => (dispatch) => {
+//   var allLayersForMap = {};
+//   const mapId = getFocusedMapProxy().uuid.value;
+//   if (layersConfig) {
+//     layersConfig.map((lyrConfig) => {
+//       var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
+//       if (nessLyr !== -1)
+//         allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);
+//     });
+
+//     dispatch({
+//       type: types.INIT_LAYERS,
+//       payload: {
+//         mapId,
+//         allLayersForMap
+//       },
+//     });
+//   }
+// }
+
+// const _fetchDataFromServer = async () => {
+//   const [layersResult] = await Promise.all([getMetaData("layers")]);
+//   if (layersResult) {
+//     _InitLayers(layersResult);
+//   }
+// };

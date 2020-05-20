@@ -1,5 +1,5 @@
-import { formatArea, formatLength } from '../../../../utils/format'
-import { LineString, Polygon } from 'ol/geom';
+import { formatArea, formatLength, formatRadius } from '../../../../utils/format'
+import { LineString, Polygon, Circle } from 'ol/geom';
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { random_rgba } from "../../../../utils/func"
 export const generateOutput = (evt, tooltipCoord) => {
@@ -10,6 +10,9 @@ export const generateOutput = (evt, tooltipCoord) => {
         tooltipCoord = geom.getInteriorPoint().getCoordinates();
     } else if (geom instanceof LineString) {
         output = formatLength(geom);
+        tooltipCoord = geom.getLastCoordinate();
+    } else if (geom instanceof Circle) {
+        output = formatRadius(geom.getRadius());
         tooltipCoord = geom.getLastCoordinate();
     }
     return { output, tooltipCoord }
