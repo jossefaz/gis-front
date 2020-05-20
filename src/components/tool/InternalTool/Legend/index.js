@@ -1,26 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getFocusedMapProxy, getNessLayer, getOlLayer, getFocusedMap } from '../../../../nessMapping/api';
-import { setInteractions } from '../../../../redux/actions/interaction'
+import { getFocusedMapProxy } from '../../../../nessMapping/api';
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
 import LegendItem from './LegendItem'
 import "./style.css";
 
 class MyCustomWidget extends Component {
-
-    // Some action of tool reducers need the widget name as a parameter...
-    // Its always a good practice to write it only once and access it further by calling this.WIDGET_NAME
-    // this avoids typo errors
     WIDGET_NAME = "Legend"
-
     state = {
         layers: []
     }
-
-    //EXAMPLE of NessMapping API USE
     get focusedMapUUID() {
         return getFocusedMapProxy().uuid.value
-        //Now you can access this property by doing : this.focusedMapUUID
     }
 
     updateLegend = () => {
@@ -31,8 +22,6 @@ class MyCustomWidget extends Component {
                     if (this.props.Layers[this.focusedMapUUID][layerUUID].visible) {
                         layers.push(layerUUID)
                     }
-
-
                 }
             )
             this.setState({ layers: layers })
@@ -72,8 +61,6 @@ class MyCustomWidget extends Component {
                         this.state.layers.length > 0 ? this.renderLegend() : "No layers added yet"
                     }
                 </div>
-
-
             </React.Fragment>
 
         );
@@ -89,8 +76,5 @@ const mapStateToProps = (state) => {
 
 
 
-export default connect(mapStateToProps)(
-    //Here We call the HOC withWidgetLifeCycle in order to make him taking care of the lifecycle method of a widget (onFocus, onUnfocus, onReaset...etc) that we previously defined
-    withWidgetLifeCycle(MyCustomWidget)
-);
+export default connect(mapStateToProps)(withWidgetLifeCycle(MyCustomWidget));
 

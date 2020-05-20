@@ -41,6 +41,16 @@ export const getFocusedMapProxy = () => {
     return NessMapping.getInstance().getMapProxy(state.map.focused)
 }
 
+//GET RESOLUTION
+
+export const getCurrentResolution = () => {
+    return getFocusedMap().getView().getResolution()
+}
+
+export const getCurrentExtent = () => {
+    return getFocusedMap().getView().calculateExtent()
+}
+
 // ZOOM TO
 
 export const geoserverFeatureToOLGeom = (config) => {

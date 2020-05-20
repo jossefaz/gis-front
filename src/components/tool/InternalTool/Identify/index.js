@@ -23,6 +23,7 @@ import { Vector as VectorLayer } from 'ol/layer';
 import GeoJSON from 'ol/format/GeoJSON';
 import axios from "axios";
 import { projIsrael } from '../../../../utils/projections'
+import { getCurrentLayersSource, getFeaturesByExtent } from '../../../../utils/features'
 class Identify extends Component {
   WIDGET_NAME = "Identify";
   INTERACTIONS = {
@@ -60,32 +61,12 @@ class Identify extends Component {
     return false;
   }
   createSources = () => {
-
-
     if (this.sources.length > 0) {
       this.sources.map(vl => getFocusedMap().removeLayer(vl))
       this.sources = []
     }
-
-    getFocusedMap().getLayers()
-      .getArray()
-      .map((lyr) => {
-        if (lyr instanceof ImageLayer) {
-          const vectorSource = new VectorSource({
-            url: `${lyr.getSource().getUrl()}&service=WMS&version=1.1.0&request=GetMap&bbox=208971.15625%2C628413.125%2C224400.078125%2C634831.9375&width=768&height=330&srs=EPSG%3A2039&format=geojson`,
-            format: new GeoJSON({
-              dataProjection: projIsrael
-            }),
-          });
-          getFocusedMap()
-            .addLayer(new VectorLayer({
-              source: vectorSource,
-              opacity: 0
-            }))
-          this.sources.push(vectorSource)
-          this.selectedFeatures = getInteraction(this.select).getFeatures();
-        }
-      })
+    this.sources = getCurrentLayersSource()
+    this.selectedFeatures = getInteraction(this.select).getFeatures();
   }
   onBoxEnd = () => {
     if (
@@ -100,20 +81,12 @@ class Identify extends Component {
           getInteraction(this.select).getFeatures().clear();
         });
         dragBox.on("boxend", () => {
-          var selectedFeatures = []
-          var extent = dragBox.getGeometry().getExtent();
-          this.sources.map(vs => {
-            vs.forEachFeatureInExtent(extent, (feature) => {
-              this.selectedFeatures.push(feature)
-              selectedFeatures.push(feature)
-            }
-            )
-          });
-          if (selectedFeatures.length > 0)
-            this.props.setSelectedFeatures(selectedFeatures)
-
+          const extent = dragBox.getGeometry().getExtent();
+          const features = getFeaturesByExtent(extent, this.sources)
+          if (features.length > 0) {
+            this.props.setSelectedFeatures(features)
+          }
         }
-
         );
       }
     }
