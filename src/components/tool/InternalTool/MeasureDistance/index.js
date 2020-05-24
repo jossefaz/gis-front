@@ -256,6 +256,28 @@ class MeasureDistance extends React.Component {
     }
   }
 
+  dragOverlay = (evt) => {
+    if (this.overlayHealthCheck) {
+      Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
+        const overlay = getOverlay(ol)
+        if (overlay.get('dragging')) {
+          this.dragPan.setActive(false);
+          overlay.setPosition(evt.coordinate)
+        }
+      })
+    }
+  }
+
+  unDragOverlay = (evt) => {
+    if (this.overlayHealthCheck) {
+      Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
+        if (getOverlay(ol).get('dragging')) {
+          this.dragPan.setActive(true);
+          getOverlay(ol).set('dragging', false);
+        }
+      })
+    }
+  }
 
 
   // LIFECYCLE
@@ -266,28 +288,8 @@ class MeasureDistance extends React.Component {
         this.dragPan = interaction;
       }
     });
-    getFocusedMap().on('pointermove', (evt) => {
-      if (this.overlayHealthCheck) {
-        Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
-          const overlay = getOverlay(ol)
-          if (overlay.get('dragging')) {
-            this.dragPan.setActive(false);
-            overlay.setPosition(evt.coordinate)
-          }
-        })
-      }
-    });
-
-    getFocusedMap().on('pointerup', (evt) => {
-      if (this.overlayHealthCheck) {
-        Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
-          if (getOverlay(ol).get('dragging')) {
-            this.dragPan.setActive(true);
-            getOverlay(ol).set('dragging', false);
-          }
-        })
-      }
-    });
+    getFocusedMap().on('pointermove', this.dragOverlay);
+    getFocusedMap().on('pointerup', this.unDragOverlay);
   }
 
 
@@ -309,6 +311,8 @@ class MeasureDistance extends React.Component {
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
+    getFocusedMap().un('pointermove', this.dragOverlay);
+    getFocusedMap().un('pointerup', this.unDragOverlay);
     this.onReset();
   }
   onReset = () => {
