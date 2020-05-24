@@ -1,12 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
-import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMapProxy } from '../../../../nessMapping/api'
+import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMapProxy, getFocusedMap } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
 import { generateOutput, generateNewStyle } from "./func";
+import { DragPan } from "ol/interaction";
 import { Confirm } from 'semantic-ui-react'
+import { random_rgba } from "../../../../utils/func"
 import "./style.css";
 class MeasureDistance extends React.Component {
 
@@ -54,6 +56,10 @@ class MeasureDistance extends React.Component {
     }
     return false
   }
+
+  get overlayHealthCheck() {
+    return this.selfOverlay && this.map && this.map in this.selfOverlay && this.selfOverlay[this.map].overlays
+  }
   get selfOverlay() {
     if (this.WIDGET_NAME in this.props.Overlays) {
       return this.props.Overlays[this.WIDGET_NAME]
@@ -85,7 +91,9 @@ class MeasureDistance extends React.Component {
       overlay: {
         element: this.generateOverlayDiv(selector),
         offset: [0, -15],
-        positioning: 'bottom-center'
+        positioning: 'bottom-center',
+        stopEvent: false,
+        dragging: false
       },
       widgetName: this.WIDGET_NAME,
       selector
@@ -178,19 +186,34 @@ class MeasureDistance extends React.Component {
     const draw = getInteraction(this.draw)
     if (draw) {
       draw.on('drawend',
-        () => {
+        (e) => {
           this.toogleToolTip(true, true)
           getOverlay(this.measureToolTip).setOffset([0, -7]);
+          const color = random_rgba()
+          this.addDraggableToOverlay(color)
+          e.feature.setStyle(generateNewStyle(color))
           this.createMeasureTooltip();
-          const features = this.DrawSource.getFeatures()
-          if (features.length > 0) {
-            features[features.length - 1].setStyle(generateNewStyle())
-          }
+
 
         });
 
     }
   }
+
+  addDraggableToOverlay = (color) => {
+    const overlay = this.selfOverlay[this.map].overlays[this.measureToolTip]
+    const overlayDiv = document.getElementById(overlay.selector)
+    overlayDiv.style.backgroundColor = color
+    overlayDiv.setAttribute("uuid", this.measureToolTip)
+    overlayDiv.setAttribute("dragging", false)
+    overlayDiv.addEventListener('mousedown', function (evt) {
+      getOverlay(this.id.split('Measure')[1]).set('dragging', true)
+      console.info('start dragging');
+    });;
+
+  }
+
+
 
   onClearDrawing = async () => {
     this.DrawSource.clear()
@@ -236,6 +259,38 @@ class MeasureDistance extends React.Component {
 
 
   // LIFECYCLE
+
+  componentDidMount() {
+    getFocusedMap().getInteractions().forEach((interaction) => {
+      if (interaction instanceof DragPan) {
+        this.dragPan = interaction;
+      }
+    });
+    getFocusedMap().on('pointermove', (evt) => {
+      if (this.overlayHealthCheck) {
+        Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
+          const overlay = getOverlay(ol)
+          if (overlay.get('dragging')) {
+            this.dragPan.setActive(false);
+            overlay.setPosition(evt.coordinate)
+          }
+        })
+      }
+    });
+
+    getFocusedMap().on('pointerup', (evt) => {
+      if (this.overlayHealthCheck) {
+        Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
+          if (getOverlay(ol).get('dragging')) {
+            this.dragPan.setActive(true);
+            getOverlay(ol).set('dragging', false);
+          }
+        })
+      }
+    });
+  }
+
+
   componentDidUpdate() {
     document.addEventListener("keydown", this.escapeHandler);
     // if (this.Tools) {

@@ -8,7 +8,7 @@ import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
 import { Confirm } from 'semantic-ui-react'
-import FeatureTable from '../FeatureTable'
+import FeatureTable from './FeatureTable'
 import "./style.css";
 class Draw extends React.Component {
 
