@@ -8,6 +8,7 @@ import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
 import { Confirm } from 'semantic-ui-react'
+import FeatureTable from '../FeatureTable'
 import "./style.css";
 class Draw extends React.Component {
 
@@ -25,7 +26,8 @@ class Draw extends React.Component {
             cancelBtn: "לא"
         },
         view: true,
-        drawn: false
+        drawn: false,
+        lastFeature: null
 
     }
 
@@ -158,14 +160,9 @@ class Draw extends React.Component {
         const draw = getInteraction(this.draw)
         if (draw) {
             draw.on('drawend',
-                () => {
-                    const features = this.DrawSource.getFeatures()
-                    if (features.length > 0) {
-                        features[features.length - 1].setStyle(generateNewStyle())
-                    }
-                    this.setState({ drawn: true })
-
-
+                (e) => {
+                    e.feature.setStyle(generateNewStyle())
+                    this.setState({ drawn: true, lastFeature: e.feature })
                 });
 
         }
@@ -208,6 +205,8 @@ class Draw extends React.Component {
     }
 
     render() {
+        const features = this.state.drawn ? [...this.DrawSource.getFeatures(), this.state.lastFeature] : null
+        console.log(features)
         return (
             <React.Fragment>
                 <div className="ui grid">
@@ -224,18 +223,18 @@ class Draw extends React.Component {
                         onClick={() => this.onOpenDrawSession("Circle")}
                         icon="circle" size="lg" />
                     <IconButton
-                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'negative' : 'disabled'}`}
+                        className={`ui icon button pointer ${this.state.drawn ? 'negative' : 'disabled'}`}
                         onClick={() => this.setState({ open: true })}
                         disabled={!this.state.drawn}
                         icon="trash-alt" size="lg" />
                     <IconButton
-                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
+                        className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
                         onClick={() => this.toogleView()}
                         disabled={!this.state.drawn}
                         icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
 
                     <IconButton
-                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
+                        className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
                         onClick={() => this.onOpenEditSession()}
                         disabled={!this.state.drawn}
                         icon="edit" size="lg" />
@@ -249,6 +248,10 @@ class Draw extends React.Component {
                         onConfirm={this.onClearDrawing}
                     />
                 </div>
+                {
+                    this.state.drawn && <FeatureTable features={features} />
+                }
+
             </React.Fragment>
         );
     }
