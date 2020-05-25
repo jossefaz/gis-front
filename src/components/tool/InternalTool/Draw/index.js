@@ -217,10 +217,19 @@ class Draw extends React.Component {
         this.onReset()
     }
 
+    deleteLastFeature = (id) => {
+        if (this.state.lastFeature && id == this.state.lastFeature.getId()) {
+            this.setState({ lastFeature: null })
+        }
+    }
+
     getDrawnFeatures = () => {
-        const lastFeatureId = this.state.lastFeature.getId()
-        const filteredFeatures = this.DrawSource.getFeatures().filter(f => f.getId() !== lastFeatureId)
-        return [...filteredFeatures, this.state.lastFeature]
+        if (this.state.lastFeature) {
+            const lastFeatureId = this.state.lastFeature.getId()
+            const filteredFeatures = this.DrawSource.getFeatures().filter(f => f.getId() !== lastFeatureId)
+            return [...filteredFeatures, this.state.lastFeature]
+        }
+        return this.DrawSource.getFeatures()
     }
 
     render() {
@@ -286,7 +295,12 @@ class Draw extends React.Component {
                 </Grid>
 
                 {
-                    this.state.drawn && <FeatureTable features={features} source={this.DrawSource} defaultColor={this.state.defaultColor} />
+                    this.state.drawn && <FeatureTable
+                        features={features}
+                        source={this.DrawSource}
+                        defaultColor={this.state.defaultColor}
+                        deleteLastFeature={this.deleteLastFeature}
+                    />
                 }
                 <Confirm
                     open={this.state.open}

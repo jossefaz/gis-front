@@ -13,6 +13,7 @@ export default (props) => {
                         fid={feature.getId()}
                         source={props.source}
                         defaultColor={props.defaultColor}
+                        deleteLastFeature={props.deleteLastFeature}
                     />) : null
             }
         </div>
