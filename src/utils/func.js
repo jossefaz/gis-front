@@ -12,3 +12,7 @@ export const random_rgba = () => {
   return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ')';
 }
 
+export const generate_rgb = ({ r, g, b }) => {
+  return `rgb(${r},${g},${b})`
+}
+

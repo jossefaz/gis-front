@@ -7,8 +7,11 @@ import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actio
 import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
-import { Confirm } from 'semantic-ui-react'
+import generateID from '../../../../utils/uuid'
+import { Confirm, Label } from 'semantic-ui-react'
 import FeatureTable from './FeatureTable'
+import ColorPicker from './ColorPicker'
+import { Grid } from 'semantic-ui-react'
 import "./style.css";
 class Draw extends React.Component {
 
@@ -27,7 +30,15 @@ class Draw extends React.Component {
         },
         view: true,
         drawn: false,
-        lastFeature: null
+        lastFeature: null,
+        drawCount: 0,
+        defaultColor: {
+            r: '241',
+            g: '112',
+            b: '19',
+            a: '1',
+        },
+
 
     }
 
@@ -154,14 +165,14 @@ class Draw extends React.Component {
         }
     }
 
-
-
     onDrawEnd = () => {
         const draw = getInteraction(this.draw)
         if (draw) {
             draw.on('drawend',
                 (e) => {
-                    e.feature.setStyle(generateNewStyle())
+                    const { r, g, b, a } = this.state.defaultColor
+                    e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`))
+                    e.feature.setId(generateID())
                     this.setState({ drawn: true, lastFeature: e.feature })
                 });
 
@@ -200,57 +211,93 @@ class Draw extends React.Component {
 
     }
 
+    onColorChange = color => this.setState({ defaultColor: color })
+
     onUnfocus = () => {
         this.onReset()
     }
 
+    getDrawnFeatures = () => {
+        const lastFeatureId = this.state.lastFeature.getId()
+        const filteredFeatures = this.DrawSource.getFeatures().filter(f => f.getId() !== lastFeatureId)
+        return [...filteredFeatures, this.state.lastFeature]
+    }
+
     render() {
-        const features = this.state.drawn ? [...this.DrawSource.getFeatures(), this.state.lastFeature] : null
-        console.log(features)
+        const features = this.state.drawn ? this.getDrawnFeatures() : null
         return (
             <React.Fragment>
-                <div className="ui grid">
-                    <IconButton
-                        className="ui icon button primary pointer"
-                        onClick={() => this.onOpenDrawSession("Polygon")}
-                        icon="draw-polygon" size="lg" />
-                    <IconButton
-                        className="ui icon button primary pointer"
-                        onClick={() => this.onOpenDrawSession("LineString")}
-                        icon="grip-lines" size="lg" />
-                    <IconButton
-                        className="ui icon button primary pointer"
-                        onClick={() => this.onOpenDrawSession("Circle")}
-                        icon="circle" size="lg" />
-                    <IconButton
-                        className={`ui icon button pointer ${this.state.drawn ? 'negative' : 'disabled'}`}
-                        onClick={() => this.setState({ open: true })}
-                        disabled={!this.state.drawn}
-                        icon="trash-alt" size="lg" />
-                    <IconButton
-                        className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
-                        onClick={() => this.toogleView()}
-                        disabled={!this.state.drawn}
-                        icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
+                <Grid columns='equal' stackable divided='vertically'>
+                    <Grid.Row columns={6}>
+                        <Grid.Column width={2}>
+                            <IconButton
+                                className="ui icon button primary pointer"
+                                onClick={() => this.onOpenDrawSession("Polygon")}
+                                icon="draw-polygon" size="lg" />
+                        </Grid.Column>
+                        <Grid.Column width={2}>
+                            <IconButton
+                                className="ui icon button primary pointer"
+                                onClick={() => this.onOpenDrawSession("LineString")}
+                                icon="grip-lines" size="lg" />
+                        </Grid.Column>
+                        <Grid.Column width={2}>
+                            <IconButton
+                                className="ui icon button primary pointer"
+                                onClick={() => this.onOpenDrawSession("Circle")}
+                                icon="circle" size="lg" />
+                        </Grid.Column>
+                        <Grid.Column width={2}>
+                            <IconButton
+                                className={`ui icon button pointer ${this.state.drawn ? 'negative' : 'disabled'}`}
+                                onClick={() => this.setState({ open: true })}
+                                disabled={!this.state.drawn}
+                                icon="trash-alt" size="lg" />
+                        </Grid.Column>
+                        <Grid.Column width={2}>
+                            <IconButton
+                                className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
+                                onClick={() => this.toogleView()}
+                                disabled={!this.state.drawn}
+                                icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
+                        </Grid.Column>
+                        <Grid.Column width={2}>
+                            <IconButton
+                                className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
+                                onClick={() => this.onOpenEditSession()}
+                                disabled={!this.state.drawn}
+                                icon="edit" size="lg" />
+                        </Grid.Column>
 
-                    <IconButton
-                        className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
-                        onClick={() => this.onOpenEditSession()}
-                        disabled={!this.state.drawn}
-                        icon="edit" size="lg" />
-                    <Confirm
-                        open={this.state.open}
-                        size='mini'
-                        content={this.state.eraseDraw.content}
-                        cancelButton={this.state.eraseDraw.cancelBtn}
-                        confirmButton={this.state.eraseDraw.confirmBtn}
-                        onCancel={() => this.setState({ ...this.state.eraseDraw, open: false })}
-                        onConfirm={this.onClearDrawing}
-                    />
-                </div>
+
+
+
+
+
+
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Label>Pick a color : </Label>
+                        <ColorPicker onColorChange={this.onColorChange} defaultColor={this.state.defaultColor} />
+                    </Grid.Row>
+
+
+
+                </Grid>
+
                 {
-                    this.state.drawn && <FeatureTable features={features} />
+                    this.state.drawn && <FeatureTable features={features} source={this.DrawSource} defaultColor={this.state.defaultColor} />
                 }
+                <Confirm
+                    open={this.state.open}
+                    size='mini'
+                    content={this.state.eraseDraw.content}
+                    cancelButton={this.state.eraseDraw.cancelBtn}
+                    confirmButton={this.state.eraseDraw.confirmBtn}
+                    onCancel={() => this.setState({ ...this.state.eraseDraw, open: false })}
+                    onConfirm={this.onClearDrawing}
+                />
+
 
             </React.Fragment>
         );

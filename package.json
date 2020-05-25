@@ -20,6 +20,7 @@
     "parsejson": "0.0.3",
     "proj4": "^2.6.1",
     "react": "^16.10.1",
+    "react-color": "^2.18.1",
     "react-dom": "^16.10.1",
     "react-draggable": "^4.3.1",
     "react-global-configuration": "^1.4.0",

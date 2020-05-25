@@ -1,3 +1,8 @@
 .ui.modal>.content {
     width: auto !important;
   }
+
+  .spaceAround {
+    display: flex;
+    justify-content: space-around;
+  }
