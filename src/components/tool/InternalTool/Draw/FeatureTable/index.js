@@ -2,7 +2,6 @@ import React from 'react'
 import FeatureItem from './FeatureItem'
 
 export default (props) => {
-    console.log(props.features)
     return (
         <div>
             {
@@ -14,6 +13,7 @@ export default (props) => {
                         source={props.source}
                         defaultColor={props.defaultColor}
                         deleteLastFeature={props.deleteLastFeature}
+                        onOpenEditSession={props.onOpenEditSession}
                     />) : null
             }
         </div>

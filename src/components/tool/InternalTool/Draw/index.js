@@ -12,6 +12,7 @@ import { Confirm, Label } from 'semantic-ui-react'
 import FeatureTable from './FeatureTable'
 import ColorPicker from './ColorPicker'
 import { Grid } from 'semantic-ui-react'
+import Collection from 'ol/Collection';
 import "./style.css";
 class Draw extends React.Component {
 
@@ -68,7 +69,10 @@ class Draw extends React.Component {
     }
 
     get modify() {
-        this.getSelfInteraction(this.INTERACTIONS.Modify)
+        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Modify in this.selfInteraction[this.map]) {
+            return this.selfInteraction[this.map][this.INTERACTIONS.Modify].uuid
+        }
+        return false
     }
     getSelfInteraction = (interaction) => {
         if (this.selfInteraction && this.map in this.selfInteraction && interaction in this.selfInteraction[this.map]) {
@@ -126,13 +130,16 @@ class Draw extends React.Component {
         this.onDrawEnd()
     }
 
-    onOpenEditSession = async () => {
+    onOpenEditSession = async (featureID) => {
+        this.removeSelectAndEdit()
         this.removeDrawObject()
+        const feature = featureID ? this.DrawSource.getFeatureById(featureID) : null
         await this.props.setInteraction({
             Type: this.INTERACTIONS.Select,
             interactionConfig: {
                 wrapX: false,
-                layers: [this.DrawLayer]
+                layers: [this.DrawLayer],
+                ...(feature) && { features: new Collection([feature]) }
             },
             widgetName: this.WIDGET_NAME
         });
@@ -143,9 +150,11 @@ class Draw extends React.Component {
             },
             widgetName: this.WIDGET_NAME
         });
-
-
     }
+
+
+
+
 
     onClearDrawing = () => {
         this.DrawSource.clear()
@@ -159,9 +168,20 @@ class Draw extends React.Component {
 
     }
 
-    removeSelectAndEdit = () => {
-        if (this.select && this.modify && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.select in this.selfInteraction[this.map] && this.INTERACTIONS.Modify in this.selfInteraction[this.map]) {
-            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
+    removeSelectAndEdit = async () => {
+        if (this.select && this.modify && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Select in this.selfInteraction[this.map] && this.INTERACTIONS.Modify in this.selfInteraction[this.map]) {
+            const { uuid: select_uuid, Type: select_Type } = this.selfInteraction[this.map][this.INTERACTIONS.Select]
+            const { uuid: modify_uuid, Type: modify_Type } = this.selfInteraction[this.map][this.INTERACTIONS.Modify]
+            await this.props.unsetInteractions([
+                {
+                    uuid: select_uuid, widgetName: this.WIDGET_NAME, select_Type
+                },
+                {
+                    uuid: modify_uuid, widgetName: this.WIDGET_NAME, modify_Type
+                }
+
+            ]
+            )
         }
     }
 
@@ -185,6 +205,13 @@ class Draw extends React.Component {
         }
     }
     // LIFECYCLE
+    componentDidMount() {
+        if (this.DrawSource) {
+            this.setState({
+                drawn: true
+            })
+        }
+    }
     componentDidUpdate() {
         document.addEventListener("keydown", this.escapeHandler);
     }
@@ -229,11 +256,11 @@ class Draw extends React.Component {
             const filteredFeatures = this.DrawSource.getFeatures().filter(f => f.getId() !== lastFeatureId)
             return [...filteredFeatures, this.state.lastFeature]
         }
-        return this.DrawSource.getFeatures()
+        return this.DrawSource ? this.DrawSource.getFeatures() : []
     }
 
     render() {
-        const features = this.state.drawn ? this.getDrawnFeatures() : null
+        const features = this.getDrawnFeatures()
         return (
             <React.Fragment>
                 <Grid columns='equal' stackable divided='vertically'>
@@ -278,12 +305,6 @@ class Draw extends React.Component {
                                 icon="edit" size="lg" />
                         </Grid.Column>
 
-
-
-
-
-
-
                     </Grid.Row>
                     <Grid.Row>
                         <Label>Pick a color : </Label>
@@ -300,6 +321,7 @@ class Draw extends React.Component {
                         source={this.DrawSource}
                         defaultColor={this.state.defaultColor}
                         deleteLastFeature={this.deleteLastFeature}
+                        onOpenEditSession={this.onOpenEditSession}
                     />
                 }
                 <Confirm

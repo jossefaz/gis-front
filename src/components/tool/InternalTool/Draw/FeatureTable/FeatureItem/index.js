@@ -21,6 +21,10 @@ export default (props) => {
             return <p key={pr}>{pr}</p>
         }) : <p key={props.fid}>{props.fid}</p>
     }
+
+    const edit = () => {
+        props.onOpenEditSession(props.fid)
+    }
     return (
         <React.Fragment>
             <FeatureItem />
@@ -29,6 +33,10 @@ export default (props) => {
                 className="ui icon button pointer negative"
                 onClick={removeFeature}
                 icon="trash-alt" size="lg" />
+            <IconButton
+                className="ui icon button pointer positive"
+                onClick={edit}
+                icon="edit" size="lg" />
         </React.Fragment>
 
     )
