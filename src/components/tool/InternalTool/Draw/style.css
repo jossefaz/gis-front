@@ -1,3 +1,15 @@
 .ui.modal>.content {
     width: auto !important;
   }
+
+  .spaceAround {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .labels  {
+    font-size: .85em;
+    padding-top: .2em;
+    padding-left: 15px;
+    font-weight: bold;
+  }

@@ -7,7 +7,13 @@ import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actio
 import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
-import { Confirm } from 'semantic-ui-react'
+import generateID from '../../../../utils/uuid'
+import { escapeHandler } from '../../../../utils/eventHandlers'
+import { Confirm, Label } from 'semantic-ui-react'
+import FeatureTable from './FeatureTable'
+import ColorPicker from './ColorPicker'
+import { Grid } from 'semantic-ui-react'
+import Collection from 'ol/Collection';
 import "./style.css";
 class Draw extends React.Component {
 
@@ -25,7 +31,16 @@ class Draw extends React.Component {
             cancelBtn: "לא"
         },
         view: true,
-        drawn: false
+        drawn: false,
+        lastFeature: null,
+        drawCount: 0,
+        defaultColor: {
+            r: '241',
+            g: '112',
+            b: '19',
+            a: '1',
+        },
+
 
     }
 
@@ -34,32 +49,26 @@ class Draw extends React.Component {
     }
 
     get selfInteraction() {
-        if (this.WIDGET_NAME in this.props.Interactions) {
-            return this.props.Interactions[this.WIDGET_NAME]
+        if (this.WIDGET_NAME in this.props.Interactions && this.map in this.props.Interactions[this.WIDGET_NAME]) {
+            return this.props.Interactions[this.WIDGET_NAME][this.map]
         }
         return false
     }
 
     get draw() {
-        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
-            return this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid
-        }
-        return false
+        return this.getSelfInteraction(this.INTERACTIONS.Draw)
     }
 
     get select() {
-        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Select in this.selfInteraction[this.map]) {
-            return this.selfInteraction[this.map][this.INTERACTIONS.Select].uuid
-        }
-        return false
+        return this.getSelfInteraction(this.INTERACTIONS.Select)
     }
 
     get modify() {
-        this.getSelfInteraction(this.INTERACTIONS.Modify)
+        return this.getSelfInteraction(this.INTERACTIONS.Modify)
     }
     getSelfInteraction = (interaction) => {
-        if (this.selfInteraction && this.map in this.selfInteraction && interaction in this.selfInteraction[this.map]) {
-            return this.selfInteraction[this.map][interaction].uuid
+        if (this.selfInteraction && interaction in this.selfInteraction) {
+            return this.selfInteraction[interaction].uuid
         }
         return false
     }
@@ -82,18 +91,7 @@ class Draw extends React.Component {
         })
     }
 
-    escapeHandler = (evt) => {
-        evt = evt || window.event;
-        var isEscape = false;
-        if ("key" in evt) {
-            isEscape = evt.key === "Escape" || evt.key === "Esc";
-        } else {
-            isEscape = evt.keyCode === 27;
-        }
-        if (isEscape) {
-            this.abortDrawing();
-        }
-    }
+
 
     addInteraction = async (drawtype) => {
         const sourceLayer = this.DrawSource // save it before it will be deleted !!
@@ -113,13 +111,16 @@ class Draw extends React.Component {
         this.onDrawEnd()
     }
 
-    onOpenEditSession = async () => {
+    onOpenEditSession = async (featureID) => {
+        this.removeSelectAndEdit()
         this.removeDrawObject()
+        const feature = featureID ? this.DrawSource.getFeatureById(featureID) : null
         await this.props.setInteraction({
             Type: this.INTERACTIONS.Select,
             interactionConfig: {
                 wrapX: false,
-                layers: [this.DrawLayer]
+                layers: [this.DrawLayer],
+                ...(feature) && { features: new Collection([feature]) }
             },
             widgetName: this.WIDGET_NAME
         });
@@ -130,42 +131,49 @@ class Draw extends React.Component {
             },
             widgetName: this.WIDGET_NAME
         });
-
-
     }
+
+
+
+
 
     onClearDrawing = () => {
         this.DrawSource.clear()
-        this.setState({ open: false, drawn: false })
+        this.setState({ open: false, drawn: false, lastFeature: null })
         this.removeDrawObject()
     }
     removeDrawObject = () => {
-        if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
-            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
+        if (this.draw) {
+            this.props.unsetInteraction({ uuid: this.selfInteraction[this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
         }
 
     }
 
-    removeSelectAndEdit = () => {
-        if (this.select && this.modify && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.select in this.selfInteraction[this.map] && this.INTERACTIONS.Modify in this.selfInteraction[this.map]) {
-            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
+    removeSelectAndEdit = async () => {
+        if (this.select && this.modify) {
+            const { Select, Modify } = this.INTERACTIONS
+            await this.props.unsetInteractions([
+                {
+                    uuid: this.select, widgetName: this.WIDGET_NAME, Type: Select
+                },
+                {
+                    uuid: this.modify, widgetName: this.WIDGET_NAME, Type: Modify
+                }
+
+            ]
+            )
         }
     }
-
-
 
     onDrawEnd = () => {
         const draw = getInteraction(this.draw)
         if (draw) {
             draw.on('drawend',
-                () => {
-                    const features = this.DrawSource.getFeatures()
-                    if (features.length > 0) {
-                        features[features.length - 1].setStyle(generateNewStyle())
-                    }
-                    this.setState({ drawn: true })
-
-
+                (e) => {
+                    const { r, g, b, a } = this.state.defaultColor
+                    e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`))
+                    e.feature.setId(generateID())
+                    this.setState({ drawn: true, lastFeature: e.feature })
                 });
 
         }
@@ -177,11 +185,18 @@ class Draw extends React.Component {
         }
     }
     // LIFECYCLE
+    componentDidMount() {
+        if (this.DrawSource) {
+            this.setState({
+                drawn: true
+            })
+        }
+    }
     componentDidUpdate() {
-        document.addEventListener("keydown", this.escapeHandler);
+        document.addEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
     }
     componentWillUnmount() {
-        document.removeEventListener("keydown", this.escapeHandler);
+        document.removeEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
         this.onReset();
     }
     onReset = () => {
@@ -190,10 +205,10 @@ class Draw extends React.Component {
     }
 
     removeAllInteractions = async () => {
-        if (this.selfInteraction && this.map in this.selfInteraction) {
+        if (this.selfInteraction) {
             const InteractionArray = []
-            Object.keys(this.selfInteraction[this.map]).map(InteractionName => {
-                const { uuid, Type } = this.selfInteraction[this.map][InteractionName]
+            Object.keys(this.selfInteraction).map(InteractionName => {
+                const { uuid, Type } = this.selfInteraction[InteractionName]
                 InteractionArray.push({ uuid, widgetName: this.WIDGET_NAME, Type })
             })
             if (InteractionArray.length > 0) {
@@ -203,52 +218,102 @@ class Draw extends React.Component {
 
     }
 
+    onColorChange = color => this.setState({ defaultColor: color })
+
     onUnfocus = () => {
         this.onReset()
     }
 
+    deleteLastFeature = (id) => {
+        if (this.state.lastFeature && id == this.state.lastFeature.getId()) {
+            this.setState({ lastFeature: null })
+        }
+    }
+
+    getDrawnFeatures = () => {
+        if (this.state.lastFeature) {
+            const lastFeatureId = this.state.lastFeature.getId()
+            const filteredFeatures = this.DrawSource.getFeatures().filter(f => f.getId() !== lastFeatureId)
+            return [...filteredFeatures, this.state.lastFeature]
+        }
+        return this.DrawSource ? this.DrawSource.getFeatures() : []
+    }
+
     render() {
+        const features = this.getDrawnFeatures()
+        const disable = features.length == 0
         return (
             <React.Fragment>
-                <div className="ui grid">
-                    <IconButton
-                        className="ui icon button primary pointer"
-                        onClick={() => this.onOpenDrawSession("Polygon")}
-                        icon="draw-polygon" size="lg" />
-                    <IconButton
-                        className="ui icon button primary pointer"
-                        onClick={() => this.onOpenDrawSession("LineString")}
-                        icon="grip-lines" size="lg" />
-                    <IconButton
-                        className="ui icon button primary pointer"
-                        onClick={() => this.onOpenDrawSession("Circle")}
-                        icon="circle" size="lg" />
-                    <IconButton
-                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'negative' : 'disabled'}`}
-                        onClick={() => this.setState({ open: true })}
-                        disabled={!this.state.drawn}
-                        icon="trash-alt" size="lg" />
-                    <IconButton
-                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
-                        onClick={() => this.toogleView()}
-                        disabled={!this.state.drawn}
-                        icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
+                <Grid columns='equal' stackable divided='vertically' className="widhtEm">
+                    <Grid.Row>
+                        <label className="labels">בחר צורה : </label>
 
-                    <IconButton
-                        className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
-                        onClick={() => this.onOpenEditSession()}
-                        disabled={!this.state.drawn}
-                        icon="edit" size="lg" />
-                    <Confirm
-                        open={this.state.open}
-                        size='mini'
-                        content={this.state.eraseDraw.content}
-                        cancelButton={this.state.eraseDraw.cancelBtn}
-                        confirmButton={this.state.eraseDraw.confirmBtn}
-                        onCancel={() => this.setState({ ...this.state.eraseDraw, open: false })}
-                        onConfirm={this.onClearDrawing}
-                    />
-                </div>
+                        <IconButton
+                            className="ui icon button primary pointer"
+                            onClick={() => this.onOpenDrawSession("Polygon")}
+                            icon="draw-polygon" size="lg" />
+                        <IconButton
+                            className="ui icon button primary pointer"
+                            onClick={() => this.onOpenDrawSession("LineString")}
+                            icon="grip-lines" size="lg" />
+
+                        <IconButton
+                            className="ui icon button primary pointer"
+                            onClick={() => this.onOpenDrawSession("Circle")}
+                            icon="circle" size="lg" />
+
+
+
+                    </Grid.Row>
+                    <Grid.Row>
+                        <label className="labels">בחר צבע : </label>
+                        <ColorPicker onColorChange={this.onColorChange} defaultColor={this.state.defaultColor} />
+                    </Grid.Row>
+
+
+
+
+
+                    {
+                        !disable &&
+                        <React.Fragment>
+
+                            <Grid.Row>
+                                <label className="labels">שליטה כללית : </label>
+                                <IconButton
+                                    className={`ui icon button pointer ${!disable ? 'negative' : 'disabled'}`}
+                                    onClick={() => this.setState({ open: true })}
+                                    disabled={disable}
+                                    icon="trash-alt" size="lg" />
+                                <IconButton
+                                    className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
+                                    onClick={() => this.toogleView()}
+                                    disabled={disable}
+                                    icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
+                            </Grid.Row>
+                            <Grid.Row>
+
+                                <FeatureTable
+                                    features={features}
+                                    source={this.DrawSource}
+                                    defaultColor={this.state.defaultColor}
+                                    deleteLastFeature={this.deleteLastFeature}
+                                    onOpenEditSession={this.onOpenEditSession}
+                                /></Grid.Row>
+                        </React.Fragment>
+                    }
+                </Grid>
+                <Confirm
+                    open={this.state.open}
+                    size='mini'
+                    content={this.state.eraseDraw.content}
+                    cancelButton={this.state.eraseDraw.cancelBtn}
+                    confirmButton={this.state.eraseDraw.confirmBtn}
+                    onCancel={() => this.setState({ ...this.state.eraseDraw, open: false })}
+                    onConfirm={this.onClearDrawing}
+                />
+
+
             </React.Fragment>
         );
     }
