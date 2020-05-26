@@ -26,6 +26,11 @@ span {
   vertical-align: 50%;
 }
 
+.uirtl {
+  direction: rtl;
+  text-align: right;
+}
+
 .window {
   background: #fff;
   width: auto;

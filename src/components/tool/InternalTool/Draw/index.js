@@ -244,8 +244,9 @@ class Draw extends React.Component {
         const disable = features.length == 0
         return (
             <React.Fragment>
-                <Grid columns='equal' stackable divided='vertically'>
+                <Grid columns='equal' stackable divided='vertically' className="widhtEm">
                     <Grid.Row>
+                        <label className="labels">בחר צורה : </label>
 
                         <IconButton
                             className="ui icon button primary pointer"
@@ -261,29 +262,11 @@ class Draw extends React.Component {
                             onClick={() => this.onOpenDrawSession("Circle")}
                             icon="circle" size="lg" />
 
-                        <IconButton
-                            className={`ui icon button pointer ${!disable ? 'negative' : 'disabled'}`}
-                            onClick={() => this.setState({ open: true })}
-                            disabled={disable}
-                            icon="trash-alt" size="lg" />
-
-                        <IconButton
-                            className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
-                            onClick={() => this.toogleView()}
-                            disabled={disable}
-                            icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
-
-
-                        <IconButton
-                            className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
-                            onClick={() => this.onOpenEditSession()}
-                            disabled={disable}
-                            icon="edit" size="lg" />
 
 
                     </Grid.Row>
                     <Grid.Row>
-                        <Label>Pick a color : </Label>
+                        <label className="labels">בחר צבע : </label>
                         <ColorPicker onColorChange={this.onColorChange} defaultColor={this.state.defaultColor} />
                     </Grid.Row>
 
@@ -292,13 +275,32 @@ class Draw extends React.Component {
 
 
                     {
-                        !disable && <Grid.Row><FeatureTable
-                            features={features}
-                            source={this.DrawSource}
-                            defaultColor={this.state.defaultColor}
-                            deleteLastFeature={this.deleteLastFeature}
-                            onOpenEditSession={this.onOpenEditSession}
-                        /></Grid.Row>
+                        !disable &&
+                        <React.Fragment>
+
+                            <Grid.Row>
+                                <label className="labels">שליטה כללית : </label>
+                                <IconButton
+                                    className={`ui icon button pointer ${!disable ? 'negative' : 'disabled'}`}
+                                    onClick={() => this.setState({ open: true })}
+                                    disabled={disable}
+                                    icon="trash-alt" size="lg" />
+                                <IconButton
+                                    className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
+                                    onClick={() => this.toogleView()}
+                                    disabled={disable}
+                                    icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
+                            </Grid.Row>
+                            <Grid.Row>
+
+                                <FeatureTable
+                                    features={features}
+                                    source={this.DrawSource}
+                                    defaultColor={this.state.defaultColor}
+                                    deleteLastFeature={this.deleteLastFeature}
+                                    onOpenEditSession={this.onOpenEditSession}
+                                /></Grid.Row>
+                        </React.Fragment>
                     }
                 </Grid>
                 <Confirm

@@ -1,31 +1,52 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ColorPicker from '../../ColorPicker'
-import { generateNewStyle } from '../../../MeasureDistance/func'
+import { generateNewStyle } from '../../../../../../utils/func'
 import IconButton from "../../../../../UI/Buttons/IconButton"
-import { Table } from 'semantic-ui-react'
+
+import { Table, Form } from 'semantic-ui-react'
+import './style.css'
 export default (props) => {
 
-    const onColorChange = ({ r, g, b, a }) => {
-        const feature = props.source.getFeatureById(props.fid)
-        feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`))
-
-    }
-
+    const [fillColor, setFillColor] = useState({ r: '154', g: '111', b: '222', a: '0.2', });
+    const [outlineWidth, setOutlineWidth] = useState(2);
+    const [strokeColor, setStrokeColor] = useState(props.defaultColor);
     const removeFeature = () => {
-        const feature = props.source.getFeatureById(props.fid)
-        props.source.removeFeature(feature)
+        props.source.removeFeature(getFeature())
         props.deleteLastFeature(props.fid)
     }
-
-    const FeatureItem = () => {
-        return <p key={props.fid}>{props.index + 1}</p>
-    }
-
     const edit = () => {
         props.onOpenEditSession(props.fid)
     }
+    const getFeature = () => props.source.getFeatureById(props.fid)
+    const updateStyle = () => {
+        if (getFeature()) {
+            const currentStroke = `rgba(${strokeColor.r},${strokeColor.g},${strokeColor.b},${strokeColor.a})`
+            const currentFill = `rgba(${fillColor.r},${fillColor.g},${fillColor.b},${fillColor.a})`
+            getFeature().setStyle(generateNewStyle(currentFill, currentStroke, outlineWidth))
+        }
+    }
+
+    updateStyle()
     return (
         <React.Fragment>
+            <Table.Cell><p>{props.index + 1}</p></Table.Cell>
+            <Table.Cell>
+                <div className="displayFlex">
+                    <label className="labels">קו חיצוני :</label>
+                    <ColorPicker
+                        withWidth
+                        initialWidth={outlineWidth}
+                        onWidthChange={(newWidth) => setOutlineWidth(newWidth)}
+                        onColorChange={(newStrokeColor) => setStrokeColor(newStrokeColor)} defaultColor={strokeColor} />
+                </div>
+                <div className="displayFlex">
+
+                    <label className="labels">מילוי :</label>
+                    <ColorPicker onColorChange={(newFillColor) => setFillColor(newFillColor)} defaultColor={fillColor} />
+
+                </div>
+
+            </Table.Cell>
             <Table.Cell>
                 <IconButton
                     className="ui icon button pointer negative"
@@ -36,8 +57,7 @@ export default (props) => {
                     onClick={edit}
                     icon="edit" size="lg" />
             </Table.Cell>
-            <Table.Cell><ColorPicker onColorChange={onColorChange} defaultColor={props.defaultColor} /></Table.Cell>
-            <Table.Cell><FeatureItem /></Table.Cell>
+
 
 
 

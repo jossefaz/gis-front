@@ -22,3 +22,29 @@
     bottom: 0px;
     left: 0px
 }
+
+.numberInput .ui.button {
+    background-color: #2185d0;
+    border-radius: 0 !important;
+    color: white;
+  }
+  
+  .numberInput .ui.input > input {
+    border-color: #2185d0;
+    color: #2185d0;
+    font-weight: bold;
+    width: 50px;
+  }
+
+  .margin0 {
+      margin: 0 !important;
+      display: flex;
+  }
+
+
+  .labels  {
+    font-size: .85em;
+    padding-top: .2em;
+    padding-left: 15px;
+    font-weight: bold;
+  }

@@ -1,17 +1,20 @@
 import React from 'react'
 import FeatureItem from './FeatureItem'
 import { Table } from 'semantic-ui-react'
+import './style.css'
 
 export default (props) => {
     const { Header, Body, Row, HeaderCell } = Table
     return (
 
-        <Table compact celled selectable>
+        <Table compact celled selectable className="cTable">
             <Header>
                 <Row>
-                    <HeaderCell>Controls</HeaderCell>
-                    <HeaderCell>Color</HeaderCell>
-                    <HeaderCell>Id</HeaderCell>
+                    <HeaderCell>מס'</HeaderCell>
+                    <HeaderCell>סגנון</HeaderCell>
+                    <HeaderCell>שליטה</HeaderCell>
+
+
                 </Row>
             </Header>
 

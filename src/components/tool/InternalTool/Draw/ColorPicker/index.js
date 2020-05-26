@@ -1,5 +1,6 @@
 import React from 'react'
 import { SketchPicker } from 'react-color'
+import NumberInput from 'semantic-ui-react-numberinput';
 import './styles.css'
 
 class SketchExample extends React.Component {
@@ -41,7 +42,17 @@ class SketchExample extends React.Component {
                 {this.state.displayColorPicker ? <div className="popover">
                     <div className="cover" onClick={this.handleClose} />
                     <SketchPicker color={this.state.color} onChange={this.handleChange} />
+                    {
+                        this.props.withWidth && this.props.onWidthChange && this.props.initialWidth &&
+                        <div class="ui segment margin0">
+                            <label className="labels">רוחב קו : </label>
+                            <NumberInput buttonPlacement="right" className="numberInput" value={this.props.initialWidth} onChange={this.props.onWidthChange} />
+                        </div>
+
+
+                    }
                 </div> : null}
+
 
             </div>
         )
