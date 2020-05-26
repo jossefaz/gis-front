@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import FeatureItem from './FeatureItem'
 import { Table } from 'semantic-ui-react'
+import { highlightFeature, unhighlightFeature } from '../../../../../nessMapping/api'
 import './style.css'
 
 export default (props) => {
     const { Header, Body, Row, HeaderCell } = Table
+    const [OveredFeature, serOveredFeature] = useState(null)
+
+    const onRowOver = (feature) => {
+        if (!OveredFeature) {
+            serOveredFeature(feature)
+        }
+        highlightFeature(feature.getGeometry())
+    }
+
     return (
 
         <Table compact celled selectable className="cTable">
@@ -21,7 +31,10 @@ export default (props) => {
             <Body>
                 {
                     props.features ? props.features.map((feature, index) =>
-                        <Row key={"fi" + feature.getId()} onClick={() => console.log(feature)}>
+                        <Row key={"fi" + feature.getId()}
+                            onMouseOver={(e) => onRowOver(feature)}
+                            onMouseLeave={() => unhighlightFeature()}
+                        >
                             <FeatureItem
                                 index={index}
                                 fid={feature.getId()}
