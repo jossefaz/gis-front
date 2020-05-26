@@ -16,9 +16,14 @@ import {
   faPencilRuler,
   faEdit,
   faCircle,
-  faGripLines
+  faGripLines,
+  faFont,
+  faItalic,
+  faBold,
+  faHeading,
+  faAngleDoubleLeft
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
-  library.add(fab, faGripLines, faEdit, faCircle, faPencilRuler, faLayerGroup, faMap, faDrawPolygon, faMapMarkerAlt, faRuler, faMapPin, faVial, faTrashAlt, faEye, faCrosshairs, faEyeSlash, faTrafficLight);
+  library.add(fab, faItalic, faAngleDoubleLeft, faHeading, faBold, faFont, faGripLines, faEdit, faCircle, faPencilRuler, faLayerGroup, faMap, faDrawPolygon, faMapMarkerAlt, faRuler, faMapPin, faVial, faTrashAlt, faEye, faCrosshairs, faEyeSlash, faTrafficLight);
 };

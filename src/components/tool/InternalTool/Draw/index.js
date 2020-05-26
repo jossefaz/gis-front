@@ -9,6 +9,7 @@ import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
 import generateID from '../../../../utils/uuid'
 import { escapeHandler } from '../../../../utils/eventHandlers'
+import TextForm from './TextLabel/TextForm'
 import { Confirm, Label } from 'semantic-ui-react'
 import FeatureTable from './FeatureTable'
 import ColorPicker from './ColorPicker'
@@ -42,6 +43,7 @@ class Draw extends React.Component {
             b: '19',
             a: '1',
         },
+        sessionType: "Geometry"
 
 
     }
@@ -110,6 +112,7 @@ class Draw extends React.Component {
 
     onOpenDrawSession = async (drawtype) => {
         await this.addInteraction(drawtype)
+        this.setState({ sessionType: "Geometry" })
         this.onDrawEnd()
     }
 
@@ -283,13 +286,27 @@ class Draw extends React.Component {
                             onClick={() => this.onOpenDrawSession("Circle")}
                             icon="circle" size="lg" />
 
+                        <IconButton
+                            className="ui icon button primary pointer"
+                            onClick={() => this.setState({ sessionType: "Text" })}
+                            icon="font" size="lg" />
+
 
 
                     </Grid.Row>
-                    <Grid.Row>
-                        <label className="labels">בחר צבע : </label>
-                        <ColorPicker onColorChange={this.onColorChange} defaultColor={this.state.defaultColor} />
-                    </Grid.Row>
+                    {
+                        this.state.sessionType == "Text" &&
+                        < Grid.Row >
+                            <TextForm />
+                        </Grid.Row>
+                    }
+                    {
+                        this.state.sessionType == "Geometry" &&
+                        < Grid.Row >
+                            <label className="labels">בחר צבע : </label>
+                            <ColorPicker onColorChange={this.onColorChange} defaultColor={this.state.defaultColor} />
+                        </Grid.Row>
+                    }
 
 
 
@@ -336,7 +353,7 @@ class Draw extends React.Component {
                 />
 
 
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 }

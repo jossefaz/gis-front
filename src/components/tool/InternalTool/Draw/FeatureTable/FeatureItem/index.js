@@ -3,12 +3,14 @@ import ColorPicker from '../../ColorPicker'
 import { generateNewStyle } from '../../../../../../utils/func'
 import IconButton from "../../../../../UI/Buttons/IconButton"
 
-import { Table, Form } from 'semantic-ui-react'
+import { Table, Form, Input } from 'semantic-ui-react'
 import './style.css'
 export default (props) => {
 
     const [fillColor, setFillColor] = useState({ r: '154', g: '111', b: '222', a: '0.2', });
     const [outlineWidth, setOutlineWidth] = useState(2);
+    const [TextLabel, setTextLabel] = useState("")
+
     const editStyle = {
         stroke: `rgba(19,187,254,.87)`,
         fill: `rgba(255,255,255,0.7)`
@@ -71,7 +73,6 @@ export default (props) => {
                     onClick={edit}
                     icon="edit" size="lg" />
             </Table.Cell>
-
 
 
 

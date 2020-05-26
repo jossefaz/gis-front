@@ -1,0 +1,9 @@
+.editable {
+    display: block !important;
+    border: 1px solid blue;
+  }
+  
+  textarea.editable {
+    font-family: monospace, monospace;
+  }
+  
