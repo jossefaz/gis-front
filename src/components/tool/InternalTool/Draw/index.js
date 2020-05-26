@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
-import { getInteraction, getInteractionGraphicLayer, getInteractionVectorSource } from '../../../../nessMapping/api'
+import { getInteraction, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMap } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction, unsetInteractions } from "../../../../redux/actions/interaction";
 import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
@@ -14,6 +14,7 @@ import FeatureTable from './FeatureTable'
 import ColorPicker from './ColorPicker'
 import { Grid } from 'semantic-ui-react'
 import Collection from 'ol/Collection';
+import Point from 'ol/geom/Point';
 import "./style.css";
 class Draw extends React.Component {
 
@@ -30,6 +31,7 @@ class Draw extends React.Component {
             confirmBtn: "כן",
             cancelBtn: "לא"
         },
+        editSession: false,
         view: true,
         drawn: false,
         lastFeature: null,
@@ -131,6 +133,28 @@ class Draw extends React.Component {
             },
             widgetName: this.WIDGET_NAME
         });
+        this.setState({ editSession: { status: true, current: feature.getId() } })
+    }
+
+    autoClosingEditSession = (e) => {
+        if (this.select) {
+            const pointPosition = new Point(e.coordinate)
+            let close = true
+            getInteraction(this.select).getFeatures().getArray().map(
+                feature => {
+                    if (pointPosition.intersectsExtent(feature.getGeometry().getExtent())) {
+                        close = false
+                    }
+
+                }
+            )
+            if (close) {
+                this.setState({ editSession: { status: false, current: null } })
+                this.removeSelectAndEdit()
+            }
+
+
+        }
     }
 
 
@@ -174,6 +198,7 @@ class Draw extends React.Component {
                     e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`))
                     e.feature.setId(generateID())
                     this.setState({ drawn: true, lastFeature: e.feature })
+
                 });
 
         }
@@ -186,11 +211,7 @@ class Draw extends React.Component {
     }
     // LIFECYCLE
     componentDidMount() {
-        if (this.DrawSource) {
-            this.setState({
-                drawn: true
-            })
-        }
+        getFocusedMap().on('pointerdown', this.autoClosingEditSession);
     }
     componentDidUpdate() {
         document.addEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
@@ -299,6 +320,7 @@ class Draw extends React.Component {
                                     defaultColor={this.state.defaultColor}
                                     deleteLastFeature={this.deleteLastFeature}
                                     onOpenEditSession={this.onOpenEditSession}
+                                    editSession={this.state.editSession}
                                 /></Grid.Row>
                         </React.Fragment>
                     }

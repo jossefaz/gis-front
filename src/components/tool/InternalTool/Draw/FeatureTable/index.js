@@ -21,7 +21,7 @@ export default (props) => {
             <Body>
                 {
                     props.features ? props.features.map((feature, index) =>
-                        <Row key={"fi" + feature.getId()}>
+                        <Row key={"fi" + feature.getId()} onClick={() => console.log(feature)}>
                             <FeatureItem
                                 index={index}
                                 fid={feature.getId()}
@@ -29,6 +29,7 @@ export default (props) => {
                                 defaultColor={props.defaultColor}
                                 deleteLastFeature={props.deleteLastFeature}
                                 onOpenEditSession={props.onOpenEditSession}
+                                editSession={props.editSession}
                             />
                         </Row>
                     ) : null
