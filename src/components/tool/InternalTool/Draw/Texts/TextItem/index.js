@@ -21,7 +21,7 @@ export default (props) => {
             <Table.Cell>
                 <IconButton
                     className="ui icon button pointer negative"
-                    onClick={() => { }}
+                    onClick={() => props.removeOverlay(props.id)}
                     icon="trash-alt" size="lg" />
                 <IconButton
                     className="ui icon button pointer positive"

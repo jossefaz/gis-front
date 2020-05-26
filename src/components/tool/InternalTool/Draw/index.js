@@ -211,6 +211,17 @@ class Draw extends React.Component {
         }
     }
 
+    removeOverlay = (uuid) => {
+        if (uuid == this.state.editText.overlayID) {
+            this.setState({
+                editText: { ...this.state.editText, overlayID: null },
+                sessionType: ''
+            })
+
+        }
+        this.props.unsetOverlay({ uuid, widgetName: this.WIDGET_NAME })
+    }
+
     onDrawEnd = () => {
         const draw = getInteraction(this.draw)
         if (draw) {
@@ -297,7 +308,7 @@ class Draw extends React.Component {
         this.setState({
             sessionType: "",
             editText: {
-                text: null,
+                text: '',
                 overlayID: null
             }
         })
@@ -317,7 +328,7 @@ class Draw extends React.Component {
             this.setState({
                 sessionType: "",
                 editText: {
-                    text: null,
+                    text: '',
                     overlayID: null
                 }
             })
@@ -363,7 +374,7 @@ class Draw extends React.Component {
             editText: {
                 text,
                 overlayID
-            }
+            },
         })
 
     }
@@ -372,7 +383,7 @@ class Draw extends React.Component {
         this.setState({
             sessionType: "",
             editText: {
-                text: null,
+                text: '',
                 overlayID: null
             }
         })
@@ -413,6 +424,15 @@ class Draw extends React.Component {
         return this.DrawSource ? this.DrawSource.getFeatures() : []
     }
 
+    handleTextChange = (text) => {
+        this.setState({
+            editText: { ...this.state.editText, text }
+        })
+    }
+
+
+
+
     render() {
         const features = this.getDrawnFeatures()
         const disable = features.length == 0
@@ -442,7 +462,7 @@ class Draw extends React.Component {
                             onClick={() => this.setState({
                                 sessionType: "Text", editText: {
                                     text: null,
-                                    overlayID: null
+                                    overlayID: null,
                                 }
                             })}
                             icon="font" size="lg" />
@@ -453,7 +473,12 @@ class Draw extends React.Component {
                     {
                         this.state.sessionType == "Text" &&
                         < Grid.Row >
-                            <TextForm cancelEdit={this.cancelEditText} onSubmit={this.createOrEditText} editText={this.state.editText.text} overlayID={this.state.editText.overlayID} />
+                            <TextForm
+                                cancelEdit={this.cancelEditText}
+                                onSubmit={this.createOrEditText}
+                                value={this.state.editText.text}
+                                setValue={this.handleTextChange}
+                                overlayID={this.state.editText.overlayID} />
                         </Grid.Row>
                     }
                     {
@@ -504,6 +529,7 @@ class Draw extends React.Component {
                                 <TextTable
                                     overlays={this.selfOverlay.overlays}
                                     editText={this.editText}
+                                    removeOverlay={this.removeOverlay}
                                 />
                             </Grid.Row>
                         </React.Fragment>
