@@ -1,18 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
-import { getInteraction, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMap } from '../../../../nessMapping/api'
+import { getInteraction, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMap, getOverlay } from '../../../../nessMapping/api'
 import { setInteraction, unsetInteraction, unsetInteractions } from "../../../../redux/actions/interaction";
-import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
+import { setOverlay, unsetOverlays, unsetOverlay, setOverlayProperty } from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
 import generateID from '../../../../utils/uuid'
 import { escapeHandler } from '../../../../utils/eventHandlers'
-import TextForm from './TextLabel/TextForm'
+import TextForm from './Texts/TextForm'
 import { Confirm, Label } from 'semantic-ui-react'
 import FeatureTable from './FeatureTable'
+import TextTable from './Texts'
 import ColorPicker from './ColorPicker'
+import { DragPan } from "ol/interaction";
 import { Grid } from 'semantic-ui-react'
 import Collection from 'ol/Collection';
 import Point from 'ol/geom/Point';
@@ -24,6 +26,11 @@ class Draw extends React.Component {
         Draw: "Draw",
         Select: "Select",
         Modify: "Modify"
+    }
+    CLASSNAMES = {
+        TEXT: 'ol-tooltip ol-tooltip-measure',
+        HIDDEN: 'hidden',
+        FINISH: 'ol-tooltip ol-tooltip-static'
     }
     state = {
         eraseDraw: {
@@ -43,9 +50,21 @@ class Draw extends React.Component {
             b: '19',
             a: '1',
         },
-        sessionType: "Geometry"
+        sessionType: "Geometry",
+        editText: {
+            text: null,
+            overlayID: null
+        }
 
 
+    }
+
+
+    get selfOverlay() {
+        if (this.WIDGET_NAME in this.props.Overlays && this.map in this.props.Overlays[this.WIDGET_NAME]) {
+            return this.props.Overlays[this.WIDGET_NAME][this.map]
+        }
+        return false
     }
 
     get map() {
@@ -215,12 +234,22 @@ class Draw extends React.Component {
     // LIFECYCLE
     componentDidMount() {
         getFocusedMap().on('pointerdown', this.autoClosingEditSession);
+        getFocusedMap().on('pointermove', this.dragOverlay);
+        getFocusedMap().on('pointerup', this.unDragOverlay);
+        getFocusedMap().getInteractions().forEach((interaction) => {
+            if (interaction instanceof DragPan) {
+                this.dragPan = interaction;
+            }
+        });
     }
     componentDidUpdate() {
         document.addEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
     }
     componentWillUnmount() {
         document.removeEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
+        getFocusedMap().un('pointerdown', this.autoClosingEditSession);
+        getFocusedMap().un('pointermove', this.dragOverlay);
+        getFocusedMap().un('pointerup', this.unDragOverlay);
         this.onReset();
     }
     onReset = () => {
@@ -241,6 +270,127 @@ class Draw extends React.Component {
         }
 
     }
+
+
+    createNewText = async (text) => {
+        const selector = `${this.WIDGET_NAME}${this.map}`
+        await this.props.setOverlay({
+            overlay: {
+                element: this.generateOverlayDiv(selector, text),
+                offset: [0, -15],
+                positioning: 'bottom-center',
+                stopEvent: false,
+                dragging: false
+            },
+            widgetName: this.WIDGET_NAME,
+            content: text,
+            selector
+        }
+        );
+        if (this.selfOverlay) {
+            const currentOverlays = Object.keys(this.selfOverlay.overlays)
+            const lastID = currentOverlays[currentOverlays.length - 1]
+            const overlay = getOverlay(lastID)
+            overlay.setPosition(getFocusedMap().getView().getCenter())
+            this.addDraggableToOverlay(lastID)
+        }
+        this.setState({
+            sessionType: "",
+            editText: {
+                text: null,
+                overlayID: null
+            }
+        })
+    }
+
+    createOrEditText = async (text, textID) => {
+        if (textID) {
+            const overlay = this.selfOverlay.overlays[textID]
+            const overlayDiv = document.querySelector(`#${overlay.selector}`)
+            this.props.setOverlayProperty({
+                widgetName: this.WIDGET_NAME,
+                uuid: textID,
+                property: 'content',
+                value: text
+            })
+            overlayDiv.innerHTML = text
+            this.setState({
+                sessionType: "",
+                editText: {
+                    text: null,
+                    overlayID: null
+                }
+            })
+        } else {
+            await this.createNewText(text)
+        }
+    }
+
+    generateOverlayDiv(selector, innerHtml) {
+        const overlayDiv = document.createElement("div")
+        overlayDiv.setAttribute("id", selector)
+        overlayDiv.setAttribute("class", this.CLASSNAMES.TEXT)
+        overlayDiv.innerHTML = innerHtml
+        return overlayDiv;
+    }
+
+    dragOverlay = (evt) => {
+        if (this.selfOverlay) {
+            Object.keys(this.selfOverlay.overlays).map(ol => {
+                const overlay = getOverlay(ol)
+                if (overlay.get('dragging')) {
+                    this.dragPan.setActive(false);
+                    overlay.setPosition(evt.coordinate)
+                }
+            })
+        }
+    }
+
+    unDragOverlay = (evt) => {
+        if (this.selfOverlay) {
+            Object.keys(this.selfOverlay.overlays).map(ol => {
+                if (getOverlay(ol).get('dragging')) {
+                    this.dragPan.setActive(true);
+                    getOverlay(ol).set('dragging', false);
+                }
+            })
+        }
+    }
+
+    editText = (text, overlayID) => {
+        this.setState({
+            sessionType: "Text",
+            editText: {
+                text,
+                overlayID
+            }
+        })
+
+    }
+
+    cancelEditText = () => {
+        this.setState({
+            sessionType: "",
+            editText: {
+                text: null,
+                overlayID: null
+            }
+        })
+    }
+
+    addDraggableToOverlay = (id) => {
+        const overlay = this.selfOverlay.overlays[id]
+        const overlayDiv = document.getElementById(overlay.selector)
+        const widgetName = this.WIDGET_NAME
+        overlayDiv.setAttribute("uuid", id)
+        overlayDiv.setAttribute("dragging", false)
+        overlayDiv.addEventListener('mousedown', function (evt) {
+            getOverlay(this.id.split(widgetName)[1]).set('dragging', true)
+            console.info('start dragging');
+        });;
+
+    }
+
 
     onColorChange = color => this.setState({ defaultColor: color })
 
@@ -266,6 +416,7 @@ class Draw extends React.Component {
     render() {
         const features = this.getDrawnFeatures()
         const disable = features.length == 0
+        const overlays = this.selfOverlay
         return (
             <React.Fragment>
                 <Grid columns='equal' stackable divided='vertically' className="widhtEm">
@@ -288,7 +439,12 @@ class Draw extends React.Component {
 
                         <IconButton
                             className="ui icon button primary pointer"
-                            onClick={() => this.setState({ sessionType: "Text" })}
+                            onClick={() => this.setState({
+                                sessionType: "Text", editText: {
+                                    text: null,
+                                    overlayID: null
+                                }
+                            })}
                             icon="font" size="lg" />
 
 
@@ -297,7 +453,7 @@ class Draw extends React.Component {
                     {
                         this.state.sessionType == "Text" &&
                         < Grid.Row >
-                            <TextForm />
+                            <TextForm cancelEdit={this.cancelEditText} onSubmit={this.createOrEditText} editText={this.state.editText.text} overlayID={this.state.editText.overlayID} />
                         </Grid.Row>
                     }
                     {
@@ -341,6 +497,17 @@ class Draw extends React.Component {
                                 /></Grid.Row>
                         </React.Fragment>
                     }
+                    {
+                        overlays &&
+                        <React.Fragment>
+                            <Grid.Row>
+                                <TextTable
+                                    overlays={this.selfOverlay.overlays}
+                                    editText={this.editText}
+                                />
+                            </Grid.Row>
+                        </React.Fragment>
+                    }
                 </Grid>
                 <Confirm
                     open={this.state.open}
@@ -365,9 +532,10 @@ const mapStateToProps = (state) => {
         Features: state.Features,
         maps: state.map,
         Interactions: state.Interactions,
+        Overlays: state.Overlays
     };
 };
 
-const mapDispatchToProps = { setInteraction, unsetInteraction, unsetInteractions, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused }
+const mapDispatchToProps = { setInteraction, unsetInteraction, unsetInteractions, setOverlay, unsetOverlays, unsetOverlay, unsetUnfocused, setOverlayProperty }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Draw));

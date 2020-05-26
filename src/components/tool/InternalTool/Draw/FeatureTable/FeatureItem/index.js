@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import ColorPicker from '../../ColorPicker'
 import { generateNewStyle } from '../../../../../../utils/func'
 import IconButton from "../../../../../UI/Buttons/IconButton"
-
+import { unhighlightFeature } from '../../../../../../nessMapping/api'
 import { Table, Form, Input } from 'semantic-ui-react'
 import './style.css'
 export default (props) => {
@@ -19,6 +19,7 @@ export default (props) => {
     const [strokeColor, setStrokeColor] = useState(props.defaultColor);
     const removeFeature = () => {
         props.source.removeFeature(getFeature())
+        unhighlightFeature()
         props.deleteLastFeature(props.fid)
     }
     const edit = () => {

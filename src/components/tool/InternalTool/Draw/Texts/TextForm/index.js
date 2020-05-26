@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-export default () => {
-    const [value, setValue] = useState('');
-    const handleChange = (v) => {
-        console.log(v)
-        setValue(v)
-    }
+export default (props) => {
+    const [value, setValue] = useState(props.editText || '');
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, false] }],
@@ -33,16 +29,29 @@ export default () => {
             textAlign: 'left'
         }} onMouseDownCapture={e => e.stopPropagation()}>
             <ReactQuill theme="snow" modules={modules}
-                formats={formats} value={value} onChange={handleChange} />
+                formats={formats} value={value} onChange={setValue} />
             <button
                 className="ui icon button primary pointer"
-                onClick={() => console.log(value)}
+                onClick={() => { props.onSubmit(value, props.overlayID); setValue('') }}
                 style={{
                     margin: "0.1em"
                 }}
             >
                 "הוסף על המפה"
             </button>
+            {
+                props.overlayID && props.editText &&
+                <button
+                    className="ui icon button negative pointer"
+                    onClick={() => { props.cancelEdit(); setValue('') }}
+                    style={{
+                        margin: "0.1em"
+                    }}
+                >
+                    "ביטול"
+            </button>
+
+            }
         </div>
 
 
