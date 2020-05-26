@@ -5,10 +5,10 @@ export default (props) => {
     return (
         <div>
             {
-                props.features ? props.features.map(feature =>
+                props.features ? props.features.map((feature, index) =>
                     <FeatureItem
                         key={"fi" + feature.getId()}
-                        properties={feature.properties}
+                        index={index}
                         fid={feature.getId()}
                         source={props.source}
                         defaultColor={props.defaultColor}

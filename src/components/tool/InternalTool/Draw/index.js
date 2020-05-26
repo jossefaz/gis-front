@@ -8,6 +8,7 @@ import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
 import generateID from '../../../../utils/uuid'
+import { escapeHandler } from '../../../../utils/eventHandlers'
 import { Confirm, Label } from 'semantic-ui-react'
 import FeatureTable from './FeatureTable'
 import ColorPicker from './ColorPicker'
@@ -48,35 +49,26 @@ class Draw extends React.Component {
     }
 
     get selfInteraction() {
-        if (this.WIDGET_NAME in this.props.Interactions) {
-            return this.props.Interactions[this.WIDGET_NAME]
+        if (this.WIDGET_NAME in this.props.Interactions && this.map in this.props.Interactions[this.WIDGET_NAME]) {
+            return this.props.Interactions[this.WIDGET_NAME][this.map]
         }
         return false
     }
 
     get draw() {
-        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
-            return this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid
-        }
-        return false
+        return this.getSelfInteraction(this.INTERACTIONS.Draw)
     }
 
     get select() {
-        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Select in this.selfInteraction[this.map]) {
-            return this.selfInteraction[this.map][this.INTERACTIONS.Select].uuid
-        }
-        return false
+        return this.getSelfInteraction(this.INTERACTIONS.Select)
     }
 
     get modify() {
-        if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Modify in this.selfInteraction[this.map]) {
-            return this.selfInteraction[this.map][this.INTERACTIONS.Modify].uuid
-        }
-        return false
+        return this.getSelfInteraction(this.INTERACTIONS.Modify)
     }
     getSelfInteraction = (interaction) => {
-        if (this.selfInteraction && this.map in this.selfInteraction && interaction in this.selfInteraction[this.map]) {
-            return this.selfInteraction[this.map][interaction].uuid
+        if (this.selfInteraction && interaction in this.selfInteraction) {
+            return this.selfInteraction[interaction].uuid
         }
         return false
     }
@@ -99,18 +91,7 @@ class Draw extends React.Component {
         })
     }
 
-    escapeHandler = (evt) => {
-        evt = evt || window.event;
-        var isEscape = false;
-        if ("key" in evt) {
-            isEscape = evt.key === "Escape" || evt.key === "Esc";
-        } else {
-            isEscape = evt.keyCode === 27;
-        }
-        if (isEscape) {
-            this.abortDrawing();
-        }
-    }
+
 
     addInteraction = async (drawtype) => {
         const sourceLayer = this.DrawSource // save it before it will be deleted !!
@@ -162,22 +143,21 @@ class Draw extends React.Component {
         this.removeDrawObject()
     }
     removeDrawObject = () => {
-        if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
-            this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
+        if (this.draw) {
+            this.props.unsetInteraction({ uuid: this.selfInteraction[this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
         }
 
     }
 
     removeSelectAndEdit = async () => {
-        if (this.select && this.modify && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Select in this.selfInteraction[this.map] && this.INTERACTIONS.Modify in this.selfInteraction[this.map]) {
-            const { uuid: select_uuid, Type: select_Type } = this.selfInteraction[this.map][this.INTERACTIONS.Select]
-            const { uuid: modify_uuid, Type: modify_Type } = this.selfInteraction[this.map][this.INTERACTIONS.Modify]
+        if (this.select && this.modify) {
+            const { Select, Modify } = this.INTERACTIONS
             await this.props.unsetInteractions([
                 {
-                    uuid: select_uuid, widgetName: this.WIDGET_NAME, select_Type
+                    uuid: this.select, widgetName: this.WIDGET_NAME, Type: Select
                 },
                 {
-                    uuid: modify_uuid, widgetName: this.WIDGET_NAME, modify_Type
+                    uuid: this.modify, widgetName: this.WIDGET_NAME, Type: Modify
                 }
 
             ]
@@ -213,10 +193,10 @@ class Draw extends React.Component {
         }
     }
     componentDidUpdate() {
-        document.addEventListener("keydown", this.escapeHandler);
+        document.addEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
     }
     componentWillUnmount() {
-        document.removeEventListener("keydown", this.escapeHandler);
+        document.removeEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
         this.onReset();
     }
     onReset = () => {
@@ -225,10 +205,10 @@ class Draw extends React.Component {
     }
 
     removeAllInteractions = async () => {
-        if (this.selfInteraction && this.map in this.selfInteraction) {
+        if (this.selfInteraction) {
             const InteractionArray = []
-            Object.keys(this.selfInteraction[this.map]).map(InteractionName => {
-                const { uuid, Type } = this.selfInteraction[this.map][InteractionName]
+            Object.keys(this.selfInteraction).map(InteractionName => {
+                const { uuid, Type } = this.selfInteraction[InteractionName]
                 InteractionArray.push({ uuid, widgetName: this.WIDGET_NAME, Type })
             })
             if (InteractionArray.length > 0) {
@@ -261,6 +241,7 @@ class Draw extends React.Component {
 
     render() {
         const features = this.getDrawnFeatures()
+        const disable = features.length == 0
         return (
             <React.Fragment>
                 <Grid columns='equal' stackable divided='vertically'>
@@ -285,23 +266,23 @@ class Draw extends React.Component {
                         </Grid.Column>
                         <Grid.Column width={2}>
                             <IconButton
-                                className={`ui icon button pointer ${this.state.drawn ? 'negative' : 'disabled'}`}
+                                className={`ui icon button pointer ${!disable ? 'negative' : 'disabled'}`}
                                 onClick={() => this.setState({ open: true })}
-                                disabled={!this.state.drawn}
+                                disabled={disable}
                                 icon="trash-alt" size="lg" />
                         </Grid.Column>
                         <Grid.Column width={2}>
                             <IconButton
-                                className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
+                                className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
                                 onClick={() => this.toogleView()}
-                                disabled={!this.state.drawn}
+                                disabled={disable}
                                 icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
                         </Grid.Column>
                         <Grid.Column width={2}>
                             <IconButton
-                                className={`ui icon button pointer ${this.state.drawn ? 'positive' : 'disabled'}`}
+                                className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
                                 onClick={() => this.onOpenEditSession()}
-                                disabled={!this.state.drawn}
+                                disabled={disable}
                                 icon="edit" size="lg" />
                         </Grid.Column>
 
@@ -313,17 +294,18 @@ class Draw extends React.Component {
 
 
 
-                </Grid>
 
-                {
-                    this.state.drawn && <FeatureTable
-                        features={features}
-                        source={this.DrawSource}
-                        defaultColor={this.state.defaultColor}
-                        deleteLastFeature={this.deleteLastFeature}
-                        onOpenEditSession={this.onOpenEditSession}
-                    />
-                }
+
+                    {
+                        !disable && <Grid.Row><FeatureTable
+                            features={features}
+                            source={this.DrawSource}
+                            defaultColor={this.state.defaultColor}
+                            deleteLastFeature={this.deleteLastFeature}
+                            onOpenEditSession={this.onOpenEditSession}
+                        /></Grid.Row>
+                    }
+                </Grid>
                 <Confirm
                     open={this.state.open}
                     size='mini'

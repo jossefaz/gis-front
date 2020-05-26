@@ -17,9 +17,7 @@ export default (props) => {
     }
 
     const FeatureItem = () => {
-        return props.properties ? props.properties.map(pr => {
-            return <p key={pr}>{pr}</p>
-        }) : <p key={props.fid}>{props.fid}</p>
+        return <p key={props.fid}>{props.index + 1}</p>
     }
 
     const edit = () => {
