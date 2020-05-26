@@ -139,7 +139,7 @@ class Draw extends React.Component {
 
     onClearDrawing = () => {
         this.DrawSource.clear()
-        this.setState({ open: false, drawn: false })
+        this.setState({ open: false, drawn: false, lastFeature: null })
         this.removeDrawObject()
     }
     removeDrawObject = () => {
@@ -245,46 +245,41 @@ class Draw extends React.Component {
         return (
             <React.Fragment>
                 <Grid columns='equal' stackable divided='vertically'>
-                    <Grid.Row columns={6}>
-                        <Grid.Column width={2}>
-                            <IconButton
-                                className="ui icon button primary pointer"
-                                onClick={() => this.onOpenDrawSession("Polygon")}
-                                icon="draw-polygon" size="lg" />
-                        </Grid.Column>
-                        <Grid.Column width={2}>
-                            <IconButton
-                                className="ui icon button primary pointer"
-                                onClick={() => this.onOpenDrawSession("LineString")}
-                                icon="grip-lines" size="lg" />
-                        </Grid.Column>
-                        <Grid.Column width={2}>
-                            <IconButton
-                                className="ui icon button primary pointer"
-                                onClick={() => this.onOpenDrawSession("Circle")}
-                                icon="circle" size="lg" />
-                        </Grid.Column>
-                        <Grid.Column width={2}>
-                            <IconButton
-                                className={`ui icon button pointer ${!disable ? 'negative' : 'disabled'}`}
-                                onClick={() => this.setState({ open: true })}
-                                disabled={disable}
-                                icon="trash-alt" size="lg" />
-                        </Grid.Column>
-                        <Grid.Column width={2}>
-                            <IconButton
-                                className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
-                                onClick={() => this.toogleView()}
-                                disabled={disable}
-                                icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
-                        </Grid.Column>
-                        <Grid.Column width={2}>
-                            <IconButton
-                                className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
-                                onClick={() => this.onOpenEditSession()}
-                                disabled={disable}
-                                icon="edit" size="lg" />
-                        </Grid.Column>
+                    <Grid.Row>
+
+                        <IconButton
+                            className="ui icon button primary pointer"
+                            onClick={() => this.onOpenDrawSession("Polygon")}
+                            icon="draw-polygon" size="lg" />
+                        <IconButton
+                            className="ui icon button primary pointer"
+                            onClick={() => this.onOpenDrawSession("LineString")}
+                            icon="grip-lines" size="lg" />
+
+                        <IconButton
+                            className="ui icon button primary pointer"
+                            onClick={() => this.onOpenDrawSession("Circle")}
+                            icon="circle" size="lg" />
+
+                        <IconButton
+                            className={`ui icon button pointer ${!disable ? 'negative' : 'disabled'}`}
+                            onClick={() => this.setState({ open: true })}
+                            disabled={disable}
+                            icon="trash-alt" size="lg" />
+
+                        <IconButton
+                            className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
+                            onClick={() => this.toogleView()}
+                            disabled={disable}
+                            icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
+
+
+                        <IconButton
+                            className={`ui icon button pointer ${!disable ? 'positive' : 'disabled'}`}
+                            onClick={() => this.onOpenEditSession()}
+                            disabled={disable}
+                            icon="edit" size="lg" />
+
 
                     </Grid.Row>
                     <Grid.Row>

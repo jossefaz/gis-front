@@ -2,6 +2,7 @@ import React from 'react'
 import ColorPicker from '../../ColorPicker'
 import { generateNewStyle } from '../../../MeasureDistance/func'
 import IconButton from "../../../../../UI/Buttons/IconButton"
+import { Table } from 'semantic-ui-react'
 export default (props) => {
 
     const onColorChange = ({ r, g, b, a }) => {
@@ -25,16 +26,23 @@ export default (props) => {
     }
     return (
         <React.Fragment>
-            <FeatureItem />
-            <ColorPicker onColorChange={onColorChange} defaultColor={props.defaultColor} />
-            <IconButton
-                className="ui icon button pointer negative"
-                onClick={removeFeature}
-                icon="trash-alt" size="lg" />
-            <IconButton
-                className="ui icon button pointer positive"
-                onClick={edit}
-                icon="edit" size="lg" />
+            <Table.Cell>
+                <IconButton
+                    className="ui icon button pointer negative"
+                    onClick={removeFeature}
+                    icon="trash-alt" size="lg" />
+                <IconButton
+                    className="ui icon button pointer positive"
+                    onClick={edit}
+                    icon="edit" size="lg" />
+            </Table.Cell>
+            <Table.Cell><ColorPicker onColorChange={onColorChange} defaultColor={props.defaultColor} /></Table.Cell>
+            <Table.Cell><FeatureItem /></Table.Cell>
+
+
+
+
+
         </React.Fragment>
 
     )
