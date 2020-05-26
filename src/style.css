@@ -4,3 +4,7 @@ body {
   max-height: 100vh;
   overflow-y: hidden;
 }
+.ui * {
+  direction: rtl;
+  text-align: right;
+}
