@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Slider } from "react-semantic-ui-range";
 import { Dropdown } from "semantic-ui-react";
+import withWidgetLifeCycle from "../../HOC/withWidgetLifeCycle";
 import {
   addLayerToOLMap,
   setMapLayerVisible,
@@ -47,7 +48,7 @@ class LayerListItem extends Component {
     });
   };
 
-  render() {
+  renderLayerMenu = () => {
     const lyr = this.props.lyr;
     return (
       <div>
@@ -58,7 +59,7 @@ class LayerListItem extends Component {
             onChange={(event) =>
               this.setLayerVisibilty(event.target.checked, lyr)
             }
-            defaultChecked={lyr.visible}
+            checked={lyr.visible}
           />
           <label>{lyr.name}</label>
         </div>
@@ -84,10 +85,21 @@ class LayerListItem extends Component {
         </div>
       </div>
     );
+  };
+
+  render() {
+    return <React.Fragment>{this.renderLayerMenu()}</React.Fragment>;
   }
 }
-export default connect(null, {
+const mapStateToProps = (state, ownProps) => {
+  return {
+    mapId: state.map.focused,
+    lyr: state.Layers[state.map.focused]["layers"][ownProps.layerId],
+  };
+};
+
+export default connect(mapStateToProps, {
   addLayerToOLMap,
   setMapLayerVisible,
   setMapLayerOpacity,
-})(LayerListItem);
+})(withWidgetLifeCycle(LayerListItem));

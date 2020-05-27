@@ -1,23 +1,11 @@
 import React from "react";
-import {
-  InitMap,
-  Identify,
-  addLayersSafely
-} from "./func";
-import {
-  connect
-} from "react-redux";
+import { InitMap, Identify, addLayersSafely } from "./func";
+import { connect } from "react-redux";
 import config from "react-global-configuration";
-import {
-  logLevel,
-  LogIt
-} from "../../utils/logs";
-import {
-  addLayers
-} from "../../redux/actions/layers";
-import {
-  setSelectedFeatures
-} from "../../redux/actions/features";
+import { logLevel, LogIt } from "../../utils/logs";
+import { addLayers, InitLayers } from "../../redux/actions/layers";
+
+import { setSelectedFeatures } from "../../redux/actions/features";
 import "./style.css";
 
 class MapComponent extends React.Component {
@@ -42,14 +30,9 @@ class MapComponent extends React.Component {
     LogIt(logLevel.DEBUG, this.props.Layers);
     LogIt(logLevel.DEBUG, this.props.Features);
     if (this.props.Rasters) {
-      const {
-        Catalog,
-        Focused
-      } = this.props.Rasters;
+      const { Catalog, Focused } = this.props.Rasters;
       this.map.getLayers().setAt(0, Catalog[Focused].layer);
     }
-
-
 
     // addLayersSafely(this.props.Layers, this.map, this.props.addLayers);
     // addLayersSafely(this.props.Layers, this.map);
@@ -58,13 +41,12 @@ class MapComponent extends React.Component {
   }
 
   render() {
-    const {
-      target
-    } = config.get("MapConfig");
-    return <div id = {
-      target
-    }
-    className = "map" > < /div>;
+    const { target } = config.get("MapConfig");
+    return (
+      <div id={target} className="map">
+        {" "}
+      </div>
+    );
   }
 }
 const mapStateToProps = (state) => {
@@ -77,7 +59,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   addLayers,
-  setSelectedFeatures
-})(
-  MapComponent
-);
+  InitLayers,
+  setSelectedFeatures,
+})(MapComponent);

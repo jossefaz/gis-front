@@ -21,22 +21,18 @@ import NessSearching from "./searches/searches";
 // REMOVE: this is just for searching debug
 
 class App extends React.Component {
-
   bootstrap = async () => {
     await this.props.InitRasters();
     await this.props.InitMap();
     await this.props.InitTools(config.get("Widgets"));
-
-  }
+    await this.props.InitLayers();
+  };
 
   componentDidMount() {
     LogIt(logLevel.INFO, "App init");
 
     InitIcons();
-    this.bootstrap()
-
-
-
+    this.bootstrap();
 
     InitSearching(config.get("SearchConfigs"));
 
@@ -60,11 +56,7 @@ class App extends React.Component {
         }
       });
     // REMOVE: this is just for searching debug
-
-    this.fetchDataFromServer();
   }
-
-
 
   fetchDataFromServer = async () => {
     const [layersResult] = await Promise.all([getMetaData("layers")]);

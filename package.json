@@ -15,6 +15,7 @@
     "axios": "^0.19.2",
     "font-awesome": "^4.7.0",
     "immer": "^4.0.2",
+    "lodash.get": "^4.4.2",
     "ol": "^6.2.1",
     "ol-layerlist": "^1.1.8",
     "parsejson": "0.0.3",
