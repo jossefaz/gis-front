@@ -42,7 +42,7 @@ class Draw extends React.Component {
         editSession: false,
         view: true,
         drawn: false,
-        lastFeature: null,
+        lastFeature: {},
         drawCount: 0,
         defaultColor: {
             r: '241',
@@ -69,6 +69,10 @@ class Draw extends React.Component {
 
     get map() {
         return this.props.maps.focused
+    }
+
+    get lastFeature() {
+        return this.map in this.state.lastFeature ? this.state.lastFeature[this.map] : false
     }
 
     get selfInteraction() {
@@ -185,7 +189,7 @@ class Draw extends React.Component {
 
     onClearDrawing = () => {
         this.DrawSource.clear()
-        this.setState({ open: false, drawn: false, lastFeature: null })
+        this.setState({ open: false, drawn: false, lastFeature: { ...this.state.lastFeature, [this.map]: null } })
         this.removeDrawObject()
     }
     removeDrawObject = () => {
@@ -230,7 +234,7 @@ class Draw extends React.Component {
                     const { r, g, b, a } = this.state.defaultColor
                     e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`))
                     e.feature.setId(generateID())
-                    this.setState({ drawn: true, lastFeature: e.feature })
+                    this.setState({ drawn: true, lastFeature: { ...this.state.lastFeature, [this.map]: e.feature } })
 
                 });
 
@@ -410,16 +414,17 @@ class Draw extends React.Component {
     }
 
     deleteLastFeature = (id) => {
-        if (this.state.lastFeature && id == this.state.lastFeature.getId()) {
-            this.setState({ lastFeature: null })
+        if (this.lastFeature && id == this.lastFeature.getId()) {
+            this.setState({ lastFeature: { ...this.state.lastFeature, [this.map]: null } })
         }
     }
 
+
     getDrawnFeatures = () => {
-        if (this.state.lastFeature) {
-            const lastFeatureId = this.state.lastFeature.getId()
+        if (this.lastFeature) {
+            const lastFeatureId = this.lastFeature.getId()
             const filteredFeatures = this.DrawSource.getFeatures().filter(f => f.getId() !== lastFeatureId)
-            return [...filteredFeatures, this.state.lastFeature]
+            return [...filteredFeatures, this.lastFeature]
         }
         return this.DrawSource ? this.DrawSource.getFeatures() : []
     }
