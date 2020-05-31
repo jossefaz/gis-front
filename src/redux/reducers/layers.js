@@ -6,19 +6,21 @@ export default function (state = {}, action) {
     case types.ADD_LAYER:
       return produce(state, (draftState) => {
         action.payload.addedLayers.map((lyr) => {
-          draftState[action.payload.mapId][lyr.uuid] = lyr;
+          draftState[action.payload.mapId]["layers"][lyr.uuid] = lyr;
         });
       });
 
     case types.SET_LAYER_VISIBLE:
       return produce(state, (draftState) => {
-        draftState[action.payload.mapId][action.payload.layerId].visible =
-          action.payload.visible;
+        draftState[action.payload.mapId]["layers"][
+          action.payload.layerId
+        ].visible = action.payload.visible;
       });
     case types.SET_LAYER_OPACITY:
       return produce(state, (draftState) => {
-        draftState[action.payload.mapId][action.payload.layerId].opacity =
-          action.payload.Opacity;
+        draftState[action.payload.mapId]["layers"][
+          action.payload.layerId
+        ].opacity = action.payload.Opacity;
       });
     case types.INIT_LAYERS:
       return produce(state, (draftState) => {

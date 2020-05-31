@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Accordion, Icon } from "semantic-ui-react";
 import withWidgetLifeCycle from "../../HOC/withWidgetLifeCycle";
-import { logLevel, LogIt } from "../../../utils/logs";
 import LayerListItem from "../LayerListItem/LayerListItem.jsx";
 import { getMetaData } from "../../../communication/mdFetcher.js";
 import { selectLayers } from "../../../redux/selectors/layersSelector";
@@ -26,13 +25,25 @@ class LayerList extends Component {
 
     this.setState({ activeIndex: newIndex });
   };
+
   componentDidMount() {
-    LogIt(logLevel.INFO, "layer list componentDidMount");
     this.fetchMetaDataFromServer();
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.Layers) return true;
-    else return false;
+  onReset = () => {
+    console.log("test the layerlist!");
+  };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      layers: nextProps.Layers,
+    };
+  }
+
+  componentDidUpdate(nextProps) {
+    var layers = this.props.Layers;
+    if (layers && layers !== nextProps.Layers) {
+      this.setState({ layers: layers });
+      this.renderLayerList();
+    }
   }
 
   fetchMetaDataFromServer = async () => {
@@ -56,48 +67,27 @@ class LayerList extends Component {
   };
 
   renderLayerList = () => {
-    LogIt(logLevel.INFO, "got to this function how many times?");
-    LogIt(logLevel.INFO, "Layers: " + this.props.Layers);
-    var activeIndex = this.state.activeIndex;
-    var layerSubjectRelation = _.cloneDeep(this.state.layerSubjectRelation);
+    if (this.state.layers) {
+      var layerSubjectRelation = _.cloneDeep(this.state.layerSubjectRelation);
 
-    var layerListObject = _.cloneDeep(this.state.subjects);
+      var layerListObject = _.cloneDeep(this.state.subjects);
 
-    LogIt(logLevel.INFO, "We are in the layer function: " + this.props.Layers);
-    var layers = this.props.Layers;
-    Object.keys(layers).map((lyrId) => {
-      var lyr = layers[lyrId];
-      var filteredSubjectIds = layerSubjectRelation
-        .filter((relation) => {
-          return lyr.semanticId === relation.semanticid;
-        })
-        .map((relation) => {
-          return relation.subjectid;
+      var layers = this.state.layers;
+      Object.keys(layers).map((lyrId) => {
+        var lyr = layers[lyrId];
+        var filteredSubjectIds = layerSubjectRelation
+          .filter((relation) => {
+            return lyr.semanticId === relation.semanticid;
+          })
+          .map((relation) => {
+            return relation.subjectid;
+          });
+        filteredSubjectIds.map((subjectid) => {
+          layerListObject[subjectid].layers[lyr.uuid] = lyr;
         });
-      filteredSubjectIds.map((subjectid) => {
-        layerListObject[subjectid].layers[lyr.uuid] = lyr;
       });
-    });
-
-    return (
-      <Accordion>
-        {Object.keys(layerListObject).map((subjectId, index) => (
-          <React.Fragment key={index}>
-            <Accordion.Title
-              active={true}
-              index={index}
-              onClick={this.handleClick}
-            >
-              <Icon name="dropdown" />
-              {layerListObject[subjectId].description}
-            </Accordion.Title>
-            <Accordion.Content active={true}>
-              {this.createLayerListItems(layerListObject[subjectId].layers)}
-            </Accordion.Content>
-          </React.Fragment>
-        ))}
-      </Accordion>
-    );
+      this.setState({ layerListObject: layerListObject });
+    }
   };
 
   createLayerListItems = (layers) => {
@@ -107,16 +97,33 @@ class LayerList extends Component {
   };
 
   render() {
+    var activeIndex = this.state.activeIndex;
     return (
-      <div>
-        {this.props.Layers && this.state.subjects && this.renderLayerList()}
-      </div>
+      <Accordion>
+        {Object.keys(this.state.layerListObject).map((subjectId, index) => (
+          <React.Fragment key={index}>
+            <Accordion.Title
+              active={activeIndex === index}
+              index={index}
+              onClick={this.handleClick}
+            >
+              <Icon name="dropdown" />
+              {this.state.layerListObject[subjectId].description}
+            </Accordion.Title>
+            <Accordion.Content active={activeIndex === index}>
+              {this.createLayerListItems(
+                this.state.layerListObject[subjectId].layers
+              )}
+            </Accordion.Content>
+          </React.Fragment>
+        ))}
+      </Accordion>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  return { Layers: selectLayers(state), mapId: state.map.focused };
+  return { Layers: selectLayers(state, state.map.focused) };
 };
 
 export default connect(mapStateToProps)(withWidgetLifeCycle(LayerList));
