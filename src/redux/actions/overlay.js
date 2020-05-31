@@ -17,6 +17,17 @@ export const setOverlay = (config) => (dispatch) => {
     })
 }
 
+export const setOverlayProperty = (config) => (dispatch) => {
+    const focusedmap = getFocusedMapProxy().uuid.value
+    dispatch({
+        type: types.SET_OVERLAY_PROPERTY,
+        payload: {
+            config,
+            focusedmap
+        }
+    })
+}
+
 export const unsetOverlay = (config) => (dispatch) => {
     removeOverlay(config.uuid)
     dispatch({

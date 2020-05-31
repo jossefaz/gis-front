@@ -17,7 +17,8 @@ import {
     Polygon,
     MultiLineString,
     LineString,
-    MultiPolygon
+    MultiPolygon,
+    Circle
 } from 'ol/geom';
 import Feature from 'ol/Feature';
 
@@ -85,6 +86,8 @@ export const geoserverFeatureToOLGeom = (config) => {
         case "MultiPoint":
             newGeometry = new MultiPoint(coordinates);
             break;
+        case "Circle":
+            newGeometry = new Circle(coordinates)
         default:
             break;
     }
@@ -93,18 +96,20 @@ export const geoserverFeatureToOLGeom = (config) => {
 }
 
 const InstanceOfGeometryClass = (geometry) => {
-    if (geometry.constructor && geometry.constructor.name) {
-        if (geometry instanceof MultiPolygon
-            || geometry instanceof Point
-            || geometry instanceof Polygon
-            || geometry instanceof MultiLineString
-            || geometry instanceof LineString
-            || geometry instanceof MultiPoint)
-            return true;
 
-        return false
+    if (geometry instanceof MultiPolygon
+        || geometry instanceof Point
+        || geometry instanceof Polygon
+        || geometry instanceof MultiLineString
+        || geometry instanceof LineString
+        || geometry instanceof MultiPoint
+        || geometry instanceof Circle
+    )
+        return true;
 
-    }
+    return false
+
+
 }
 
 export const zoomTo = (config) => {
@@ -113,7 +118,8 @@ export const zoomTo = (config) => {
         const view = getFocusedMap().getView()
         highlightFeature(config)
         view.fit(newGeometry, {
-            padding: [170, 50, 30, 150]
+            padding: [170, 50, 30, 150],
+            maxZoom: 10
         })
     } else {
         console.log(config)
@@ -133,10 +139,14 @@ export const highlightFeature = (config) => {
     if (newGeometry) {
         source.addFeature(new Feature(newGeometry))
     }
+}
 
-
-
-
+export const unhighlightFeature = () => {
+    let Highlight = getFocusedMapProxy().Highlight
+    if (Highlight) {
+        const source = getFocusedMapProxy().getVectorSource(Highlight.source)
+        source.clear();
+    }
 }
 
 /**

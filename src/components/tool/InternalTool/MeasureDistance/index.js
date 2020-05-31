@@ -203,11 +203,12 @@ class MeasureDistance extends React.Component {
   addDraggableToOverlay = (color) => {
     const overlay = this.selfOverlay[this.map].overlays[this.measureToolTip]
     const overlayDiv = document.getElementById(overlay.selector)
+    const widgetName = this.WIDGET_NAME
     overlayDiv.style.backgroundColor = color
     overlayDiv.setAttribute("uuid", this.measureToolTip)
     overlayDiv.setAttribute("dragging", false)
     overlayDiv.addEventListener('mousedown', function (evt) {
-      getOverlay(this.id.split('Measure')[1]).set('dragging', true)
+      getOverlay(this.id.split(widgetName)[1]).set('dragging', true)
       console.info('start dragging');
     });;
 

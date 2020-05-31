@@ -102,7 +102,7 @@ class Identify extends Component {
   }
 
   onReset = () => {
-    alert("Hiii");
+    console.log("Reset Identify")
   };
   onUnfocus = async () => {
     if (this.selfInteraction) {

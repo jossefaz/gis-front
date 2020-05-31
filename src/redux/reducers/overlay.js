@@ -18,6 +18,13 @@ const overlayReducer = (state = {}, action) => {
                 draftState[config.widgetName][focusedmap].focused = config.uuid
             });
 
+        case types.SET_OVERLAY_PROPERTY:
+            return produce(state, (draftState) => {
+                const { config, focusedmap } = action.payload
+                draftState[config.widgetName][focusedmap].overlays[config.uuid][config.property] = config.value
+            });
+
+
         case types.UNSET_OVERLAY:
             return produce(state, (draftState) => {
                 const { uuid, widgetName } = action.payload
