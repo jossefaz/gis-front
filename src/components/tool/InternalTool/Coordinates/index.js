@@ -30,7 +30,14 @@ const defaultState = {
         errorMessage: "נא להזין רק מספרים",
         isValid: false,
     },
-    projection: 'EPSG:2039'
+    projection: 'EPSG:2039',
+    UI: {
+        projectionSelect: "רשת קורדינטות : ",
+        MousePosition: "קורדינטות העכבר : ",
+        goTo: "התמקד : ",
+        defaultHTML: '<p>העכבר לא על המפה</p>'
+
+    }
 }
 
 class MyCustomWidget extends Component {
@@ -52,7 +59,7 @@ class MyCustomWidget extends Component {
             projection: 'EPSG:2039',
             className: 'custom-mouse-position',
             target: document.getElementById('mouse-position'),
-            undefinedHTML: '<p>Pointer not on map !</p>'
+            undefinedHTML: this.state.UI.defaultHTML
         });
         getFocusedMap().addControl(this.mousePositionControl)
     }
@@ -137,7 +144,7 @@ class MyCustomWidget extends Component {
                     <Body>
                         <Row>
                             <Cell>
-                                <p>Projection : </p>
+                                <p>{this.state.UI.projectionSelect}</p>
                             </Cell>
                             <Cell>
                                 <Select value={projectionsOptions.filter(pr => pr.value == this.state.projection)[0].value} placeholder='Choose a projection' options={projectionsOptions} onChange={this.onProjectionChange} />
@@ -145,7 +152,7 @@ class MyCustomWidget extends Component {
                         </Row>
                         <Row>
                             <Cell>
-                                <p>Current pointer coordinates : </p>
+                                <p>{this.state.UI.MousePosition}</p>
                             </Cell>
                             <Cell>
                                 <div id="mouse-position"></div>
@@ -153,7 +160,7 @@ class MyCustomWidget extends Component {
                         </Row>
                         <Row>
                             <Cell>
-                                <p>Zoom To : </p>
+                                <p>{this.state.UI.goTo}</p>
                             </Cell>
                             <Cell>
                                 <div onMouseDownCapture={e => e.stopPropagation()}>
