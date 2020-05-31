@@ -9,4 +9,5 @@ export default {
   MantiIntersectionLayer: lazy(() => import("./MantiIntersectionLayer/index.jsx")),
   Draw: lazy(() => import("./Draw")),
   Legend: lazy(() => import("./Legend")),
+  Coordinates: lazy(() => import("./Coordinates")),
 };
