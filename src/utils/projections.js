@@ -10,3 +10,14 @@ export const projIsrael = new Projection({
     code: 'EPSG:2039',
     extent: [119090.66, 374048.52, 264683.75, 798367.27]
 });
+
+export const convertCoordToIsraelTM = (sourceSR, coord) => {
+    let point = { x: coord[0], y: coord[1] }
+    if (sourceSR != 'EPSG:2039') {
+        var source = new proj4.Proj(sourceSR);
+        var dest = new proj4.Proj('EPSG:2039');
+        point = proj4.transform(source, dest, point)
+    }
+    return [point.x, point.y]
+
+}
