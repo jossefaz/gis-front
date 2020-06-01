@@ -30,6 +30,7 @@ class FeatureDetail extends React.Component {
 
             <div className="scrollContent">
               {Object.keys(this.currentFeature.properties).map((property) => (
+                property != 'bbox' &&
                 <tr key={property}>
                   <td>{this.currentFeature.properties[property]}</td>
                   <td><b>{property}</b></td>

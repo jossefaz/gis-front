@@ -6,4 +6,6 @@ export default {
   SingleLayerTest: lazy(() => import("./SingleLayerTest")),
   MantiIntersectionLayer: lazy(() => import("./MantiIntersectionLayer")),
   Draw: lazy(() => import("./Draw")),
+  Legend: lazy(() => import("./Legend")),
+  Coordinates: lazy(() => import("./Coordinates")),
 };

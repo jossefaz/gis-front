@@ -42,7 +42,7 @@ class FeatureList extends Component {
       <tr><td>
         <select className="ui fluid dropdown" onChange={(event) => this.setState({ current_field: event.target.value })}>
           {
-            Object.keys(this.selectedFeatures[this.currentLayer][0].properties).map((field) => typeof this.selectedFeatures[this.currentLayer][0].properties[field] == "string" ? < option key={field} value={field} > {field}</option> : null)
+            Object.keys(this.selectedFeatures[this.currentLayer][0].properties).map((field) => typeof this.selectedFeatures[this.currentLayer][0].properties[field] == "string" || typeof this.selectedFeatures[this.currentLayer][0].properties[field] == "number" ? < option key={field} value={field} > {field}</option> : null)
           }
         </select>
 

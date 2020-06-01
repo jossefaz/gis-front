@@ -34,7 +34,7 @@ export const loadChannels = () => {
   //   );
   // });
 
-  var nats = wsNats.connect('ws://localhost:4223');
+  var nats = wsNats.connect('ws://192.168.2.100:4223');
   nats.subscribe("MTCS.Units.*", (msg) => {
     var channelItem = channels;
     var data = [];

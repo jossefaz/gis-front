@@ -2,17 +2,22 @@
   "MapConfig": {
     "target": "map",
     "proj": "EPSG:2039",
-    "center": [221102, 631882],
+    "center": [
+      221102,
+      631882
+    ],
     "zoom": 6
   },
-  "SearchConfigs": [{
+  "SearchConfigs": [
+    {
       "name": "חיפוש לדוגמא",
       "type": "OBJ_ARRAY",
       "field": "field1",
       "itemTitlePrefix": "לפני_",
       "itemTitleField": "field3",
       "itemTitlePostfix": "_אחרי",
-      "data": [{
+      "data": [
+        {
           "field1": "שלום כיתה א",
           "field2": 12,
           "field3": "ערך 1",
@@ -42,7 +47,8 @@
       "itemTitlePrefix": "לפני_",
       "itemTitleField": "field3",
       "itemTitlePostfix": "_אחרי",
-      "data": [{
+      "data": [
+        {
           "field1": "מה נשמע בכיתה",
           "field2": 12,
           "field3": "ערך 4",
@@ -66,20 +72,23 @@
       ]
     }
   ],
-  "layers": [{
-    "id": 1,
-    "name": "dimigcompile",
-    "alias": "שכבה לדוגמא",
-    "url": "http://localhost:8600/geoserver/Jeru/wms",
-    "params": {
-      "LAYERS": "Jeru:dimigcompile"
-    },
-    "serverType": "geoserver",
-    "visible": 1,
-    "selectable": 1
-  }],
+  "layers": [
+    {
+      "id": 1,
+      "name": "dimigcompile",
+      "alias": "שכבה לדוגמא",
+      "url": "http://localhost:8600/geoserver/Jeru/wms",
+      "params": {
+        "LAYERS": "Jeru:dimigcompile"
+      },
+      "serverType": "geoserver",
+      "visible": 1,
+      "selectable": 1
+    }
+  ],
   "Widgets": {
-    "tools": [{
+    "tools": [
+      {
         "Id": 1,
         "ToolName": "BaseMapGallery",
         "ToolTip": "מפות רקע",
@@ -205,15 +214,53 @@
         "ToolGroupId": 0,
         "ToolContainer": "TopNav",
         "IsOpen": 0
+      },
+      {
+        "Id": 9,
+        "ToolName": "Legend",
+        "ToolTip": "מקרא",
+        "ToolImage": "legend.png",
+        "ToolActionInvoker": "",
+        "ToolInvokerType": 0,
+        "ToolTypeID": 1,
+        "OnCreate": "default",
+        "OnDestroy": "default",
+        "ToolParams": "",
+        "ToolLocation": "",
+        "Order": 1,
+        "IsAGroup": 0,
+        "ToolGroupId": 0,
+        "ToolContainer": "TopNav",
+        "IsOpen": 0
+      },
+      {
+        "Id": 10,
+        "ToolName": "Coordinates",
+        "ToolTip": "המרת קורדינטות",
+        "ToolIcon": "map-marked-alt",
+        "ToolActionInvoker": "",
+        "ToolInvokerType": 0,
+        "ToolTypeID": 1,
+        "OnCreate": "default",
+        "OnDestroy": "default",
+        "ToolParams": "",
+        "ToolLocation": "",
+        "Order": 1,
+        "IsAGroup": 0,
+        "ToolGroupId": 0,
+        "ToolContainer": "TopNav",
+        "IsOpen": 0
       }
     ],
-    "groups": [{
-      "Id": 1,
-      "GroupContainer": "TopNav",
-      "GroupName": "General",
-      "GroupImage": "toolsGroup.png",
-      "IsOpen": 0
-    }]
+    "groups": [
+      {
+        "Id": 1,
+        "GroupContainer": "TopNav",
+        "GroupName": "General",
+        "GroupImage": "toolsGroup.png",
+        "IsOpen": 0
+      }
+    ]
   },
   "channels": {
     "name": "MTCS.Units PubSub Channel",

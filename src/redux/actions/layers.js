@@ -119,14 +119,3 @@ const _initLayers = (dispatch) => {
     });
   });
 };
-
-// const _resetLayerAdded = (toolsList, dispatch) => {
-//   return new Promise((resolve, reject) => {
-//     const mapId = getFocusedMapProxy().uuid.value;
-//     dispatch({
-//       type: types.RESET_TOOLS,
-//       payload: mapId,
-//     });
-//     resolve();
-//   });
-// };

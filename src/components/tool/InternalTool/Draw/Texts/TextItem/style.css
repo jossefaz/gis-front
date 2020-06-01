@@ -1,0 +1,11 @@
+.labels  {
+    font-size: .85em;
+    padding-top: .2em;
+    padding-left: 15px;
+    font-weight: bold;
+  }
+
+  .displayFlex {
+      display: flex;
+      justify-content: space-between;
+  }

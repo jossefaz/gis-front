@@ -5,11 +5,17 @@ export const setSelectedFeatures = (features) => (dispatch) => {
     const focusedmap = getFocusedMapProxy().uuid.value
     const featuresByLayers = {}
     features.map(f => {
-      const layer = f.id.split(".")[0]
+      const layer = f.id_.split(".")[0]
       if (!(layer in featuresByLayers)) {
         featuresByLayers[layer] = []
       }
-      featuresByLayers[layer].push(f)
+      const properties = Object.keys(f.values_)
+        .filter(key => key !== 'geometry')
+        .reduce((obj, key) => {
+          obj[key] = f.values_[key];
+          return obj;
+        }, {});
+      featuresByLayers[layer].push({ properties, geometry: f.values_.geometry, id: f.id_ })
     }
     )
     dispatch({

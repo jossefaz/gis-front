@@ -1,7 +1,7 @@
-import { formatArea, formatLength } from '../../../../utils/format'
-import { LineString, Polygon } from 'ol/geom';
+import { formatArea, formatLength, formatRadius } from '../../../../utils/format'
+import { LineString, Polygon, Circle } from 'ol/geom';
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
-import { random_rgba } from "../../../../utils/func"
+
 export const generateOutput = (evt, tooltipCoord) => {
     const geom = evt.target;
     let output;
@@ -11,18 +11,22 @@ export const generateOutput = (evt, tooltipCoord) => {
     } else if (geom instanceof LineString) {
         output = formatLength(geom);
         tooltipCoord = geom.getLastCoordinate();
+    } else if (geom instanceof Circle) {
+        output = formatRadius(geom.getRadius());
+        tooltipCoord = geom.getLastCoordinate();
     }
     return { output, tooltipCoord }
 }
 
 
-export const generateNewStyle = () => {
+
+export const generateNewStyle = (color) => {
     return new Style({
         fill: new Fill({
             color: "rgba(154, 111, 222, 0.2)",
         }),
         stroke: new Stroke({
-            color: random_rgba(),
+            color: color,
             width: 2,
         }),
     })

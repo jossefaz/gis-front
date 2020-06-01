@@ -1,206 +1,194 @@
-import React, {
-  Component
-} from "react";
+import React, { Component } from "react";
 import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
-import {
-  connect
-} from "react-redux";
-import {
-  getFocusedMapProxy,
-  getFocusedMap,
-  getInteraction
-} from '../../../../nessMapping/api';
-import {
-  getCenter
-} from 'ol/extent';
-import {
-  getWidth
-} from 'ol/extent';
-import {
-  Image as ImageLayer
-} from "ol/layer";
-import {
-  setSelectedFeatures
-} from '../../../../redux/actions/features';
-import {
-  unsetInteractions,
-  setInteractions
-} from "../../../../redux/actions/interaction";
-import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
+import { connect } from "react-redux";
+import { getFocusedMapProxy, getFocusedMap, getInteraction } from "../../../../nessMapping/api";
+import { setSelectedFeatures } from "../../../../redux/actions/features";
+import { unsetInteractions, setInteractions, } from "../../../../redux/actions/interaction";
+import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
-import axios from "axios";
-
+import { getCurrentLayersSource, getFeaturesByExtent } from '../../../../utils/features'
 class Identify extends Component {
-
-  WIDGET_NAME = "Identify"
+  WIDGET_NAME = "Identify";
   INTERACTIONS = {
     Select: "Select",
-    DragBox: "DragBox"
-  }
+    DragBox: "DragBox",
+  };
+
+  sources = []
 
   get focusedmap() {
-    return getFocusedMapProxy().uuid.value
+    return getFocusedMapProxy().uuid.value;
   }
 
   get Tools() {
-    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
-    return currentMapId ? this.props.Tools[currentMapId] : null
+    const currentMapId = getFocusedMapProxy()
+      ? getFocusedMapProxy().uuid.value
+      : null;
+    return currentMapId ? this.props.Tools[currentMapId] : null;
   }
 
-  get selfInteraction() {
-    if (this.WIDGET_NAME in this.props.Interactions && this.focusedmap in this.props.Interactions[this.WIDGET_NAME]) {
-      return this.props.Interactions[this.WIDGET_NAME][this.focusedmap]
+  get select() {
+    if (this.selfInteraction && this.INTERACTIONS.Select in this.selfInteraction) {
+      return this.selfInteraction[this.INTERACTIONS.Select].uuid
     }
     return false
   }
 
-
-
+  get selfInteraction() {
+    if (
+      this.WIDGET_NAME in this.props.Interactions &&
+      this.focusedmap in this.props.Interactions[this.WIDGET_NAME]
+    ) {
+      return this.props.Interactions[this.WIDGET_NAME][this.focusedmap];
+    }
+    return false;
+  }
+  createSources = () => {
+    if (this.sources.length > 0) {
+      this.sources.map(vl => getFocusedMap().removeLayer(vl))
+      this.sources = []
+    }
+    this.sources = getCurrentLayersSource()
+    this.selectedFeatures = getInteraction(this.select).getFeatures();
+  }
   onBoxEnd = () => {
-    if (this.selfInteraction && this.INTERACTIONS.DragBox in this.selfInteraction) {
-      const dragBox = getInteraction(this.selfInteraction[this.INTERACTIONS.DragBox].uuid)
-      if (dragBox) {
-        dragBox.on('boxend',
-          () => {
-            var extent = dragBox.getGeometry().getExtent();
-            getFocusedMap()
-              .getLayers()
-              .getArray()
-              .map(lyr => {
-                if (lyr instanceof ImageLayer) {
-                  console.log(lyr)
-                  var viewResolution = getFocusedMap().getView().getResolution();
-                  var buffer = Math.round(getWidth(extent))
-                  var url = lyr.getSource()
-                    .getFeatureInfoUrl(getCenter(extent), viewResolution, "EPSG:2039", {
-                      INFO_FORMAT: "application/json",
-                      feature_count: 100,
-
-                    });
-                  if (url) {
-                    axios.get(url).then((response) => {
-                      this.props.setSelectedFeatures(response.data.features);
-                    });
-                  }
-
-                }
-              })
-          });
+    if (
+      this.selfInteraction &&
+      this.INTERACTIONS.DragBox in this.selfInteraction
+    ) {
+      const dragBox = getInteraction(
+        this.selfInteraction[this.INTERACTIONS.DragBox].uuid
+      );
+      if (dragBox && this.select) {
+        dragBox.on('boxstart', () => {
+          getInteraction(this.select).getFeatures().clear();
+        });
+        dragBox.on("boxend", () => {
+          const extent = dragBox.getGeometry().getExtent();
+          const features = getFeaturesByExtent(extent, this.sources)
+          if (features.length > 0) {
+            this.props.setSelectedFeatures(features)
+          }
+        }
+        );
       }
     }
-  }
-
-
-
-
-
-
+  };
 
 
   addInteraction = async (drawtype) => {
-    await this.props.setInteractions([{
+    await this.props.setInteractions([
+      {
         Type: this.INTERACTIONS.Select,
-        widgetName: this.WIDGET_NAME
+        interactionConfig: {
+          multi: true
+        },
+        widgetName: this.WIDGET_NAME,
       },
       {
         Type: this.INTERACTIONS.DragBox,
-        widgetName: this.WIDGET_NAME
-      }
+        widgetName: this.WIDGET_NAME,
+      },
     ]);
     this.onBoxEnd();
-  }
+    this.createSources()
+
+  };
 
   componentDidMount() {
     this.addInteraction();
   }
 
   onReset = () => {
-    alert("Hiii")
-  }
+    console.log("Reset Identify")
+  };
   onUnfocus = async () => {
     if (this.selfInteraction) {
-      const InteractionArray = []
-      for (let [interactionName, InteractionData] of Object.entries(this.selfInteraction)) {
+      const InteractionArray = [];
+      for (let [interactionName, InteractionData] of Object.entries(
+        this.selfInteraction
+      )) {
         InteractionArray.push({
           uuid: InteractionData.uuid,
           widgetName: this.WIDGET_NAME,
-          Type: InteractionData.Type
-        })
+          Type: InteractionData.Type,
+        });
       }
       if (InteractionArray.length > 0) {
         await this.props.unsetInteractions(InteractionArray);
-
       }
     }
-
-  }
+  };
 
   onFocus = async () => {
-    const InteractionArray = []
-    for (let [interactionName, InteractionData] of Object.entries(this.selfInteraction)) {
+    const InteractionArray = [];
+    for (let [interactionName, InteractionData] of Object.entries(
+      this.selfInteraction
+    )) {
       if (!InteractionData.status) {
         InteractionArray.push({
           Type: InteractionData.Type,
-          widgetName: this.WIDGET_NAME
-        })
-
+          widgetName: this.WIDGET_NAME,
+          interactionConfig: InteractionData.interactionConfig
+        });
       }
     }
     if (InteractionArray.length > 0) {
       await this.props.setInteractions(InteractionArray);
+      this.createSources()
       this.onBoxEnd();
     }
-  }
-
-
+  };
 
   componentWillUnmount() {
-    this.onUnfocus()
+    this.onUnfocus();
+  }
+  componentDidUpdate() {
+    this.createSources();
   }
 
   render() {
-
-    return ( <
-      React.Fragment > {
-        this.focusedmap in this.props.Features && "selectedFeatures" in this.props.Features[this.focusedmap] ?
-        Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0 ?
-        <
-        div className = "flexDisplay" >
-        <
-        FeatureDetail / >
-        <
-        FeatureList / >
-        <
-        LayersList / >
-        <
-        /div> : <
-        p > SELECT FEATURES ON MAP < /p> : <p>SELECT FEATURES ON MAP</p >
-
-      } <
-      /React.Fragment>
-
+    return (
+      <React.Fragment>
+        {this.focusedmap in this.props.Features &&
+          "selectedFeatures" in this.props.Features[this.focusedmap] ? (
+            Object.keys(this.props.Features[this.focusedmap].selectedFeatures).length > 0 ? (
+              <div className="flexDisplay">
+                <FeatureDetail />
+                <FeatureList />
+                <LayersList />
+              </div>
+            ) : (
+                <p> SELECT FEATURES ON MAP </p>
+              )
+          ) : (
+            <p>SELECT FEATURES ON MAP</p>
+          )}
+      </React.Fragment>
     );
-
   }
-
-};
+}
 const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     Tools: state.Tools,
     Interactions: state.Interactions,
-
+    Layers: state.Layers
   };
 };
-
-
 
 const mapDispatchToProps = {
   setInteractions,
   unsetInteractions,
-  setSelectedFeatures
-}
+  setSelectedFeatures,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(Identify));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withWidgetLifeCycle(Identify));
+
+
+

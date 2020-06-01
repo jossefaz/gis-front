@@ -20,7 +20,7 @@ const ToolTemplate = (props) => {
           </div>
           {props.toolName}
         </div>
-        <div className="content">{props.children}</div>
+        <div className="content uirtl">{props.children}</div>
       </div>
     </PopUp>
   );

@@ -17,7 +17,8 @@ import {
     Polygon,
     MultiLineString,
     LineString,
-    MultiPolygon
+    MultiPolygon,
+    Circle
 } from 'ol/geom';
 import Feature from 'ol/Feature';
 
@@ -39,6 +40,20 @@ export const getFocusedMap = () => {
 export const getFocusedMapProxy = () => {
     const state = store.getState();
     return NessMapping.getInstance().getMapProxy(state.map.focused)
+}
+
+//GET RESOLUTION
+
+export const getCurrentResolution = () => {
+    return getFocusedMap().getView().getResolution()
+}
+
+export const getCurrentExtent = () => {
+    return getFocusedMap().getView().calculateExtent()
+}
+
+export const getCurrentProjection = () => {
+    return getFocusedMap().getView().getProjection()
 }
 
 // ZOOM TO
@@ -71,6 +86,8 @@ export const geoserverFeatureToOLGeom = (config) => {
         case "MultiPoint":
             newGeometry = new MultiPoint(coordinates);
             break;
+        case "Circle":
+            newGeometry = new Circle(coordinates)
         default:
             break;
     }
@@ -78,15 +95,34 @@ export const geoserverFeatureToOLGeom = (config) => {
 
 }
 
+const InstanceOfGeometryClass = (geometry) => {
+
+    if (geometry instanceof MultiPolygon
+        || geometry instanceof Point
+        || geometry instanceof Polygon
+        || geometry instanceof MultiLineString
+        || geometry instanceof LineString
+        || geometry instanceof MultiPoint
+        || geometry instanceof Circle
+    )
+        return true;
+
+    return false
+
+
+}
+
 export const zoomTo = (config) => {
-    const newGeometry = geoserverFeatureToOLGeom(config)
+    const newGeometry = InstanceOfGeometryClass(config) ? config : geoserverFeatureToOLGeom(config)
     if (newGeometry) {
         const view = getFocusedMap().getView()
         highlightFeature(config)
         view.fit(newGeometry, {
-            padding: [170, 50, 30, 150]
+            padding: [170, 50, 30, 150],
+            maxZoom: 10
         })
     } else {
+        console.log(config)
         throw "the config object provided to ZoomTo function does not match any geometry type"
     }
 }
@@ -99,14 +135,18 @@ export const highlightFeature = (config) => {
     }
     const source = getFocusedMapProxy().getVectorSource(Highlight.source)
     source.clear();
-    const newGeometry = geoserverFeatureToOLGeom(config)
+    const newGeometry = InstanceOfGeometryClass(config) ? config : geoserverFeatureToOLGeom(config)
     if (newGeometry) {
         source.addFeature(new Feature(newGeometry))
     }
+}
 
-
-
-
+export const unhighlightFeature = () => {
+    let Highlight = getFocusedMapProxy().Highlight
+    if (Highlight) {
+        const source = getFocusedMapProxy().getVectorSource(Highlight.source)
+        source.clear();
+    }
 }
 
 /**
