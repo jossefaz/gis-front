@@ -9,6 +9,7 @@ import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
 import generateID from '../../../../utils/uuid'
 import { escapeHandler } from '../../../../utils/eventHandlers'
+import { getWKTFromOlGeom } from '../../../../utils/geometryToWkt'
 import TextForm from './Texts/TextForm'
 import { Confirm, Label } from 'semantic-ui-react'
 import FeatureTable from './FeatureTable'
@@ -234,6 +235,7 @@ class Draw extends React.Component {
                     const { r, g, b, a } = this.state.defaultColor
                     e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`))
                     e.feature.setId(generateID())
+                    console.log(getWKTFromOlGeom(e.feature))
                     this.setState({ drawn: true, lastFeature: { ...this.state.lastFeature, [this.map]: e.feature } })
 
                 });
