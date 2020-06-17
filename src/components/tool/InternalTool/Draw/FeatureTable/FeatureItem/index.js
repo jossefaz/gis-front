@@ -4,6 +4,7 @@ import { generateNewStyle } from '../../../../../../utils/func'
 import IconButton from "../../../../../UI/Buttons/IconButton"
 import { unhighlightFeature } from '../../../../../../nessMapping/api'
 import { Table, Form, Input } from 'semantic-ui-react'
+import { deleteGeometry } from '../../../../../../services/persistentGeometry/api'
 import './style.css'
 export default (props) => {
 
@@ -18,6 +19,8 @@ export default (props) => {
 
     const [strokeColor, setStrokeColor] = useState(props.defaultColor);
     const removeFeature = () => {
+        const feature = getFeature()
+        deleteGeometry(feature)
         props.source.removeFeature(getFeature())
         unhighlightFeature()
         props.deleteLastFeature(props.fid)

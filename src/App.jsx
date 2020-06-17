@@ -12,6 +12,7 @@ import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
 import { InitIcons } from "./utils/faicons";
 import { getMetaData } from "./communication/mdFetcher";
+import { getRestOperations } from './services/saveRestOperations/api'
 
 import { InitSearching } from "./utils/searchUtils";
 import Widget from "./containers/Widget";
@@ -48,9 +49,9 @@ class App extends React.Component {
         menuItems.forEach((menuItem) => {
           console.log(
             "  --menuItem: " +
-              menuItem.title +
-              " " +
-              JSON.stringify(menuItem.item)
+            menuItem.title +
+            " " +
+            JSON.stringify(menuItem.item)
           );
         });
 
@@ -62,6 +63,7 @@ class App extends React.Component {
     // REMOVE: this is just for searching debug
 
     this.fetchDataFromServer();
+    getRestOperations()
   }
 
 

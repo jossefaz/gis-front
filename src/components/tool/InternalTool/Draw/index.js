@@ -7,9 +7,11 @@ import { setOverlay, unsetOverlays, unsetOverlay, setOverlayProperty } from "../
 import IconButton from "../../../UI/Buttons/IconButton"
 import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
-import generateID from '../../../../utils/uuid'
+import { createNewGeometry, updateGeometry } from '../../../../services/persistentGeometry/api'
 import { escapeHandler } from '../../../../utils/eventHandlers'
+import generateID from '../../../../utils/uuid'
 import { getWKTFromOlGeom } from '../../../../utils/geometryToWkt'
+import getOlFeatureFromJson from '../../../../utils/olFeatureFromGeoJson'
 import TextForm from './Texts/TextForm'
 import { Confirm, Label } from 'semantic-ui-react'
 import FeatureTable from './FeatureTable'
@@ -19,6 +21,7 @@ import { DragPan } from "ol/interaction";
 import { Grid } from 'semantic-ui-react'
 import Collection from 'ol/Collection';
 import Point from 'ol/geom/Point';
+import axios from 'axios'
 import "./style.css";
 class Draw extends React.Component {
 
@@ -161,6 +164,7 @@ class Draw extends React.Component {
             widgetName: this.WIDGET_NAME
         });
         this.setState({ editSession: { status: true, current: feature.getId() } })
+        this.onModifyEnd()
     }
 
     autoClosingEditSession = (e) => {
@@ -216,6 +220,20 @@ class Draw extends React.Component {
         }
     }
 
+    retrieveExistingDrawing = async () => {
+        const existing = await axios.get("http://localhost:9090/persistentGeometry")
+        existing.data.map((polygon, index) => {
+
+            const feature = getOlFeatureFromJson(polygon["geometry"])
+            feature.setId(polygon["id"])
+            this.DrawSource.addFeature(feature)
+            if (index === existing.data.length - 1) {
+                this.setState({ lastFeature: { ...this.state.lastFeature, [this.map]: feature } })
+            }
+        })
+
+    }
+
     removeOverlay = (uuid) => {
         if (uuid == this.state.editText.overlayID) {
             this.setState({
@@ -231,14 +249,21 @@ class Draw extends React.Component {
         const draw = getInteraction(this.draw)
         if (draw) {
             draw.on('drawend',
-                (e) => {
+                async (e) => {
+                    const newFeatureId = await createNewGeometry(e.feature) || generateID()
+                    e.feature.setId(newFeatureId)
                     const { r, g, b, a } = this.state.defaultColor
                     e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`))
-                    e.feature.setId(generateID())
-                    console.log(getWKTFromOlGeom(e.feature))
                     this.setState({ drawn: true, lastFeature: { ...this.state.lastFeature, [this.map]: e.feature } })
-
                 });
+
+        }
+    }
+
+    onModifyEnd = () => {
+        const modify = getInteraction(this.modify)
+        if (modify) {
+            modify.on('modifyend', async (e) => { await updateGeometry(e.features.getArray()[0]) });
 
         }
     }
@@ -258,6 +283,8 @@ class Draw extends React.Component {
                 this.dragPan = interaction;
             }
         });
+        this.onOpenDrawSession("Polygon")
+        this.retrieveExistingDrawing();
     }
     componentDidUpdate() {
         document.addEventListener("keydown", (e) => escapeHandler(e, this.abortDrawing));
