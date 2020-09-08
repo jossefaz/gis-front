@@ -15,7 +15,7 @@ class LayerList extends Component {
       layers: {},
       subjects: {},
       layerSubjectRelation: [],
-      // layerListObject: {},
+      layerListObject: {},
     };
   }
   handleClick = (e, titleProps) => {
@@ -30,30 +30,36 @@ class LayerList extends Component {
     this.fetchMetaDataFromServer();
     // this.renderTest();
   }
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   return {
-  //     layers: nextProps.layers,
-  //   };
-  // }
-
-  componentDidUpdate() {
-    this.renderTest();
-    // this.renderLayerList();
+  static getDerivedStateFromProps(props, state) {
+    return {
+      layers: props.layers,
+    };
   }
 
-  shouldComponentUpdate = (nextProps, nextState) => {
-    var prevLayers = this.state.layers;
-    var nextLayers = nextProps.layers;
-    var subjects = nextState.subjects;
+  componentDidUpdate(prevProps, prevState) {
 
-    return (
-      (prevLayers !== nextLayers &&
-        nextProps.layers &&
-        Object.keys(nextProps.layers).length > 0 &&
-        Object.keys(subjects).length > 0) ||
-      nextState.activeIndex !== this.state.activeIndex
-    );
-  };
+    if (Object.keys(prevState.layers).length !== Object.keys(this.state.layers).length) {
+      console.log("not working")
+      this.renderLayerList();
+    }
+
+
+  }
+  componentWillUpdate(prevProps, prevState) {
+
+  }
+
+  // shouldComponentUpdate = (nextProps, nextState) => {
+  //   var prevLayers = this.props.layers;
+  //   var nextLayers = nextProps.layers;
+  //   var subjects = nextState.subjects;
+
+  //   return (
+  //     (Object.keys(nextLayers).length !== Object.keys(prevLayers).length &&
+  //       Object.keys(subjects).length > 0) ||
+  //     nextState.activeIndex !== this.state.activeIndex
+  //   );
+  // };
 
   fetchMetaDataFromServer = async () => {
     const [subjectsResult, layerSubjectResult] = await Promise.all([
@@ -100,28 +106,10 @@ class LayerList extends Component {
         layerListObject[subjectid].layers[lyr.uuid] = lyr;
       });
     });
-    // this.setState({ layerListObject: layerListObject });
+    this.setState({ layerListObject: layerListObject });
+  }
 
-    return (
-      <Accordion>
-        {Object.keys(layerListObject).map((subjectId, index) => (
-          <React.Fragment key={index}>
-            <Accordion.Title
-              active={activeIndex === index}
-              index={index}
-              onClick={this.handleClick}
-            >
-              <Icon name="dropdown" />
-              {layerListObject[subjectId].description}
-            </Accordion.Title>
-            <Accordion.Content active={activeIndex === index}>
-              {this.createLayerListItems(layerListObject[subjectId].layers)}
-            </Accordion.Content>
-          </React.Fragment>
-        ))}
-      </Accordion>
-    );
-  };
+
 
   createLayerListItems = (layers) => {
     return Object.keys(layers).map((layerId, index) => (
@@ -129,41 +117,32 @@ class LayerList extends Component {
     ));
   };
 
-  mytest = () => {
-    console.log("got to this point");
-    return <div>{"test"}</div>;
-  };
-
   render() {
-    return <React.Fragment>{this.renderLayerList()}</React.Fragment>;
-    // var activeIndex = this.state.activeIndex;
-    // return (
-    //   <Accordion>
-    //     {Object.keys(this.state.layerListObject).map((subjectId, index) => (
-    //       <React.Fragment key={index}>
-    //         <Accordion.Title
-    //           active={activeIndex === index}
-    //           index={index}
-    //           onClick={this.handleClick}
-    //         >
-    //           <Icon name="dropdown" />
-    //           {this.state.layerListObject[subjectId].description}
-    //         </Accordion.Title>
-    //         <Accordion.Content active={activeIndex === index}>
-    //           {this.createLayerListItems(
-    //             this.state.layerListObject[subjectId].layers
-    //           )}
-    //         </Accordion.Content>
-    //       </React.Fragment>
-    //     ))}
-    //   </Accordion>
-    // );
+
+    return (
+      <Accordion >
+        {Object.keys(this.state.layerListObject).map((subjectId, index) => (
+          <React.Fragment key={index}>
+            <Accordion.Title
+              active={this.state.activeIndex === index}
+              index={index}
+              onClick={this.handleClick}
+            >
+              <Icon name="dropdown" />
+              {this.state.layerListObject[subjectId].description}
+            </Accordion.Title>
+            <Accordion.Content active={this.state.activeIndex === index}>
+              {this.createLayerListItems(this.state.layerListObject[subjectId].layers)}
+            </Accordion.Content>
+          </React.Fragment>
+        ))}
+      </Accordion>
+    );
+    // return <React.Fragment>{this.renderLayerList()}</React.Fragment>;
+
   }
 }
 
-// const mapStateToProps = (state) => {
-//   return { Layers: selectLayers(state, state.map.focused) };
-// };
 
 const mapStateToProps = (state) => {
   return {

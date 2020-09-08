@@ -17,7 +17,7 @@ export const selectLayers = createSelector(
   (layersObject, mapId) => {
     if (layersObject[mapId]) {
       return layersObject[mapId]["layers"];
-    } else return null;
+    } else return {};
   }
 );
 
