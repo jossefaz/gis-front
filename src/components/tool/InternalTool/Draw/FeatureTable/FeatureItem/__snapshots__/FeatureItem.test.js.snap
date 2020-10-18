@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FeatureItem component expect to match snapshot 1`] = `
+<Fragment>
+  <TableCell
+    as="td"
+  >
+    <p>
+      NaN
+    </p>
+  </TableCell>
+  <TableCell
+    as="td"
+  >
+    <div
+      className="displayFlex"
+    >
+      <label
+        className="labels"
+      >
+        קו חיצוני :
+      </label>
+      <SketchExample
+        initialWidth={2}
+        onColorChange={[Function]}
+        onWidthChange={[Function]}
+        withWidth={true}
+      />
+    </div>
+    <div
+      className="displayFlex"
+    >
+      <label
+        className="labels"
+      >
+        מילוי :
+      </label>
+      <SketchExample
+        defaultColor={
+          Object {
+            "a": "0.2",
+            "b": "222",
+            "g": "111",
+            "r": "154",
+          }
+        }
+        onColorChange={[Function]}
+      />
+    </div>
+  </TableCell>
+  <TableCell
+    as="td"
+  >
+    <_default
+      className="ui icon button pointer negative"
+      icon="trash-alt"
+      onClick={[Function]}
+      size="lg"
+    />
+    <_default
+      className="ui icon button pointer positive"
+      icon="edit"
+      onClick={[Function]}
+      size="lg"
+    />
+  </TableCell>
+</Fragment>
+`;

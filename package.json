@@ -69,12 +69,14 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
+    "enzyme-to-json": "^3.6.1",
     "jest-canvas-mock": "^2.3.0"
   },
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(ol)/)"
     ],
+    "snapshotSerializers": ["enzyme-to-json/serializer"],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "setupTests.js"

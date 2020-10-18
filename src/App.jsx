@@ -1,6 +1,6 @@
 import React from "react";
 import MapTabs from "./containers/MapTabs";
-import Map from "./components/Map";
+import Map from "./containers/Map/Map";
 import TopNav from "./containers/TopNav";
 import SideNav from "./containers/SideNav";
 import config from "react-global-configuration";
