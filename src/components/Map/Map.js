@@ -1,16 +1,16 @@
 import React from "react";
 import "./style.css";
-import { getFocusedMap } from "../../nessMapping/api";
+import PropTypes from "prop-types";
 
 class MapComponent extends React.Component {
   componentDidMount() {
-    if (getFocusedMap().getLayers().getArray().length == 0) {
+    if (this.props.getFocusedMap().getLayers().getArray().length == 0) {
       this.props.setRaster("osm");
     }
   }
   componentDidUpdate() {
     if (this.props.map) {
-      this.map = getFocusedMap();
+      this.map = this.props.getFocusedMap();
     }
     if (this.map.getLayers().getArray().length == 0) {
       this.props.setRaster("osm");
@@ -20,5 +20,10 @@ class MapComponent extends React.Component {
     return <div id="map" className="map"></div>;
   }
 }
+
+MapComponent.propTypes = {
+  getFocusedMap: PropTypes.func, // should be imported from NessMapping
+  setRaster: PropTypes.func, // should be imported from redux action
+};
 
 export default MapComponent;
