@@ -1,9 +1,6 @@
 import React from "react";
 import { Tab } from "semantic-ui-react";
-import { connect } from "react-redux";
-import { InitMap, setMapFocus } from "../../redux/actions/map";
 import { getFocusedMap } from "../../nessMapping/api";
-import { resetTools, toolsReseted } from "../../redux/actions/tools";
 import "./style.css";
 
 class MapTabs extends React.Component {
@@ -73,14 +70,4 @@ class MapTabs extends React.Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  maps: state.map,
-});
-
-export default connect(mapStateToProps, {
-  InitMap,
-  setMapFocus,
-  resetTools,
-  toolsReseted,
-})(MapTabs);
+export default MapTabs;

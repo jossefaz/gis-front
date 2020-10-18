@@ -1,5 +1,5 @@
 import React from "react";
-import MapTabs from "./containers/MapTabs";
+import MapTabs from "./containers/MapTabs/MapTabs";
 import Map from "./containers/Map/Map";
 import TopNav from "./containers/TopNav";
 import SideNav from "./containers/SideNav";
