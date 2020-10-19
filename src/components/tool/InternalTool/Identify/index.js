@@ -160,9 +160,9 @@ class Identify extends Component {
           Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
             .length > 0 ? (
             <div className="flexDisplay">
-              <FeatureDetail />
-              <FeatureList />
               <LayersList />
+              <FeatureList />
+              <FeatureDetail />
             </div>
           ) : (
             <p> SELECT FEATURES ON MAP </p>
@@ -178,7 +178,6 @@ const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     Interactions: state.Interactions,
-    Layers: state.Layers,
   };
 };
 
