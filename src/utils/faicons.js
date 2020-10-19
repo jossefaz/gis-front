@@ -22,9 +22,35 @@ import {
   faBold,
   faHeading,
   faAngleDoubleLeft,
-  faMapMarkedAlt
+  faMapMarkedAlt,
+  faCameraRetro,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
-  library.add(fab, faItalic, faMapMarkedAlt, faAngleDoubleLeft, faHeading, faBold, faFont, faGripLines, faEdit, faCircle, faPencilRuler, faLayerGroup, faMap, faDrawPolygon, faMapMarkerAlt, faRuler, faMapPin, faVial, faTrashAlt, faEye, faCrosshairs, faEyeSlash, faTrafficLight);
+  library.add(
+    fab,
+    faItalic,
+    faMapMarkedAlt,
+    faCameraRetro,
+    faAngleDoubleLeft,
+    faHeading,
+    faBold,
+    faFont,
+    faGripLines,
+    faEdit,
+    faCircle,
+    faPencilRuler,
+    faLayerGroup,
+    faMap,
+    faDrawPolygon,
+    faMapMarkerAlt,
+    faRuler,
+    faMapPin,
+    faVial,
+    faTrashAlt,
+    faEye,
+    faCrosshairs,
+    faEyeSlash,
+    faTrafficLight
+  );
 };

@@ -16,6 +16,8 @@
 
             <FeatureTypeStyle>
                 <Rule>
+                    <Title>710</Title>
+                    <Abstract>junctions 710</Abstract>
                     <Name>710</Name>
                     <ogc:Filter>
                         <ogc:PropertyIsEqualTo>
@@ -23,8 +25,9 @@
                             <ogc:Literal>710</ogc:Literal>
                         </ogc:PropertyIsEqualTo>
                     </ogc:Filter>
-                    <Title>710</Title>
-                    <Abstract>junctions 710</Abstract>
+                    <MinScaleDenominator>1700</MinScaleDenominator>
+                    <MaxScaleDenominator>6771</MaxScaleDenominator>
+
 
                     <!-- like a linesymbolizer but with a fill too -->
                     <PolygonSymbolizer>
@@ -39,6 +42,8 @@
                     </PolygonSymbolizer>
                 </Rule>
                 <Rule>
+                    <Title>7730</Title>
+                    <Abstract>junctions730</Abstract>
                     <Name>7730</Name>
                     <ogc:Filter>
                         <ogc:PropertyIsEqualTo>
@@ -46,8 +51,6 @@
                             <ogc:Literal>7730</ogc:Literal>
                         </ogc:PropertyIsEqualTo>
                     </ogc:Filter>
-                    <Title>7730</Title>
-                    <Abstract>junctions730</Abstract>
 
                     <!-- like a linesymbolizer but with a fill too -->
                     <PolygonSymbolizer>

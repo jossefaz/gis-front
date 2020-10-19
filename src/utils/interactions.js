@@ -70,3 +70,13 @@ export const getWidgetInteractions = (
   }
   return false;
 };
+
+/**
+ *  Return an object of interaction that will be consume by the Redux store
+ * @param {string} uuid uuid of this interaction given by the InteractionProxy of NessMapping
+ * @param {*} widgetName the widgetName that own this interation
+ * @param {*} Type the interaction type
+ */
+export const getInteractionConfig = (uuid, widgetName, Type) => {
+  return { uuid, widgetName, Type };
+};

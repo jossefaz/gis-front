@@ -15,7 +15,9 @@
     "axios": "^0.19.2",
     "draft-js": "^0.11.7",
     "font-awesome": "^4.7.0",
+    "html2canvas": "^1.0.0-rc.7",
     "immer": "^4.0.2",
+    "jspdf": "^2.1.1",
     "ol": "^6.2.1",
     "ol-layerlist": "^1.1.8",
     "parsejson": "0.0.3",
@@ -76,7 +78,9 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(ol)/)"
     ],
-    "snapshotSerializers": ["enzyme-to-json/serializer"],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "setupTests.js"
