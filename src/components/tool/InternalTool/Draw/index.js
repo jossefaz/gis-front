@@ -28,6 +28,8 @@ import {
 } from "../../../../services/persistentGeometry/api";
 import { escapeHandler } from "../../../../utils/eventHandlers";
 import generateID from "../../../../utils/uuid";
+import { getWidgetObjectsFromStore } from "../../../../utils/widgets";
+import { generateOverlayDiv } from "../../../../utils/overlay";
 import { getWKTFromOlGeom } from "../../../../utils/geometryToWkt";
 import getOlFeatureFromJson from "../../../../utils/olFeatureFromGeoJson";
 import TextForm from "./Texts/TextForm";
@@ -79,13 +81,11 @@ class Draw extends React.Component {
   };
 
   get selfOverlay() {
-    if (
-      this.WIDGET_NAME in this.props.Overlays &&
-      this.map in this.props.Overlays[this.WIDGET_NAME]
-    ) {
-      return this.props.Overlays[this.WIDGET_NAME][this.map];
-    }
-    return false;
+    return getWidgetObjectsFromStore(
+      this.WIDGET_NAME,
+      this.props.Overlays,
+      this.map
+    );
   }
 
   get map() {
@@ -99,13 +99,11 @@ class Draw extends React.Component {
   }
 
   get selfInteraction() {
-    if (
-      this.WIDGET_NAME in this.props.Interactions &&
-      this.map in this.props.Interactions[this.WIDGET_NAME]
-    ) {
-      return this.props.Interactions[this.WIDGET_NAME][this.map];
-    }
-    return false;
+    return getWidgetObjectsFromStore(
+      this.WIDGET_NAME,
+      this.props.Interactions,
+      this.map
+    );
   }
 
   get draw() {
@@ -354,7 +352,7 @@ class Draw extends React.Component {
     const selector = `${this.WIDGET_NAME}${this.map}`;
     await this.props.setOverlay({
       overlay: {
-        element: this.generateOverlayDiv(selector, text),
+        element: generateOverlayDiv(selector, this.CLASSNAMES.TEXT, text),
         offset: [0, -15],
         positioning: "bottom-center",
         stopEvent: false,
@@ -402,14 +400,6 @@ class Draw extends React.Component {
       await this.createNewText(text);
     }
   };
-
-  generateOverlayDiv(selector, innerHtml) {
-    const overlayDiv = document.createElement("div");
-    overlayDiv.setAttribute("id", selector);
-    overlayDiv.setAttribute("class", this.CLASSNAMES.TEXT);
-    overlayDiv.innerHTML = innerHtml;
-    return overlayDiv;
-  }
 
   dragOverlay = (evt) => {
     if (this.selfOverlay) {
