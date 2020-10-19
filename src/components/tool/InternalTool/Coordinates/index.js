@@ -82,6 +82,7 @@ class MyCustomWidget extends Component {
     }
 
     goTo = () => {
+
         zoomTo(this.getOlPoint())
     }
 
@@ -89,6 +90,7 @@ class MyCustomWidget extends Component {
         const { X, Y } = this.state.goTo
         if (X.value && Y.value) {
             const coord = convertCoordToIsraelTM(this.state.projection, [Y.value, X.value])
+            console.log(coord)
             const pointPosition = new Point(coord)
             return pointPosition
         }

@@ -1,4 +1,5 @@
-.flexDisplay{
-    display: flex;
-    align-items: baseline;
+.flexDisplay {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: baseline;
 }

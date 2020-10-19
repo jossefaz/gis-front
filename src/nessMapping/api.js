@@ -95,7 +95,7 @@ export const geoserverFeatureToOLGeom = (config) => {
 
 }
 
-const InstanceOfGeometryClass = (geometry) => {
+export const InstanceOfGeometryClass = (geometry) => {
 
     if (geometry instanceof MultiPolygon
         || geometry instanceof Point
