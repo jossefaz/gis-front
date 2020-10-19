@@ -29,7 +29,7 @@ import {
 import { escapeHandler } from "../../../../utils/eventHandlers";
 import generateID from "../../../../utils/uuid";
 import { getWidgetObjectsFromStore } from "../../../../utils/widgets";
-import { generateOverlayDiv } from "../../../../utils/overlay";
+import { generateTextOverlay } from "../../../../utils/overlay";
 import { getWKTFromOlGeom } from "../../../../utils/geometryToWkt";
 import getOlFeatureFromJson from "../../../../utils/olFeatureFromGeoJson";
 import TextForm from "./Texts/TextForm";
@@ -350,18 +350,14 @@ class Draw extends React.Component {
 
   createNewText = async (text) => {
     const selector = `${this.WIDGET_NAME}${this.map}`;
-    await this.props.setOverlay({
-      overlay: {
-        element: generateOverlayDiv(selector, this.CLASSNAMES.TEXT, text),
-        offset: [0, -15],
-        positioning: "bottom-center",
-        stopEvent: false,
-        dragging: false,
-      },
-      widgetName: this.WIDGET_NAME,
-      content: text,
-      selector,
-    });
+    await this.props.setOverlay(
+      generateTextOverlay(
+        selector,
+        this.CLASSNAMES.TEXT,
+        text,
+        this.WIDGET_NAME
+      )
+    );
     if (this.selfOverlay) {
       const currentOverlays = Object.keys(this.selfOverlay.overlays);
       const lastID = currentOverlays[currentOverlays.length - 1];
