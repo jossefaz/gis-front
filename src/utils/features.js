@@ -1,10 +1,12 @@
-import { getFocusedMap } from "../nessMapping/api";
+import { getFocusedMap, getCurrentExtent } from "../nessMapping/api";
 import { Image as ImageLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { Vector as VectorLayer } from "ol/layer";
+import { bbox } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
 import { projIsrael } from "./projections";
-
+import axios from "axios";
+import { getHeight, getWidth } from "ol/extent";
 export const getCurrentLayersSource = () => {
   const sources = [];
   getFocusedMap()
@@ -13,12 +15,31 @@ export const getCurrentLayersSource = () => {
     .map((lyr) => {
       if (lyr instanceof ImageLayer) {
         const vectorSource = new VectorSource({
-          url: `${lyr
-            .getSource()
-            .getUrl()}?service=WMS&version=1.1.0&request=GetMap&layers=Jeru%3Adimigcompile&bbox=208971.15625%2C628413.125%2C224400.078125%2C634831.9375&width=768&height=330&srs=EPSG%3A2039&styles=&format=geojson`,
+          loader: () => {
+            axios
+              .get(lyr.getSource().getUrl(), {
+                params: {
+                  service: "WMS",
+                  version: "1.1.0",
+                  request: "GetMap",
+                  layers: lyr.getSource().getParams().LAYERS,
+                  bbox: getCurrentExtent().join(","),
+                  srs: lyr.getSource().getParams().SRS,
+                  format: "geojson",
+                  width: getFocusedMap().getSize()[0],
+                  height: getFocusedMap().getSize()[1],
+                },
+              })
+              .then((res) => {
+                vectorSource.addFeatures(
+                  vectorSource.getFormat().readFeatures(res.data)
+                );
+              });
+          },
           format: new GeoJSON({
             dataProjection: projIsrael,
           }),
+          strategy: bbox,
         });
         getFocusedMap().addLayer(
           new VectorLayer({

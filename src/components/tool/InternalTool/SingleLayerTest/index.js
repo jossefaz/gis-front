@@ -11,6 +11,7 @@ const LayerSample = {
   url: "http://localhost:8080/geoserver/Jeru/wms",
   params: {
     LAYERS: "Jeru:dimigcompile",
+    SRS: "EPSG:2039",
   },
   serverType: "geoserver",
   visible: 1,
