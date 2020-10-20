@@ -53,7 +53,9 @@ class Identify extends Component {
   }
   createSources = () => {
     if (this.sources.length > 0) {
-      this.sources.map((vl) => getFocusedMap().removeLayer(vl));
+      this.sources.map((vl) => {
+        getFocusedMap().removeLayer(vl);
+      });
       this.sources = [];
     }
     this.sources = getCurrentLayersSource();

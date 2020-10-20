@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Image as ImageLayer } from "ol/layer";
+import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import { getFocusedMap } from "../../../../nessMapping/api";
+import { newVectorSource } from "../../../../utils/features";
 
 const LayerSample = {
   id: 1,
@@ -18,20 +19,40 @@ const LayerSample = {
   selectable: 1,
 };
 class SingleLayerTest extends React.Component {
+  state = {
+    added: false,
+  };
+
   componentDidMount() {}
   componentDidUpdate() {}
 
   handleClick = () => {
-    const newLyr = new ImageLayer({
-      source: new ImageWMS({
-        params: LayerSample.params,
-        url: LayerSample.url,
-        serverType: LayerSample.serverType,
-        crossOrigin: "Anonymous",
-      }),
-    });
-    newLyr.selectable = LayerSample.selectable;
-    getFocusedMap().addLayer(newLyr);
+    if (!this.state.added) {
+      const newLyr = new ImageLayer({
+        source: new ImageWMS({
+          params: LayerSample.params,
+          url: LayerSample.url,
+          serverType: LayerSample.serverType,
+          crossOrigin: "Anonymous",
+        }),
+      });
+      newLyr.selectable = LayerSample.selectable;
+      const vectorSource = newVectorSource(
+        LayerSample.url,
+        LayerSample.params.SRS,
+        LayerSample.params.LAYERS
+      );
+      const vectorLayer = new VectorLayer({
+        source: vectorSource,
+        opacity: 0,
+      });
+
+      vectorLayer.selectable = LayerSample.selectable;
+
+      getFocusedMap().addLayer(vectorLayer);
+      getFocusedMap().addLayer(newLyr);
+      this.setState({ added: true });
+    }
   };
 
   render() {
