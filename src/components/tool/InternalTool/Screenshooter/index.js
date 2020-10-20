@@ -1,7 +1,12 @@
 import React from "react";
-import { jsPDF } from "jspdf";
 import { getFocusedMap } from "../../../../nessMapping/api";
-
+import { Dropdown } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
+import {
+  exportImageToPdf,
+  ORIENTATION,
+  getCurrentMapCanvas,
+} from "../../../../utils/export";
 const dims = {
   a0: [1189, 841],
   a1: [841, 594],
@@ -10,94 +15,107 @@ const dims = {
   a4: [297, 210],
   a5: [210, 148],
 };
+
+const formatOptions = [
+  { key: "a0", value: "a0", text: "A0" },
+  { key: "a1", value: "a1", text: "A1" },
+  { key: "a2", value: "a2", text: "A2" },
+  { key: "a3", value: "a3", text: "A3" },
+  { key: "a4", value: "a4", text: "A4" },
+];
+
+const resolutionOptions = [
+  { key: "72", value: "72", text: "72 dpi (מהר)" },
+  { key: "150", value: "150", text: "150 dpi" },
+  { key: "300", value: "300", text: "300 dpi (עיטי)" },
+];
+
 class Exporter extends React.Component {
+  state = {
+    format: "a4",
+    resolution: "72",
+    dim: dims["a4"],
+  };
+
+  handleResolutionChange = (newResolution) => {
+    this.setState({ resolution: newResolution });
+  };
+
+  handleFormatChange = (newFormat) => {
+    this.setState({ format: newFormat, dim: dims[newFormat] });
+  };
+
+  get width() {
+    return Math.round((this.state.dim[0] * this.state.resolution) / 25.4);
+  }
+
+  get height() {
+    return Math.round((this.state.dim[1] * this.state.resolution) / 25.4);
+  }
+
   export = () => {
     document.body.style.cursor = "progress";
-
-    var format = document.getElementById("format").value;
-    var resolution = document.getElementById("resolution").value;
-    var dim = dims[format];
-    var width = Math.round((dim[0] * resolution) / 25.4);
-    var height = Math.round((dim[1] * resolution) / 25.4);
-    var size = getFocusedMap().getSize();
-    var viewResolution = getFocusedMap().getView().getResolution();
-
-    getFocusedMap().once("rendercomplete", function () {
-      var mapCanvas = document.createElement("canvas");
-      mapCanvas.width = width;
-      mapCanvas.height = height;
-      var mapContext = mapCanvas.getContext("2d");
-      Array.prototype.forEach.call(
-        document.querySelectorAll(".ol-layer canvas"),
-        function (canvas) {
-          if (canvas.width > 0) {
-            var opacity = canvas.parentNode.style.opacity;
-            mapContext.globalAlpha = opacity === "" ? 1 : Number(opacity);
-            var transform = canvas.style.transform;
-            // Get the transform parameters from the style's transform matrix
-            var matrix = transform
-              .match(/^matrix\(([^\(]*)\)$/)[1]
-              .split(",")
-              .map(Number);
-            // Apply the transform to the export map context
-            CanvasRenderingContext2D.prototype.setTransform.apply(
-              mapContext,
-              matrix
-            );
-            mapContext.drawImage(canvas, 0, 0);
-          }
-        }
+    const size = getFocusedMap().getSize();
+    const viewResolution = getFocusedMap().getView().getResolution();
+    this.resizeMapForExporting(size, viewResolution);
+    getFocusedMap().once("rendercomplete", () => {
+      const mapCanvas = getCurrentMapCanvas(this.width, this.height);
+      exportImageToPdf(
+        mapCanvas,
+        "map",
+        ORIENTATION.landscape,
+        this.state.format,
+        this.state.dim[0],
+        this.state.dim[1]
       );
-      var pdf = new jsPDF("landscape", undefined, format);
-      pdf.addImage(
-        mapCanvas.toDataURL("image/jpeg"),
-        "JPEG",
-        0,
-        0,
-        dim[0],
-        dim[1]
-      );
-      pdf.save("map.pdf");
-      // Reset original map size
-      getFocusedMap().setSize(size);
-      getFocusedMap().getView().setResolution(viewResolution);
-      document.body.style.cursor = "auto";
+      this.resetSizeAfterExport(size, viewResolution);
     });
+  };
 
+  resizeMapForExporting = (originalSize, originalResolution) => {
     // Set print size
-    var printSize = [width, height];
+    var printSize = [this.width, this.height];
     getFocusedMap().setSize(printSize);
-    var scaling = Math.min(width / size[0], height / size[1]);
+    var scaling = Math.min(
+      this.width / originalSize[0],
+      this.height / originalSize[1]
+    );
     getFocusedMap()
       .getView()
-      .setResolution(viewResolution / scaling);
+      .setResolution(originalResolution / scaling);
+  };
+
+  resetSizeAfterExport = (originalSize, originalResolution) => {
+    // Reset original map size
+    getFocusedMap().setSize(originalSize);
+    getFocusedMap().getView().setResolution(originalResolution);
+    document.body.style.cursor = "auto";
   };
 
   render() {
     return (
       <React.Fragment>
-        <form class="form">
-          <label>Page size </label>
-          <select id="format">
-            <option value="a0">A0 (slow)</option>
-            <option value="a1">A1</option>
-            <option value="a2">A2</option>
-            <option value="a3">A3</option>
-            <option value="a4" selected>
-              A4
-            </option>
-            <option value="a5">A5 (fast)</option>
-          </select>
-          <label>Resolution </label>
-          <select id="resolution">
-            <option value="72">72 dpi (fast)</option>
-            <option value="150">150 dpi</option>
-            <option value="300">300 dpi (slow)</option>
-          </select>
-        </form>
-        <button id="export-pdf" onClick={this.export}>
-          Export PDF
-        </button>
+        <Dropdown
+          button
+          className="icon"
+          labeled
+          icon="file"
+          options={formatOptions}
+          defaultValue={this.state.format}
+          onChange={(v, { value }) => this.handleFormatChange(value)}
+        />
+        <Dropdown
+          button
+          className="icon"
+          labeled
+          icon="chess board"
+          options={resolutionOptions}
+          defaultValue={this.state.resolution}
+          onChange={(v, { value }) => this.handleResolutionChange(value)}
+        />
+        <Button primary onClick={this.export}>
+          ייצוא ל-PDF
+        </Button>
       </React.Fragment>
     );
   }
