@@ -17,6 +17,7 @@ const LayerSample = {
   serverType: "geoserver",
   visible: 1,
   selectable: 1,
+  editable: 1,
 };
 class SingleLayerTest extends React.Component {
   state = {
@@ -40,7 +41,9 @@ class SingleLayerTest extends React.Component {
       const vectorSource = newVectorSource(
         LayerSample.url,
         LayerSample.params.SRS,
-        LayerSample.params.LAYERS
+        LayerSample.params.LAYERS,
+        LayerSample.editable,
+        null
       );
       const vectorLayer = new VectorLayer({
         source: vectorSource,

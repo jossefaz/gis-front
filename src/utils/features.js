@@ -23,7 +23,10 @@ export const getCurrentLayersSource = () => {
 export const getFeaturesByExtent = (extent, sources) => {
   const features = [];
   sources.map((vs) => {
+    const editable = vs.get("editable");
     vs.forEachFeatureInExtent(extent, (feature) => {
+      console.log("feture from intersect", feature);
+      feature.set("editable", editable);
       features.push(feature);
     });
   });
@@ -60,7 +63,7 @@ export const geoserverWFSTransaction = (
   }
 };
 
-export const newVectorSource = (url, srs, layernames, formatWFS) => {
+export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
   const params = {
     service: "WMS",
     version: "1.1.0",
@@ -88,6 +91,9 @@ export const newVectorSource = (url, srs, layernames, formatWFS) => {
     }),
     strategy: bbox,
   });
+  if (editable) {
+    vectorSource.set("editable", true);
+  }
 
   return vectorSource;
 };
