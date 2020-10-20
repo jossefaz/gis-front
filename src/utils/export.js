@@ -1,5 +1,7 @@
 import { jsPDF } from "jspdf";
 import { NewCanvas } from "./html";
+import { saveAs } from "file-saver";
+import html2canvas from "html2canvas";
 
 export const ORIENTATION = {
   portrait: "portrait",
@@ -26,13 +28,16 @@ export const exportImageToPdf = (
   pdf.save(`${filename}.pdf`);
 };
 
-export const getCurrentMapCanvas = (width, height) => {
+export const getCurrentMapCanvas = async (width, height) => {
+  const overlaycanva = await html2canvas(
+    [...document.querySelectorAll(".ol-overlaycontainer")][0],
+    {
+      backgroundColor: null,
+    }
+  );
   const mapCanvas = NewCanvas(width, height);
   const mapContext = mapCanvas.getContext("2d");
   Array.prototype.map.call(
-    // select all DOM elements with the class .ol-layer canvas and loop through the array of elelments returned
-    // because the queryselector will return a NodeList, thus we need tu use the Array.prototyp.map.call on it,
-    // otherwise we cannot loop through the nodelist
     document.querySelectorAll(".ol-layer canvas"),
     (canvas) => {
       if (canvas.width > 0) {
@@ -49,8 +54,16 @@ export const getCurrentMapCanvas = (width, height) => {
           matrix
         );
         mapContext.drawImage(canvas, 0, 0);
+        mapContext.drawImage(overlaycanva, 0, 0);
       }
     }
   );
+
   return mapCanvas;
+};
+
+export const saveCanvasAsImage = (canvas, title, format) => {
+  canvas.toBlob(function (blob) {
+    saveAs(blob, `${title}.${format}`);
+  });
 };

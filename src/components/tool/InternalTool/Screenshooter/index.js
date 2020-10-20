@@ -1,12 +1,14 @@
 import React from "react";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import { Dropdown } from "semantic-ui-react";
-import { Button } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import {
   exportImageToPdf,
   ORIENTATION,
   getCurrentMapCanvas,
+  saveCanvasAsImage,
 } from "../../../../utils/export";
+import "./style.css";
 const dims = {
   a0: [1189, 841],
   a1: [841, 594],
@@ -28,6 +30,12 @@ const resolutionOptions = [
   { key: "72", value: "72", text: "72 dpi (מהר)" },
   { key: "150", value: "150", text: "150 dpi" },
   { key: "300", value: "300", text: "300 dpi (עיטי)" },
+  { key: "600", value: "600", text: "600 dpi (עיטי)" },
+];
+
+const fileFormatOptions = [
+  { key: "pdf", value: "pdf", text: "PDF" },
+  { key: "png", value: "png", text: "PNG" },
 ];
 
 class Exporter extends React.Component {
@@ -35,10 +43,15 @@ class Exporter extends React.Component {
     format: "a4",
     resolution: "72",
     dim: dims["a4"],
+    fileFormat: "pdf",
   };
 
   handleResolutionChange = (newResolution) => {
     this.setState({ resolution: newResolution });
+  };
+
+  handleFileFormatChange = (newFileFormat) => {
+    this.setState({ fileFormat: newFileFormat });
   };
 
   handleFormatChange = (newFormat) => {
@@ -53,22 +66,27 @@ class Exporter extends React.Component {
     return Math.round((this.state.dim[1] * this.state.resolution) / 25.4);
   }
 
-  export = () => {
+  save = () => {
     document.body.style.cursor = "progress";
     const size = getFocusedMap().getSize();
     const viewResolution = getFocusedMap().getView().getResolution();
     this.resizeMapForExporting(size, viewResolution);
     getFocusedMap().once("rendercomplete", () => {
-      const mapCanvas = getCurrentMapCanvas(this.width, this.height);
-      exportImageToPdf(
-        mapCanvas,
-        "map",
-        ORIENTATION.landscape,
-        this.state.format,
-        this.state.dim[0],
-        this.state.dim[1]
-      );
-      this.resetSizeAfterExport(size, viewResolution);
+      getCurrentMapCanvas(this.width, this.height).then((mapCanvas) => {
+        if (this.state.fileFormat == "pdf") {
+          exportImageToPdf(
+            mapCanvas,
+            "map",
+            ORIENTATION.landscape,
+            this.state.format,
+            this.state.dim[0],
+            this.state.dim[1]
+          );
+        } else {
+          saveCanvasAsImage(mapCanvas, "map", this.state.fileFormat);
+        }
+        this.resetSizeAfterExport(size, viewResolution);
+      });
     });
   };
 
@@ -95,27 +113,39 @@ class Exporter extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Dropdown
-          button
-          className="icon"
-          labeled
-          icon="file"
-          options={formatOptions}
-          defaultValue={this.state.format}
-          onChange={(v, { value }) => this.handleFormatChange(value)}
-        />
-        <Dropdown
-          button
-          className="icon"
-          labeled
-          icon="chess board"
-          options={resolutionOptions}
-          defaultValue={this.state.resolution}
-          onChange={(v, { value }) => this.handleResolutionChange(value)}
-        />
-        <Button primary onClick={this.export}>
-          ייצוא ל-PDF
-        </Button>
+        <div className="gridDisplay">
+          <Dropdown
+            button
+            className="icon"
+            labeled
+            icon="file"
+            options={formatOptions}
+            defaultValue={this.state.format}
+            onChange={(v, { value }) => this.handleFormatChange(value)}
+          />
+          <Dropdown
+            button
+            className="icon"
+            labeled
+            icon="chess board"
+            options={resolutionOptions}
+            defaultValue={this.state.resolution}
+            onChange={(v, { value }) => this.handleResolutionChange(value)}
+          />
+
+          <Dropdown
+            button
+            className="icon"
+            labeled
+            icon="file image"
+            options={fileFormatOptions}
+            defaultValue={this.state.fileFormat}
+            onChange={(v, { value }) => this.handleFileFormatChange(value)}
+          />
+          <Button icon onClick={this.save}>
+            <Icon name="save" />
+          </Button>
+        </div>
       </React.Fragment>
     );
   }
