@@ -12,3 +12,10 @@ export const generateNewDiv = (selector, classes, innerHtml) => {
   overlayDiv.innerHTML = innerHtml;
   return overlayDiv;
 };
+
+export const NewCanvas = (width, height) => {
+  const Canvas = document.createElement("canvas");
+  Canvas.width = width;
+  Canvas.height = height;
+  return Canvas;
+};
