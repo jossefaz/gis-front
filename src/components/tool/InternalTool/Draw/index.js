@@ -1,26 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import {
-  getInteraction,
-  getInteractionGraphicLayer,
-  getInteractionVectorSource,
-  getFocusedMap,
-  getOverlay,
-} from "../../../../nessMapping/api";
-import {
-  setInteraction,
-  unsetInteraction,
-  unsetInteractions,
-} from "../../../../redux/actions/interaction";
-import {
-  setOverlay,
-  unsetOverlays,
-  unsetOverlay,
-  setOverlayProperty,
-} from "../../../../redux/actions/overlay";
+import { getFocusedMap, getOverlay } from "../../../../nessMapping/api";
 import IconButton from "../../../UI/Buttons/IconButton";
-import { unsetUnfocused } from "../../../../redux/actions/tools";
 import { generateNewStyle } from "../MeasureDistance/func";
 import {
   createNewGeometry,
@@ -28,8 +10,8 @@ import {
 } from "../../../../services/persistentGeometry/api";
 import { escapeHandler } from "../../../../utils/eventHandlers";
 import generateID from "../../../../utils/uuid";
-import { getWidgetObjectsFromStore } from "../../../../utils/widgets";
-import { generateTextOverlay } from "../../../../utils/overlay";
+import { InteractionUtil } from "../../../../utils/interactions";
+import { OverlayUtil } from "../../../../utils/overlay";
 import getOlFeatureFromJson from "../../../../utils/olFeatureFromGeoJson";
 import TextForm from "./Texts/TextForm";
 import { Confirm } from "semantic-ui-react";
@@ -38,17 +20,11 @@ import TextTable from "./Texts";
 import ColorPicker from "./ColorPicker/ColorPicker";
 import { DragPan } from "ol/interaction";
 import { Grid } from "semantic-ui-react";
-import Collection from "ol/Collection";
 import Point from "ol/geom/Point";
 import axios from "axios";
 import "./style.css";
 class Draw extends React.Component {
   WIDGET_NAME = "Draw";
-  INTERACTIONS = {
-    Draw: "Draw",
-    Select: "Select",
-    Modify: "Modify",
-  };
   CLASSNAMES = {
     TEXT: "ol-tooltip ol-tooltip-measure",
     HIDDEN: "hidden",
@@ -79,12 +55,14 @@ class Draw extends React.Component {
     },
   };
 
+  constructor() {
+    super();
+    this.interactions = new InteractionUtil(this.WIDGET_NAME);
+    this.overlays = new OverlayUtil(this.WIDGET_NAME);
+  }
+
   get selfOverlay() {
-    return getWidgetObjectsFromStore(
-      this.WIDGET_NAME,
-      this.props.Overlays,
-      this.map
-    );
+    return this.overlays.store;
   }
 
   get map() {
@@ -98,37 +76,26 @@ class Draw extends React.Component {
   }
 
   get selfInteraction() {
-    return getWidgetObjectsFromStore(
-      this.WIDGET_NAME,
-      this.props.Interactions,
-      this.map
-    );
+    return this.interactions.store;
   }
 
   get draw() {
-    return this.getSelfInteraction(this.INTERACTIONS.Draw);
+    return this.interactions.currentDrawUUID;
   }
 
   get select() {
-    return this.getSelfInteraction(this.INTERACTIONS.Select);
+    return this.interactions.currentSelectUUID;
   }
 
   get modify() {
-    return this.getSelfInteraction(this.INTERACTIONS.Modify);
+    return this.interactions.currentModifyUUID;
   }
-  getSelfInteraction = (interaction) => {
-    if (this.selfInteraction && interaction in this.selfInteraction) {
-      return this.selfInteraction[interaction].uuid;
-    }
-    return false;
-  };
-
   get DrawLayer() {
-    return this.draw ? getInteractionGraphicLayer(this.draw) : null;
+    return this.interactions.getVectorLayer(this.interactions.TYPES.Draw);
   }
 
   get DrawSource() {
-    return this.draw ? getInteractionVectorSource(this.draw) : null;
+    return this.interactions.getVectorSource(this.interactions.TYPES.Draw);
   }
 
   toogleView = () => {
@@ -141,16 +108,8 @@ class Draw extends React.Component {
   };
 
   addInteraction = async (drawtype) => {
-    const sourceLayer = this.DrawSource; // save it before it will be deleted !!
-    const Layer = this.DrawLayer;
-    this.removeDrawObject();
-    await this.props.setInteraction({
-      Type: "Draw",
-      drawConfig: { type: drawtype },
-      sourceLayer,
-      Layer,
-      widgetName: this.WIDGET_NAME,
-    });
+    this.interactions.unDraw();
+    await this.interactions.newDraw({ type: drawtype });
   };
 
   onOpenDrawSession = async (drawtype) => {
@@ -161,27 +120,12 @@ class Draw extends React.Component {
 
   onOpenEditSession = async (featureID) => {
     this.removeSelectAndEdit();
-    this.removeDrawObject();
-    const feature = featureID
-      ? this.DrawSource.getFeatureById(featureID)
-      : null;
-    await this.props.setInteraction({
-      Type: this.INTERACTIONS.Select,
-      interactionConfig: {
-        wrapX: false,
-        layers: [this.DrawLayer],
-        ...(feature && { features: new Collection([feature]) }),
-      },
-      widgetName: this.WIDGET_NAME,
-    });
-    await this.props.setInteraction({
-      Type: this.INTERACTIONS.Modify,
-      interactionConfig: {
-        features: getInteraction(this.select).getFeatures(),
-      },
-      widgetName: this.WIDGET_NAME,
-    });
-    this.setState({ editSession: { status: true, current: feature.getId() } });
+    this.interactions.unDraw();
+    await this.interactions.newSelect(featureID, [
+      this.interactions.getVectorLayer(this.interactions.TYPES.DRAW),
+    ]);
+    await this.interactions.newModify();
+    this.setState({ editSession: { status: true, current: featureID } });
     this.onModifyEnd();
   };
 
@@ -189,7 +133,7 @@ class Draw extends React.Component {
     if (this.select) {
       const pointPosition = new Point(e.coordinate);
       let close = true;
-      getInteraction(this.select)
+      this.interactions.currentSelect
         .getFeatures()
         .getArray()
         .map((feature) => {
@@ -213,33 +157,13 @@ class Draw extends React.Component {
       drawn: false,
       lastFeature: { ...this.state.lastFeature, [this.map]: null },
     });
-    this.removeDrawObject();
-  };
-  removeDrawObject = () => {
-    if (this.draw) {
-      this.props.unsetInteraction({
-        uuid: this.selfInteraction[this.INTERACTIONS.Draw].uuid,
-        widgetName: this.WIDGET_NAME,
-        Type: this.INTERACTIONS.Draw,
-      });
-    }
+    this.interactions.unDraw();
   };
 
   removeSelectAndEdit = async () => {
     if (this.select && this.modify) {
-      const { Select, Modify } = this.INTERACTIONS;
-      await this.props.unsetInteractions([
-        {
-          uuid: this.select,
-          widgetName: this.WIDGET_NAME,
-          Type: Select,
-        },
-        {
-          uuid: this.modify,
-          widgetName: this.WIDGET_NAME,
-          Type: Modify,
-        },
-      ]);
+      await this.interactions.unSelect();
+      await this.interactions.unModify();
     }
   };
 
@@ -266,11 +190,11 @@ class Draw extends React.Component {
         sessionType: "",
       });
     }
-    this.props.unsetOverlay({ uuid, widgetName: this.WIDGET_NAME });
+    this.overlays.unset(uuid);
   };
 
   onDrawEnd = () => {
-    const draw = getInteraction(this.draw);
+    const draw = this.interactions.currentDraw;
     if (draw) {
       draw.on("drawend", async (e) => {
         const newFeatureId =
@@ -287,7 +211,7 @@ class Draw extends React.Component {
   };
 
   onModifyEnd = () => {
-    const modify = getInteraction(this.modify);
+    const modify = this.interactions.currentModify;
     if (modify) {
       modify.on("modifyend", async (e) => {
         await updateGeometry(e.features.getArray()[0]);
@@ -296,15 +220,19 @@ class Draw extends React.Component {
   };
 
   abortDrawing = () => {
-    if (this.draw) {
-      getInteraction(this.draw).abortDrawing();
+    if (this.interactions.currentDraw) {
+      this.interactions.currentDraw.abortDrawing();
     }
   };
   // LIFECYCLE
   componentDidMount() {
     getFocusedMap().on("pointerdown", this.autoClosingEditSession);
-    getFocusedMap().on("pointermove", this.dragOverlay);
-    getFocusedMap().on("pointerup", this.unDragOverlay);
+    getFocusedMap().on("pointermove", (evt) => {
+      this.overlays.dragOverlay(evt, () => this.dragPan.setActive(false));
+    });
+    getFocusedMap().on("pointerup", (evt) => {
+      this.overlays.unDragOverlay(() => this.dragPan.setActive(false));
+    });
     getFocusedMap()
       .getInteractions()
       .forEach((interaction) => {
@@ -316,6 +244,7 @@ class Draw extends React.Component {
     this.retrieveExistingDrawing();
   }
   componentDidUpdate() {
+    this.overlays.testIt();
     document.addEventListener("keydown", (e) =>
       escapeHandler(e, this.abortDrawing)
     );
@@ -329,41 +258,15 @@ class Draw extends React.Component {
     getFocusedMap().un("pointerup", this.unDragOverlay);
     this.onReset();
   }
-  onReset = () => {
+  onReset = async () => {
     this.abortDrawing();
-    this.removeAllInteractions();
-  };
-
-  removeAllInteractions = async () => {
-    if (this.selfInteraction) {
-      const InteractionArray = [];
-      Object.keys(this.selfInteraction).map((InteractionName) => {
-        const { uuid, Type } = this.selfInteraction[InteractionName];
-        InteractionArray.push({ uuid, widgetName: this.WIDGET_NAME, Type });
-      });
-      if (InteractionArray.length > 0) {
-        await this.props.unsetInteractions(InteractionArray);
-      }
-    }
+    await this.interactions.unsetAll();
   };
 
   createNewText = async (text) => {
-    const selector = `${this.WIDGET_NAME}${this.map}`;
-    await this.props.setOverlay(
-      generateTextOverlay(
-        selector,
-        this.CLASSNAMES.TEXT,
-        text,
-        this.WIDGET_NAME
-      )
-    );
-    if (this.selfOverlay) {
-      const currentOverlays = Object.keys(this.selfOverlay.overlays);
-      const lastID = currentOverlays[currentOverlays.length - 1];
-      const overlay = getOverlay(lastID);
-      overlay.setPosition(getFocusedMap().getView().getCenter());
-      this.addDraggableToOverlay(lastID);
-    }
+    const uuid = await this.overlays.newText(text);
+    this.overlays.addToMap(uuid);
+    this.overlays.addDraggable(uuid);
     this.setState({
       sessionType: "",
       editText: {
@@ -375,15 +278,7 @@ class Draw extends React.Component {
 
   createOrEditText = async (text, textID) => {
     if (textID) {
-      const overlay = this.selfOverlay.overlays[textID];
-      const overlayDiv = document.querySelector(`#${overlay.selector}`);
-      this.props.setOverlayProperty({
-        widgetName: this.WIDGET_NAME,
-        uuid: textID,
-        property: "content",
-        value: text,
-      });
-      overlayDiv.innerHTML = text;
+      this.overlays.edit(text, textID);
       this.setState({
         sessionType: "",
         editText: {
@@ -436,18 +331,6 @@ class Draw extends React.Component {
         text: "",
         overlayID: null,
       },
-    });
-  };
-
-  addDraggableToOverlay = (id) => {
-    const overlay = this.selfOverlay.overlays[id];
-    const overlayDiv = document.getElementById(overlay.selector);
-    const widgetName = this.WIDGET_NAME;
-    overlayDiv.setAttribute("uuid", id);
-    overlayDiv.setAttribute("dragging", false);
-    overlayDiv.addEventListener("mousedown", function (evt) {
-      getOverlay(this.id.split(widgetName)[1]).set("dragging", true);
-      console.info("start dragging");
     });
   };
 
@@ -625,18 +508,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = {
-  setInteraction,
-  unsetInteraction,
-  unsetInteractions,
-  setOverlay,
-  unsetOverlays,
-  unsetOverlay,
-  unsetUnfocused,
-  setOverlayProperty,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withWidgetLifeCycle(Draw));
+export default connect(mapStateToProps)(withWidgetLifeCycle(Draw));

@@ -25,7 +25,6 @@ export const getFeaturesByExtent = (extent, sources) => {
   sources.map((vs) => {
     const editable = vs.get("editable");
     vs.forEachFeatureInExtent(extent, (feature) => {
-      console.log("feture from intersect", feature);
       feature.set("editable", editable);
       features.push(feature);
     });
