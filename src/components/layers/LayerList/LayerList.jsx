@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Accordion, Icon } from "semantic-ui-react";
+import { Accordion, Button, Icon } from "semantic-ui-react";
 import LayerListItem from "../LayerListItem/LayerListItem.jsx";
 import { getMetaData } from "../../../communication/mdFetcher.js";
 import { selectLayers } from "../../../redux/selectors/layersSelector";
 import _ from "lodash";
-import "./style.css";
+import "../style.css";
 
 class LayerList extends Component {
   constructor(props) {
@@ -27,8 +27,9 @@ class LayerList extends Component {
   };
 
   componentDidMount() {
+    console.log("layerlist mounted");
     this.fetchMetaDataFromServer();
-    // this.renderTest();
+
   }
   static getDerivedStateFromProps(props, state) {
     return {
@@ -42,8 +43,6 @@ class LayerList extends Component {
       console.log("not working")
       this.renderLayerList();
     }
-
-
   }
   componentWillUpdate(prevProps, prevState) {
 
@@ -76,13 +75,13 @@ class LayerList extends Component {
       this.setState({
         subjects: subjectList,
         layerSubjectRelation: layerSubjectResult,
-      });
+      }, this.renderLayerList());
     }
   };
 
-  renderTest = () => {
-    this.setState({ layers: this.props.layers });
-  };
+  // renderTest = () => {
+  //   this.setState({ layers: this.props.layers });
+  // };
 
   renderLayerList = () => {
     console.log("got to renderLayerList");
@@ -112,6 +111,7 @@ class LayerList extends Component {
 
 
   createLayerListItems = (layers) => {
+
     return Object.keys(layers).map((layerId, index) => (
       <LayerListItem layerId={layerId} key={index}></LayerListItem>
     ));
@@ -120,26 +120,28 @@ class LayerList extends Component {
   render() {
 
     return (
-      <Accordion >
-        {Object.keys(this.state.layerListObject).map((subjectId, index) => (
-          <React.Fragment key={index}>
-            <Accordion.Title
-              active={this.state.activeIndex === index}
-              index={index}
-              onClick={this.handleClick}
-            >
-              <Icon name="dropdown" />
-              {this.state.layerListObject[subjectId].description}
-            </Accordion.Title>
-            <Accordion.Content active={this.state.activeIndex === index}>
-              {this.createLayerListItems(this.state.layerListObject[subjectId].layers)}
-            </Accordion.Content>
-          </React.Fragment>
-        ))}
-      </Accordion>
+      <React.Fragment>
+        <Accordion className="uirtl">
+          {Object.keys(this.state.layerListObject).map((subjectId, index) => (
+            <React.Fragment key={index}>
+              <Accordion.Title
+                active={this.state.activeIndex === index}
+                index={index}
+                onClick={this.handleClick}
+              >
+                <Icon name="dropdown" />
+                {this.state.layerListObject[subjectId].description}
+              </Accordion.Title>
+              <Accordion.Content active={this.state.activeIndex === index}>
+                {this.createLayerListItems(this.state.layerListObject[subjectId].layers)}
+              </Accordion.Content>
+            </React.Fragment>
+          ))}
+        </Accordion>
+        <Button id="btnShowSelectedLayers"
+          onClick={() => this.props.setMode(2)}>הצג את השכבות הנבחרות</Button>
+      </React.Fragment>
     );
-    // return <React.Fragment>{this.renderLayerList()}</React.Fragment>;
-
   }
 }
 

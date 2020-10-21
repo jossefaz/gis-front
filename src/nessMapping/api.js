@@ -168,7 +168,7 @@ export const getNessLayer = ((uuid) => {
         layer.uuid.value === uuid)
 });
 // GET Ness Layers
-export const getNessLayers = ((uuid) => {
+export const getNessLayers = (() => {
     return getFocusedMapProxy()._layers;
 });
 
@@ -211,6 +211,16 @@ export const setLayerVisiblity = (uuid, visibilty) => {
 export const getLayerVisiblity = (uuid) => {
     return getVisible(uuid, getFocusedMap());
 }
+
+// export const getVisibleLayers = () => {
+//     const state = store.getState();
+//     const layers = state.Layers[state.map.focused].layers
+//     return Object.keys(layers).map((layerId) => {
+//         let lyr = layers[layerId];
+//         if (lyr.visible === true)
+//             return lyr
+//     });
+// }
 
 // SET OPACTIY
 export const setLayerOpacity = (uuid, opacity) => {
