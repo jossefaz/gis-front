@@ -4,6 +4,7 @@ import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import { newVectorSource } from "../../../../utils/features";
+import { addLayers } from "../../../../redux/actions/layers";
 
 const LayerSample = {
   id: 1,
@@ -51,7 +52,6 @@ class SingleLayerTest extends React.Component {
       });
 
       vectorLayer.selectable = LayerSample.selectable;
-
       getFocusedMap().addLayer(vectorLayer);
       getFocusedMap().addLayer(newLyr);
       this.setState({ added: true });
@@ -73,4 +73,4 @@ const mapStateToProps = (state) => {
   return { map: state.map };
 };
 
-export default connect(mapStateToProps)(SingleLayerTest);
+export default connect(mapStateToProps, { addLayers })(SingleLayerTest);

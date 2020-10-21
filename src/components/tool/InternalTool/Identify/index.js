@@ -26,7 +26,9 @@ class Identify extends Component {
     DragBox: "DragBox",
   };
 
-  sources = [];
+  state = {
+    sources: [],
+  };
 
   get focusedmap() {
     return getFocusedMapProxy().uuid.value;
@@ -52,14 +54,9 @@ class Identify extends Component {
     return false;
   }
   createSources = () => {
-    if (this.sources.length > 0) {
-      this.sources.map((vl) => {
-        getFocusedMap().removeLayer(vl);
-      });
-      this.sources = [];
-    }
-    this.sources = getCurrentLayersSource();
-    this.selectedFeatures = getInteraction(this.select).getFeatures();
+    this.setState({
+      sources: getCurrentLayersSource(),
+    });
   };
   onBoxEnd = () => {
     if (
@@ -75,7 +72,7 @@ class Identify extends Component {
         });
         dragBox.on("boxend", () => {
           const extent = dragBox.getGeometry().getExtent();
-          const features = getFeaturesByExtent(extent, this.sources);
+          const features = getFeaturesByExtent(extent, this.state.sources);
           if (features.length > 0) {
             this.props.setSelectedFeatures(features);
           }
@@ -150,8 +147,10 @@ class Identify extends Component {
   componentWillUnmount() {
     this.onUnfocus();
   }
+
   componentDidUpdate() {
-    this.createSources();
+    //TODO : implement shouldcomponentupdate from store
+    console.log("Layers from store", this.props.Layers);
   }
 
   render() {
@@ -180,6 +179,7 @@ const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     Interactions: state.Interactions,
+    Layers: state.Layers,
   };
 };
 
