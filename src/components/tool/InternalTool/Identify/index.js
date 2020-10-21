@@ -3,22 +3,15 @@ import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import {
-  getFocusedMapProxy,
-  getFocusedMap,
-  getInteraction,
-} from "../../../../nessMapping/api";
+import { getFocusedMapProxy } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
-import {
-  unsetInteractions,
-  setInteractions,
-} from "../../../../redux/actions/interaction";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
 import {
   getCurrentLayersSource,
   getFeaturesByExtent,
 } from "../../../../utils/features";
+import { InteractionUtil } from "../../../../utils/interactions";
 class Identify extends Component {
   WIDGET_NAME = "Identify";
   INTERACTIONS = {
@@ -26,32 +19,24 @@ class Identify extends Component {
     DragBox: "DragBox",
   };
 
-  state = {
-    sources: [],
-  };
+  constructor() {
+    super();
+    this.state = {
+      sources: [],
+    };
+    this.interactions = new InteractionUtil(this.WIDGET_NAME);
+  }
 
   get focusedmap() {
     return getFocusedMapProxy().uuid.value;
   }
 
   get select() {
-    if (
-      this.selfInteraction &&
-      this.INTERACTIONS.Select in this.selfInteraction
-    ) {
-      return this.selfInteraction[this.INTERACTIONS.Select].uuid;
-    }
-    return false;
+    return this.interactions.currentSelectUUID;
   }
 
   get selfInteraction() {
-    if (
-      this.WIDGET_NAME in this.props.Interactions &&
-      this.focusedmap in this.props.Interactions[this.WIDGET_NAME]
-    ) {
-      return this.props.Interactions[this.WIDGET_NAME][this.focusedmap];
-    }
-    return false;
+    return this.interactions.store;
   }
   createSources = () => {
     this.setState({
@@ -59,16 +44,11 @@ class Identify extends Component {
     });
   };
   onBoxEnd = () => {
-    if (
-      this.selfInteraction &&
-      this.INTERACTIONS.DragBox in this.selfInteraction
-    ) {
-      const dragBox = getInteraction(
-        this.selfInteraction[this.INTERACTIONS.DragBox].uuid
-      );
+    if (this.interactions.currentDragBoxUUID) {
+      const dragBox = this.interactions.currentDragBox;
       if (dragBox && this.select) {
         dragBox.on("boxstart", () => {
-          getInteraction(this.select).getFeatures().clear();
+          this.interactions.currentSelect.getFeatures().clear();
         });
         dragBox.on("boxend", () => {
           const extent = dragBox.getGeometry().getExtent();
@@ -82,19 +62,8 @@ class Identify extends Component {
   };
 
   addInteraction = async (drawtype) => {
-    await this.props.setInteractions([
-      {
-        Type: this.INTERACTIONS.Select,
-        interactionConfig: {
-          multi: true,
-        },
-        widgetName: this.WIDGET_NAME,
-      },
-      {
-        Type: this.INTERACTIONS.DragBox,
-        widgetName: this.WIDGET_NAME,
-      },
-    ]);
+    await this.interactions.newSelect(null, null, true);
+    await this.interactions.newDragBox();
     this.onBoxEnd();
     this.createSources();
   };
@@ -107,41 +76,13 @@ class Identify extends Component {
     console.log("Reset Identify");
   };
   onUnfocus = async () => {
-    if (this.selfInteraction) {
-      const InteractionArray = [];
-      for (let [interactionName, InteractionData] of Object.entries(
-        this.selfInteraction
-      )) {
-        InteractionArray.push({
-          uuid: InteractionData.uuid,
-          widgetName: this.WIDGET_NAME,
-          Type: InteractionData.Type,
-        });
-      }
-      if (InteractionArray.length > 0) {
-        await this.props.unsetInteractions(InteractionArray);
-      }
-    }
+    this.selfInteraction && this.interactions.unsetAll();
   };
 
   onFocus = async () => {
-    const InteractionArray = [];
-    for (let [interactionName, InteractionData] of Object.entries(
-      this.selfInteraction
-    )) {
-      if (!InteractionData.status) {
-        InteractionArray.push({
-          Type: InteractionData.Type,
-          widgetName: this.WIDGET_NAME,
-          interactionConfig: InteractionData.interactionConfig,
-        });
-      }
-    }
-    if (InteractionArray.length > 0) {
-      await this.props.setInteractions(InteractionArray);
-      this.createSources();
-      this.onBoxEnd();
-    }
+    this.interactions.setAll();
+    this.onBoxEnd();
+    this.createSources();
   };
 
   componentWillUnmount() {
@@ -184,8 +125,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  setInteractions,
-  unsetInteractions,
   setSelectedFeatures,
 };
 
