@@ -37,6 +37,7 @@
     "react-scripts": "^3.4.3",
     "react-semantic-ui-range": "^0.7.0",
     "react-socket-io": "^0.2.5",
+    "react-toast-notifications": "^2.4.0",
     "react-websocket": "^2.1.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
