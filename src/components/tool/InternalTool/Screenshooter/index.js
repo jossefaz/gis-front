@@ -27,7 +27,6 @@ const formatOptions = [
 ];
 
 const resolutionOptions = [
-  { key: "72", value: "72", text: "72 dpi (מהר)" },
   { key: "150", value: "150", text: "150 dpi" },
   { key: "300", value: "300", text: "300 dpi (עיטי)" },
   { key: "600", value: "600", text: "600 dpi (עיטי)" },
@@ -41,7 +40,7 @@ const fileFormatOptions = [
 class Exporter extends React.Component {
   state = {
     format: "a4",
-    resolution: "72",
+    resolution: "150",
     dim: dims["a4"],
     fileFormat: "pdf",
   };

@@ -25,10 +25,12 @@ import axios from "axios";
 import "./style.css";
 class Draw extends React.Component {
   WIDGET_NAME = "Draw";
-  CLASSNAMES = {
-    TEXT: "ol-tooltip ol-tooltip-measure",
-    HIDDEN: "hidden",
-    FINISH: "ol-tooltip ol-tooltip-static",
+
+  DRAW_TYPES = {
+    Polygon: "Polygon",
+    Line: "LineString",
+    Circle: "Circle",
+    Text: "Text",
   };
   state = {
     eraseDraw: {
@@ -48,6 +50,7 @@ class Draw extends React.Component {
       b: "19",
       a: "1",
     },
+    drawtype: null,
     sessionType: "Geometry",
     editText: {
       text: null,
@@ -115,7 +118,7 @@ class Draw extends React.Component {
 
   onOpenDrawSession = async (drawtype) => {
     await this.addInteraction(drawtype);
-    this.setState({ sessionType: "Geometry" });
+    this.setState({ sessionType: "Geometry", drawtype });
     this.onDrawEnd();
   };
 
@@ -242,7 +245,6 @@ class Draw extends React.Component {
           this.dragPan = interaction;
         }
       });
-    this.onOpenDrawSession("Polygon");
     this.retrieveExistingDrawing();
   }
   componentDidUpdate() {
@@ -359,27 +361,43 @@ class Draw extends React.Component {
             <label className="labels">בחר צורה : </label>
 
             <IconButton
-              className="ui icon button primary pointer"
-              onClick={() => this.onOpenDrawSession("Polygon")}
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Polygon
+                  ? "secondary"
+                  : "primary"
+              }`}
+              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
               icon="draw-polygon"
               size="lg"
             />
             <IconButton
-              className="ui icon button primary pointer"
-              onClick={() => this.onOpenDrawSession("LineString")}
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Line
+                  ? "secondary"
+                  : "primary"
+              }`}
+              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
               icon="grip-lines"
               size="lg"
             />
 
             <IconButton
-              className="ui icon button primary pointer"
-              onClick={() => this.onOpenDrawSession("Circle")}
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Circle
+                  ? "secondary"
+                  : "primary"
+              }`}
+              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
               icon="circle"
               size="lg"
             />
 
             <IconButton
-              className="ui icon button primary pointer"
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Text
+                  ? "secondary"
+                  : "primary"
+              }`}
               onClick={() =>
                 this.setState({
                   sessionType: "Text",
@@ -387,6 +405,7 @@ class Draw extends React.Component {
                     text: null,
                     overlayID: null,
                   },
+                  drawtype: this.DRAW_TYPES.Text,
                 })
               }
               icon="font"
