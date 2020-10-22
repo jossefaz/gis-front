@@ -106,7 +106,9 @@ export class OverlayUtil {
   };
 
   unset = async (uuid) => {
-    await store.dispatch(unsetOverlay({ uuid, widgetName: this.widget }));
+    if (this.store && uuid in this.store) {
+      await store.dispatch(unsetOverlay({ uuid, widgetName: this.widget }));
+    }
   };
 
   unsetAll = async () => {

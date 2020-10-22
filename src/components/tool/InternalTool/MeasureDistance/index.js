@@ -78,9 +78,6 @@ class MeasureDistance extends React.Component {
   get draw() {
     return this.interactions.currentDraw;
   }
-  get measureToolTip() {
-    return this.selfOverlay ? this.overlays.focused : null;
-  }
 
   get DrawLayer() {
     return this.interactions.getVectorLayer(this.interactions.TYPES.DRAW);
@@ -157,7 +154,7 @@ class MeasureDistance extends React.Component {
               className: this.CLASSNAMES.MEASURE,
             },
           });
-          getOverlay(this.measureToolTip).setPosition(tooltipCoord);
+          getOverlay(this.overlays.focused).setPosition(tooltipCoord);
         });
       });
     }
@@ -167,9 +164,9 @@ class MeasureDistance extends React.Component {
     if (draw) {
       draw.on("drawend", (e) => {
         this.toogleToolTip(true, true);
-        getOverlay(this.measureToolTip).setOffset([0, -7]);
+        getOverlay(this.overlays.focused).setOffset([0, -7]);
         const color = random_rgba();
-        this.overlays.addDraggable(this.measureToolTip, color);
+        this.overlays.addDraggable(this.overlays.focused, color);
         e.feature.setStyle(generateNewStyle(color));
         this.createMeasureTooltip();
       });
@@ -191,7 +188,7 @@ class MeasureDistance extends React.Component {
 
   renderOverlayDiv() {
     this.overlays.edit(
-      this.measureToolTip,
+      this.overlays.focused,
       this.state.measureMsg[this.map],
       this.state.measureMsg.className
     );
@@ -225,9 +222,9 @@ class MeasureDistance extends React.Component {
     this.onReset();
   }
   onReset = () => {
-    this.overlays.unset(this.measureToolTip);
+    this.overlays.unset(this.overlays.focused);
     this.abortDrawing();
-    this.removeDrawObject();
+    this.interactions.unDraw();
   };
   onUnfocus = () => {
     this.onReset();
