@@ -27,12 +27,13 @@ export const getFeaturesByExtent = (extent, sources) => {
     vs.forEachFeatureInExtent(extent, (feature) => {
       feature.set("editable", editable);
       features.push(feature);
+      console.log("feature", feature);
     });
   });
   return features;
 };
 
-export const geoserverWFSTransaction = (
+window.document.geoserverWFSTransaction = (
   domain,
   layerUrl,
   featureType,
@@ -62,6 +63,13 @@ export const geoserverWFSTransaction = (
   }
   const wfsNode = xs.serializeToString(node);
   console.log(wfsNode);
+  axios.post(
+    "http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3Adimigcompile",
+    wfsNode,
+    {
+      headers: { "Content-Type": "text/xml" },
+    }
+  );
   // $.ajax('http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3AGANANUTFORGEOSERVER', {
   //     type: 'POST',
   //     dataType: 'xml',
