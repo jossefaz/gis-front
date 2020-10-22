@@ -14,7 +14,7 @@ import { InitIcons } from "./utils/faicons";
 import { getMetaData } from "./communication/mdFetcher";
 import { InitSearching } from "./utils/searchUtils";
 import Widget from "./containers/Widget";
-
+import { ToastProvider } from 'react-toast-notifications'
 // REMOVE: this is just for searching debug
 import NessSearching from "./searches/searches";
 // REMOVE: this is just for searching debug
@@ -75,6 +75,7 @@ class App extends React.Component {
   render() {
     return (
       <React.Fragment>
+          <ToastProvider placement="bottom-left">
         <SideNav>
           <div className="ui grid">
             <div className="row">
@@ -87,6 +88,7 @@ class App extends React.Component {
           </div>
         </SideNav>
         <Widget />
+        </ToastProvider>
       </React.Fragment>
     );
   }

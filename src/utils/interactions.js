@@ -68,19 +68,31 @@ export class InteractionUtil {
   }
 
   get currentDraw() {
-    return getInteraction(this.currentDrawUUID);
+    if (this.currentDrawUUID) {
+      return getInteraction(this.currentDrawUUID);
+    }
+    return false;
   }
 
   get currentSelect() {
-    return getInteraction(this.currentSelectUUID);
+    if (this.currentSelectUUID) {
+      return getInteraction(this.currentSelectUUID);
+    }
+    return false;
   }
 
   get currentModify() {
-    return getInteraction(this.currentModifyUUID);
+    if (this.currentModifyUUID) {
+      return getInteraction(this.currentModifyUUID);
+    }
+    return false;
   }
 
   get currentDragBox() {
-    return getInteraction(this.currentDragBoxUUID);
+    if (this.currentDragBoxUUID) {
+      return getInteraction(this.currentDragBoxUUID);
+    }
+    return false;
   }
 
   getVectorLayer = (interaction) => {

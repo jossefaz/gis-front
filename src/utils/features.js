@@ -60,6 +60,17 @@ export const geoserverWFSTransaction = (
       node = formatWFS.writeTransaction(null, null, featuresArray, options);
       break;
   }
+  const wfsNode = xs.serializeToString(node);
+  console.log(wfsNode);
+  // $.ajax('http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3AGANANUTFORGEOSERVER', {
+  //     type: 'POST',
+  //     dataType: 'xml',
+  //     processData: false,
+  //     contentType: 'text/xml',
+  //     data: wfsNode
+  // }).done(function() {
+  //   sourceWFS.clear();
+  // });
 };
 
 export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {

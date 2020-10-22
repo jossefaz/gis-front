@@ -67,3 +67,9 @@ export const saveCanvasAsImage = (canvas, title, format) => {
     saveAs(blob, `${title}.${format}`);
   });
 };
+
+export const copyCanvasToClipBoard = (canvas) => {
+  canvas.toBlob((blob) =>
+    navigator.clipboard.write([new window.ClipboardItem({ "image/png": blob })])
+  );
+};

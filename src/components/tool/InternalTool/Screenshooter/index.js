@@ -7,8 +7,12 @@ import {
   ORIENTATION,
   getCurrentMapCanvas,
   saveCanvasAsImage,
+  copyCanvasToClipBoard,
 } from "../../../../utils/export";
 import "./style.css";
+import { isChrome, isEdge, isOpera } from "../../../../utils/browserDetector";
+import { ToastProvider, useToasts } from "react-toast-notifications";
+import withNotifications from "../../../HOC/withNotifications";
 const dims = {
   a0: [1189, 841],
   a1: [841, 594],
@@ -27,7 +31,6 @@ const formatOptions = [
 ];
 
 const resolutionOptions = [
-  { key: "72", value: "72", text: "72 dpi (מהר)" },
   { key: "150", value: "150", text: "150 dpi" },
   { key: "300", value: "300", text: "300 dpi (עיטי)" },
   { key: "600", value: "600", text: "600 dpi (עיטי)" },
@@ -37,11 +40,10 @@ const fileFormatOptions = [
   { key: "pdf", value: "pdf", text: "PDF" },
   { key: "png", value: "png", text: "PNG" },
 ];
-
 class Exporter extends React.Component {
   state = {
     format: "a4",
-    resolution: "72",
+    resolution: "150",
     dim: dims["a4"],
     fileFormat: "pdf",
   };
@@ -66,14 +68,20 @@ class Exporter extends React.Component {
     return Math.round((this.state.dim[1] * this.state.resolution) / 25.4);
   }
 
-  save = () => {
+  save = (copy) => {
     document.body.style.cursor = "progress";
     const size = getFocusedMap().getSize();
     const viewResolution = getFocusedMap().getView().getResolution();
     this.resizeMapForExporting(size, viewResolution);
     getFocusedMap().once("rendercomplete", () => {
       getCurrentMapCanvas(this.width, this.height).then((mapCanvas) => {
-        if (this.state.fileFormat == "pdf") {
+        if (copy) {
+          copyCanvasToClipBoard(mapCanvas);
+          this.props.addToast("Copied to clipboard !", {
+            appearance: "success",
+            autoDismiss: true,
+          });
+        } else if (this.state.fileFormat == "pdf") {
           exportImageToPdf(
             mapCanvas,
             "map",
@@ -145,10 +153,15 @@ class Exporter extends React.Component {
           <Button icon onClick={this.save}>
             <Icon name="save" />
           </Button>
+          {(isChrome || isEdge || isOpera) && (
+            <Button icon onClick={() => this.save(true)}>
+              <Icon name="copy" />
+            </Button>
+          )}
         </div>
       </React.Fragment>
     );
   }
 }
 
-export default Exporter;
+export default withNotifications(Exporter);

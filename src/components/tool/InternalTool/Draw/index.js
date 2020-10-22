@@ -25,15 +25,17 @@ import axios from "axios";
 import "./style.css";
 class Draw extends React.Component {
   WIDGET_NAME = "Draw";
-  CLASSNAMES = {
-    TEXT: "ol-tooltip ol-tooltip-measure",
-    HIDDEN: "hidden",
-    FINISH: "ol-tooltip ol-tooltip-static",
+
+  DRAW_TYPES = {
+    Polygon: "Polygon",
+    Line: "LineString",
+    Circle: "Circle",
+    Text: "Text",
   };
   state = {
     eraseDraw: {
       openAlert: false,
-      content: "? האם ברצונך למחוק את כלל המדידות שביצת",
+      content: "? האם ברצונך למחוק את כלל ציורים והטקסטים שביצעת",
       confirmBtn: "כן",
       cancelBtn: "לא",
     },
@@ -48,6 +50,7 @@ class Draw extends React.Component {
       b: "19",
       a: "1",
     },
+    drawtype: null,
     sessionType: "Geometry",
     editText: {
       text: null,
@@ -91,16 +94,17 @@ class Draw extends React.Component {
     return this.interactions.currentModifyUUID;
   }
   get DrawLayer() {
-    return this.interactions.getVectorLayer(this.interactions.TYPES.Draw);
+    return this.interactions.getVectorLayer(this.interactions.TYPES.DRAW);
   }
 
   get DrawSource() {
-    return this.interactions.getVectorSource(this.interactions.TYPES.Draw);
+    return this.interactions.getVectorSource(this.interactions.TYPES.DRAW);
   }
 
-  toogleView = () => {
+  toggleView = () => {
     if (this.DrawLayer) {
       this.DrawLayer.setVisible(!this.state.view);
+      this.overlays.toggleAll();
     }
     this.setState({
       view: !this.state.view,
@@ -114,7 +118,7 @@ class Draw extends React.Component {
 
   onOpenDrawSession = async (drawtype) => {
     await this.addInteraction(drawtype);
-    this.setState({ sessionType: "Geometry" });
+    this.setState({ sessionType: "Geometry", drawtype });
     this.onDrawEnd();
   };
 
@@ -150,7 +154,7 @@ class Draw extends React.Component {
     }
   };
 
-  onClearDrawing = () => {
+  onClearAll = () => {
     this.DrawSource.clear();
     this.setState({
       open: false,
@@ -158,6 +162,7 @@ class Draw extends React.Component {
       lastFeature: { ...this.state.lastFeature, [this.map]: null },
     });
     this.interactions.unDraw();
+    this.overlays.unsetAll();
   };
 
   removeSelectAndEdit = async () => {
@@ -240,11 +245,9 @@ class Draw extends React.Component {
           this.dragPan = interaction;
         }
       });
-    this.onOpenDrawSession("Polygon");
     this.retrieveExistingDrawing();
   }
   componentDidUpdate() {
-    this.overlays.testIt();
     document.addEventListener("keydown", (e) =>
       escapeHandler(e, this.abortDrawing)
     );
@@ -278,7 +281,7 @@ class Draw extends React.Component {
 
   createOrEditText = async (text, textID) => {
     if (textID) {
-      this.overlays.edit(text, textID);
+      this.overlays.edit(textID, text);
       this.setState({
         sessionType: "",
         editText: {
@@ -288,29 +291,6 @@ class Draw extends React.Component {
       });
     } else {
       await this.createNewText(text);
-    }
-  };
-
-  dragOverlay = (evt) => {
-    if (this.selfOverlay) {
-      Object.keys(this.selfOverlay.overlays).map((ol) => {
-        const overlay = getOverlay(ol);
-        if (overlay.get("dragging")) {
-          this.dragPan.setActive(false);
-          overlay.setPosition(evt.coordinate);
-        }
-      });
-    }
-  };
-
-  unDragOverlay = (evt) => {
-    if (this.selfOverlay) {
-      Object.keys(this.selfOverlay.overlays).map((ol) => {
-        if (getOverlay(ol).get("dragging")) {
-          this.dragPan.setActive(true);
-          getOverlay(ol).set("dragging", false);
-        }
-      });
     }
   };
 
@@ -381,27 +361,43 @@ class Draw extends React.Component {
             <label className="labels">בחר צורה : </label>
 
             <IconButton
-              className="ui icon button primary pointer"
-              onClick={() => this.onOpenDrawSession("Polygon")}
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Polygon
+                  ? "secondary"
+                  : "primary"
+              }`}
+              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
               icon="draw-polygon"
               size="lg"
             />
             <IconButton
-              className="ui icon button primary pointer"
-              onClick={() => this.onOpenDrawSession("LineString")}
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Line
+                  ? "secondary"
+                  : "primary"
+              }`}
+              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
               icon="grip-lines"
               size="lg"
             />
 
             <IconButton
-              className="ui icon button primary pointer"
-              onClick={() => this.onOpenDrawSession("Circle")}
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Circle
+                  ? "secondary"
+                  : "primary"
+              }`}
+              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
               icon="circle"
               size="lg"
             />
 
             <IconButton
-              className="ui icon button primary pointer"
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Text
+                  ? "secondary"
+                  : "primary"
+              }`}
               onClick={() =>
                 this.setState({
                   sessionType: "Text",
@@ -409,6 +405,7 @@ class Draw extends React.Component {
                     text: null,
                     overlayID: null,
                   },
+                  drawtype: this.DRAW_TYPES.Text,
                 })
               }
               icon="font"
@@ -453,7 +450,7 @@ class Draw extends React.Component {
                   className={`ui icon button pointer ${
                     !disable ? "positive" : "disabled"
                   }`}
-                  onClick={() => this.toogleView()}
+                  onClick={() => this.toggleView()}
                   disabled={disable}
                   icon={this.state.view ? "eye" : "eye-slash"}
                   size="lg"
@@ -475,7 +472,7 @@ class Draw extends React.Component {
             <React.Fragment>
               <Grid.Row>
                 <TextTable
-                  overlays={this.selfOverlay.overlays}
+                  overlays={this.selfOverlay}
                   editText={this.editText}
                   removeOverlay={this.removeOverlay}
                 />
@@ -492,7 +489,7 @@ class Draw extends React.Component {
           onCancel={() =>
             this.setState({ ...this.state.eraseDraw, open: false })
           }
-          onConfirm={this.onClearDrawing}
+          onConfirm={this.onClearAll}
         />
       </React.Fragment>
     );
