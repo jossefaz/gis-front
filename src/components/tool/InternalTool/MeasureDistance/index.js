@@ -1,137 +1,120 @@
 import React from "react";
 import { connect } from "react-redux";
-import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle"
-import { getInteraction, getOverlay, getInteractionGraphicLayer, getInteractionVectorSource, getFocusedMapProxy, getFocusedMap } from '../../../../nessMapping/api'
-import { setInteraction, unsetInteraction } from "../../../../redux/actions/interaction";
-import { setOverlay, unsetOverlays, unsetOverlay } from "../../../../redux/actions/overlay";
-import IconButton from "../../../UI/Buttons/IconButton"
+import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
+import {
+  getInteraction,
+  getOverlay,
+  getInteractionGraphicLayer,
+  getInteractionVectorSource,
+  getFocusedMapProxy,
+  getFocusedMap,
+} from "../../../../nessMapping/api";
+import {
+  setInteraction,
+  unsetInteraction,
+} from "../../../../redux/actions/interaction";
+import {
+  setOverlay,
+  unsetOverlays,
+  unsetOverlay,
+} from "../../../../redux/actions/overlay";
+import IconButton from "../../../UI/Buttons/IconButton";
 import { generateOutput, generateNewStyle } from "./func";
 import { DragPan } from "ol/interaction";
-import { Confirm } from 'semantic-ui-react'
-import { random_rgba } from "../../../../utils/func"
+import { Confirm } from "semantic-ui-react";
+import { random_rgba } from "../../../../utils/func";
+import { InteractionUtil } from "../../../../utils/interactions";
+import { OverlayUtil } from "../../../../utils/overlay";
 import "./style.css";
 class MeasureDistance extends React.Component {
-
-  WIDGET_NAME = "Measure"
+  WIDGET_NAME = "Measure";
   CLASSNAMES = {
-    MEASURE: 'ol-tooltip ol-tooltip-measure',
-    HIDDEN: 'hidden',
-    FINISH: 'ol-tooltip ol-tooltip-static'
-  }
+    MEASURE: "ol-tooltip ol-tooltip-measure",
+    HIDDEN: "hidden",
+    FINISH: "ol-tooltip ol-tooltip-static",
+  };
   INTERACTIONS = {
-    Draw: "Draw"
-  }
+    Draw: "Draw",
+  };
 
-
-
-  state = {
-    measureMsg: {
-      className: this.CLASSNAMES.MEASURE,
-      current_uuid: ''
-    },
-    eraseDraw: {
-      openAlert: false,
-      content: "? האם ברצונך למחוק את כלל המדידות שביצת",
-      confirmBtn: "כן",
-      cancelBtn: "לא"
-    },
-    view: true
-
+  constructor() {
+    super();
+    this.state = {
+      measureMsg: {
+        className: this.CLASSNAMES.MEASURE,
+        current_uuid: "",
+      },
+      eraseDraw: {
+        openAlert: false,
+        content: "? האם ברצונך למחוק את כלל המדידות שביצעת",
+        confirmBtn: "כן",
+        cancelBtn: "לא",
+      },
+      view: true,
+    };
+    this.interactions = new InteractionUtil(this.WIDGET_NAME);
+    this.overlays = new OverlayUtil(this.WIDGET_NAME);
   }
   sketch = null;
 
-
-
-
-  static get MeasureDistance() {
-    return new MeasureDistance()
-  }
-
   get map() {
-    return this.props.maps.focused
+    return this.props.maps.focused;
   }
   get selfInteraction() {
-    if (this.WIDGET_NAME in this.props.Interactions) {
-      return this.props.Interactions[this.WIDGET_NAME]
-    }
-    return false
+    return this.interactions.store;
   }
 
   get overlayHealthCheck() {
-    return this.selfOverlay && this.map && this.map in this.selfOverlay && this.selfOverlay[this.map].overlays
+    return (
+      this.selfOverlay &&
+      this.map &&
+      this.map in this.selfOverlay &&
+      this.selfOverlay[this.map].overlays
+    );
   }
   get selfOverlay() {
-    if (this.WIDGET_NAME in this.props.Overlays) {
-      return this.props.Overlays[this.WIDGET_NAME]
-    }
-    return false
+    return this.overlays.store;
   }
   get draw() {
-    if (this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
-      return this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid
-    }
-    return false
+    return this.interactions.currentDraw;
   }
   get measureToolTip() {
-    return this.selfOverlay && this.map in this.selfOverlay ? this.selfOverlay[this.map].focused : null
+    return this.selfOverlay ? this.overlays.focused : null;
   }
 
   get DrawLayer() {
-    return this.draw ? getInteractionGraphicLayer(this.draw) : null
+    return this.interactions.getVectorLayer(this.interactions.TYPES.DRAW);
   }
 
   get DrawSource() {
-    return this.draw ? getInteractionVectorSource(this.draw) : null
+    return this.interactions.getVectorSource(this.interactions.TYPES.DRAW);
   }
-
 
   createMeasureTooltip = () => {
-    const selector = `${this.WIDGET_NAME}${this.map}`
-    this.props.setOverlay({
-      overlay: {
-        element: this.generateOverlayDiv(selector),
-        offset: [0, -15],
-        positioning: 'bottom-center',
-        stopEvent: false,
-        dragging: false
-      },
-      widgetName: this.WIDGET_NAME,
-      selector
-    }
-    );
-  }
-
-  ToggleOverlays = (show) => {
-    if (this.selfOverlay && this.map in this.selfOverlay) {
-      Object.keys(this.selfOverlay[this.map].overlays).map(
-        overlay => {
-          const selector = this.selfOverlay[this.map].overlays[overlay].selector
-          const overlayDiv = document.querySelector(`#${selector}`)
-          overlayDiv.className = show ? this.CLASSNAMES.FINISH : this.CLASSNAMES.HIDDEN
-        }
-      )
-    }
-  }
+    this.overlays.newText();
+  };
 
   toogleView = () => {
-    if (this.DrawLayer) {
-      this.DrawLayer.setVisible(!this.state.view)
-    }
-    if (this.selfOverlay) {
-      this.ToggleOverlays(!this.state.view)
-    }
+    this.DrawLayer.setVisible(!this.state.view);
+    this.overlays.toggleAll();
     this.setState({
-      view: !this.state.view
-    })
-  }
+      view: !this.state.view,
+    });
+  };
 
   toogleToolTip = (show, finishdraw = null) => {
-    const { FINISH, MEASURE, HIDDEN } = this.CLASSNAMES
-    const className = finishdraw ? show ? FINISH : show ? MEASURE : HIDDEN : HIDDEN;
+    const { FINISH, MEASURE, HIDDEN } = this.CLASSNAMES;
+    const className = finishdraw
+      ? show
+        ? FINISH
+        : show
+        ? MEASURE
+        : HIDDEN
+      : HIDDEN;
     this.setState({
-      measureMsg: { ...this.state.measureMsg, className }
-    })
-  }
+      measureMsg: { ...this.state.measureMsg, className },
+    });
+  };
 
   escapeHandler = (evt) => {
     evt = evt || window.event;
@@ -143,191 +126,112 @@ class MeasureDistance extends React.Component {
     }
     if (isEscape) {
       this.abortDrawing();
-      this.toogleToolTip(false)
+      this.toogleToolTip(false);
     }
-  }
+  };
 
   addInteraction = async (drawtype) => {
-    const sourceLayer = this.DrawSource // save it before it will be deleted !!
-    const Layer = this.DrawLayer
-    this.removeDrawObject();
-    await this.props.setInteraction({
-      Type: "Draw",
-      drawConfig: { type: drawtype },
-      sourceLayer,
-      Layer,
-      widgetName: this.WIDGET_NAME
-    });
-  }
+    await this.interactions.unDraw();
+    await this.interactions.newDraw({ type: drawtype });
+  };
 
   onOpenDrawSession = async (drawtype) => {
-    await this.addInteraction(drawtype)
+    await this.addInteraction(drawtype);
     this.createMeasureTooltip();
-    this.toogleToolTip(true)
+    this.toogleToolTip(true);
     this.onDrawStart();
     this.onDrawEnd();
-  }
+  };
   onDrawStart = () => {
-    const draw = getInteraction(this.draw)
+    const draw = this.interactions.currentDraw;
     if (draw) {
-      draw.on('drawstart',
-        (evt) => {
-          this.sketch = evt.feature
-          let coord = evt.coordinate;
-          this.sketch.getGeometry().on('change', (evt) => {
-            const { output, tooltipCoord } = generateOutput(evt, coord)
-            this.setState({ measureMsg: { ...this.state.measureMsg, [this.map]: output, className: this.CLASSNAMES.MEASURE } })
-            getOverlay(this.measureToolTip).setPosition(tooltipCoord);
+      draw.on("drawstart", (evt) => {
+        this.sketch = evt.feature;
+        let coord = evt.coordinate;
+        this.sketch.getGeometry().on("change", (evt) => {
+          const { output, tooltipCoord } = generateOutput(evt, coord);
+          this.setState({
+            measureMsg: {
+              ...this.state.measureMsg,
+              [this.map]: output,
+              className: this.CLASSNAMES.MEASURE,
+            },
           });
+          getOverlay(this.measureToolTip).setPosition(tooltipCoord);
         });
+      });
     }
-  }
+  };
   onDrawEnd = () => {
-    const draw = getInteraction(this.draw)
+    const draw = this.interactions.currentDraw;
     if (draw) {
-      draw.on('drawend',
-        (e) => {
-          this.toogleToolTip(true, true)
-          getOverlay(this.measureToolTip).setOffset([0, -7]);
-          const color = random_rgba()
-          this.addDraggableToOverlay(color)
-          e.feature.setStyle(generateNewStyle(color))
-          this.createMeasureTooltip();
-
-
-        });
-
+      draw.on("drawend", (e) => {
+        this.toogleToolTip(true, true);
+        getOverlay(this.measureToolTip).setOffset([0, -7]);
+        const color = random_rgba();
+        this.overlays.addDraggable(this.measureToolTip, color);
+        e.feature.setStyle(generateNewStyle(color));
+        this.createMeasureTooltip();
+      });
     }
-  }
-
-  addDraggableToOverlay = (color) => {
-    const overlay = this.selfOverlay[this.map].overlays[this.measureToolTip]
-    const overlayDiv = document.getElementById(overlay.selector)
-    const widgetName = this.WIDGET_NAME
-    overlayDiv.style.backgroundColor = color
-    overlayDiv.setAttribute("uuid", this.measureToolTip)
-    overlayDiv.setAttribute("dragging", false)
-    overlayDiv.addEventListener('mousedown', function (evt) {
-      getOverlay(this.id.split(widgetName)[1]).set('dragging', true)
-      console.info('start dragging');
-    });;
-
-  }
-
-
+  };
 
   onClearDrawing = async () => {
-    this.DrawSource.clear()
-    this.setState({ open: false })
-    await this.removeDrawObject()
-    await this.removeOverlays()
-  }
-  removeDrawObject = () => {
-    if (this.draw && this.selfInteraction && this.map in this.selfInteraction && this.INTERACTIONS.Draw in this.selfInteraction[this.map]) {
-      this.props.unsetInteraction({ uuid: this.selfInteraction[this.map][this.INTERACTIONS.Draw].uuid, widgetName: this.WIDGET_NAME, Type: this.INTERACTIONS.Draw })
-    }
-
-  }
-  removeOverlays = () => {
-    if (this.selfOverlay) {
-      this.props.unsetOverlays({ overlays: this.selfOverlay[this.map].overlays, widgetName: this.WIDGET_NAME })
-    }
-
-  }
+    this.DrawSource.clear();
+    this.setState({ open: false });
+    await this.interactions.unDraw();
+    await this.overlays.unsetAll();
+  };
 
   abortDrawing = () => {
     if (this.draw) {
-      getInteraction(this.draw).abortDrawing();
+      this.interactions.currentDraw.abortDrawing();
     }
-  }
-
-  generateOverlayDiv(selector) {
-    const overlayDiv = document.createElement("div")
-    overlayDiv.setAttribute("id", selector)
-    overlayDiv.setAttribute("class", this.CLASSNAMES.MEASURE)
-    return overlayDiv;
-  }
-
+  };
 
   renderOverlayDiv() {
-    if (this.draw && document.querySelector(`#${this.WIDGET_NAME}${this.measureToolTip}`)) {
-      const overlayDiv = document.querySelector(`#${this.WIDGET_NAME}${this.measureToolTip}`)
-      overlayDiv.innerHTML = this.state.measureMsg[this.map]
-      overlayDiv.className = this.state.measureMsg.className
-    }
+    this.overlays.edit(
+      this.measureToolTip,
+      this.state.measureMsg[this.map],
+      this.state.measureMsg.className
+    );
   }
-
-  dragOverlay = (evt) => {
-    if (this.overlayHealthCheck) {
-      Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
-        const overlay = getOverlay(ol)
-        if (overlay.get('dragging')) {
-          this.dragPan.setActive(false);
-          overlay.setPosition(evt.coordinate)
-        }
-      })
-    }
-  }
-
-  unDragOverlay = (evt) => {
-    if (this.overlayHealthCheck) {
-      Object.keys(this.selfOverlay[this.map].overlays).map(ol => {
-        if (getOverlay(ol).get('dragging')) {
-          this.dragPan.setActive(true);
-          getOverlay(ol).set('dragging', false);
-        }
-      })
-    }
-  }
-
 
   // LIFECYCLE
 
   componentDidMount() {
-    getFocusedMap().getInteractions().forEach((interaction) => {
-      if (interaction instanceof DragPan) {
-        this.dragPan = interaction;
-      }
+    getFocusedMap()
+      .getInteractions()
+      .forEach((interaction) => {
+        if (interaction instanceof DragPan) {
+          this.dragPan = interaction;
+        }
+      });
+    getFocusedMap().on("pointermove", (evt) => {
+      this.overlays.dragOverlay(evt, () => this.dragPan.setActive(false));
     });
-    getFocusedMap().on('pointermove', this.dragOverlay);
-    getFocusedMap().on('pointerup', this.unDragOverlay);
+    getFocusedMap().on("pointerup", (evt) => {
+      this.overlays.unDragOverlay(() => this.dragPan.setActive(false));
+    });
   }
-
 
   componentDidUpdate() {
     document.addEventListener("keydown", this.escapeHandler);
-    // if (this.Tools) {
-    //   if (this.Tools.unfocus == this.props.toolID) {
-    //     this.onUnfocus()
-    //   }
-    //   if (this.Tools.reset.length > 0) {
-    //     this.Tools.reset.map(toolid => {
-    //       if (toolid == this.props.toolID) {
-    //         this.onReset()
-    //       }
-    //     })
-    //   }
-    // }
-
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escapeHandler);
-    getFocusedMap().un('pointermove', this.dragOverlay);
-    getFocusedMap().un('pointerup', this.unDragOverlay);
+    getFocusedMap().un("pointermove", this.dragOverlay);
+    getFocusedMap().un("pointerup", this.unDragOverlay);
     this.onReset();
   }
   onReset = () => {
-    if (this.selfOverlay && this.map && this.map in this.selfOverlay && this.measureToolTip in this.selfOverlay[this.map].overlays) {
-      this.props.unsetOverlay({ uuid: this.measureToolTip, widgetName: this.WIDGET_NAME })
-    }
+    this.overlays.unset(this.measureToolTip);
     this.abortDrawing();
-    this.removeDrawObject()
-  }
+    this.removeDrawObject();
+  };
   onUnfocus = () => {
     this.onReset();
-  }
-
-
+  };
 
   render() {
     this.renderOverlayDiv();
@@ -337,32 +241,52 @@ class MeasureDistance extends React.Component {
           <IconButton
             className="ui icon button primary pointer"
             onClick={() => this.onOpenDrawSession("Polygon")}
-            icon="draw-polygon" size="lg" />
+            icon="draw-polygon"
+            size="lg"
+          />
           <IconButton
             className="ui icon button primary pointer"
             onClick={() => this.onOpenDrawSession("LineString")}
-            icon="ruler" size="lg" />
+            icon="ruler"
+            size="lg"
+          />
           <IconButton
             className="ui icon button primary pointer"
             onClick={() => this.onOpenDrawSession("Circle")}
-            icon="circle" size="lg" />
+            icon="circle"
+            size="lg"
+          />
           <IconButton
-            className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'negative' : 'disabled'}`}
+            className={`ui icon button pointer ${
+              this.DrawSource && this.DrawSource.getFeatures().length > 0
+                ? "negative"
+                : "disabled"
+            }`}
             onClick={() => this.setState({ open: true })}
             disabled={!this.DrawLayer}
-            icon="trash-alt" size="lg" />
+            icon="trash-alt"
+            size="lg"
+          />
           <IconButton
-            className={`ui icon button pointer ${this.DrawSource && this.DrawSource.getFeatures().length > 0 ? 'positive' : 'disabled'}`}
+            className={`ui icon button pointer ${
+              this.DrawSource && this.DrawSource.getFeatures().length > 0
+                ? "positive"
+                : "disabled"
+            }`}
             onClick={() => this.toogleView()}
             disabled={!this.DrawLayer}
-            icon={this.state.view ? 'eye' : 'eye-slash'} size="lg" />
+            icon={this.state.view ? "eye" : "eye-slash"}
+            size="lg"
+          />
           <Confirm
             open={this.state.open}
-            size='mini'
+            size="mini"
             content={this.state.eraseDraw.content}
             cancelButton={this.state.eraseDraw.cancelBtn}
             confirmButton={this.state.eraseDraw.confirmBtn}
-            onCancel={() => this.setState({ ...this.state.eraseDraw, open: false })}
+            onCancel={() =>
+              this.setState({ ...this.state.eraseDraw, open: false })
+            }
             onConfirm={this.onClearDrawing}
           />
         </div>
@@ -371,17 +295,24 @@ class MeasureDistance extends React.Component {
   }
 }
 
-
-
 const mapStateToProps = (state) => {
   return {
     Features: state.Features,
     maps: state.map,
     Interactions: state.Interactions,
-    Overlays: state.Overlays
+    Overlays: state.Overlays,
   };
 };
 
-const mapDispatchToProps = { setInteraction, unsetInteraction, setOverlay, unsetOverlays, unsetOverlay }
+const mapDispatchToProps = {
+  setInteraction,
+  unsetInteraction,
+  setOverlay,
+  unsetOverlays,
+  unsetOverlay,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withWidgetLifeCycle(MeasureDistance));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withWidgetLifeCycle(MeasureDistance));

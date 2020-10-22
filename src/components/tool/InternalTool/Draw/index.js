@@ -33,7 +33,7 @@ class Draw extends React.Component {
   state = {
     eraseDraw: {
       openAlert: false,
-      content: "? האם ברצונך למחוק את כלל המדידות שביצת",
+      content: "? האם ברצונך למחוק את כלל ציורים והטקסטים שביצעת",
       confirmBtn: "כן",
       cancelBtn: "לא",
     },
@@ -91,16 +91,17 @@ class Draw extends React.Component {
     return this.interactions.currentModifyUUID;
   }
   get DrawLayer() {
-    return this.interactions.getVectorLayer(this.interactions.TYPES.Draw);
+    return this.interactions.getVectorLayer(this.interactions.TYPES.DRAW);
   }
 
   get DrawSource() {
-    return this.interactions.getVectorSource(this.interactions.TYPES.Draw);
+    return this.interactions.getVectorSource(this.interactions.TYPES.DRAW);
   }
 
-  toogleView = () => {
+  toggleView = () => {
     if (this.DrawLayer) {
       this.DrawLayer.setVisible(!this.state.view);
+      this.overlays.toggleAll();
     }
     this.setState({
       view: !this.state.view,
@@ -150,7 +151,7 @@ class Draw extends React.Component {
     }
   };
 
-  onClearDrawing = () => {
+  onClearAll = () => {
     this.DrawSource.clear();
     this.setState({
       open: false,
@@ -158,6 +159,7 @@ class Draw extends React.Component {
       lastFeature: { ...this.state.lastFeature, [this.map]: null },
     });
     this.interactions.unDraw();
+    this.overlays.unsetAll();
   };
 
   removeSelectAndEdit = async () => {
@@ -244,7 +246,6 @@ class Draw extends React.Component {
     this.retrieveExistingDrawing();
   }
   componentDidUpdate() {
-    this.overlays.testIt();
     document.addEventListener("keydown", (e) =>
       escapeHandler(e, this.abortDrawing)
     );
@@ -278,7 +279,7 @@ class Draw extends React.Component {
 
   createOrEditText = async (text, textID) => {
     if (textID) {
-      this.overlays.edit(text, textID);
+      this.overlays.edit(textID, text);
       this.setState({
         sessionType: "",
         editText: {
@@ -288,29 +289,6 @@ class Draw extends React.Component {
       });
     } else {
       await this.createNewText(text);
-    }
-  };
-
-  dragOverlay = (evt) => {
-    if (this.selfOverlay) {
-      Object.keys(this.selfOverlay.overlays).map((ol) => {
-        const overlay = getOverlay(ol);
-        if (overlay.get("dragging")) {
-          this.dragPan.setActive(false);
-          overlay.setPosition(evt.coordinate);
-        }
-      });
-    }
-  };
-
-  unDragOverlay = (evt) => {
-    if (this.selfOverlay) {
-      Object.keys(this.selfOverlay.overlays).map((ol) => {
-        if (getOverlay(ol).get("dragging")) {
-          this.dragPan.setActive(true);
-          getOverlay(ol).set("dragging", false);
-        }
-      });
     }
   };
 
@@ -453,7 +431,7 @@ class Draw extends React.Component {
                   className={`ui icon button pointer ${
                     !disable ? "positive" : "disabled"
                   }`}
-                  onClick={() => this.toogleView()}
+                  onClick={() => this.toggleView()}
                   disabled={disable}
                   icon={this.state.view ? "eye" : "eye-slash"}
                   size="lg"
@@ -475,7 +453,7 @@ class Draw extends React.Component {
             <React.Fragment>
               <Grid.Row>
                 <TextTable
-                  overlays={this.selfOverlay.overlays}
+                  overlays={this.selfOverlay}
                   editText={this.editText}
                   removeOverlay={this.removeOverlay}
                 />
@@ -492,7 +470,7 @@ class Draw extends React.Component {
           onCancel={() =>
             this.setState({ ...this.state.eraseDraw, open: false })
           }
-          onConfirm={this.onClearDrawing}
+          onConfirm={this.onClearAll}
         />
       </React.Fragment>
     );

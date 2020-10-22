@@ -9,10 +9,12 @@ import {
 } from "../nessMapping/api";
 import {
   unsetOverlay,
+  unsetOverlays,
   setOverlayProperty,
   setOverlay,
 } from "../redux/actions/overlay";
 import store from "../redux/store";
+import _ from "lodash";
 
 export class OverlayUtil {
   constructor(widgetName) {
@@ -52,28 +54,37 @@ export class OverlayUtil {
       this.widget in currentOverlayStore &&
       this.currentMapUUID in currentOverlayStore[this.widget]
     ) {
-      return currentOverlayStore[this.widget][this.currentMapUUID];
+      return _.omit(currentOverlayStore[this.widget][this.currentMapUUID], [
+        "focused",
+      ]);
     }
     return false;
   }
+
+  get focused() {
+    const currentOverlayStore = store.getState().Overlays;
+    if (
+      this.widget in currentOverlayStore &&
+      this.currentMapUUID in currentOverlayStore[this.widget]
+    ) {
+      return currentOverlayStore[this.widget][this.currentMapUUID].focused;
+    }
+    return false;
+  }
+
   get currentMapUUID() {
     return getFocusedMapProxy().uuid.value;
   }
 
-  newText = async (text) => {
+  newText = async (text, classes) => {
     const selector = `${this.widget}${this.currentMapUUID}`;
+    const style = classes ? classes : this.CLASSNAMES.TEXT;
     await store.dispatch(
       setOverlay(
-        OverlayUtil.generateTextOverlay(
-          selector,
-          this.CLASSNAMES.TEXT,
-          text,
-          this.widget
-        )
+        OverlayUtil.generateTextOverlay(selector, style, text, this.widget)
       )
     );
-    const currentOverlays = Object.keys(this.store.overlays);
-    const lastID = currentOverlays[currentOverlays.length - 1];
+    const lastID = this.focused;
     return lastID;
   };
 
@@ -82,11 +93,12 @@ export class OverlayUtil {
     overlay.setPosition(getFocusedMap().getView().getCenter());
   };
 
-  addDraggable = (uuid) => {
-    const overlay = this.store.overlays[uuid];
+  addDraggable = (uuid, color) => {
+    const overlay = this.store[uuid];
     const overlayDiv = document.getElementById(overlay.selector);
     overlayDiv.setAttribute("uuid", uuid);
     overlayDiv.setAttribute("dragging", false);
+    if (color) overlayDiv.style.backgroundColor = color;
     const that = this;
     overlayDiv.addEventListener("mousedown", function (evt) {
       getOverlay(this.id.split(that.widget)[1]).set("dragging", true);
@@ -97,16 +109,18 @@ export class OverlayUtil {
     await store.dispatch(unsetOverlay({ uuid, widgetName: this.widget }));
   };
 
-  testIt = () => {
-    console.log("*****FIRST TEST***");
-    console.log(this.widget);
-    console.log(this.store);
-    console.log("*****END TEST***");
+  unsetAll = async () => {
+    await store.dispatch(
+      unsetOverlays({
+        overlays: Object.keys(this.store),
+        widgetName: this.widget,
+      })
+    );
   };
 
   dragOverlay = (evt, cb) => {
     if (this.store) {
-      Object.keys(this.store.overlays).map((ol) => {
+      Object.keys(this.store).map((ol) => {
         const overlay = getOverlay(ol);
         if (overlay.get("dragging")) {
           cb();
@@ -116,28 +130,49 @@ export class OverlayUtil {
     }
   };
 
-  edit = async (content, uuid) => {
-    const overlay = this.store.overlays[uuid];
-    const overlayDiv = document.querySelector(`#${overlay.selector}`);
-    await store.dispatch(
-      setOverlayProperty({
-        widgetName: this.widget,
-        uuid,
-        property: "content",
-        value: content,
-      })
-    );
-    overlayDiv.innerHTML = content;
+  toggleAll = () => {
+    Object.keys(this.store).map((uuid) => {
+      const overlaydiv = document.querySelector(
+        `#${this.store[uuid].selector}`
+      );
+      const isHidden = overlaydiv.hidden;
+      overlaydiv.hidden = !isHidden;
+    });
+  };
+
+  edit = async (uuid, content, styleclasses) => {
+    const overlay = this.store[uuid];
+    const overlayDiv = overlay
+      ? document.querySelector(`#${overlay.selector}`)
+      : document.querySelector(`#${this.WIDGET_NAME}${uuid}`);
+    if (overlayDiv) {
+      await store.dispatch(
+        setOverlayProperty({
+          widgetName: this.widget,
+          uuid,
+          property: "content",
+          value: content,
+        })
+      );
+      overlayDiv.innerHTML = content;
+      if (styleclasses) overlayDiv.className = styleclasses;
+    }
   };
 
   unDragOverlay = (cb) => {
     if (this.store) {
-      Object.keys(this.store.overlays).map((ol) => {
+      Object.keys(this.store).map((ol) => {
         if (getOverlay(ol).get("dragging")) {
           cb();
           getOverlay(ol).set("dragging", false);
         }
       });
     }
+  };
+
+  toggleOverlayClass = (uuid, show, classTrue, classFalse) => {
+    const selector = this.store[uuid].selector;
+    const overlayDiv = document.querySelector(`#${selector}`);
+    overlayDiv.className = show ? classTrue : classFalse;
   };
 }
