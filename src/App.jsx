@@ -1,6 +1,6 @@
 import React from "react";
-import MapTabs from "./containers/MapTabs";
-import Map from "./components/Map";
+import MapTabs from "./containers/MapTabs/MapTabs";
+import Map from "./containers/Map/Map";
 import TopNav from "./containers/TopNav";
 import SideNav from "./containers/SideNav";
 import config from "react-global-configuration";
@@ -12,10 +12,9 @@ import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
 import { InitIcons } from "./utils/faicons";
 import { getMetaData } from "./communication/mdFetcher";
-
 import { InitSearching } from "./utils/searchUtils";
 import Widget from "./containers/Widget";
-
+import { ToastProvider } from 'react-toast-notifications'
 // REMOVE: this is just for searching debug
 import NessSearching from "./searches/searches";
 // REMOVE: this is just for searching debug
@@ -44,9 +43,9 @@ class App extends React.Component {
         menuItems.forEach((menuItem) => {
           console.log(
             "  --menuItem: " +
-              menuItem.title +
-              " " +
-              JSON.stringify(menuItem.item)
+            menuItem.title +
+            " " +
+            JSON.stringify(menuItem.item)
           );
         });
 
@@ -68,6 +67,7 @@ class App extends React.Component {
   render() {
     return (
       <React.Fragment>
+          <ToastProvider placement="bottom-left">
         <SideNav>
           <div className="ui grid">
             <div className="row">
@@ -80,6 +80,7 @@ class App extends React.Component {
           </div>
         </SideNav>
         <Widget />
+        </ToastProvider>
       </React.Fragment>
     );
   }

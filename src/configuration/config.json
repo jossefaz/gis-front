@@ -77,7 +77,7 @@
       "id": 1,
       "name": "dimigcompile",
       "alias": "שכבה לדוגמא",
-      "url": "http://localhost:8600/geoserver/Jeru/wms",
+      "url": "http://localhost:8080/geoserver/Jeru/wms",
       "params": {
         "LAYERS": "Jeru:dimigcompile"
       },
@@ -238,6 +238,24 @@
         "ToolName": "Coordinates",
         "ToolTip": "המרת קורדינטות",
         "ToolIcon": "map-marked-alt",
+        "ToolActionInvoker": "",
+        "ToolInvokerType": 0,
+        "ToolTypeID": 1,
+        "OnCreate": "default",
+        "OnDestroy": "default",
+        "ToolParams": "",
+        "ToolLocation": "",
+        "Order": 1,
+        "IsAGroup": 0,
+        "ToolGroupId": 0,
+        "ToolContainer": "TopNav",
+        "IsOpen": 0
+      },
+      {
+        "Id": 11,
+        "ToolName": "Screenshooter",
+        "ToolTip": "תצלום מסך",
+        "ToolIcon": "camera-retro",
         "ToolActionInvoker": "",
         "ToolInvokerType": 0,
         "ToolTypeID": 1,

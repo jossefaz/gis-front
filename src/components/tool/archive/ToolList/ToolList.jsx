@@ -1,22 +1,22 @@
 import React, { Component } from "react";
 import ToolTask from "../ToolTask.jsx";
 
-class ToolList extends Component {
-
+class  ToolList extends Component {
+  
   render() {
-    const {
+  const  {
       tools
-    } = this.props
+  } = this.props
 
-    return (
-      <ul>
-        {tools.map(tool => (
-          <li key={tool.Id}>
-            <ToolTask tool={tool}></ToolTask>
-          </li>
-        ))}
-      </ul>
-    );
+  return (  
+    <ul>
+    {tools.map(tool=> (
+      <li key = {tool.Id}>          
+          <ToolTask tool={tool}></ToolTask>
+      </li>
+    ))}
+  </ul>
+  );
   }
 }
 export default ToolList;
