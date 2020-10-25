@@ -14,6 +14,7 @@
     "@types/react-redux": "^7.1.5",
     "axios": "^0.19.2",
     "draft-js": "^0.11.5",
+    "fast-xml-parser": "^3.17.4",
     "font-awesome": "^4.7.0",
     "immer": "^4.0.2",
     "lodash.get": "^4.4.2",
@@ -43,7 +44,8 @@
     "semantic-ui-react-numberinput": "^1.4.1",
     "simplr-logger": "^1.0.1",
     "socket.io": "^2.3.0",
-    "websocket-nats": "^0.3.3"
+    "websocket-nats": "^0.3.3",
+    "xml2js": "^0.4.23"
   },
   "scripts": {
     "start": "react-scripts start",

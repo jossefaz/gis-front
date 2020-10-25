@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Slider } from "react-semantic-ui-range";
-import {
-    setMapLayerOpacity,
-} from "../../../redux/actions/layers";
+import { Button } from "semantic-ui-react";
+import { parseString } from 'xml2js'
+import { setMapLayerOpacity } from "../../../redux/actions/layers";
+import { getOlLayer, getFocusedMap } from "../../../nessMapping/api";
+import { getXMLResponse } from '../../../communication/apiManager'
 class LayerListDetailsTools extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+
     settings = {
         start: 0.7,
         min: 0,
@@ -18,9 +17,57 @@ class LayerListDetailsTools extends Component {
             this.props.setMapLayerOpacity(this.props.layer.uuid, value);
         },
     };
+    state = {
+        map: null,
+        OlLayer: null,
+        boundingBox: null
+    }
+
+    zoomToLayer = (lyr) => {
+        let map = getFocusedMap();
+        let OlLayer = getOlLayer(lyr.uuid);
+
+        this.setState({
+            map: map,
+            OlLayer: OlLayer
+        });
+
+        if (this.state.boundingBox)
+            this.fitExtent();
+        else {
+            getXMLResponse("http://localhost:8080/geoserver/Jeru/wms?&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities")
+                .then((response) => {
+                    let boundingBox;
+                    parseString(response, function (err, result) {
+                        let layers;
+                        layers = result.WMS_Capabilities.Capability[0].Layer[0];
+                        let layer = layers.Layer.find((lyr) => lyr.name === OlLayer.name);
+                        boundingBox = layer.BoundingBox[1].$;
+                    });
+                    this.setState({ boundingBox: boundingBox }, this.fitExtent);
+                });
+        }
+    }
 
 
+    fitExtent = () => {
 
+        let { boundingBox, map, OlLayer } = this.state;
+        if (boundingBox) {
+            let res = map.getView().getResolution();
+            let maxx = boundingBox.maxx;
+            let maxy = boundingBox.maxy;
+            let minx = boundingBox.minx;
+            let miny = boundingBox.miny;
+
+            OlLayer.setExtent([minx, miny, maxx, maxy]);
+            map.getView().fit(OlLayer.getExtent(), { constrainResolution: false });
+
+            let newRes = map.getView().getResolution();
+            if (newRes <= 0)
+                this.map.getView().setResolution(res);
+        }
+    }
     render() {
         const { layer } = this.props
         return (
@@ -34,7 +81,8 @@ class LayerListDetailsTools extends Component {
                 <div className="stickingOutText padding">מבט מלא על השכבה</div>
                 <div>באפשרותך להתמקד על השכבה אותה בחרת</div>
                 <div>
-
+                    <Button id="btnShowFullExtent"
+                        onClick={() => this.zoomToLayer(layer)}>הצג</Button>
                 </div>
             </React.Fragment>
         );
