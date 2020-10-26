@@ -1,18 +1,15 @@
 import types from "./actionsTypes";
-import NessLayer from "../../nessMapping/nessLayer"
+import NessLayer from "../../nessMapping/nessLayer";
 import {
   getFocusedMapProxy,
   getNessLayer,
   addOlLayerToMap,
   addLayerToMapProxy,
   setLayerVisiblity,
-  setLayerOpacity
-} from "../../nessMapping/api"
-import {
-  nessLayerToReduxLayer
-}
-  from "../../utils/convertors/layerConverter"
-
+  setLayerOpacity,
+} from "../../nessMapping/api";
+import { nessLayerToReduxLayer } from "../../utils/convertors/layerConverter";
+import { getMetaData } from "../../communication/mdFetcher";
 
 export const addLayers = (arrayOfNessLayers) => (dispatch) => {
   const addedLayers = [];
@@ -31,10 +28,10 @@ export const addLayers = (arrayOfNessLayers) => (dispatch) => {
     type: types.ADD_LAYER,
     payload: {
       mapId,
-      addedLayers
-    }
+      addedLayers,
+    },
   });
-}
+};
 
 export const addLayerToOLMap = (layerId, visible) => (dispatch) => {
   const mapId = getFocusedMapProxy().uuid.value;
@@ -46,13 +43,12 @@ export const addLayerToOLMap = (layerId, visible) => (dispatch) => {
         payload: {
           mapId,
           layerId,
-          visible
-        }
+          visible,
+        },
       });
-
     }
   }
-}
+};
 
 export const setMapLayerVisible = (layerId, visible) => (dispatch) => {
   const mapId = getFocusedMapProxy().uuid.value;
@@ -63,11 +59,11 @@ export const setMapLayerVisible = (layerId, visible) => (dispatch) => {
       payload: {
         mapId,
         layerId,
-        visible
+        visible,
       },
     });
   }
-}
+};
 
 export const setMapLayerOpacity = (layerId, Opacity) => (dispatch) => {
   const mapId = getFocusedMapProxy().uuid.value;
@@ -78,28 +74,51 @@ export const setMapLayerOpacity = (layerId, Opacity) => (dispatch) => {
       payload: {
         mapId,
         layerId,
-        Opacity
+        Opacity,
       },
     });
   }
-}
+};
 
-export const InitLayers = (layersConfig) => (dispatch) => {
-  var allLayersForMap = {};
-  const mapId = getFocusedMapProxy().uuid.value;
-  if (layersConfig) {
-    layersConfig.map((lyrConfig) => {
-      var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
-      if (nessLyr !== -1)
-        allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);
-    });
+export const InitLayers = (layersConfig) => async (dispatch) => {
+  await _initLayers(dispatch);
 
-    dispatch({
-      type: types.INIT_LAYERS,
-      payload: {
-        mapId,
-        allLayersForMap
-      },
+  dispatch({
+    type: types.LAYER_ADDED,
+    payload: {
+      mapId: getFocusedMapProxy().uuid.value,
+      layerAdded: false,
+    },
+  });
+};
+
+const _initLayers = (dispatch) => {
+  return new Promise((resolve, reject) => {
+    var allLayersForMap = {};
+    var layersObject = {};
+    const mapId = getFocusedMapProxy().uuid.value;
+
+    getMetaData("layers").then((layersResult) => {
+
+      if (layersResult) {
+        layersResult.map((lyrConfig) => {
+          var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
+          if (nessLyr !== -1)
+            allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);
+        });
+
+        layersObject["layers"] = allLayersForMap;
+        layersObject["layerAdded"] = true;
+
+        dispatch({
+          type: types.INIT_LAYERS,
+          payload: {
+            mapId,
+            layersObject,
+          },
+        });
+        resolve();
+      }
     });
-  }
-}
+  });
+};

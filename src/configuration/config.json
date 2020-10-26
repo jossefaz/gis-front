@@ -8,16 +8,14 @@
     ],
     "zoom": 6
   },
-  "SearchConfigs": [
-    {
+  "SearchConfigs": [{
       "name": "חיפוש לדוגמא",
       "type": "OBJ_ARRAY",
       "field": "field1",
       "itemTitlePrefix": "לפני_",
       "itemTitleField": "field3",
       "itemTitlePostfix": "_אחרי",
-      "data": [
-        {
+      "data": [{
           "field1": "שלום כיתה א",
           "field2": 12,
           "field3": "ערך 1",
@@ -47,8 +45,7 @@
       "itemTitlePrefix": "לפני_",
       "itemTitleField": "field3",
       "itemTitlePostfix": "_אחרי",
-      "data": [
-        {
+      "data": [{
           "field1": "מה נשמע בכיתה",
           "field2": 12,
           "field3": "ערך 4",
@@ -72,23 +69,20 @@
       ]
     }
   ],
-  "layers": [
-    {
-      "id": 1,
-      "name": "dimigcompile",
-      "alias": "שכבה לדוגמא",
-      "url": "http://localhost:8080/geoserver/Jeru/wms",
-      "params": {
-        "LAYERS": "Jeru:dimigcompile"
-      },
-      "serverType": "geoserver",
-      "visible": 1,
-      "selectable": 1
-    }
-  ],
+  "layers": [{
+    "id": 1,
+    "name": "dimigcompile",
+    "alias": "שכבה לדוגמא",
+    "url": "http://localhost:8080/geoserver/Jeru/wms",
+    "params": {
+      "LAYERS": "Jeru:dimigcompile"
+    },
+    "serverType": "geoserver",
+    "visible": 1,
+    "selectable": 1
+  }],
   "Widgets": {
-    "tools": [
-      {
+    "tools": [{
         "Id": 1,
         "ToolName": "BaseMapGallery",
         "ToolTip": "מפות רקע",
@@ -288,15 +282,13 @@
         "IsOpen": 0
       }
     ],
-    "groups": [
-      {
-        "Id": 1,
-        "GroupContainer": "TopNav",
-        "GroupName": "General",
-        "GroupImage": "toolsGroup.png",
-        "IsOpen": 0
-      }
-    ]
+    "groups": [{
+      "Id": 1,
+      "GroupContainer": "TopNav",
+      "GroupName": "General",
+      "GroupImage": "toolsGroup.png",
+      "IsOpen": 0
+    }]
   },
   "channels": {
     "name": "MTCS.Units PubSub Channel",
@@ -313,5 +305,6 @@
   "metaDataApi": {
     "url": "https://localhost:5001/MetaData/getMetaData/"
   },
-  "mantiLayerUrl": "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Amanti_intersections&maxFeatures=500&outputFormat=application%2Fjson"
+  "mantiLayerUrl": "http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Amanti_intersections&maxFeatures=500&outputFormat=application%2Fjson",
+  "geoserverUrl": "http://localhost:8080/geoserver/Jeru/"
 }

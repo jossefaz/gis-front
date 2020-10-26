@@ -124,7 +124,6 @@ const _toOLLayer = (nl) => {
                     params: nl.config.SourceOptions.params,
                     serverType: "geoserver"
                 }),
-
             });
             newLyr.alias = nl.title;
             break;

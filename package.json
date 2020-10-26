@@ -44,11 +44,13 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "sanitize-html": "^1.24.0",
+    "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
     "semantic-ui-react-numberinput": "^1.4.1",
     "simplr-logger": "^1.0.1",
     "socket.io": "^2.3.0",
-    "websocket-nats": "^0.3.3"
+    "websocket-nats": "^0.3.3",
+    "xml2js": "^0.4.23"
   },
   "scripts": {
     "start": "react-scripts start",

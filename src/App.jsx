@@ -22,22 +22,18 @@ import NessSearching from "./searches/searches";
 import "./utils/features"
 
 class App extends React.Component {
-
   bootstrap = async () => {
     await this.props.InitRasters();
     await this.props.InitMap();
     await this.props.InitTools(config.get("Widgets"));
-
-  }
+    await this.props.InitLayers();
+  };
 
   componentDidMount() {
     LogIt(logLevel.INFO, "App init");
 
     InitIcons();
-    this.bootstrap()
-
-
-
+    this.bootstrap();
 
     InitSearching(config.get("SearchConfigs"));
 
@@ -61,11 +57,7 @@ class App extends React.Component {
         }
       });
     // REMOVE: this is just for searching debug
-
-    this.fetchDataFromServer();
   }
-
-
 
   fetchDataFromServer = async () => {
     const [layersResult] = await Promise.all([getMetaData("layers")]);
@@ -77,19 +69,19 @@ class App extends React.Component {
   render() {
     return (
       <React.Fragment>
-          <ToastProvider placement="bottom-left">
-        <SideNav>
-          <div className="ui grid">
-            <div className="row">
-              <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
+        <ToastProvider placement="bottom-left">
+          <SideNav>
+            <div className="ui grid">
+              <div className="row">
+                <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
+              </div>
+              <div className="row">
+                <MapTabs />
+                <Map />
+              </div>
             </div>
-            <div className="row">
-              <MapTabs />
-              <Map />
-            </div>
-          </div>
-        </SideNav>
-        <Widget />
+          </SideNav>
+          <Widget />
         </ToastProvider>
       </React.Fragment>
     );

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Menu, Sidebar } from "semantic-ui-react";
-import LayerList from "../../components/layers/LayerList/LayerList";
+import LayerListMain from "../../components/layers/LayerListMain";
 import { connect } from "react-redux";
 import "./style.css";
 import { renderTools } from "../../components/tool/func";
@@ -20,7 +20,7 @@ const SideMenu = (props) => {
           animation={"push"}
         >
           {renderTools(props.Tools[currentMapId], "SideNav")}
-          <LayerList />
+          <LayerListMain />
         </Sidebar>
         <Sidebar.Pusher>{props.children}</Sidebar.Pusher>
       </Sidebar.Pushable>

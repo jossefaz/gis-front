@@ -1,0 +1,14 @@
+.uirtl {
+    direction: rtl;
+    text-align: right;
+    padding-top: 20px;
+}
+
+.stickingOutText {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.padding {
+    padding-top: 20px;
+}
