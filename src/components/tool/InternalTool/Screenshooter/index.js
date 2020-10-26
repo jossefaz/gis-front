@@ -1,26 +1,17 @@
 import React from "react";
-import { getFocusedMap } from "../../../../nessMapping/api";
 import { Dropdown } from "semantic-ui-react";
 import { Button, Icon } from "semantic-ui-react";
 import {
   exportImageToPdf,
   ORIENTATION,
-  getCurrentMapCanvas,
   saveCanvasAsImage,
-  copyCanvasToClipBoard,
+  dims,
+  MapImage,
+  copyCanvasToClipBoard
 } from "../../../../utils/export";
 import "./style.css";
 import { isChrome, isEdge, isOpera } from "../../../../utils/browserDetector";
-import { ToastProvider, useToasts } from "react-toast-notifications";
 import withNotifications from "../../../HOC/withNotifications";
-const dims = {
-  a0: [1189, 841],
-  a1: [841, 594],
-  a2: [594, 420],
-  a3: [420, 297],
-  a4: [297, 210],
-  a5: [210, 148],
-};
 
 const formatOptions = [
   { key: "a0", value: "a0", text: "A0" },
@@ -40,15 +31,16 @@ const fileFormatOptions = [
   { key: "pdf", value: "pdf", text: "PDF" },
   { key: "png", value: "png", text: "PNG" },
 ];
+
 class Exporter extends React.Component {
   state = {
     format: "a4",
-    resolution: "150",
-    dim: dims["a4"],
     fileFormat: "pdf",
+    resolution : "150"
   };
 
   handleResolutionChange = (newResolution) => {
+    this.mapimpage.resolution = newResolution
     this.setState({ resolution: newResolution });
   };
 
@@ -57,66 +49,41 @@ class Exporter extends React.Component {
   };
 
   handleFormatChange = (newFormat) => {
-    this.setState({ format: newFormat, dim: dims[newFormat] });
+    this.mapimpage.dim = dims[newFormat]
+    this.setState({ format: newFormat});
   };
 
-  get width() {
-    return Math.round((this.state.dim[0] * this.state.resolution) / 25.4);
-  }
-
-  get height() {
-    return Math.round((this.state.dim[1] * this.state.resolution) / 25.4);
+  componentDidMount() {
+    this.mapimpage= new MapImage()
+    this.mapimpage.resolution = this.state.resolution
   }
 
   save = (copy) => {
-    document.body.style.cursor = "progress";
-    const size = getFocusedMap().getSize();
-    const viewResolution = getFocusedMap().getView().getResolution();
-    this.resizeMapForExporting(size, viewResolution);
-    getFocusedMap().once("rendercomplete", () => {
-      getCurrentMapCanvas(this.width, this.height).then((mapCanvas) => {
-        if (copy) {
-          copyCanvasToClipBoard(mapCanvas);
-          this.props.addToast("Copied to clipboard !", {
-            appearance: "success",
-            autoDismiss: true,
-          });
-        } else if (this.state.fileFormat == "pdf") {
-          exportImageToPdf(
-            mapCanvas,
-            "map",
-            ORIENTATION.landscape,
-            this.state.format,
-            this.state.dim[0],
-            this.state.dim[1]
-          );
-        } else {
-          saveCanvasAsImage(mapCanvas, "map", this.state.fileFormat);
-        }
-        this.resetSizeAfterExport(size, viewResolution);
-      });
-    });
-  };
+    this.mapimpage.createMapCanvas((canvas)=> {
+      if (copy) {
+        copyCanvasToClipBoard(canvas);
+        this.props.addToast("Copied to clipboard !", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+      } else if (this.state.fileFormat == "pdf") {
+        exportImageToPdf(
+          canvas,
+          "map",
+          ORIENTATION.landscape,
+          this.mapimpage.format,
+          this.mapimpage.dim[0],
+          this.mapimpage.dim[1]
+        );
+      } else {
+        saveCanvasAsImage(canvas, "map", this.state.fileFormat);
+      }
+    })
 
-  resizeMapForExporting = (originalSize, originalResolution) => {
-    // Set print size
-    var printSize = [this.width, this.height];
-    getFocusedMap().setSize(printSize);
-    var scaling = Math.min(
-      this.width / originalSize[0],
-      this.height / originalSize[1]
-    );
-    getFocusedMap()
-      .getView()
-      .setResolution(originalResolution / scaling);
-  };
+            
+  }
 
-  resetSizeAfterExport = (originalSize, originalResolution) => {
-    // Reset original map size
-    getFocusedMap().setSize(originalSize);
-    getFocusedMap().getView().setResolution(originalResolution);
-    document.body.style.cursor = "auto";
-  };
+
 
   render() {
     return (
@@ -150,7 +117,7 @@ class Exporter extends React.Component {
             defaultValue={this.state.fileFormat}
             onChange={(v, { value }) => this.handleFileFormatChange(value)}
           />
-          <Button icon onClick={this.save}>
+          <Button icon onClick={() => this.save(false)}>
             <Icon name="save" />
           </Button>
           {(isChrome || isEdge || isOpera) && (

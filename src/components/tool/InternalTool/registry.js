@@ -11,4 +11,5 @@ export default {
   Legend: lazy(() => import("./Legend")),
   Coordinates: lazy(() => import("./Coordinates")),
   Screenshooter: lazy(() => import("./Screenshooter")),
+  MapEditor : lazy(() => import("./MapEditor")),
 };
