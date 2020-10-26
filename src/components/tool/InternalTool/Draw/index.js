@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import { getFocusedMap, getOverlay } from "../../../../nessMapping/api";
+import { getFocusedMap } from "../../../../nessMapping/api";
 import IconButton from "../../../UI/Buttons/IconButton";
 import { generateNewStyle } from "../MeasureDistance/func";
 import {
@@ -361,39 +361,43 @@ class Draw extends React.Component {
             <label className="labels">בחר צורה : </label>
 
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype == this.DRAW_TYPES.Polygon
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Polygon
                   ? "secondary"
                   : "primary"
-                }`}
+              }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
               icon="draw-polygon"
               size="lg"
             />
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype == this.DRAW_TYPES.Line
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Line
                   ? "secondary"
                   : "primary"
-                }`}
+              }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
               icon="grip-lines"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype == this.DRAW_TYPES.Circle
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Circle
                   ? "secondary"
                   : "primary"
-                }`}
+              }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
               icon="circle"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype == this.DRAW_TYPES.Text
+              className={`ui icon button pointer ${
+                this.state.drawtype == this.DRAW_TYPES.Text
                   ? "secondary"
                   : "primary"
-                }`}
+              }`}
               onClick={() =>
                 this.setState({
                   sessionType: "Text",
@@ -434,16 +438,18 @@ class Draw extends React.Component {
               <Grid.Row>
                 <label className="labels">שליטה כללית : </label>
                 <IconButton
-                  className={`ui icon button pointer ${!disable ? "negative" : "disabled"
-                    }`}
+                  className={`ui icon button pointer ${
+                    !disable ? "negative" : "disabled"
+                  }`}
                   onClick={() => this.setState({ open: true })}
                   disabled={disable}
                   icon="trash-alt"
                   size="lg"
                 />
                 <IconButton
-                  className={`ui icon button pointer ${!disable ? "positive" : "disabled"
-                    }`}
+                  className={`ui icon button pointer ${
+                    !disable ? "positive" : "disabled"
+                  }`}
                   onClick={() => this.toggleView()}
                   disabled={disable}
                   icon={this.state.view ? "eye" : "eye-slash"}
