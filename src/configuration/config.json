@@ -268,6 +268,24 @@
         "ToolGroupId": 0,
         "ToolContainer": "TopNav",
         "IsOpen": 0
+      },
+      {
+        "Id": 12,
+        "ToolName": "MapEditor",
+        "ToolTip": "ייצוא מפה",
+        "ToolIcon": "photo-video",
+        "ToolActionInvoker": "",
+        "ToolInvokerType": 0,
+        "ToolTypeID": 1,
+        "OnCreate": "default",
+        "OnDestroy": "default",
+        "ToolParams": "",
+        "ToolLocation": "",
+        "Order": 1,
+        "IsAGroup": 0,
+        "ToolGroupId": 0,
+        "ToolContainer": "TopNav",
+        "IsOpen": 0
       }
     ],
     "groups": [

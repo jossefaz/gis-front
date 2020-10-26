@@ -2,11 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import {
-  getInteraction,
   getOverlay,
-  getInteractionGraphicLayer,
-  getInteractionVectorSource,
-  getFocusedMapProxy,
   getFocusedMap,
 } from "../../../../nessMapping/api";
 import {

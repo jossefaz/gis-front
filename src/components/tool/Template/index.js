@@ -2,6 +2,9 @@ import React from "react";
 import PopUp from "../../popup";
 import "./style.css";
 const ToolTemplate = (props) => {
+
+  
+
   return (
     <PopUp>
       <div

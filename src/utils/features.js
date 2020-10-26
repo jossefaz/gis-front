@@ -35,7 +35,6 @@ export const getFeaturesByExtent = (extent, sources) => {
 
 window.document.geoserverWFSTransaction = (
   domain,
-  layerUrl,
   featureType,
   srs,
   mode,
@@ -43,7 +42,6 @@ window.document.geoserverWFSTransaction = (
 ) => {
   const formatWFS = new WFS();
   const xs = new XMLSerializer();
-  const sourceWFS = newVectorSource(layerUrl, srs, null, formatWFS);
   const options = {
     featureNS: `${domain}/wfs`,
     featureType,
@@ -60,6 +58,8 @@ window.document.geoserverWFSTransaction = (
     case "delete":
       node = formatWFS.writeTransaction(null, null, featuresArray, options);
       break;
+    default :
+      return
   }
   const wfsNode = xs.serializeToString(node);
   console.log(wfsNode);

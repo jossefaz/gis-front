@@ -24,10 +24,12 @@ import {
   faAngleDoubleLeft,
   faMapMarkedAlt,
   faCameraRetro,
+  faPhotoVideo
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
   library.add(
+    faPhotoVideo,
     fab,
     faItalic,
     faMapMarkedAlt,
