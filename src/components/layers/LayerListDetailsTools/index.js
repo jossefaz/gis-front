@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Slider } from "react-semantic-ui-range";
+import config from "react-global-configuration";
 import { Button } from "semantic-ui-react";
 import { parseString } from 'xml2js'
 import { setMapLayerOpacity } from "../../../redux/actions/layers";
@@ -35,20 +36,22 @@ class LayerListDetailsTools extends Component {
         if (this.state.boundingBox)
             this.fitExtent();
         else {
-            getXMLResponse("http://localhost:8080/geoserver/Jeru/wms?&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities")
-                .then((response) => {
-                    let boundingBox;
-                    parseString(response, function (err, result) {
-                        let layers;
-                        layers = result.WMS_Capabilities.Capability[0].Layer[0];
-                        let layer = layers.Layer.find((lyr) => lyr.name === OlLayer.name);
-                        boundingBox = layer.BoundingBox[1].$;
+            let url = config.get("geoserverUrl");
+            if (url) {
+                getXMLResponse(url + "wms?&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities")
+                    .then((response) => {
+                        let boundingBox;
+                        parseString(response, function (err, result) {
+                            let layers;
+                            layers = result.WMS_Capabilities.Capability[0].Layer[0];
+                            let layer = layers.Layer.find((lyr) => lyr.name === OlLayer.name);
+                            boundingBox = layer.BoundingBox[1].$;
+                        });
+                        this.setState({ boundingBox: boundingBox }, this.fitExtent);
                     });
-                    this.setState({ boundingBox: boundingBox }, this.fitExtent);
-                });
+            }
         }
     }
-
 
     fitExtent = () => {
 
