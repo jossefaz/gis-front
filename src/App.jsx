@@ -67,19 +67,19 @@ class App extends React.Component {
   render() {
     return (
       <React.Fragment>
-          <ToastProvider placement="bottom-left">
-        <SideNav>
-          <div className="ui grid">
-            <div className="row">
-              <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
+        <ToastProvider placement="bottom-left">
+          <SideNav>
+            <div className="ui grid">
+              <div className="row">
+                <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
+              </div>
+              <div className="row">
+                <MapTabs />
+                <Map />
+              </div>
             </div>
-            <div className="row">
-              <MapTabs />
-              <Map />
-            </div>
-          </div>
-        </SideNav>
-        <Widget />
+          </SideNav>
+          <Widget />
         </ToastProvider>
       </React.Fragment>
     );

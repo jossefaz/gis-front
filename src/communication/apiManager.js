@@ -1,4 +1,3 @@
-import { parse } from 'fast-xml-parser';
 export async function fetchData(properties) {
 
     try {

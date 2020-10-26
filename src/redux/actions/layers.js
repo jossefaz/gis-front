@@ -99,23 +99,26 @@ const _initLayers = (dispatch) => {
     const mapId = getFocusedMapProxy().uuid.value;
 
     getMetaData("layers").then((layersResult) => {
-      layersResult.map((lyrConfig) => {
-        var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
-        if (nessLyr !== -1)
-          allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);
-      });
 
-      layersObject["layers"] = allLayersForMap;
-      layersObject["layerAdded"] = true;
+      if (layersResult) {
+        layersResult.map((lyrConfig) => {
+          var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
+          if (nessLyr !== -1)
+            allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);
+        });
 
-      dispatch({
-        type: types.INIT_LAYERS,
-        payload: {
-          mapId,
-          layersObject,
-        },
-      });
-      resolve();
+        layersObject["layers"] = allLayersForMap;
+        layersObject["layerAdded"] = true;
+
+        dispatch({
+          type: types.INIT_LAYERS,
+          payload: {
+            mapId,
+            layersObject,
+          },
+        });
+        resolve();
+      }
     });
   });
 };
