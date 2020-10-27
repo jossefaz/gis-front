@@ -6,7 +6,8 @@ import { Button } from "semantic-ui-react";
 import { parseString } from 'xml2js'
 import { setMapLayerOpacity } from "../../../redux/actions/layers";
 import { getOlLayer, getFocusedMap } from "../../../nessMapping/api";
-import { getXMLResponse } from '../../../communication/apiManager'
+import { getXMLResponse } from '../../../communication/apiManager';
+import { selectLayers } from "../../../redux/selectors/layersSelector";
 class LayerListDetailsTools extends Component {
 
     settings = {
@@ -54,7 +55,6 @@ class LayerListDetailsTools extends Component {
     }
 
     fitExtent = () => {
-
         let { boundingBox, map, OlLayer } = this.state;
         if (boundingBox) {
             let res = map.getView().getResolution();
@@ -92,7 +92,15 @@ class LayerListDetailsTools extends Component {
     }
 }
 
-export default connect(null, {
+const mapStateToProps = (state, ownProps) => {
+    return {
+        // layer: state.Layers[state.map.focused]["layers"][ownProps.layerId],
+        layer: selectLayers(state)[ownProps.layerId]
+    };
+};
+
+
+export default connect(mapStateToProps, {
     setMapLayerOpacity,
 })(LayerListDetailsTools);
 

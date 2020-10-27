@@ -12,13 +12,9 @@ import "../style.css"
 
 class LayerListVisbile extends React.Component {
 
-    constructor(props) {
-
-        super(props);
-        this.state = {
-            layers: {}
-        };
-    }
+    state = {
+        layers: {}
+    };
 
     componentDidMount() {
         this.setState({ layers: this.getVisibileLayers() })
@@ -63,7 +59,7 @@ class LayerListVisbile extends React.Component {
                                     name={layers[layerId].visible ? 'eye' : 'eye slash'} />
                                 <label>{layers[layerId].name}</label>
                                 <Icon link
-                                    onClick={() => this.props.setMode(3, layers[layerId])}
+                                    onClick={() => this.props.setMode(3, layerId)}
                                     size='large'
                                     name='angle right' />
                             </div>
@@ -82,16 +78,10 @@ const mapStateToProps = (state) => {
     };
 };
 
+
+
 export default connect(mapStateToProps, {
     addLayerToOLMap,
     setMapLayerVisible
 })(LayerListVisbile);
-
-
-class LayerVisibleItem extends React.Component {
-
-    render() {
-        return (<div></div>);
-    }
-}
 

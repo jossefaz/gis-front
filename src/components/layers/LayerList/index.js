@@ -1,23 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Accordion, Button, Icon } from "semantic-ui-react";
-import LayerListItem from "../LayerListItem/LayerListItem.jsx";
+import LayerListItem from "../LayerListItem/index.js";
 import { getMetaData } from "../../../communication/mdFetcher.js";
 import { selectLayers } from "../../../redux/selectors/layersSelector";
 import _ from "lodash";
 import "../style.css";
 
 class LayerList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeIndex: -1,
-      layers: {},
-      subjects: {},
-      layerSubjectRelation: [],
-      layerListObject: {},
-    };
-  }
+
+  state = {
+    activeIndex: -1,
+    layers: {},
+    subjects: {},
+    layerSubjectRelation: [],
+    layerListObject: {},
+  };
+
   handleClick = (e, titleProps) => {
     const { index } = titleProps;
     var activeIndex = this.state.activeIndex;
@@ -27,10 +26,9 @@ class LayerList extends Component {
   };
 
   componentDidMount() {
-    console.log("layerlist mounted");
     this.fetchMetaDataFromServer();
-
   }
+
   static getDerivedStateFromProps(props, state) {
     return {
       layers: props.layers,
@@ -40,31 +38,15 @@ class LayerList extends Component {
   componentDidUpdate(prevProps, prevState) {
 
     if (Object.keys(prevState.layers).length !== Object.keys(this.state.layers).length) {
-      console.log("not working")
       this.renderLayerList();
     }
   }
-  componentWillUpdate(prevProps, prevState) {
-
-  }
-
-  // shouldComponentUpdate = (nextProps, nextState) => {
-  //   var prevLayers = this.props.layers;
-  //   var nextLayers = nextProps.layers;
-  //   var subjects = nextState.subjects;
-
-  //   return (
-  //     (Object.keys(nextLayers).length !== Object.keys(prevLayers).length &&
-  //       Object.keys(subjects).length > 0) ||
-  //     nextState.activeIndex !== this.state.activeIndex
-  //   );
-  // };
 
   fetchMetaDataFromServer = async () => {
     const [subjectsResult, layerSubjectResult] = await Promise.all([
       getMetaData("subjects"),
       getMetaData("layerListRelations"),
-    ]);
+    ])
 
     if (subjectsResult && layerSubjectResult) {
       var subjectList = {};
@@ -74,21 +56,14 @@ class LayerList extends Component {
       });
       this.setState({
         subjects: subjectList,
-        layerSubjectRelation: layerSubjectResult,
-      }, this.renderLayerList());
+        layerSubjectRelation: layerSubjectResult
+      }, () => { this.renderLayerList(); })
     }
   };
 
-  // renderTest = () => {
-  //   this.setState({ layers: this.props.layers });
-  // };
-
   renderLayerList = () => {
-    console.log("got to renderLayerList");
-    var activeIndex = this.state.activeIndex;
 
     var layerSubjectRelation = _.cloneDeep(this.state.layerSubjectRelation);
-
     var layerListObject = _.cloneDeep(this.state.subjects);
 
     var layers = this.state.layers;
@@ -108,17 +83,13 @@ class LayerList extends Component {
     this.setState({ layerListObject: layerListObject });
   }
 
-
-
   createLayerListItems = (layers) => {
-
     return Object.keys(layers).map((layerId, index) => (
       <LayerListItem layerId={layerId} key={index}></LayerListItem>
     ));
   };
 
   render() {
-
     return (
       <React.Fragment>
         <Accordion className="uirtl">
@@ -148,7 +119,7 @@ class LayerList extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    layers: selectLayers(state), //[state.map.focused]["layers"],
+    layers: selectLayers(state),
     mapId: state.map.focused,
   };
 };
