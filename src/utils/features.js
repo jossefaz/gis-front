@@ -19,9 +19,9 @@ export const getCurrentLayersSource = () => {
   return sources;
 };
 
-export const getFeaturesByExtent = (extent, sources) => {
+export const getFeaturesByExtent = (extent) => {
   const features = [];
-  sources.map((vs) => {
+  getCurrentLayersSource().map((vs) => {
     const editable = vs.get("editable");
     vs.forEachFeatureIntersectingExtent(extent, (feature) => {
       feature.set("editable", editable);
@@ -31,7 +31,7 @@ export const getFeaturesByExtent = (extent, sources) => {
   return features;
 };
 
-window.document.geoserverWFSTransaction = (
+export const geoserverWFSTransaction = (
   domain,
   featureType,
   srs,
@@ -77,6 +77,16 @@ window.document.geoserverWFSTransaction = (
   // }).done(function() {
   //   sourceWFS.clear();
   // });
+};
+
+export const updateSingleFeature = (feature) => {
+  geoserverWFSTransaction(
+    "http://localhost:8080/geoserver/Jeru",
+    feature.type,
+    "EPSG:2039",
+    "update",
+    [feature.ol_feature]
+  );
 };
 
 export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {

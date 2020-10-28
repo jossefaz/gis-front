@@ -4,22 +4,38 @@ import {
   getFocusedMapProxy,
   getFeatureProperties,
 } from "../../../../../nessMapping/api";
-import IconButton from "../../../../UI/Buttons/IconButton";
+import withNotifications from "../../../../HOC/withNotifications";
+import { updateSingleFeature } from "../../../../../utils/features";
+import _ from "lodash";
 class FeatureDetail extends React.Component {
   state = {
     editing: false,
+    properties: null,
   };
 
   onStartEdit = () => {
     this.setState({
       editing: true,
-      touched: false,
+      properties: getFeatureProperties(this.currentFeature.ol_feature),
     });
   };
 
   onSave = () => {
-    console.log(this.currentFeature.ol_feature);
-    this.setState({ editing: false });
+    const originalProperties = getFeatureProperties(
+      this.currentFeature.ol_feature
+    );
+    Object.keys(originalProperties).map((prop) => {
+      if (originalProperties[prop] !== this.state.properties[prop]) {
+        this.currentFeature.ol_feature.set(prop, this.state.properties[prop]);
+      }
+    });
+    this.currentFeature.ol_feature.unset("editable");
+    updateSingleFeature(this.currentFeature);
+    this.props.addToast("Successfully save feature !", {
+      appearance: "success",
+      autoDismiss: true,
+    });
+    this.setState({ editing: false, properties: null });
   };
 
   get focusedmap() {
@@ -44,8 +60,12 @@ class FeatureDetail extends React.Component {
   }
 
   handleValueChange = (propertyname, value) => {
-    this.currentFeature.ol_feature.set(propertyname, value);
-    this.setState((oldState) => ({ touched: !oldState.touched }));
+    this.setState((oldState) => ({
+      properties: {
+        ...oldState.properties,
+        [propertyname]: value,
+      },
+    }));
   };
 
   render() {
@@ -83,7 +103,7 @@ class FeatureDetail extends React.Component {
                         {this.state.editing ? (
                           <td>
                             <input
-                              value={properties[property]}
+                              value={this.state.properties[property]}
                               onChange={(e) =>
                                 this.handleValueChange(property, e.target.value)
                               }
@@ -108,4 +128,4 @@ const mapStateToProps = (state) => {
   return { Features: state.Features, map: state.map.focused };
 };
 
-export default connect(mapStateToProps)(FeatureDetail);
+export default connect(mapStateToProps)(withNotifications(FeatureDetail));

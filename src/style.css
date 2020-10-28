@@ -4,3 +4,8 @@ body {
   max-height: 100vh;
   overflow-y: hidden;
 }
+tbody {
+  display: block;
+  height: 50px;
+  overflow: auto;
+}

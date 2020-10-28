@@ -27,6 +27,7 @@ export const setSelectedFeatures = (features) => (dispatch) => {
         geometry: f.values_.geometry,
         id: f.id_,
         ol_feature: f,
+        type: layer,
       });
     });
     dispatch({

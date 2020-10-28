@@ -42,10 +42,7 @@ class FeatureList extends Component {
   render() {
     return (
       <React.Fragment>
-        <table
-          className="ui table"
-          style={{ height: "100%", overflow: "scroll" }}
-        >
+        <table className="ui table">
           <thead>
             <tr>
               <th>Layers</th>

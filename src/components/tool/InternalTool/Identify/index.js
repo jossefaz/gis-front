@@ -7,10 +7,7 @@ import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
-import {
-  getCurrentLayersSource,
-  getFeaturesByExtent,
-} from "../../../../utils/features";
+import { getFeaturesByExtent } from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
 class Identify extends Component {
   WIDGET_NAME = "Identify";
@@ -38,27 +35,26 @@ class Identify extends Component {
   get selfInteraction() {
     return this.interactions.store;
   }
-  createSources = () => {
-    this.setState({
-      sources: getCurrentLayersSource(),
-    });
-  };
+
   onBoxEnd = () => {
     if (this.interactions.currentDragBoxUUID) {
       const dragBox = this.interactions.currentDragBox;
-      if (dragBox && this.select) {
-        dragBox.on("boxstart", () => {
+
+      const startListener = () => {
+        this.interactions.currentSelect.getFeatures().clear();
+      };
+      const endListener = () => {
+        console.log("dragboxend", this.interactions.currentDragBox);
+        const extent = dragBox.getGeometry().getExtent();
+        const features = getFeaturesByExtent(extent);
+        if (features.length > 0) {
           this.interactions.currentSelect.getFeatures().clear();
-        });
-        dragBox.on("boxend", (e) => {
-          console.log("dragboxend");
-          const extent = dragBox.getGeometry().getExtent();
-          const features = getFeaturesByExtent(extent, this.state.sources);
-          if (features.length > 0) {
-            this.interactions.currentSelect.getFeatures().clear();
-            this.props.setSelectedFeatures(features);
-          }
-        });
+          this.props.setSelectedFeatures(features);
+        }
+      };
+      if (dragBox && this.select) {
+        dragBox.on("boxstart", startListener);
+        dragBox.on("boxend", endListener);
       }
     }
   };
@@ -67,7 +63,6 @@ class Identify extends Component {
     await this.interactions.newSelect(null, null, true);
     await this.interactions.newDragBox();
     this.onBoxEnd();
-    this.createSources();
   };
 
   componentDidMount() {
@@ -78,12 +73,12 @@ class Identify extends Component {
     console.log("Reset Identify");
   };
   onUnfocus = async () => {
-    // this.selfInteraction && this.interactions.unsetAll();
+    this.selfInteraction && this.interactions.unsetAll();
   };
 
   onFocus = async () => {
     this.interactions.setAll();
-    this.createSources();
+    this.onBoxEnd();
   };
 
   componentWillUnmount() {
