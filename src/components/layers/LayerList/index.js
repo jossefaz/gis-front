@@ -50,7 +50,7 @@ class LayerList extends Component {
 
     if (subjectsResult && layerSubjectResult) {
       var subjectList = {};
-      subjectsResult.map((subject) => {
+      subjectsResult.forEach((subject) => {
         subject.layers = {};
         subjectList[subject.subjectid] = subject;
       });
@@ -67,7 +67,7 @@ class LayerList extends Component {
     var layerListObject = _.cloneDeep(this.state.subjects);
 
     var layers = this.state.layers;
-    Object.keys(layers).map((lyrId) => {
+    Object.keys(layers).forEach((lyrId) => {
       var lyr = layers[lyrId];
       var filteredSubjectIds = layerSubjectRelation
         .filter((relation) => {
@@ -76,7 +76,7 @@ class LayerList extends Component {
         .map((relation) => {
           return relation.subjectid;
         });
-      filteredSubjectIds.map((subjectid) => {
+      filteredSubjectIds.forEach((subjectid) => {
         layerListObject[subjectid].layers[lyr.uuid] = lyr;
       });
     });
