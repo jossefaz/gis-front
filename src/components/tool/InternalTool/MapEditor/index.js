@@ -10,7 +10,6 @@ const iconb = require("tui-image-editor/dist/svg/icon-b.svg");
 const iconc = require("tui-image-editor/dist/svg/icon-c.svg");
 const icond = require("tui-image-editor/dist/svg/icon-d.svg");
 const myTheme = {
-  "menu.backgroundColor": "white",
   "common.backgroundColor": "white",
   "downloadButton.backgroundColor": "white",
   "downloadButton.borderColor": "white",
@@ -28,8 +27,7 @@ export default class MapEditor extends Component {
 
   editorRef = React.createRef();
   componentDidMount(){
-    document.querySelectorAll(".tui-image-editor-header-logo").forEach(e => e.parentNode.removeChild(e))
-    document.querySelectorAll(".tui-image-editor-header-buttons").forEach(e => e.parentNode.removeChild(e))
+    document.querySelectorAll(".tui-image-editor-header").forEach(e => e.parentNode.removeChild(e))
     this.mapimage = new MapImage()
     this.mapimage.resolution = 150
     this.mapimage.createMapCanvas((canvas)=> {
@@ -38,8 +36,7 @@ export default class MapEditor extends Component {
   }
 
   componentDidUpdate(){
-    document.querySelectorAll(".tui-image-editor-header-logo").forEach(e => e.parentNode.removeChild(e))
-    document.querySelectorAll(".tui-image-editor-header-buttons").forEach(e => e.parentNode.removeChild(e))
+    document.querySelectorAll(".tui-image-editor-header").forEach(e => e.parentNode.removeChild(e))
   }
 
 
@@ -63,7 +60,7 @@ export default class MapEditor extends Component {
         path: this.state.mapCanvas.toDataURL(),
         name: 'SampleImage'
       },
-      menu: ['crop', 'flip', 'rotate', 'draw', 'shape', 'icon', 'text', 'mask', 'filter'],
+      menu: ['crop', 'rotate', 'draw', 'shape', 'icon', 'text', 'filter'],
       uiSize: {
         width: '1000px',
         height: '700px'
@@ -72,8 +69,13 @@ export default class MapEditor extends Component {
       menuBarPosition: 'right',
       locale :  {
         'Text': 'טקסט',
-        'Delete-all': 'מחק הכל'
+        'DeleteAll': 'מחק הכל',
+        'Delete' : 'מחק',
+        'Draw' : 'צייר',
+        'Shape' : 'צורות',
+        'Icon' : 'אייקונים'
     }
+    
     }
     }
     selectionStyle={{

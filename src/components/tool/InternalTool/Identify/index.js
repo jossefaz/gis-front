@@ -3,7 +3,7 @@ import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../../nessMapping/api";
+import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
@@ -50,10 +50,12 @@ class Identify extends Component {
         dragBox.on("boxstart", () => {
           this.interactions.currentSelect.getFeatures().clear();
         });
-        dragBox.on("boxend", () => {
+        dragBox.on("boxend", (e) => {
+          console.log("dragboxend");
           const extent = dragBox.getGeometry().getExtent();
           const features = getFeaturesByExtent(extent, this.state.sources);
           if (features.length > 0) {
+            this.interactions.currentSelect.getFeatures().clear();
             this.props.setSelectedFeatures(features);
           }
         });
@@ -76,22 +78,16 @@ class Identify extends Component {
     console.log("Reset Identify");
   };
   onUnfocus = async () => {
-    this.selfInteraction && this.interactions.unsetAll();
+    // this.selfInteraction && this.interactions.unsetAll();
   };
 
   onFocus = async () => {
     this.interactions.setAll();
-    this.onBoxEnd();
     this.createSources();
   };
 
   componentWillUnmount() {
     this.onUnfocus();
-  }
-
-  componentDidUpdate() {
-    //TODO : implement shouldcomponentupdate from store
-    console.log("Layers from store", this.props.Layers);
   }
 
   render() {

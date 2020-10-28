@@ -8,7 +8,6 @@ import axios from "axios";
 import { WFS } from "ol/format";
 export const getCurrentLayersSource = () => {
   const sources = [];
-  console.log(getFocusedMap());
   getFocusedMap()
     .getLayers()
     .getArray()
@@ -24,10 +23,9 @@ export const getFeaturesByExtent = (extent, sources) => {
   const features = [];
   sources.map((vs) => {
     const editable = vs.get("editable");
-    vs.forEachFeatureInExtent(extent, (feature) => {
+    vs.forEachFeatureIntersectingExtent(extent, (feature) => {
       feature.set("editable", editable);
       features.push(feature);
-      console.log("feature", feature);
     });
   });
   return features;
@@ -58,8 +56,8 @@ window.document.geoserverWFSTransaction = (
     case "delete":
       node = formatWFS.writeTransaction(null, null, featuresArray, options);
       break;
-    default :
-      return
+    default:
+      return;
   }
   const wfsNode = xs.serializeToString(node);
   console.log(wfsNode);

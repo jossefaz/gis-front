@@ -1,8 +1,27 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../../../nessMapping/api";
+import {
+  getFocusedMapProxy,
+  getFeatureProperties,
+} from "../../../../../nessMapping/api";
 import IconButton from "../../../../UI/Buttons/IconButton";
 class FeatureDetail extends React.Component {
+  state = {
+    editing: false,
+  };
+
+  onStartEdit = () => {
+    this.setState({
+      editing: true,
+      touched: false,
+    });
+  };
+
+  onSave = () => {
+    console.log(this.currentFeature.ol_feature);
+    this.setState({ editing: false });
+  };
+
   get focusedmap() {
     return getFocusedMapProxy().uuid.value;
   }
@@ -24,38 +43,64 @@ class FeatureDetail extends React.Component {
       : null;
   }
 
+  handleValueChange = (propertyname, value) => {
+    this.currentFeature.ol_feature.set(propertyname, value);
+    this.setState((oldState) => ({ touched: !oldState.touched }));
+  };
+
   render() {
-    return this.currentFeature ? (
-      <React.Fragment>
-        <table className="ui celled table">
-          <thead>
-            <tr>
-              <th>
-                Details{" "}
-                {this.currentFeature.ol_feature.get("editable") && (
-                  <button>Edit</button>
+    const properties =
+      this.currentFeature &&
+      getFeatureProperties(this.currentFeature.ol_feature);
+    return (
+      this.currentFeature && (
+        <React.Fragment>
+          <div onMouseDownCapture={(e) => e.stopPropagation()}>
+            <table className="ui celled table">
+              <thead>
+                <tr>
+                  <th>
+                    Details{" "}
+                    {this.currentFeature.ol_feature.get("editable") ? (
+                      !this.state.editing ? (
+                        <button onClick={this.onStartEdit}>Edit</button>
+                      ) : (
+                        <button onClick={this.onSave}>Save</button>
+                      )
+                    ) : null}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="scrollContent">
+                {Object.keys(properties).map(
+                  (property) =>
+                    property !== "bbox" &&
+                    property !== "editable" && (
+                      <tr key={property}>
+                        <td>
+                          <b>{property}</b>
+                        </td>
+                        {this.state.editing ? (
+                          <td>
+                            <input
+                              value={properties[property]}
+                              onChange={(e) =>
+                                this.handleValueChange(property, e.target.value)
+                              }
+                            />
+                          </td>
+                        ) : (
+                          <td>{properties[property]}</td>
+                        )}
+                      </tr>
+                    )
                 )}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="scrollContent">
-            <div className="scrollContent">
-              {Object.keys(this.currentFeature.properties).map(
-                (property) =>
-                  property != "bbox" && (
-                    <tr key={property}>
-                      <td>{this.currentFeature.properties[property]}</td>
-                      <td>
-                        <b>{property}</b>
-                      </td>
-                    </tr>
-                  )
-              )}
-            </div>
-          </tbody>
-        </table>
-      </React.Fragment>
-    ) : null;
+              </tbody>
+            </table>
+          </div>
+        </React.Fragment>
+      )
+    );
   }
 }
 

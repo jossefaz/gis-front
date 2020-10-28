@@ -5,7 +5,14 @@ export const setSelectedFeatures = (features) => (dispatch) => {
     const focusedmap = getFocusedMapProxy().uuid.value;
     const featuresByLayers = {};
     features.map((f) => {
-      const layer = f.id_.split(".")[0];
+      let layer;
+      try {
+        layer = f.id_.split(".")[0];
+      } catch (error) {
+        console.log("undefined feature", f);
+        return false;
+      }
+
       if (!(layer in featuresByLayers)) {
         featuresByLayers[layer] = [];
       }

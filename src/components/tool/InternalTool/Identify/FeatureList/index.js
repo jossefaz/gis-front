@@ -142,9 +142,9 @@ class FeatureList extends Component {
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="scrollContent">
             {this.renderFieldsSelect()}
-            <div className="scrollContent">{this.renderSelectedFeature()}</div>
+            {this.renderSelectedFeature()}
           </tbody>
         </table>
       </React.Fragment>

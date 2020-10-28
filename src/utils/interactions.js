@@ -109,13 +109,6 @@ export class InteractionUtil {
       : null;
   };
 
-  testIt = () => {
-    console.log("*****FIRST TEST***");
-    console.log(this.widget);
-    console.log(this.store);
-    console.log("*****END TEST***");
-  };
-
   newDraw = async (drawConfig) => {
     await store.dispatch(
       setInteraction({
