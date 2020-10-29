@@ -110,15 +110,17 @@ export class InteractionUtil {
   };
 
   newDraw = async (drawConfig) => {
-    await store.dispatch(
-      setInteraction({
-        Type: this.TYPES.DRAW,
-        drawConfig,
-        sourceLayer: this.getVectorSource(this.TYPES.DRAW),
-        Layer: this.getVectorLayer(this.TYPES.DRAW),
-        widgetName: this.widget,
-      })
-    );
+    if (!this.currentDraw) {
+      await store.dispatch(
+        setInteraction({
+          Type: this.TYPES.DRAW,
+          drawConfig,
+          sourceLayer: this.getVectorSource(this.TYPES.DRAW),
+          Layer: this.getVectorLayer(this.TYPES.DRAW),
+          widgetName: this.widget,
+        })
+      );
+    }
   };
 
   unDraw = async () => {
@@ -137,18 +139,20 @@ export class InteractionUtil {
     const feature = featureID
       ? this.getVectorSource(this.TYPES.DRAW).getFeatureById(featureID)
       : null;
-    await store.dispatch(
-      setInteraction({
-        Type: this.TYPES.SELECT,
-        interactionConfig: {
-          wrapX: false,
-          ...(layers && { layers }),
-          ...(multi && { multi }),
-          ...(feature && { features: new Collection([feature]) }),
-        },
-        widgetName: this.widget,
-      })
-    );
+    if (!this.currentSelect) {
+      await store.dispatch(
+        setInteraction({
+          Type: this.TYPES.SELECT,
+          interactionConfig: {
+            wrapX: false,
+            ...(layers && { layers }),
+            ...(multi && { multi }),
+            ...(feature && { features: new Collection([feature]) }),
+          },
+          widgetName: this.widget,
+        })
+      );
+    }
   };
 
   unSelect = async () => {
@@ -164,15 +168,17 @@ export class InteractionUtil {
   };
 
   newModify = async () => {
-    await store.dispatch(
-      setInteraction({
-        Type: this.TYPES.MODIFY,
-        interactionConfig: {
-          features: getInteraction(this.currentSelectUUID).getFeatures(),
-        },
-        widgetName: this.widget,
-      })
-    );
+    if (!this.currentModify) {
+      await store.dispatch(
+        setInteraction({
+          Type: this.TYPES.MODIFY,
+          interactionConfig: {
+            features: getInteraction(this.currentSelectUUID).getFeatures(),
+          },
+          widgetName: this.widget,
+        })
+      );
+    }
   };
 
   unModify = async () => {
@@ -220,12 +226,14 @@ export class InteractionUtil {
   };
 
   newDragBox = async () => {
-    await store.dispatch(
-      setInteraction({
-        Type: this.TYPES.DRAGBOX,
-        widgetName: this.widget,
-      })
-    );
+    if (!this.currentDragBox) {
+      await store.dispatch(
+        setInteraction({
+          Type: this.TYPES.DRAGBOX,
+          widgetName: this.widget,
+        })
+      );
+    }
   };
 }
 
