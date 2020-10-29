@@ -5,12 +5,23 @@ import {
   getFeatureProperties,
 } from "../../../../../nessMapping/api";
 import withNotifications from "../../../../HOC/withNotifications";
-import { updateSingleFeature } from "../../../../../utils/features";
-import _ from "lodash";
+import {
+  updateSingleFeature,
+  deleteSingleFeature,
+} from "../../../../../utils/features";
+import { setSelectedFeatures } from "../../../../../redux/actions/features";
+import { Confirm } from "semantic-ui-react";
 class FeatureDetail extends React.Component {
   state = {
     editing: false,
     properties: null,
+    openConfirm: false,
+    eraseFeature: {
+      openAlert: false,
+      content: "? האם באמת למחוק את היישות",
+      confirmBtn: "כן",
+      cancelBtn: "לא",
+    },
   };
 
   onStartEdit = () => {
@@ -18,6 +29,10 @@ class FeatureDetail extends React.Component {
       editing: true,
       properties: getFeatureProperties(this.currentFeature.ol_feature),
     });
+  };
+
+  onEditCancel = () => {
+    this.setState({ editing: false, properties: null });
   };
 
   onSave = () => {
@@ -36,6 +51,23 @@ class FeatureDetail extends React.Component {
       autoDismiss: true,
     });
     this.setState({ editing: false, properties: null });
+  };
+
+  onFeatureDelete = async () => {
+    deleteSingleFeature(this.currentFeature);
+
+    const selectedFeatures = this.props.Features[
+      this.focusedmap
+    ].selectedFeatures[this.currentFeature.type]
+      .filter((f) => f.id !== this.currentFeature.id)
+      .map((f) => f.ol_feature);
+    await this.props.setSelectedFeatures(selectedFeatures);
+    this.props.addToast("Successfully delete feature !", {
+      appearance: "success",
+      autoDismiss: true,
+    });
+    console.log("will be deleted", this.currentFeature);
+    this.setState({ editing: false, properties: null, openConfirm: false });
   };
 
   get focusedmap() {
@@ -83,9 +115,24 @@ class FeatureDetail extends React.Component {
                     Details{" "}
                     {this.currentFeature.ol_feature.get("editable") ? (
                       !this.state.editing ? (
-                        <button onClick={this.onStartEdit}>Edit</button>
+                        <div>
+                          <button onClick={this.onStartEdit}>Edit</button>
+                          <button
+                            onClick={() => this.setState({ openConfirm: true })}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       ) : (
-                        <button onClick={this.onSave}>Save</button>
+                        <div>
+                          <button onClick={this.onSave}>Save</button>
+                          <button onClick={this.onEditCancel}>Cancel</button>
+                          <button
+                            onClick={() => this.setState({ openConfirm: true })}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       )
                     ) : null}
                   </th>
@@ -118,6 +165,15 @@ class FeatureDetail extends React.Component {
               </tbody>
             </table>
           </div>
+          <Confirm
+            open={this.state.openConfirm}
+            size="mini"
+            content={this.state.eraseFeature.content}
+            cancelButton={this.state.eraseFeature.cancelBtn}
+            confirmButton={this.state.eraseFeature.confirmBtn}
+            onCancel={() => this.setState({ openConfirm: false })}
+            onConfirm={this.onFeatureDelete}
+          />
         </React.Fragment>
       )
     );
@@ -128,4 +184,6 @@ const mapStateToProps = (state) => {
   return { Features: state.Features, map: state.map.focused };
 };
 
-export default connect(mapStateToProps)(withNotifications(FeatureDetail));
+export default connect(mapStateToProps, { setSelectedFeatures })(
+  withNotifications(FeatureDetail)
+);

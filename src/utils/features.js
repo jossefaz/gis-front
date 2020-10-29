@@ -87,6 +87,31 @@ export const updateSingleFeature = (feature) => {
     "update",
     [feature.ol_feature]
   );
+  console.log(getFocusedMap().getLayers().getArray());
+};
+
+export const deleteSingleFeature = (feature) => {
+  geoserverWFSTransaction(
+    "http://localhost:8080/geoserver/Jeru",
+    feature.type,
+    "EPSG:2039",
+    "delete",
+    [feature.ol_feature]
+  );
+
+  // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
+  getFocusedMap()
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof ImageLayer) {
+        const src = lyr.getSource().getParams().LAYERS;
+        if (src && src.includes(feature.type)) {
+          lyr.getSource().refresh();
+          lyr.changed();
+        }
+      }
+    });
 };
 
 export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {

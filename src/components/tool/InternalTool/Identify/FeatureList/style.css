@@ -7,12 +7,12 @@
   color: red;
 }
 
-.margin05em{
+.margin05em {
   margin: 0.5em;
 }
 
 .scrollContent {
-  height: auto;
-  max-height: 20em;
-  overflow-y: auto
+  display: block;
+  height: 25em;
+  overflow: auto;
 }

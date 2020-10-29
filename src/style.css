@@ -4,8 +4,11 @@ body {
   max-height: 100vh;
   overflow-y: hidden;
 }
-tbody {
+/* tbody {
   display: block;
   height: 50px;
   overflow: auto;
+} */
+.ui.modal > .content {
+  width: auto !important;
 }
