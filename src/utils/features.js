@@ -61,7 +61,7 @@ export const geoserverWFSTransaction = (
   }
   const wfsNode = xs.serializeToString(node);
   console.log(wfsNode);
-  axios.post(
+  return axios.post(
     "http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3Adimigcompile",
     wfsNode,
     {
@@ -86,8 +86,20 @@ export const updateSingleFeature = (feature) => {
     "EPSG:2039",
     "update",
     [feature.ol_feature]
-  );
-  console.log(getFocusedMap().getLayers().getArray());
+  ).then((res) => {
+    // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
+    getFocusedMap()
+      .getLayers()
+      .getArray()
+      .map((lyr) => {
+        if (lyr instanceof ImageLayer) {
+          const src = lyr.getSource().getParams().LAYERS;
+          if (src && src.includes(feature.type)) {
+            lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+          }
+        }
+      });
+  });
 };
 
 export const deleteSingleFeature = (feature) => {
@@ -97,21 +109,20 @@ export const deleteSingleFeature = (feature) => {
     "EPSG:2039",
     "delete",
     [feature.ol_feature]
-  );
-
-  // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
-  getFocusedMap()
-    .getLayers()
-    .getArray()
-    .map((lyr) => {
-      if (lyr instanceof ImageLayer) {
-        const src = lyr.getSource().getParams().LAYERS;
-        if (src && src.includes(feature.type)) {
-          lyr.getSource().refresh();
-          lyr.changed();
+  ).then((res) => {
+    // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
+    getFocusedMap()
+      .getLayers()
+      .getArray()
+      .map((lyr) => {
+        if (lyr instanceof ImageLayer) {
+          const src = lyr.getSource().getParams().LAYERS;
+          if (src && src.includes(feature.type)) {
+            lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+          }
         }
-      }
-    });
+      });
+  });
 };
 
 export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
