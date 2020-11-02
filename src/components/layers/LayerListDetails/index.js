@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { Tab } from 'semantic-ui-react';
 import { Icon } from 'semantic-ui-react';
+import { connect } from "react-redux";
 import LayerListDetailsTools from '../LayerListDetailsTools'
 import LegendItem from '../../tool/InternalTool/Legend/LegendItem';
 import '../style.css'
+import { selectLayers } from "../../../redux/selectors/layersSelector";
 class LayerListDetails extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+
+    state = {};
     render() {
         const { layer } = this.props;
         const panes = [
             {
                 menuItem: 'כלים',
                 render: () => <Tab.Pane attached={false}>
-                    <LayerListDetailsTools layer={layer}></LayerListDetailsTools>
+                    <LayerListDetailsTools layerId={layer.uuid}></LayerListDetailsTools>
                 </Tab.Pane>,
             },
             {
@@ -46,4 +46,11 @@ class LayerListDetails extends Component {
     }
 }
 
-export default LayerListDetails;
+const mapStateToProps = (state, ownProps) => {
+    return {
+        layer: selectLayers(state)[ownProps.layerId]
+    };
+};
+
+export default connect(mapStateToProps)(LayerListDetails);
+

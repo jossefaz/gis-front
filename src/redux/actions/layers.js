@@ -15,7 +15,7 @@ export const addLayers = (arrayOfNessLayers) => (dispatch) => {
   const addedLayers = [];
   const map = getFocusedMapProxy();
   const mapId = map.uuid.value;
-  arrayOfNessLayers.map((lyr) => {
+  arrayOfNessLayers.forEach((lyr) => {
     var nessLyr = new NessLayer(lyr);
     if (nessLyr) {
       if (map.AddLayer(nessLyr, false)) {
@@ -101,7 +101,7 @@ const _initLayers = (dispatch) => {
     getMetaData("layers").then((layersResult) => {
 
       if (layersResult) {
-        layersResult.map((lyrConfig) => {
+        layersResult.forEach((lyrConfig) => {
           var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
           if (nessLyr !== -1)
             allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);

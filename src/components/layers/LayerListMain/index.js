@@ -1,19 +1,18 @@
 import React from "react";
-import LayerList from "../LayerList/LayerList";
+import LayerList from "../LayerList";
 import LayerListDetails from "../LayerListDetails";
 import LayerListVisible from "../LayerListVisible";
 
 class LayerListMain extends React.Component {
 
-    constructor(props) {
-        super(props)
-        this.state = { mode: 1 }
+    state = {
+        mode: 1
     }
 
-    setMode = (mode, layer) => {
+    setMode = (mode, layerId) => {
         this.setState({ mode: mode });
-        if (layer)
-            this.setState({ layer: layer });
+        if (layerId)
+            this.setState({ layerId: layerId });
     }
 
     switchLayerListComponents = () => {
@@ -27,7 +26,7 @@ class LayerListMain extends React.Component {
                 break;
             case 3:
                 component = <LayerListDetails
-                    layer={this.state.layer}
+                    layerId={this.state.layerId}
                     setMode={this.setMode}></LayerListDetails>
                 break;
             default:

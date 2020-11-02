@@ -3,15 +3,6 @@ import { createSelector } from "reselect";
 const getLayers = (state) => state.Layers;
 const getMapId = (state) => state.map.focused;
 
-// export const selectLayers = createSelector(
-//   [getLayers, getMapId],
-//   (layersObject, mapId) => {
-//     if (layersObject[mapId] && layersObject[mapId]["layerAdded"] === true) {
-//       return layersObject[mapId]["layers"];
-//     }
-//   }
-// );
-
 export const selectLayers = createSelector(
   [getLayers, getMapId],
   (layersObject, mapId) => {
