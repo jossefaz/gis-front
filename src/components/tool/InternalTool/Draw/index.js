@@ -112,7 +112,6 @@ class Draw extends React.Component {
   };
 
   addInteraction = async (drawtype) => {
-    this.interactions.unDraw();
     await this.interactions.newDraw({ type: drawtype });
   };
 
@@ -123,8 +122,6 @@ class Draw extends React.Component {
   };
 
   onOpenEditSession = async (featureID) => {
-    this.removeSelectAndEdit();
-    this.interactions.unDraw();
     await this.interactions.newSelect(featureID, [
       this.interactions.getVectorLayer(this.interactions.TYPES.DRAW),
     ]);
@@ -199,9 +196,8 @@ class Draw extends React.Component {
   };
 
   onDrawEnd = () => {
-    const draw = this.interactions.currentDraw;
-    if (draw) {
-      draw.on("drawend", async (e) => {
+    if (this.interactions.currentDraw) {
+      this.interactions.currentDraw.on("drawend", async (e) => {
         const newFeatureId =
           (await createNewGeometry(e.feature)) || generateID();
         e.feature.setId(newFeatureId);
@@ -216,9 +212,8 @@ class Draw extends React.Component {
   };
 
   onModifyEnd = () => {
-    const modify = this.interactions.currentModify;
-    if (modify) {
-      modify.on("modifyend", async (e) => {
+    if (this.interactions.currentModify) {
+      this.interactions.currentModify.on("modifyend", async (e) => {
         await updateGeometry(e.features.getArray()[0]);
       });
     }

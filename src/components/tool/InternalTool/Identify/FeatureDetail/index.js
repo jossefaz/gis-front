@@ -9,6 +9,7 @@ import {
   updateSingleFeature,
   deleteSingleFeature,
 } from "../../../../../utils/features";
+import { InteractionUtil } from "../../../../../utils/interactions";
 import { setSelectedFeatures } from "../../../../../redux/actions/features";
 import { Confirm } from "semantic-ui-react";
 class FeatureDetail extends React.Component {
@@ -29,6 +30,10 @@ class FeatureDetail extends React.Component {
       editing: true,
       properties: getFeatureProperties(this.currentFeature.ol_feature),
     });
+  };
+
+  onStartEditGeom = () => {
+    this.props.onEditGeometry(this.currentFeature.ol_feature);
   };
 
   onEditCancel = () => {
@@ -136,6 +141,9 @@ class FeatureDetail extends React.Component {
                       !this.state.editing ? (
                         <div>
                           <button onClick={this.onStartEdit}>Edit</button>
+                          <button onClick={this.onStartEditGeom}>
+                            Edit Geom
+                          </button>
                           <button
                             onClick={() => this.setState({ openConfirm: true })}
                           >

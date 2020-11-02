@@ -36,6 +36,10 @@ class Identify extends Component {
     return this.interactions.store;
   }
 
+  onEditGeometry = (feature) => {
+    this.interactions.modifyFeature(feature);
+  };
+
   onBoxEnd = () => {
     if (this.interactions.currentDragBoxUUID) {
       const dragBox = this.interactions.currentDragBox;
@@ -95,7 +99,7 @@ class Identify extends Component {
             <div className="flexDisplay">
               <LayersList />
               <FeatureList />
-              <FeatureDetail />
+              <FeatureDetail onEditGeometry={this.onEditGeometry} />
             </div>
           ) : (
             <p> SELECT FEATURES ON MAP </p>

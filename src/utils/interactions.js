@@ -110,17 +110,16 @@ export class InteractionUtil {
   };
 
   newDraw = async (drawConfig) => {
-    if (!this.currentDraw) {
-      await store.dispatch(
-        setInteraction({
-          Type: this.TYPES.DRAW,
-          drawConfig,
-          sourceLayer: this.getVectorSource(this.TYPES.DRAW),
-          Layer: this.getVectorLayer(this.TYPES.DRAW),
-          widgetName: this.widget,
-        })
-      );
-    }
+    await this.unDraw();
+    await store.dispatch(
+      setInteraction({
+        Type: this.TYPES.DRAW,
+        drawConfig,
+        sourceLayer: this.getVectorSource(this.TYPES.DRAW),
+        Layer: this.getVectorLayer(this.TYPES.DRAW),
+        widgetName: this.widget,
+      })
+    );
   };
 
   unDraw = async () => {
@@ -136,23 +135,22 @@ export class InteractionUtil {
   };
 
   newSelect = async (featureID, layers, multi) => {
+    await this.unSelect();
     const feature = featureID
       ? this.getVectorSource(this.TYPES.DRAW).getFeatureById(featureID)
       : null;
-    if (!this.currentSelect) {
-      await store.dispatch(
-        setInteraction({
-          Type: this.TYPES.SELECT,
-          interactionConfig: {
-            wrapX: false,
-            ...(layers && { layers }),
-            ...(multi && { multi }),
-            ...(feature && { features: new Collection([feature]) }),
-          },
-          widgetName: this.widget,
-        })
-      );
-    }
+    await store.dispatch(
+      setInteraction({
+        Type: this.TYPES.SELECT,
+        interactionConfig: {
+          wrapX: false,
+          ...(layers && { layers }),
+          ...(multi && { multi }),
+          ...(feature && { features: new Collection([feature]) }),
+        },
+        widgetName: this.widget,
+      })
+    );
   };
 
   unSelect = async () => {
@@ -168,26 +166,25 @@ export class InteractionUtil {
   };
 
   newModify = async () => {
-    if (!this.currentModify) {
-      await store.dispatch(
-        setInteraction({
-          Type: this.TYPES.MODIFY,
-          interactionConfig: {
-            features: getInteraction(this.currentSelectUUID).getFeatures(),
-          },
-          widgetName: this.widget,
-        })
-      );
-    }
+    await this.unModify();
+    await store.dispatch(
+      setInteraction({
+        Type: this.TYPES.MODIFY,
+        interactionConfig: {
+          features: getInteraction(this.currentSelectUUID).getFeatures(),
+        },
+        widgetName: this.widget,
+      })
+    );
   };
 
   unModify = async () => {
     if (this.currentModifyUUID) {
       await store.dispatch(
         unsetInteraction({
-          uuid: this.currentSelectUUID,
+          uuid: this.currentModifyUUID,
           widgetName: this.widget,
-          Type: this.TYPES.SELECT,
+          Type: this.TYPES.MODIFY,
         })
       );
     }
@@ -226,11 +223,24 @@ export class InteractionUtil {
   };
 
   newDragBox = async () => {
+    this.unDragBox();
     if (!this.currentDragBox) {
       await store.dispatch(
         setInteraction({
           Type: this.TYPES.DRAGBOX,
           widgetName: this.widget,
+        })
+      );
+    }
+  };
+
+  unDragBox = async () => {
+    if (this.currentDragBox) {
+      await store.dispatch(
+        unsetInteraction({
+          uuid: this.currentDragBoxUUID,
+          widgetName: this.widget,
+          Type: this.TYPES.DRAGBOX,
         })
       );
     }
