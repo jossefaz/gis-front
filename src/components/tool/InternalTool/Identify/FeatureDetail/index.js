@@ -35,7 +35,7 @@ class FeatureDetail extends React.Component {
     this.setState({ editing: false, properties: null });
   };
 
-  onSave = () => {
+  onSave = async () => {
     const originalProperties = getFeatureProperties(
       this.currentFeature.ol_feature
     );
@@ -45,29 +45,48 @@ class FeatureDetail extends React.Component {
       }
     });
     this.currentFeature.ol_feature.unset("editable");
-    updateSingleFeature(this.currentFeature);
-    this.props.addToast("Successfully save feature !", {
-      appearance: "success",
-      autoDismiss: true,
-    });
-    this.setState({ editing: false, properties: null });
+    const updated = await updateSingleFeature(this.currentFeature);
+    if (updated) {
+      this.currentFeature.ol_feature.set("editable", true);
+      this.props.addToast("Successfully save feature !", {
+        appearance: "success",
+        autoDismiss: true,
+      });
+      this.setState({ editing: false, properties: null });
+    } else {
+      this.currentFeature.ol_feature.set("editable", true);
+      Object.keys(originalProperties).map((prop) => {
+        this.currentFeature.ol_feature.set(prop, originalProperties[prop]);
+      });
+      this.props.addToast("failed to update feature !", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+    }
   };
 
   onFeatureDelete = async () => {
-    deleteSingleFeature(this.currentFeature);
+    const deleted = await deleteSingleFeature(this.currentFeature);
+    if (deleted) {
+      const selectedFeatures = this.props.Features[
+        this.focusedmap
+      ].selectedFeatures[this.currentFeature.type]
+        .filter((f) => f.id !== this.currentFeature.id)
+        .map((f) => f.ol_feature);
+      this.props.setSelectedFeatures(selectedFeatures);
+      this.props.addToast("Successfully delete feature !", {
+        appearance: "success",
+        autoDismiss: true,
+      });
 
-    const selectedFeatures = this.props.Features[
-      this.focusedmap
-    ].selectedFeatures[this.currentFeature.type]
-      .filter((f) => f.id !== this.currentFeature.id)
-      .map((f) => f.ol_feature);
-    await this.props.setSelectedFeatures(selectedFeatures);
-    this.props.addToast("Successfully delete feature !", {
-      appearance: "success",
-      autoDismiss: true,
-    });
-    console.log("will be deleted", this.currentFeature);
-    this.setState({ editing: false, properties: null, openConfirm: false });
+      this.setState({ editing: false, properties: null, openConfirm: false });
+    } else {
+      this.props.addToast("Failed to delete feature !", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      this.setState({ editing: false, openConfirm: false });
+    }
   };
 
   get focusedmap() {

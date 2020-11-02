@@ -60,7 +60,6 @@ export const geoserverWFSTransaction = (
       return;
   }
   const wfsNode = xs.serializeToString(node);
-  console.log(wfsNode);
   return axios.post(
     "http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3Adimigcompile",
     wfsNode,
@@ -79,50 +78,66 @@ export const geoserverWFSTransaction = (
   // });
 };
 
-export const updateSingleFeature = (feature) => {
-  geoserverWFSTransaction(
+export const updateSingleFeature = async (feature) => {
+  let success;
+  await geoserverWFSTransaction(
     "http://localhost:8080/geoserver/Jeru",
     feature.type,
     "EPSG:2039",
     "update",
     [feature.ol_feature]
-  ).then((res) => {
-    // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
-    getFocusedMap()
-      .getLayers()
-      .getArray()
-      .map((lyr) => {
-        if (lyr instanceof ImageLayer) {
-          const src = lyr.getSource().getParams().LAYERS;
-          if (src && src.includes(feature.type)) {
-            lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+  )
+    .then((res) => {
+      // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
+      getFocusedMap()
+        .getLayers()
+        .getArray()
+        .map((lyr) => {
+          if (lyr instanceof ImageLayer) {
+            const src = lyr.getSource().getParams().LAYERS;
+            if (src && src.includes(feature.type)) {
+              lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+            }
           }
-        }
-      });
-  });
+        });
+      success = true;
+    })
+    .catch((err) => {
+      console.log(err);
+      success = false;
+    });
+  return success;
 };
 
-export const deleteSingleFeature = (feature) => {
-  geoserverWFSTransaction(
+export const deleteSingleFeature = async (feature) => {
+  let success;
+  await geoserverWFSTransaction(
     "http://localhost:8080/geoserver/Jeru",
     feature.type,
     "EPSG:2039",
     "delete",
     [feature.ol_feature]
-  ).then((res) => {
-    // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
-    getFocusedMap()
-      .getLayers()
-      .getArray()
-      .map((lyr) => {
-        if (lyr instanceof ImageLayer) {
-          const src = lyr.getSource().getParams().LAYERS;
-          if (src && src.includes(feature.type)) {
-            lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+  )
+    .then((res) => {
+      // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
+      getFocusedMap()
+        .getLayers()
+        .getArray()
+        .map((lyr) => {
+          if (lyr instanceof ImageLayer) {
+            const src = lyr.getSource().getParams().LAYERS;
+            if (src && src.includes(feature.type)) {
+              lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+            }
           }
-        }
-      });
-  });
+        });
+      success = true;
+    })
+    .catch((err) => {
+      console.log(err);
+      success = false;
+    });
+  return success;
 };
 
 export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
