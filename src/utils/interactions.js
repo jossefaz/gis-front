@@ -134,11 +134,8 @@ export class InteractionUtil {
     }
   };
 
-  newSelect = async (featureID, layers, multi) => {
+  newSelect = async (feature, layers, multi) => {
     await this.unSelect();
-    const feature = featureID
-      ? this.getVectorSource(this.TYPES.DRAW).getFeatureById(featureID)
-      : null;
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.SELECT,
@@ -165,13 +162,13 @@ export class InteractionUtil {
     }
   };
 
-  newModify = async () => {
+  newModify = async (features) => {
     await this.unModify();
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.MODIFY,
         interactionConfig: {
-          features: getInteraction(this.currentSelectUUID).getFeatures(),
+          features,
         },
         widgetName: this.widget,
       })

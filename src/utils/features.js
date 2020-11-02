@@ -174,3 +174,23 @@ export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
 
   return vectorSource;
 };
+
+export const getWFSFeatureById = async (layername, FID) => {
+  //http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Adimigcompile&maxFeatures=50&outputFormat=application%2Fjson&featureID=dimigcompile.16
+
+  const params = {
+    service: "WFS",
+    version: "1.0.0",
+    request: "GetFeature",
+    typeName: layername,
+    outputFormat: "application/json",
+    featureID: FID,
+    height: getFocusedMap().getSize()[1],
+  };
+
+  const feature = await axios.get("http://localhost:8080/geoserver/Jeru/ows", {
+    params,
+  });
+
+  return feature.data.features[0].geometry;
+};

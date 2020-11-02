@@ -122,10 +122,15 @@ class Draw extends React.Component {
   };
 
   onOpenEditSession = async (featureID) => {
-    await this.interactions.newSelect(featureID, [
+    const feature = this.interactions
+      .getVectorSource(this.interactions.TYPES.DRAW)
+      .getFeatureById(featureID);
+    await this.interactions.newSelect(feature, [
       this.interactions.getVectorLayer(this.interactions.TYPES.DRAW),
     ]);
-    await this.interactions.newModify();
+    await this.interactions.newModify(
+      this.interactions.currentSelect.getFeatures()
+    );
     this.setState({ editSession: { status: true, current: featureID } });
     this.onModifyEnd();
   };
@@ -213,6 +218,7 @@ class Draw extends React.Component {
 
   onModifyEnd = () => {
     if (this.interactions.currentModify) {
+      console.log("modify END");
       this.interactions.currentModify.on("modifyend", async (e) => {
         await updateGeometry(e.features.getArray()[0]);
       });

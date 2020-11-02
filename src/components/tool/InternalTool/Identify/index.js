@@ -9,12 +9,12 @@ import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
 import { getFeaturesByExtent } from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
+import Point from "ol/geom/Point";
+import Collection from "ol/Collection";
 class Identify extends Component {
   WIDGET_NAME = "Identify";
-  INTERACTIONS = {
-    Select: "Select",
-    DragBox: "DragBox",
-  };
+
+  modifyGeom = null;
 
   constructor() {
     super();
@@ -25,16 +25,22 @@ class Identify extends Component {
     return getFocusedMapProxy().uuid.value;
   }
 
-  get select() {
-    return this.interactions.currentSelectUUID;
-  }
-
   get selfInteraction() {
     return this.interactions.store;
   }
 
-  onEditGeometry = (feature) => {
-    this.interactions.modifyFeature(feature);
+  onEditGeometry = async (feature) => {
+    this.removeInteraction();
+    await this.interactions.newModify(new Collection([feature]));
+    this.modifyGeom = feature;
+  };
+
+  autoClosingEditSession = async (e) => {
+    if (Boolean(this.modifyGeom)) {
+      await this.interactions.unModify();
+      this.addInteraction();
+      this.modifyGeom = null;
+    }
   };
 
   onBoxEnd = () => {
@@ -65,11 +71,9 @@ class Identify extends Component {
 
   componentDidMount() {
     this.addInteraction();
+    getFocusedMap().on("dblclick", this.autoClosingEditSession);
   }
 
-  onReset = () => {
-    console.log("Reset Identify");
-  };
   onUnfocus = () => {
     this.removeInteraction();
   };
