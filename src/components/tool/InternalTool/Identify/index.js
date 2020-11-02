@@ -18,9 +18,6 @@ class Identify extends Component {
 
   constructor() {
     super();
-    this.state = {
-      sources: [],
-    };
     this.interactions = new InteractionUtil(this.WIDGET_NAME);
   }
 
@@ -43,30 +40,27 @@ class Identify extends Component {
   onBoxEnd = () => {
     if (this.interactions.currentDragBoxUUID) {
       const dragBox = this.interactions.currentDragBox;
-
-      const startListener = () => {
-        this.interactions.currentSelect.getFeatures().clear();
-      };
       const endListener = () => {
         console.log("dragboxend", this.interactions.currentDragBox);
         const extent = dragBox.getGeometry().getExtent();
         const features = getFeaturesByExtent(extent);
         if (features.length > 0) {
-          this.interactions.currentSelect.getFeatures().clear();
           this.props.setSelectedFeatures(features);
         }
       };
-      if (dragBox && this.select) {
-        dragBox.on("boxstart", startListener);
+      if (dragBox) {
         dragBox.on("boxend", endListener);
       }
     }
   };
 
-  addInteraction = async (drawtype) => {
-    await this.interactions.newSelect(null, null, true);
-    await this.interactions.newDragBox();
+  addInteraction = (drawtype) => {
+    this.interactions.newDragBox();
     this.onBoxEnd();
+  };
+
+  removeInteraction = () => {
+    this.interactions.unDragBox();
   };
 
   componentDidMount() {
@@ -76,13 +70,12 @@ class Identify extends Component {
   onReset = () => {
     console.log("Reset Identify");
   };
-  onUnfocus = async () => {
-    this.selfInteraction && this.interactions.unsetAll();
+  onUnfocus = () => {
+    this.removeInteraction();
   };
 
-  onFocus = async () => {
-    this.interactions.setAll();
-    this.onBoxEnd();
+  onFocus = () => {
+    this.addInteraction();
   };
 
   componentWillUnmount() {

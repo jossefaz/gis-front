@@ -224,14 +224,13 @@ export class InteractionUtil {
 
   newDragBox = async () => {
     this.unDragBox();
-    if (!this.currentDragBox) {
-      await store.dispatch(
-        setInteraction({
-          Type: this.TYPES.DRAGBOX,
-          widgetName: this.widget,
-        })
-      );
-    }
+
+    await store.dispatch(
+      setInteraction({
+        Type: this.TYPES.DRAGBOX,
+        widgetName: this.widget,
+      })
+    );
   };
 
   unDragBox = async () => {
