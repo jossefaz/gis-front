@@ -7,9 +7,8 @@ export const setSelectedFeatures = (features) => (dispatch) => {
     features.map((f) => {
       let layer;
       try {
-        layer = f.id_.split(".")[0];
+        layer = f.getId().split(".")[0];
       } catch (error) {
-        console.log("undefined feature", f);
         return false;
       }
 
@@ -24,9 +23,7 @@ export const setSelectedFeatures = (features) => (dispatch) => {
         }, {});
       featuresByLayers[layer].push({
         properties,
-        geometry: f.values_.geometry,
-        id: f.id_,
-        ol_feature: f,
+        id: f.getId(),
         type: layer,
       });
     });
@@ -47,6 +44,19 @@ export const setCurrentFeature = (featureId) => (dispatch, getState) => {
     dispatch({
       type: types.SET_CURRENT_FEATURE,
       payload: { focusedmap, currentFeature: currentFeature[0] },
+    });
+  }
+};
+
+export const updateFeature = (featureId, newFeature) => (
+  dispatch,
+  getState
+) => {
+  const focusedmap = getFocusedMapProxy().uuid.value;
+  if (focusedmap in getState().Features) {
+    dispatch({
+      type: types.UPDATE_FEATURE,
+      payload: { focusedmap, featureId, newFeature },
     });
   }
 };

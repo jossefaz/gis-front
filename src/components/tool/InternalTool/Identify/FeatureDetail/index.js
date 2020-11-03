@@ -9,8 +9,12 @@ import {
   updateSingleFeature,
   deleteSingleFeature,
 } from "../../../../../utils/features";
-import { InteractionUtil } from "../../../../../utils/interactions";
-import { setSelectedFeatures } from "../../../../../redux/actions/features";
+import EditProxy from "../../../../../nessMapping/EditProxy";
+import {
+  setSelectedFeatures,
+  updateFeature,
+} from "../../../../../redux/actions/features";
+import _ from "lodash";
 import { Confirm } from "semantic-ui-react";
 class FeatureDetail extends React.Component {
   state = {
@@ -28,7 +32,7 @@ class FeatureDetail extends React.Component {
   onStartEdit = () => {
     this.setState({
       editing: true,
-      properties: getFeatureProperties(this.currentFeature.ol_feature),
+      properties: this.currentFeature.properties,
     });
   };
 
@@ -41,28 +45,20 @@ class FeatureDetail extends React.Component {
   };
 
   onSave = async () => {
-    const originalProperties = getFeatureProperties(
-      this.currentFeature.ol_feature
+    const updated = await this.editproxy[this.currentFeature.type].save(
+      this.currentFeature.id,
+      this.state.properties
     );
-    Object.keys(originalProperties).map((prop) => {
-      if (originalProperties[prop] !== this.state.properties[prop]) {
-        this.currentFeature.ol_feature.set(prop, this.state.properties[prop]);
-      }
-    });
-    this.currentFeature.ol_feature.unset("editable");
-    const updated = await updateSingleFeature(this.currentFeature);
     if (updated) {
-      this.currentFeature.ol_feature.set("editable", true);
       this.props.addToast("Successfully save feature !", {
         appearance: "success",
         autoDismiss: true,
       });
+      const newFeature = _.cloneDeep(this.currentFeature);
+      newFeature.properties = _.cloneDeep(this.state.properties);
+      await this.props.updateFeature(this.currentFeature.id, newFeature);
       this.setState({ editing: false, properties: null });
     } else {
-      this.currentFeature.ol_feature.set("editable", true);
-      Object.keys(originalProperties).map((prop) => {
-        this.currentFeature.ol_feature.set(prop, originalProperties[prop]);
-      });
       this.props.addToast("failed to update feature !", {
         appearance: "error",
         autoDismiss: true,
@@ -124,10 +120,18 @@ class FeatureDetail extends React.Component {
     }));
   };
 
+  componentDidMount() {
+    this.editproxy = EditProxy.getInstance(
+      Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
+    );
+  }
+
   render() {
-    const properties =
-      this.currentFeature &&
-      getFeatureProperties(this.currentFeature.ol_feature);
+    const properties = this.state.properties
+      ? this.state.properties
+      : this.currentFeature
+      ? this.currentFeature.properties
+      : null;
     return (
       this.currentFeature && (
         <React.Fragment>
@@ -137,7 +141,7 @@ class FeatureDetail extends React.Component {
                 <tr>
                   <th>
                     Details{" "}
-                    {this.currentFeature.ol_feature.get("editable") ? (
+                    {properties.editable ? (
                       !this.state.editing ? (
                         <div>
                           <button onClick={this.onStartEdit}>Edit</button>
@@ -211,6 +215,6 @@ const mapStateToProps = (state) => {
   return { Features: state.Features, map: state.map.focused };
 };
 
-export default connect(mapStateToProps, { setSelectedFeatures })(
+export default connect(mapStateToProps, { setSelectedFeatures, updateFeature })(
   withNotifications(FeatureDetail)
 );

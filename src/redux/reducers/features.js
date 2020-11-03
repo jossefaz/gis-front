@@ -16,10 +16,6 @@ export default function (state = {}, action) {
         draftState[focusedmap].selectedFeatures = featuresByLayers;
         draftState[focusedmap].currentLayer = Object.keys(featuresByLayers)[0];
         draftState[focusedmap].currentFeature = null;
-        // if (Object.keys(featuresByLayers[Object.keys(featuresByLayers)[0]]).length == 1) {
-        //   // if there is only one feature : select it
-        //   draftState[focusedmap].currentFeature = featuresByLayers[Object.keys(featuresByLayers)[0]][0]
-        // }
       });
 
     case types.SET_CURRENT_FEATURE:
@@ -29,6 +25,22 @@ export default function (state = {}, action) {
         }
         draftState[action.payload.focusedmap].currentFeature =
           action.payload.currentFeature;
+      });
+
+    case types.UPDATE_FEATURE:
+      return produce(state, (draftState) => {
+        const { focusedmap, featureId, newFeature } = action.payload;
+        const index = draftState[focusedmap].selectedFeatures[
+          draftState[focusedmap].currentLayer
+        ].findIndex((el) => el.id == featureId);
+        draftState[focusedmap].selectedFeatures[
+          draftState[focusedmap].currentLayer
+        ].splice(index, 1, newFeature);
+        if (
+          draftState[action.payload.focusedmap].currentFeature.id == featureId
+        ) {
+          draftState[action.payload.focusedmap].currentFeature = newFeature;
+        }
       });
 
     case types.SET_CURRENT_LAYER:

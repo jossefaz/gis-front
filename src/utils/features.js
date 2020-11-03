@@ -61,7 +61,7 @@ export const geoserverWFSTransaction = (
   }
   const wfsNode = xs.serializeToString(node);
   return axios.post(
-    `${domain}/ows?service=WFS&typeName=${featureType}`,
+    `${domain}/ows?service=WFS&typeName=Jeru:${featureType}`,
     wfsNode,
     {
       headers: { "Content-Type": "text/xml" },
