@@ -33,7 +33,7 @@ class FeatureDetail extends React.Component {
   };
 
   onStartEditGeom = () => {
-    this.props.onEditGeometry(this.currentFeature.ol_feature);
+    this.props.onEditGeometry(this.currentFeature);
   };
 
   onEditCancel = () => {

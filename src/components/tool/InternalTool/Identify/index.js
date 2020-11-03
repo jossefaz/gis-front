@@ -9,6 +9,7 @@ import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
 import { getFeaturesByExtent } from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
+import EditProxy from "../../../../nessMapping/EditProxy";
 import Point from "ol/geom/Point";
 import Collection from "ol/Collection";
 class Identify extends Component {
@@ -29,14 +30,26 @@ class Identify extends Component {
     return this.interactions.store;
   }
 
+  sanityCheck = () => {
+    const focusedmapInFeatures = this.focusedmap in this.props.Features;
+    const selectedFeaturesInFeatures = focusedmapInFeatures
+      ? "selectedFeatures" in this.props.Features[this.focusedmap]
+      : false;
+    return focusedmapInFeatures && selectedFeaturesInFeatures;
+  };
+
   onEditGeometry = async (feature) => {
     this.removeInteraction();
-    await this.interactions.newModify(new Collection([feature]));
+    await this.interactions.newSelect(feature.ol_feature);
+    await this.interactions.newModify(
+      this.interactions.currentSelect.getFeatures()
+    );
     this.modifyGeom = feature;
   };
 
   autoClosingEditSession = async (e) => {
     if (Boolean(this.modifyGeom)) {
+      await this.interactions.unSelect();
       await this.interactions.unModify();
       this.addInteraction();
       this.modifyGeom = null;
@@ -47,7 +60,6 @@ class Identify extends Component {
     if (this.interactions.currentDragBoxUUID) {
       const dragBox = this.interactions.currentDragBox;
       const endListener = () => {
-        console.log("dragboxend", this.interactions.currentDragBox);
         const extent = dragBox.getGeometry().getExtent();
         const features = getFeaturesByExtent(extent);
         if (features.length > 0) {
@@ -72,6 +84,15 @@ class Identify extends Component {
   componentDidMount() {
     this.addInteraction();
     getFocusedMap().on("dblclick", this.autoClosingEditSession);
+  }
+
+  componentDidUpdate() {
+    if (this.sanityCheck()) {
+      this.editProxy = EditProxy.getInstance(
+        Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
+      );
+      console.log("edit proxy", this.editProxy);
+    }
   }
 
   onUnfocus = () => {

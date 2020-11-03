@@ -57,7 +57,7 @@ export const getCurrentProjection = () => {
 
 export const getFeatureProperties = (ol_feature) => {
   const props = ol_feature.getProperties() || {};
-  return _.omit(props, ["editable", "bbox", "geometry"]);
+  return _.omit(props, ["editable", "bbox", "geometry", "vector_source"]);
 };
 
 // ZOOM TO

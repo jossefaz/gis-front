@@ -5,7 +5,7 @@ import ImageWMS from "ol/source/ImageWMS";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import { newVectorSource } from "../../../../utils/features";
 import { addLayers } from "../../../../redux/actions/layers";
-
+import { Fill, Stroke, Style, Text } from "ol/style";
 const LayerSample = {
   id: 1,
   name: "dimigcompile",
@@ -15,6 +15,7 @@ const LayerSample = {
     LAYERS: "Jeru:dimigcompile",
     SRS: "EPSG:2039",
   },
+  ref_name: "dimigcompile",
   serverType: "geoserver",
   visible: 1,
   selectable: 1,
@@ -38,7 +39,8 @@ class SingleLayerTest extends React.Component {
           crossOrigin: "Anonymous",
         }),
       });
-      newLyr.selectable = LayerSample.selectable;
+      newLyr.set("editable", LayerSample.editable);
+      newLyr.set("ref_name", LayerSample.ref_name);
       const vectorSource = newVectorSource(
         LayerSample.url,
         LayerSample.params.SRS,
@@ -46,12 +48,12 @@ class SingleLayerTest extends React.Component {
         LayerSample.editable,
         null
       );
+
       const vectorLayer = new VectorLayer({
         source: vectorSource,
-        opacity: 0,
       });
-
-      vectorLayer.selectable = LayerSample.selectable;
+      vectorLayer.set("ref_name", LayerSample.ref_name);
+      vectorLayer.set("editable", LayerSample.editable);
       getFocusedMap().addLayer(vectorLayer);
       getFocusedMap().addLayer(newLyr);
       this.setState({ added: true });

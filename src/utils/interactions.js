@@ -18,6 +18,8 @@ import {
 } from "../redux/actions/interaction";
 import Collection from "ol/Collection";
 
+import { Style, Fill, Stroke, Circle } from "ol/style";
+
 export class InteractionUtil {
   constructor(widgetName) {
     this.widget = widgetName;
@@ -135,6 +137,19 @@ export class InteractionUtil {
   };
 
   newSelect = async (feature, layers, multi) => {
+    const style = new Style({
+      image: new Circle({
+        radius: 7,
+        fill: new Fill({
+          color: [0, 153, 255, 1],
+        }),
+        stroke: new Stroke({
+          color: [255, 255, 255, 0.75],
+          width: 1.5,
+        }),
+      }),
+      zIndex: 100000,
+    });
     await this.unSelect();
     await store.dispatch(
       setInteraction({
@@ -144,6 +159,7 @@ export class InteractionUtil {
           ...(layers && { layers }),
           ...(multi && { multi }),
           ...(feature && { features: new Collection([feature]) }),
+          style,
         },
         widgetName: this.widget,
       })
@@ -162,13 +178,14 @@ export class InteractionUtil {
     }
   };
 
-  newModify = async (features) => {
+  newModify = async (features, source) => {
     await this.unModify();
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.MODIFY,
         interactionConfig: {
-          features,
+          ...(features && { features }),
+          ...(source && { source }),
         },
         widgetName: this.widget,
       })

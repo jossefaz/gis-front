@@ -61,21 +61,12 @@ export const geoserverWFSTransaction = (
   }
   const wfsNode = xs.serializeToString(node);
   return axios.post(
-    "http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3Adimigcompile",
+    `${domain}/ows?service=WFS&typeName=${featureType}`,
     wfsNode,
     {
       headers: { "Content-Type": "text/xml" },
     }
   );
-  // $.ajax('http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3AGANANUTFORGEOSERVER', {
-  //     type: 'POST',
-  //     dataType: 'xml',
-  //     processData: false,
-  //     contentType: 'text/xml',
-  //     data: wfsNode
-  // }).done(function() {
-  //   sourceWFS.clear();
-  // });
 };
 
 export const updateSingleFeature = async (feature) => {
