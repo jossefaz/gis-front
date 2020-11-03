@@ -43,6 +43,32 @@ export default function (state = {}, action) {
         }
       });
 
+    case types.REMOVE_FEATURE:
+      return produce(state, (draftState) => {
+        const { focusedmap, featureId } = action.payload;
+        const index = draftState[focusedmap].selectedFeatures[
+          draftState[focusedmap].currentLayer
+        ].findIndex((el) => el.id == featureId);
+        draftState[focusedmap].selectedFeatures[
+          draftState[focusedmap].currentLayer
+        ].splice(index, 1);
+        if (
+          draftState[focusedmap].selectedFeatures[
+            draftState[focusedmap].currentLayer
+          ].length === 0
+        ) {
+          delete draftState[focusedmap].selectedFeatures[
+            draftState[focusedmap].currentLayer
+          ];
+          draftState[focusedmap].currentLayer = null;
+        }
+        if (
+          draftState[action.payload.focusedmap].currentFeature.id == featureId
+        ) {
+          draftState[action.payload.focusedmap].currentFeature = null;
+        }
+      });
+
     case types.SET_CURRENT_LAYER:
       return produce(state, (draftState) => {
         if (!(action.payload.focusedmap in state)) {

@@ -1,4 +1,8 @@
-import { getFocusedMap, getFeatureProperties } from "../nessMapping/api";
+import {
+  getFocusedMap,
+  getFeatureProperties,
+  unhighlightFeature,
+} from "../nessMapping/api";
 import { geoserverWFSTransaction } from "../utils/features";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 export default (function () {
@@ -87,7 +91,7 @@ class editLayer {
         }
       });
       feature.unset("editable");
-      if (!(await this.updateFeature(feature))) {
+      if (!(await this.transaction(feature, "update"))) {
         feature.set("editable", true);
         Object.keys(originalProperties).map((prop) => {
           feature.set(prop, originalProperties[prop]);
@@ -100,17 +104,31 @@ class editLayer {
     return false;
   };
 
-  refreshLayers = () => {
-    this.imagelayer.getSource().updateParams({ TIMESTAMP: Date.now() });
+  remove = async (fid) => {
+    const feature = this.vectorlayer.getSource().getFeatureById(fid);
+    if (feature) {
+      if (!(await this.transaction(feature, "delete"))) {
+        return false;
+      }
+      return true;
+    }
+    console.log(`feature with id ${fid} was not found in its edit proxy`);
+    return false;
   };
 
-  updateFeature = async (feature) => {
+  refreshLayers = () => {
+    this.imagelayer.getSource().updateParams({ TIMESTAMP: Date.now() });
+    this.vectorlayer.getSource().refresh();
+    unhighlightFeature();
+  };
+
+  transaction = async (feature, ttype) => {
     let success;
     await geoserverWFSTransaction(
       this.baseUrl,
       this.featureType,
       "EPSG:2039",
-      "update",
+      ttype,
       [feature]
     )
       .then((res) => {

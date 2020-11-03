@@ -61,6 +61,16 @@ export const updateFeature = (featureId, newFeature) => (
   }
 };
 
+export const removeFeature = (featureId) => (dispatch, getState) => {
+  const focusedmap = getFocusedMapProxy().uuid.value;
+  if (focusedmap in getState().Features) {
+    dispatch({
+      type: types.REMOVE_FEATURE,
+      payload: { focusedmap, featureId },
+    });
+  }
+};
+
 export const setCurrentLayer = (currentLayer) => (dispatch) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
   dispatch({

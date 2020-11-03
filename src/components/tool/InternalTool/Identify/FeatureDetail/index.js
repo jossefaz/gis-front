@@ -13,6 +13,7 @@ import EditProxy from "../../../../../nessMapping/EditProxy";
 import {
   setSelectedFeatures,
   updateFeature,
+  removeFeature,
 } from "../../../../../redux/actions/features";
 import _ from "lodash";
 import { Confirm } from "semantic-ui-react";
@@ -67,19 +68,15 @@ class FeatureDetail extends React.Component {
   };
 
   onFeatureDelete = async () => {
-    const deleted = await deleteSingleFeature(this.currentFeature);
+    const deleted = await this.editproxy[this.currentFeature.type].remove(
+      this.currentFeature.id
+    );
     if (deleted) {
-      const selectedFeatures = this.props.Features[
-        this.focusedmap
-      ].selectedFeatures[this.currentFeature.type]
-        .filter((f) => f.id !== this.currentFeature.id)
-        .map((f) => f.ol_feature);
-      this.props.setSelectedFeatures(selectedFeatures);
+      await this.props.removeFeature(this.currentFeature.id);
       this.props.addToast("Successfully delete feature !", {
         appearance: "success",
         autoDismiss: true,
       });
-
       this.setState({ editing: false, properties: null, openConfirm: false });
     } else {
       this.props.addToast("Failed to delete feature !", {
@@ -215,6 +212,8 @@ const mapStateToProps = (state) => {
   return { Features: state.Features, map: state.map.focused };
 };
 
-export default connect(mapStateToProps, { setSelectedFeatures, updateFeature })(
-  withNotifications(FeatureDetail)
-);
+export default connect(mapStateToProps, {
+  setSelectedFeatures,
+  updateFeature,
+  removeFeature,
+})(withNotifications(FeatureDetail));
