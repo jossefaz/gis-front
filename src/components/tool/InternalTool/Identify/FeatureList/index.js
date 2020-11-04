@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { setCurrentFeature } from "../../../../../redux/actions/features";
-import { getWFSFeatureById } from "../../../../../utils/features";
+import { getFeatureFromNamedLayer } from "../../../../../utils/features";
 import { setToolProp } from "../../../../../redux/actions/tools";
 import {
   zoomTo,
@@ -117,13 +117,13 @@ class FeatureList extends Component {
               <IconButton
                 className="ui icon button primary pointer margin05em"
                 onClick={async () => {
-                  zoomTo(await getWFSFeatureById(feature.type, feature.id));
+                  const f = getFeatureFromNamedLayer(feature.type, feature.id);
+                  f && zoomTo(f.getGeometry());
                   // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
                 }}
                 onHover={async () => {
-                  highlightFeature(
-                    await getWFSFeatureById(feature.type, feature.id)
-                  );
+                  const f = getFeatureFromNamedLayer(feature.type, feature.id);
+                  f && highlightFeature(f.getGeometry());
                 }}
                 icon="crosshairs"
                 size="1x"

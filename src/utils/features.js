@@ -187,5 +187,24 @@ export const getWFSFeatureById = async (layername, FID) => {
     params,
   });
 
-  return feature.data.features[0].geometry;
+  return feature.data.features[0];
+};
+
+export const getFeatureFromNamedLayer = (layer_ref_name, fid) => {
+  let feature = null;
+  getFocusedMap()
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof VectorLayer) {
+        const src = lyr.get("ref_name");
+        if (src && src.includes(layer_ref_name)) {
+          feature = lyr.getSource().getFeatureById(fid);
+        }
+      }
+    });
+  if (feature) {
+    return feature;
+  }
+  return false;
 };
