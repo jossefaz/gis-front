@@ -11,6 +11,7 @@ import { getFeaturesByExtent } from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditProxy from "../../../../nessMapping/EditProxy";
 import Point from "ol/geom/Point";
+
 import Collection from "ol/Collection";
 class Identify extends Component {
   WIDGET_NAME = "Identify";
@@ -40,16 +41,19 @@ class Identify extends Component {
 
   onEditGeometry = async (feature) => {
     this.removeInteraction();
-    await this.interactions.newSelect(feature.ol_feature);
-    await this.interactions.newModify(
-      this.interactions.currentSelect.getFeatures()
-    );
+    const layer = feature.type;
+    this.editProxy[layer].edit(feature);
+    const f = this.editProxy[layer].getFeatureById(feature.id);
+    await this.interactions.newModify(new Collection([f]));
     this.modifyGeom = feature;
+    getFocusedMap().on("dblclick", (e) =>
+      this.autoClosingEditSession(e, layer)
+    );
   };
 
-  autoClosingEditSession = async (e) => {
+  autoClosingEditSession = async (e, layer) => {
     if (Boolean(this.modifyGeom)) {
-      await this.interactions.unSelect();
+      await this.editProxy[layer].save();
       await this.interactions.unModify();
       this.addInteraction();
       this.modifyGeom = null;
@@ -83,7 +87,6 @@ class Identify extends Component {
 
   componentDidMount() {
     this.addInteraction();
-    getFocusedMap().on("dblclick", this.autoClosingEditSession);
   }
 
   componentDidUpdate() {

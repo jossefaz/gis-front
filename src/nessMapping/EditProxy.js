@@ -8,6 +8,7 @@ import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import store from "../redux/store";
 import { removeFeature, updateFeature } from "../redux/actions/features";
 import _ from "lodash";
+import styles from "./mapStyle";
 
 export default (function () {
   let instance;
@@ -29,7 +30,9 @@ export default (function () {
                     ref_name
                   );
                 }
-                this[ref_name].vectorlayer = lyr;
+                if (!this[ref_name].vectorlayer) {
+                  this[ref_name].vectorlayer = lyr;
+                }
               }
               if (lyr instanceof ImageLayer) {
                 if (!this[ref_name]) {
@@ -39,7 +42,9 @@ export default (function () {
                     ref_name
                   );
                 }
-                this[ref_name].imagelayer = lyr;
+                if (!this[ref_name].imagelayer) {
+                  this[ref_name].imagelayer = lyr;
+                }
               }
             }
           });
@@ -77,6 +82,8 @@ class editLayer {
   }
 
   set vectorlayer(vl) {
+    vl.getSource().forEachFeature((feature) => feature.setStyle(styles.HIDDEN));
+    vl.setZIndex(99);
     this._vectorLayer = vl;
   }
 
@@ -104,32 +111,54 @@ class editLayer {
     this.originalProperties = null;
   };
 
-  save = async (editfeature, newProperties) => {
-    const feature = this.vectorlayer.getSource().getFeatureById(editfeature.id);
+  edit = (stateFeature) => {
+    this.vectorlayer.getSource().forEachFeature((feature) => {
+      if (feature.getId() === stateFeature.id) {
+        feature.setStyle(styles.EDIT);
+      } else {
+        feature.setStyle(styles.HIDDEN);
+      }
+    });
+    this.currentStateFeature = stateFeature;
+  };
+
+  getFeatureById = (fid) => {
+    return this.vectorlayer.getSource().getFeatureById(fid);
+  };
+
+  save = async (newProperties) => {
+    const feature = this.getFeatureById(this.currentStateFeature.id);
     if (feature) {
       if (newProperties) {
         this._updatePropertiesOnFeature(feature, newProperties);
       }
       feature.unset(this.EDIT_KW);
+
       if (!(await this.transaction(feature, this.UPDATE_KW, true))) {
         this._rollBackUpdateProperties(feature);
         feature.set(this.EDIT_KW, true);
         return false;
       }
-      const newFeature = _.cloneDeep(editfeature);
-      newFeature.properties = _.cloneDeep(newProperties);
-      await store.dispatch(updateFeature(editfeature.id, newFeature));
+
+      if (newProperties) {
+        const newFeature = _.cloneDeep(this.currentStateFeature);
+        newFeature.properties = _.cloneDeep(newProperties);
+        await store.dispatch(
+          updateFeature(this.currentStateFeature.id, newFeature)
+        );
+      }
+
       feature.set(this.EDIT_KW, true);
       return true;
     }
     console.log(
-      `feature with id ${editfeature.id} was not found in its edit proxy`
+      `feature with id ${this.currentStateFeature.id} was not found in its edit proxy`
     );
     return false;
   };
 
   remove = async (fid) => {
-    const feature = this.vectorlayer.getSource().getFeatureById(fid);
+    const feature = this.getFeatureById(fid);
     if (feature) {
       if (!(await this.transaction(feature, this.DELETE_KW))) {
         return false;

@@ -31,6 +31,8 @@ class FeatureDetail extends React.Component {
   };
 
   onStartEdit = () => {
+    const layer = this.currentFeature.type;
+    this.editProxy[layer].edit(this.currentFeature);
     this.setState({
       editing: true,
       properties: this.currentFeature.properties,
@@ -48,7 +50,7 @@ class FeatureDetail extends React.Component {
   onSave = async () => {
     const layer = this.currentFeature.type;
     const prop = this.state.properties;
-    const updated = await this.editproxy[layer].save(this.currentFeature, prop);
+    const updated = await this.editProxy[layer].save(prop);
     if (updated) {
       this.props.successNotification("Successfully saved feature !");
       this.setState({ editing: false, properties: null });
@@ -59,7 +61,7 @@ class FeatureDetail extends React.Component {
 
   onFeatureDelete = async () => {
     const layer = this.currentFeature.type;
-    const deleted = await this.editproxy[layer].remove(this.currentFeature.id);
+    const deleted = await this.editProxy[layer].remove(this.currentFeature.id);
     if (deleted) {
       this.props.successNotification("Successfully delete feature !");
       this.setState({ editing: false, properties: null, openConfirm: false });
@@ -100,7 +102,7 @@ class FeatureDetail extends React.Component {
   };
 
   componentDidMount() {
-    this.editproxy = EditProxy.getInstance(
+    this.editProxy = EditProxy.getInstance(
       Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
     );
   }
