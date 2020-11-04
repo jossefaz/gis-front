@@ -1,7 +1,8 @@
 import { getFocusedMap, getCurrentExtent } from "../nessMapping/api";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
-import { bbox } from "ol/loadingstrategy";
+
+import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
 import { projIsrael } from "./projections";
 import axios from "axios";
@@ -36,7 +37,8 @@ export const geoserverWFSTransaction = (
   featureType,
   srs,
   mode,
-  featuresArray
+  featuresArray,
+  onlyAlphanum
 ) => {
   const formatWFS = new WFS();
   const xs = new XMLSerializer();
@@ -45,6 +47,9 @@ export const geoserverWFSTransaction = (
     featureType,
     srsName: srs,
   };
+  // if (onlyAlphanum) {
+  //   featuresArray.map((f) => f.unset("geometry"));
+  // }
   let node;
   switch (mode) {
     case "insert":
@@ -131,20 +136,19 @@ export const deleteSingleFeature = async (feature) => {
   return success;
 };
 
-export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
+export const newVectorSource = (url, srs, layername, editable, formatWFS) => {
   const params = {
-    service: "WMS",
-    version: "1.1.0",
-    request: "GetMap",
-    bbox: getCurrentExtent().join(","),
-    srs: srs,
-    format: "geojson",
-    width: getFocusedMap().getSize()[0],
+    service: "WFS",
+    version: "1.3.0",
+    request: "GetFeature",
+    typeName: layername,
+    srsname: srs,
+    outputFormat: "application/json",
     height: getFocusedMap().getSize()[1],
   };
 
-  if (layernames) {
-    params.layers = layernames;
+  if (layername) {
+    params.layers = layername;
   }
 
   const vectorSource = new VectorSource({
@@ -157,7 +161,7 @@ export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
     format: new GeoJSON({
       dataProjection: projIsrael,
     }),
-    strategy: bbox,
+    strategy: bboxStrategy,
   });
   if (editable) {
     vectorSource.set("editable", true);
@@ -171,7 +175,7 @@ export const getWFSFeatureById = async (layername, FID) => {
 
   const params = {
     service: "WFS",
-    version: "1.0.0",
+    version: "1.3.0",
     request: "GetFeature",
     typeName: layername,
     outputFormat: "application/json",

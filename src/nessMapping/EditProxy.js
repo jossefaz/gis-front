@@ -5,6 +5,10 @@ import {
 } from "../nessMapping/api";
 import { geoserverWFSTransaction } from "../utils/features";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
+import store from "../redux/store";
+import { removeFeature, updateFeature } from "../redux/actions/features";
+import _ from "lodash";
+
 export default (function () {
   let instance;
 
@@ -65,6 +69,9 @@ class editLayer {
     this.store = {};
     this.currentFeature = null;
   }
+  EDIT_KW = "editable";
+  UPDATE_KW = "update";
+  DELETE_KW = "delete";
   get vectorlayer() {
     return this._vectorLayer;
   }
@@ -81,35 +88,53 @@ class editLayer {
     this._imagelayer = vl;
   }
 
-  save = async (fid, newProperties) => {
-    const feature = this.vectorlayer.getSource().getFeatureById(fid);
+  _updatePropertiesOnFeature = (feature, newProperties) => {
+    this.originalProperties = getFeatureProperties(feature);
+    Object.keys(this.originalProperties).map((prop) => {
+      if (this.originalProperties[prop] !== newProperties[prop]) {
+        feature.set(prop, newProperties[prop]);
+      }
+    });
+  };
+
+  _rollBackUpdateProperties = (feature) => {
+    Object.keys(this.originalProperties).map((prop) => {
+      feature.set(prop, this.originalProperties[prop]);
+    });
+    this.originalProperties = null;
+  };
+
+  save = async (editfeature, newProperties) => {
+    const feature = this.vectorlayer.getSource().getFeatureById(editfeature.id);
     if (feature) {
-      const originalProperties = getFeatureProperties(feature);
-      Object.keys(originalProperties).map((prop) => {
-        if (originalProperties[prop] !== newProperties[prop]) {
-          feature.set(prop, newProperties[prop]);
-        }
-      });
-      feature.unset("editable");
-      if (!(await this.transaction(feature, "update"))) {
-        feature.set("editable", true);
-        Object.keys(originalProperties).map((prop) => {
-          feature.set(prop, originalProperties[prop]);
-        });
+      if (newProperties) {
+        this._updatePropertiesOnFeature(feature, newProperties);
+      }
+      feature.unset(this.EDIT_KW);
+      if (!(await this.transaction(feature, this.UPDATE_KW, true))) {
+        this._rollBackUpdateProperties(feature);
+        feature.set(this.EDIT_KW, true);
         return false;
       }
+      const newFeature = _.cloneDeep(editfeature);
+      newFeature.properties = _.cloneDeep(newProperties);
+      await store.dispatch(updateFeature(editfeature.id, newFeature));
+      feature.set(this.EDIT_KW, true);
       return true;
     }
-    console.log(`feature with id ${fid} was not found in its edit proxy`);
+    console.log(
+      `feature with id ${editfeature.id} was not found in its edit proxy`
+    );
     return false;
   };
 
   remove = async (fid) => {
     const feature = this.vectorlayer.getSource().getFeatureById(fid);
     if (feature) {
-      if (!(await this.transaction(feature, "delete"))) {
+      if (!(await this.transaction(feature, this.DELETE_KW))) {
         return false;
       }
+      await store.dispatch(removeFeature(fid));
       return true;
     }
     console.log(`feature with id ${fid} was not found in its edit proxy`);
@@ -122,14 +147,15 @@ class editLayer {
     unhighlightFeature();
   };
 
-  transaction = async (feature, ttype) => {
+  transaction = async (feature, transactionType, onlyAlphanum) => {
     let success;
     await geoserverWFSTransaction(
       this.baseUrl,
       this.featureType,
       "EPSG:2039",
-      ttype,
-      [feature]
+      transactionType,
+      [feature],
+      onlyAlphanum
     )
       .then((res) => {
         this.refreshLayers();

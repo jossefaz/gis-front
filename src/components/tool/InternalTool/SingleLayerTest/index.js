@@ -10,7 +10,7 @@ const LayerSample = {
   id: 1,
   name: "dimigcompile",
   alias: "שכבה לדוגמא",
-  url: "http://localhost:8080/geoserver/Jeru/wms",
+  url: "http://localhost:8080/geoserver/Jeru",
   params: {
     LAYERS: "Jeru:dimigcompile",
     SRS: "EPSG:2039",
@@ -34,7 +34,7 @@ class SingleLayerTest extends React.Component {
       const newLyr = new ImageLayer({
         source: new ImageWMS({
           params: LayerSample.params,
-          url: LayerSample.url,
+          url: `${LayerSample.url}/wms`,
           serverType: LayerSample.serverType,
           crossOrigin: "Anonymous",
         }),
@@ -42,7 +42,7 @@ class SingleLayerTest extends React.Component {
       newLyr.set("editable", LayerSample.editable);
       newLyr.set("ref_name", LayerSample.ref_name);
       const vectorSource = newVectorSource(
-        LayerSample.url,
+        `${LayerSample.url}/wfs`,
         LayerSample.params.SRS,
         LayerSample.params.LAYERS,
         LayerSample.editable,

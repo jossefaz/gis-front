@@ -46,43 +46,25 @@ class FeatureDetail extends React.Component {
   };
 
   onSave = async () => {
-    const updated = await this.editproxy[this.currentFeature.type].save(
-      this.currentFeature.id,
-      this.state.properties
-    );
+    const layer = this.currentFeature.type;
+    const prop = this.state.properties;
+    const updated = await this.editproxy[layer].save(this.currentFeature, prop);
     if (updated) {
-      this.props.addToast("Successfully save feature !", {
-        appearance: "success",
-        autoDismiss: true,
-      });
-      const newFeature = _.cloneDeep(this.currentFeature);
-      newFeature.properties = _.cloneDeep(this.state.properties);
-      await this.props.updateFeature(this.currentFeature.id, newFeature);
+      this.props.successNotification("Successfully saved feature !");
       this.setState({ editing: false, properties: null });
     } else {
-      this.props.addToast("failed to update feature !", {
-        appearance: "error",
-        autoDismiss: true,
-      });
+      this.props.errorNotification("Failed to save feature !");
     }
   };
 
   onFeatureDelete = async () => {
-    const deleted = await this.editproxy[this.currentFeature.type].remove(
-      this.currentFeature.id
-    );
+    const layer = this.currentFeature.type;
+    const deleted = await this.editproxy[layer].remove(this.currentFeature.id);
     if (deleted) {
-      await this.props.removeFeature(this.currentFeature.id);
-      this.props.addToast("Successfully delete feature !", {
-        appearance: "success",
-        autoDismiss: true,
-      });
+      this.props.successNotification("Successfully delete feature !");
       this.setState({ editing: false, properties: null, openConfirm: false });
     } else {
-      this.props.addToast("Failed to delete feature !", {
-        appearance: "error",
-        autoDismiss: true,
-      });
+      this.props.errorNotification("Failed to delete feature !");
       this.setState({ editing: false, openConfirm: false });
     }
   };
