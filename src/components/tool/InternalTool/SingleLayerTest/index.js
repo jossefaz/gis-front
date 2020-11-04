@@ -15,7 +15,6 @@ const LayerSample = {
     LAYERS: "Jeru:dimigcompile",
     SRS: "EPSG:2039",
   },
-  ref_name: "dimigcompile",
   serverType: "geoserver",
   visible: 1,
   selectable: 1,
@@ -40,7 +39,7 @@ class SingleLayerTest extends React.Component {
         }),
       });
       newLyr.set("editable", LayerSample.editable);
-      newLyr.set("ref_name", LayerSample.ref_name);
+      newLyr.set("ref_name", LayerSample.name);
       const vectorSource = newVectorSource(
         `${LayerSample.url}/wfs`,
         LayerSample.params.SRS,
@@ -52,7 +51,7 @@ class SingleLayerTest extends React.Component {
       const vectorLayer = new VectorLayer({
         source: vectorSource,
       });
-      vectorLayer.set("ref_name", LayerSample.ref_name);
+      vectorLayer.set("ref_name", LayerSample.name);
       vectorLayer.set("editable", LayerSample.editable);
       getFocusedMap().addLayer(vectorLayer);
       getFocusedMap().addLayer(newLyr);
