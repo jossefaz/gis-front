@@ -3,7 +3,7 @@ import {
   getFeatureProperties,
   unhighlightFeature,
 } from "../nessMapping/api";
-import { geoserverWFSTransaction } from "../utils/features";
+import { geoserverWFSTransaction, getWFSMetadata } from "../utils/features";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import store from "../redux/store";
 import { removeFeature, updateFeature } from "../redux/actions/features";
@@ -124,6 +124,10 @@ class editLayer {
 
   getFeatureById = (fid) => {
     return this.vectorlayer.getSource().getFeatureById(fid);
+  };
+
+  getMetadata = async () => {
+    return await getWFSMetadata(this._vectorLayer.get("ref_name"));
   };
 
   save = async (newProperties) => {

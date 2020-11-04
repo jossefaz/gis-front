@@ -33,6 +33,7 @@ class FeatureDetail extends React.Component {
   onStartEdit = () => {
     const layer = this.currentFeature.type;
     this.editProxy[layer].edit(this.currentFeature);
+    this.editProxy[layer].getMetadata();
     this.setState({
       editing: true,
       properties: this.currentFeature.properties,

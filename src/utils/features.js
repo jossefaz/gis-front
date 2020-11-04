@@ -190,6 +190,25 @@ export const getWFSFeatureById = async (layername, FID) => {
   return feature.data.features[0];
 };
 
+export const getWFSMetadata = async (layername) => {
+  const params = {
+    service: "WFS",
+    version: "1.3.0",
+    request: "DescribeFeatureType",
+    typeName: layername,
+    outputFormat: "application/json",
+    height: getFocusedMap().getSize()[1],
+  };
+
+  const metadata = await axios.get("http://localhost:8080/geoserver/Jeru/ows", {
+    params,
+  });
+
+  console.log(metadata.data);
+
+  return true;
+};
+
 export const getFeatureFromNamedLayer = (layer_ref_name, fid) => {
   let feature = null;
   getFocusedMap()
