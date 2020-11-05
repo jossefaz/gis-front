@@ -1,7 +1,7 @@
 import { getFocusedMap, getCurrentExtent } from "../nessMapping/api";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
-
+import styles from "../nessMapping/mapStyle";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
 import { projIsrael } from "./projections";
@@ -13,7 +13,7 @@ export const getCurrentLayersSource = () => {
     .getLayers()
     .getArray()
     .map((lyr) => {
-      if (lyr instanceof VectorLayer) {
+      if (lyr instanceof VectorLayer && lyr.get("ref_name") !== "drawlayer") {
         sources.push(lyr.getSource());
       }
     });
@@ -136,6 +136,51 @@ export const deleteSingleFeature = async (feature) => {
   return success;
 };
 
+const getVectorLayersByRefName = (refname) => {
+  let found = false;
+  getFocusedMap()
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof VectorLayer && lyr.get("ref_name") == refname) {
+        found = lyr;
+      }
+    });
+  return found;
+};
+
+export const initVectorLayers = (arrayOfLayerNames) => {
+  getFocusedMap()
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      const exists = Boolean(getVectorLayersByRefName(lyr.get("ref_name")));
+      if (
+        lyr instanceof ImageLayer &&
+        arrayOfLayerNames.includes(lyr.get("ref_name")) &&
+        !exists
+      ) {
+        debugger;
+        const source = lyr.getSource();
+        const vectorSource = newVectorSource(
+          `${source.getUrl()}/wfs`,
+          source.getParams().SRS,
+          source.getParams().LAYERS,
+          lyr.get("editable"),
+          null
+        );
+        const vectorLayer = new VectorLayer({
+          source: vectorSource,
+        });
+        vectorLayer.set("ref_name", lyr.get("ref_name"));
+        vectorLayer.set("editable", lyr.get("editable"));
+
+        getFocusedMap().addLayer(vectorLayer);
+        vectorLayer.setStyle(styles.HIDDEN);
+      }
+    });
+};
+
 export const newVectorSource = (url, srs, layername, editable, formatWFS) => {
   const params = {
     service: "WFS",
@@ -204,9 +249,7 @@ export const getWFSMetadata = async (layername) => {
     params,
   });
 
-  console.log(metadata.data);
-
-  return true;
+  return metadata.data;
 };
 
 export const getFeatureFromNamedLayer = (layer_ref_name, fid) => {

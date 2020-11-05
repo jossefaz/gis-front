@@ -16,6 +16,7 @@ import {
   removeFeature,
 } from "../../../../../redux/actions/features";
 import _ from "lodash";
+import EditTool from "../../EditTool";
 import { Confirm } from "semantic-ui-react";
 class FeatureDetail extends React.Component {
   state = {
@@ -118,6 +119,11 @@ class FeatureDetail extends React.Component {
       this.currentFeature && (
         <React.Fragment>
           <div onMouseDownCapture={(e) => e.stopPropagation()}>
+            {this.props.Features[this.focusedmap].currentLayer && (
+              <EditTool
+                ref_name={this.props.Features[this.focusedmap].currentLayer}
+              />
+            )}
             <table className="ui celled table">
               <thead>
                 <tr>

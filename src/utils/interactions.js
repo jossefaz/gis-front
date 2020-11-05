@@ -281,6 +281,8 @@ export const newDraw = (drawType, vectorSource, Layer) => {
     getFocusedMap().addLayer(vector);
     vectorSource = source;
     Layer = vector;
+    Layer.set("ref_name", "drawlayer");
+    vectorSource.set("ref_name", "drawlayer");
   }
   const Interaction = getDrawObject(vectorSource, drawType);
   return { Interaction, vectorSource, Layer };

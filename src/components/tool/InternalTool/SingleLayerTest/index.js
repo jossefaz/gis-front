@@ -40,20 +40,6 @@ class SingleLayerTest extends React.Component {
       });
       newLyr.set("editable", LayerSample.editable);
       newLyr.set("ref_name", LayerSample.name);
-      const vectorSource = newVectorSource(
-        `${LayerSample.url}/wfs`,
-        LayerSample.params.SRS,
-        LayerSample.params.LAYERS,
-        LayerSample.editable,
-        null
-      );
-
-      const vectorLayer = new VectorLayer({
-        source: vectorSource,
-      });
-      vectorLayer.set("ref_name", LayerSample.name);
-      vectorLayer.set("editable", LayerSample.editable);
-      getFocusedMap().addLayer(vectorLayer);
       getFocusedMap().addLayer(newLyr);
       this.setState({ added: true });
     }

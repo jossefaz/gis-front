@@ -61,9 +61,8 @@ const _editStyle = new Style({
 });
 
 const _hiddenStyle = new Style({
-  stroke: new Stroke({
-    color: "#000",
-    width: 1,
+  fill: new Stroke({
+    color: "transparent",
   }),
 });
 

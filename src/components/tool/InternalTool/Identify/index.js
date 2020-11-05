@@ -7,10 +7,12 @@ import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
-import { getFeaturesByExtent } from "../../../../utils/features";
+import {
+  getFeaturesByExtent,
+  initVectorLayers,
+} from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditProxy from "../../../../nessMapping/EditProxy";
-import Point from "ol/geom/Point";
 
 import Collection from "ol/Collection";
 class Identify extends Component {
@@ -87,15 +89,18 @@ class Identify extends Component {
 
   componentDidMount() {
     this.addInteraction();
+    // TODO : change with real state
   }
 
   componentDidUpdate() {
     if (this.sanityCheck()) {
-      this.editProxy = EditProxy.getInstance(
-        Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
+      const currentLayersArray = Object.keys(
+        this.props.Features[this.focusedmap].selectedFeatures
       );
-      console.log("edit proxy", this.editProxy);
+
+      this.editProxy = EditProxy.getInstance(currentLayersArray);
     }
+    initVectorLayers(["dimigcompile"]);
   }
 
   onUnfocus = () => {
