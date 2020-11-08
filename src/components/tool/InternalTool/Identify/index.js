@@ -5,6 +5,7 @@ import LayersList from "./LayersList";
 import { connect } from "react-redux";
 import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
+
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
 import {

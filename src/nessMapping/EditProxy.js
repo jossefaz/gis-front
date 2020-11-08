@@ -77,6 +77,7 @@ class editLayer {
   EDIT_KW = "editable";
   UPDATE_KW = "update";
   DELETE_KW = "delete";
+  INSERT_KW = "insert";
   get vectorlayer() {
     return this._vectorLayer;
   }
@@ -128,6 +129,20 @@ class editLayer {
 
   getMetadata = async () => {
     return await getWFSMetadata(this._vectorLayer.get("ref_name"));
+  };
+
+  addFeature = async (feature, properties) => {
+    if (feature) {
+      Object.keys(properties).map((prop) => {
+        feature.set(prop, properties[prop]);
+      });
+      if (!(await this.transaction(feature, this.INSERT_KW))) {
+        return false;
+      }
+      feature.set(this.EDIT_KW, true);
+      return true;
+    }
+    return false;
   };
 
   save = async (newProperties) => {

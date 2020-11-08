@@ -6,7 +6,7 @@ import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
 import { projIsrael } from "./projections";
 import axios from "axios";
-import { WFS } from "ol/format";
+import { WFS, GML } from "ol/format";
 export const getCurrentLayersSource = () => {
   const sources = [];
   getFocusedMap()
@@ -42,11 +42,11 @@ export const geoserverWFSTransaction = (
 ) => {
   const formatWFS = new WFS();
   const xs = new XMLSerializer();
-  const options = {
-    featureNS: `${domain}/wfs`,
+  const options = new GML({
+    featureNS: `${domain}`,
     featureType,
     srsName: srs,
-  };
+  });
   // if (onlyAlphanum) {
   //   featuresArray.map((f) => f.unset("geometry"));
   // }
