@@ -112,15 +112,15 @@ class editLayer {
     this.originalProperties = null;
   };
 
-  edit = (stateFeature) => {
+  edit = (eFeature) => {
     this.vectorlayer.getSource().forEachFeature((feature) => {
-      if (feature.getId() === stateFeature.id) {
+      if (feature.getId() === eFeature.getId()) {
         feature.setStyle(styles.EDIT);
       } else {
         feature.setStyle(styles.HIDDEN);
       }
     });
-    this.currentStateFeature = stateFeature;
+    this.currentFeature = eFeature;
   };
 
   getFeatureById = (fid) => {
@@ -146,43 +146,35 @@ class editLayer {
   };
 
   save = async (newProperties) => {
-    const feature = this.getFeatureById(this.currentStateFeature.id);
-    if (feature) {
+    if (this.currentFeature) {
       if (newProperties) {
-        this._updatePropertiesOnFeature(feature, newProperties);
+        this._updatePropertiesOnFeature(this.currentFeature, newProperties);
       }
-      feature.unset(this.EDIT_KW);
+      this.currentFeature.unset(this.EDIT_KW);
 
-      if (!(await this.transaction(feature, this.UPDATE_KW, true))) {
-        this._rollBackUpdateProperties(feature);
-        feature.set(this.EDIT_KW, true);
+      if (
+        !(await this.transaction(this.currentFeature, this.UPDATE_KW, true))
+      ) {
+        this._rollBackUpdateProperties(this.currentFeature);
+        this.currentFeature.set(this.EDIT_KW, true);
         return false;
       }
-
-      if (newProperties) {
-        const newFeature = _.cloneDeep(this.currentStateFeature);
-        newFeature.properties = _.cloneDeep(newProperties);
-        await store.dispatch(
-          updateFeature(this.currentStateFeature.id, newFeature)
-        );
-      }
-
-      feature.set(this.EDIT_KW, true);
+      this.currentFeature.set(this.EDIT_KW, true);
       return true;
     }
     console.log(
-      `feature with id ${this.currentStateFeature.id} was not found in its edit proxy`
+      `feature with id ${this.currentFeature.getId()} was not found in its edit proxy`
     );
     return false;
   };
 
   remove = async (fid) => {
-    const feature = this.getFeatureById(fid);
+    const feature = fid ? this.getFeatureById(fid) : this.currentFeature;
     if (feature) {
       if (!(await this.transaction(feature, this.DELETE_KW))) {
         return false;
       }
-      await store.dispatch(removeFeature(fid));
+      await store.dispatch(removeFeature(fid || this.currentFeature.getId()));
       return true;
     }
     console.log(`feature with id ${fid} was not found in its edit proxy`);

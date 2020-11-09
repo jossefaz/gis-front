@@ -33,6 +33,25 @@ class EditForm extends AppendBodyComponent {
   };
 
   onSubmit = async (data) => {
+    if (this.props.existingFeature) {
+      await this.editFeature(data);
+    } else {
+      await this.newFeature(data);
+    }
+    this.props.onSubmit();
+  };
+
+  editFeature = async (data) => {
+    const updated = await this.props.editProxy.save(data);
+    if (updated) {
+      this.props.successNotification("Successfully added feature !");
+    } else {
+      this.props.errorNotification("Failed to add feature !");
+    }
+    this.removeAppendElement();
+  };
+
+  newFeature = async (data) => {
     const insterted = await this.props.editProxy.addFeature(
       this.props.feature,
       data
@@ -43,7 +62,6 @@ class EditForm extends AppendBodyComponent {
       this.props.errorNotification("Failed to add feature !");
     }
     this.removeAppendElement();
-    this.props.onSubmit();
   };
 
   generateForm = () => {
@@ -54,6 +72,9 @@ class EditForm extends AppendBodyComponent {
             config={this.props.fields}
             onSubmit={this.onSubmit}
             values={this.props.values}
+            optionalButton={() => (
+              <button onClick={this.props.onDeleteFeature}>Delete</button>
+            )}
           />
         </div>
       );

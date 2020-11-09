@@ -16,6 +16,11 @@
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
   border-radius: 10px;
 }
+.optionalButtons {
+  position: absolute;
+  bottom: 2.8em;
+  right: 8em;
+}
 
 .login-box h2 {
   margin: 0 0 30px;

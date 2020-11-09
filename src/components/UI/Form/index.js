@@ -43,6 +43,9 @@ export default (props) => {
         )}
         <input type="submit" />
       </form>
+      <div className="optionalButtons">
+        {props.optionalButton && props.optionalButton()}
+      </div>
     </div>
   );
 };

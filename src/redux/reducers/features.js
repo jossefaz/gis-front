@@ -33,13 +33,15 @@ export default function (state = {}, action) {
         const index = draftState[focusedmap].selectedFeatures[
           draftState[focusedmap].currentLayer
         ].findIndex((el) => el.id == featureId);
-        draftState[focusedmap].selectedFeatures[
-          draftState[focusedmap].currentLayer
-        ].splice(index, 1, newFeature);
-        if (
-          draftState[action.payload.focusedmap].currentFeature.id == featureId
-        ) {
-          draftState[action.payload.focusedmap].currentFeature = newFeature;
+        if (index != -1) {
+          draftState[focusedmap].selectedFeatures[
+            draftState[focusedmap].currentLayer
+          ].splice(index, 1, newFeature);
+          if (
+            draftState[action.payload.focusedmap].currentFeature.id == featureId
+          ) {
+            draftState[action.payload.focusedmap].currentFeature = newFeature;
+          }
         }
       });
 
@@ -49,23 +51,25 @@ export default function (state = {}, action) {
         const index = draftState[focusedmap].selectedFeatures[
           draftState[focusedmap].currentLayer
         ].findIndex((el) => el.id == featureId);
-        draftState[focusedmap].selectedFeatures[
-          draftState[focusedmap].currentLayer
-        ].splice(index, 1);
-        if (
+        if (index != -1) {
           draftState[focusedmap].selectedFeatures[
             draftState[focusedmap].currentLayer
-          ].length === 0
-        ) {
-          delete draftState[focusedmap].selectedFeatures[
-            draftState[focusedmap].currentLayer
-          ];
-          draftState[focusedmap].currentLayer = null;
-        }
-        if (
-          draftState[action.payload.focusedmap].currentFeature.id == featureId
-        ) {
-          draftState[action.payload.focusedmap].currentFeature = null;
+          ].splice(index, 1);
+          if (
+            draftState[focusedmap].selectedFeatures[
+              draftState[focusedmap].currentLayer
+            ].length === 0
+          ) {
+            delete draftState[focusedmap].selectedFeatures[
+              draftState[focusedmap].currentLayer
+            ];
+            draftState[focusedmap].currentLayer = null;
+          }
+          if (
+            draftState[action.payload.focusedmap].currentFeature.id == featureId
+          ) {
+            draftState[action.payload.focusedmap].currentFeature = null;
+          }
         }
       });
 

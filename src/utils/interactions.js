@@ -218,6 +218,12 @@ export class InteractionUtil {
     }
   };
 
+  clearVectorSource = (type) => {
+    if (this.getVectorSource(type)) {
+      this.getVectorSource(type).clear();
+    }
+  };
+
   setAll = async () => {
     if (this.store) {
       const InteractionArray = [];

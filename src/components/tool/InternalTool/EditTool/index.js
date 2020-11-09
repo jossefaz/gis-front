@@ -10,14 +10,24 @@ import EditForm from "./EditForm";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import { click } from "ol/events/condition";
 import styles from "../../../../nessMapping/mapStyle";
-
+import Collection from "ol/Collection";
+import { Confirm } from "semantic-ui-react";
+import withNotifications from "../../../HOC/withNotifications";
 const initialState = {
   geomType: null,
   openForm: false,
   newFeature: null,
   EditFeature: null,
   fields: null,
+  openConfirm: false,
+  eraseFeature: {
+    openAlert: false,
+    content: "? האם באמת למחוק את היישות",
+    confirmBtn: "כן",
+    cancelBtn: "לא",
+  },
 };
+
 class EditTool extends Component {
   WIDGET_NAME = "EditTool";
 
@@ -25,6 +35,10 @@ class EditTool extends Component {
     super();
     this.interactions = new InteractionUtil(this.WIDGET_NAME);
     this.state = initialState;
+  }
+
+  get editProxy() {
+    return this._editProxy ? this._editProxy[this.props.ref_name] : false;
   }
 
   onAddFeature = async () => {
@@ -36,6 +50,21 @@ class EditTool extends Component {
     await this.interactions.unSelect();
     await this.interactions.newDraw({ type: this.state.geomType });
     this.onDrawEnd();
+  };
+
+  onDeleteFeature = () => {
+    this.setState({ openConfirm: true });
+  };
+
+  onDeleteConfirm = async () => {
+    const deleted = await this.editProxy.remove();
+    if (deleted) {
+      this.props.successNotification("Successfully added feature !");
+      this.setState({ openConfirm: false });
+      this.interactions.unsetAll();
+    } else {
+      this.props.errorNotification("Failed to add feature !");
+    }
   };
 
   onIdentifyFeature = async () => {
@@ -53,7 +82,7 @@ class EditTool extends Component {
   };
 
   getMetadata = async () => {
-    this.metadata = await getWFSMetadata(this.props.ref_name);
+    this.metadata = await this.editProxy.getMetadata();
     this.setState({
       geomType: this.metadata.featureTypes[0].properties[0].localType,
       fields: this.metadata.featureTypes[0].properties,
@@ -64,13 +93,16 @@ class EditTool extends Component {
     if (this.interactions.currentSelect) {
       this.interactions.currentSelect.on("select", async (e) => {
         if (e.selected.length > 0) {
+          const selectedF = e.selected[0];
           this.setState({
-            EditFeature: e.selected[0],
+            EditFeature: selectedF,
             newFeature: null,
             openForm: true,
           });
-          const extent = e.selected[0].getGeometry().getExtent();
-          e.selected[0].setStyle(styles.EDIT);
+          await this.interactions.newModify(new Collection([selectedF]));
+          this.editProxy.edit(selectedF);
+          const extent = selectedF.getGeometry().getExtent();
+          selectedF.setStyle(styles.EDIT);
           getFocusedMap()
             .getView()
             .fit(extent, { padding: [850, 850, 850, 850] });
@@ -97,14 +129,15 @@ class EditTool extends Component {
   };
 
   onSubmit = async (data) => {
-    this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
+    this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
+    this.interactions.unsetAll();
     this.setState({ newFeature: null, openForm: false });
   };
 
   componentDidMount() {
     initVectorLayers([this.props.ref_name]);
     this.currentLayer = getVectorLayersByRefName(this.props.ref_name);
-    this.editProxy = EditProxy.getInstance([this.props.ref_name]);
+    this._editProxy = EditProxy.getInstance([this.props.ref_name]);
     this.getMetadata();
   }
   render() {
@@ -115,21 +148,32 @@ class EditTool extends Component {
             fields={this.state.fields}
             feature={this.state.newFeature || this.state.EditFeature}
             onSubmit={this.onSubmit}
-            editProxy={this.editProxy[this.props.ref_name]}
+            editProxy={this.editProxy}
             values={
               this.state.EditFeature
                 ? this.state.EditFeature.getProperties()
                 : null
             }
+            onDeleteFeature={this.onDeleteFeature}
+            existingFeature={Boolean(this.state.EditFeature)}
             openForm={this.state.openForm}
           />
         )}
 
         <button onClick={this.onAddFeature}>add feature</button>
         <button onClick={this.onIdentifyFeature}>Identify</button>
+        <Confirm
+          open={this.state.openConfirm}
+          size="mini"
+          content={this.state.eraseFeature.content}
+          cancelButton={this.state.eraseFeature.cancelBtn}
+          confirmButton={this.state.eraseFeature.confirmBtn}
+          onCancel={() => this.setState({ openConfirm: false })}
+          onConfirm={this.onDeleteConfirm}
+        />
       </React.Fragment>
     );
   }
 }
 
-export default EditTool;
+export default withNotifications(EditTool);

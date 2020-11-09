@@ -5,12 +5,7 @@ import {
   getFeatureProperties,
 } from "../../../../../nessMapping/api";
 
-
-
 import withNotifications from "../../../../HOC/withNotifications";
-
-
-
 
 import {
   updateSingleFeature,
@@ -38,10 +33,14 @@ class FeatureDetail extends React.Component {
     },
   };
 
+  get editProxy() {
+    return this._editProxy[this.currentFeature.type];
+  }
+
   onStartEdit = () => {
-    const layer = this.currentFeature.type;
-    this.editProxy[layer].edit(this.currentFeature);
-    this.editProxy[layer].getMetadata();
+    const feature = this.editProxy.getFeatureById(this.currentFeature.id);
+    this.editProxy.edit(feature);
+    this.editProxy.getMetadata();
     this.setState({
       editing: true,
       properties: this.currentFeature.properties,
@@ -57,11 +56,13 @@ class FeatureDetail extends React.Component {
   };
 
   onSave = async () => {
-    const layer = this.currentFeature.type;
     const prop = this.state.properties;
-    const updated = await this.editProxy[layer].save(prop);
+    const updated = await this.editProxy.save(prop);
     if (updated) {
       this.props.successNotification("Successfully saved feature !");
+      const newFeature = _.cloneDeep(this.currentFeature);
+      newFeature.properties = _.cloneDeep(prop);
+      await this.props.updateFeature(this.currentFeature.id, newFeature);
       this.setState({ editing: false, properties: null });
     } else {
       this.props.errorNotification("Failed to save feature !");
@@ -69,10 +70,10 @@ class FeatureDetail extends React.Component {
   };
 
   onFeatureDelete = async () => {
-    const layer = this.currentFeature.type;
-    const deleted = await this.editProxy[layer].remove(this.currentFeature.id);
+    const deleted = await this.editProxy.remove(this.currentFeature.id);
     if (deleted) {
       this.props.successNotification("Successfully delete feature !");
+      await this.props.removeFeature(this.currentFeature.id);
       this.setState({ editing: false, properties: null, openConfirm: false });
     } else {
       this.props.errorNotification("Failed to delete feature !");
@@ -111,7 +112,7 @@ class FeatureDetail extends React.Component {
   };
 
   componentDidMount() {
-    this.editProxy = EditProxy.getInstance(
+    this._editProxy = EditProxy.getInstance(
       Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
     );
   }
