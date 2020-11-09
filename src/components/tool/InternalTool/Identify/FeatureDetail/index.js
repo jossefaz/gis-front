@@ -3,14 +3,12 @@ import { connect } from "react-redux";
 import {
   getFocusedMapProxy,
   getFeatureProperties,
+  getFocusedMap,
 } from "../../../../../nessMapping/api";
 
 import withNotifications from "../../../../HOC/withNotifications";
 
-import {
-  updateSingleFeature,
-  deleteSingleFeature,
-} from "../../../../../utils/features";
+import { zoomToFeature } from "../../../../../utils/features";
 import EditProxy from "../../../../../nessMapping/EditProxy";
 import {
   setSelectedFeatures,
@@ -20,6 +18,8 @@ import {
 import _ from "lodash";
 import EditTool from "../../EditTool";
 import { Confirm } from "semantic-ui-react";
+import IconButton from "../../../../UI/Buttons/IconButton";
+import "./style.css";
 class FeatureDetail extends React.Component {
   state = {
     editing: false,
@@ -39,6 +39,7 @@ class FeatureDetail extends React.Component {
 
   onStartEdit = () => {
     const feature = this.editProxy.getFeatureById(this.currentFeature.id);
+    zoomToFeature(feature);
     this.editProxy.edit(feature);
     this.editProxy.getMetadata();
     this.setState({
@@ -127,38 +128,57 @@ class FeatureDetail extends React.Component {
       this.currentFeature && (
         <React.Fragment>
           <div onMouseDownCapture={(e) => e.stopPropagation()}>
-            {this.props.Features[this.focusedmap].currentLayer && (
+            {/* {this.props.Features[this.focusedmap].currentLayer && (
               <EditTool
                 ref_name={this.props.Features[this.focusedmap].currentLayer}
               />
-            )}
+            )} */}
             <table className="ui celled table">
               <thead>
                 <tr>
-                  <th>
-                    Details{" "}
+                  <th className="details-header">
+                    <div>Details</div>
                     {properties.editable ? (
                       !this.state.editing ? (
                         <div>
-                          <button onClick={this.onStartEdit}>Edit</button>
-                          <button onClick={this.onStartEditGeom}>
-                            Edit Geom
-                          </button>
-                          <button
+                          <IconButton
+                            className={`ui icon button pointer primary`}
+                            onClick={this.onStartEdit}
+                            icon="edit"
+                            size="xs"
+                          />
+                          <IconButton
+                            className={`ui icon button pointer primary`}
+                            onClick={this.onStartEditGeom}
+                            icon="draw-polygon"
+                            size="xs"
+                          />
+                          <IconButton
+                            className={`ui icon button pointer negative`}
                             onClick={() => this.setState({ openConfirm: true })}
-                          >
-                            Delete
-                          </button>
+                            icon="trash-alt"
+                            size="xs"
+                          />
                         </div>
                       ) : (
                         <div>
-                          <button onClick={this.onSave}>Save</button>
-                          <button onClick={this.onEditCancel}>Cancel</button>
-                          <button
+                          <IconButton
+                            className={`ui icon button pointer positive`}
+                            icon="save"
+                            size="xs"
+                          />
+                          <IconButton
+                            className={`ui icon button pointer negative`}
+                            onClick={this.onEditCancel}
+                            icon="window-close"
+                            size="xs"
+                          />
+                          <IconButton
+                            className={`ui icon button pointer negative`}
                             onClick={() => this.setState({ openConfirm: true })}
-                          >
-                            Delete
-                          </button>
+                            icon="trash-alt"
+                            size="xs"
+                          />
                         </div>
                       )
                     ) : null}

@@ -270,3 +270,10 @@ export const getFeatureFromNamedLayer = (layer_ref_name, fid) => {
   }
   return false;
 };
+
+export const zoomToFeature = (feature) => {
+  const extent = feature.getGeometry().getExtent();
+  getFocusedMap()
+    .getView()
+    .fit(extent, { padding: [850, 850, 850, 850] });
+};

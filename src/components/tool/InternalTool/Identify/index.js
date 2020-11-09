@@ -11,6 +11,7 @@ import "./style.css";
 import {
   getFeaturesByExtent,
   initVectorLayers,
+  zoomToFeature,
 } from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditProxy from "../../../../nessMapping/EditProxy";
@@ -45,10 +46,12 @@ class Identify extends Component {
   onEditGeometry = async (feature) => {
     this.removeInteraction();
     const layer = feature.type;
-    this.editProxy[layer].edit(feature);
-    const f = this.editProxy[layer].getFeatureById(feature.id);
-    await this.interactions.newModify(new Collection([f]));
     this.modifyGeom = feature;
+
+    const f = this.editProxy[layer].getFeatureById(feature.id);
+    zoomToFeature(f);
+    this.editProxy[layer].edit(f);
+    await this.interactions.newModify(new Collection([f]));
     getFocusedMap().on("dblclick", (e) =>
       this.autoClosingEditSession(e, layer)
     );

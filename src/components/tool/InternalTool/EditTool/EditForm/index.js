@@ -14,6 +14,7 @@ import { fromLonLat, transform } from "ol/proj";
 import "./style.css";
 import withNotifications from "../../../../HOC/withNotifications";
 import AppendBodyComponent from "../../../../HOC/appendBodyElement";
+import IconButton from "../../../../UI/Buttons/IconButton";
 
 class EditForm extends AppendBodyComponent {
   WIDGET_NAME = "EditForm";
@@ -73,7 +74,12 @@ class EditForm extends AppendBodyComponent {
             onSubmit={this.onSubmit}
             values={this.props.values}
             optionalButton={() => (
-              <button onClick={this.props.onDeleteFeature}>Delete</button>
+              <IconButton
+                className={`ui icon button pointer negative`}
+                onClick={this.props.onDeleteFeature}
+                icon="trash-alt"
+                size="lg"
+              />
             )}
           />
         </div>

@@ -12,6 +12,7 @@ import { click } from "ol/events/condition";
 import styles from "../../../../nessMapping/mapStyle";
 import Collection from "ol/Collection";
 import { Confirm } from "semantic-ui-react";
+import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
 const initialState = {
   geomType: null,
@@ -20,6 +21,8 @@ const initialState = {
   EditFeature: null,
   fields: null,
   openConfirm: false,
+  addingIcon: false,
+  editIcon: false,
   eraseFeature: {
     openAlert: false,
     content: "? האם באמת למחוק את היישות",
@@ -46,6 +49,8 @@ class EditTool extends Component {
       openForm: false,
       newFeature: null,
       EditFeature: null,
+      addingIcon: true,
+      editIcon: false,
     });
     await this.interactions.unSelect();
     await this.interactions.newDraw({ type: this.state.geomType });
@@ -60,8 +65,16 @@ class EditTool extends Component {
     const deleted = await this.editProxy.remove();
     if (deleted) {
       this.props.successNotification("Successfully added feature !");
-      this.setState({ openConfirm: false });
-      this.interactions.unsetAll();
+      this.setState({
+        openConfirm: false,
+        openForm: false,
+        newFeature: null,
+        EditFeature: null,
+        addingIcon: false,
+        editIcon: true,
+      });
+      await this.interactions.unModify();
+      await this.interactions.unDraw();
     } else {
       this.props.errorNotification("Failed to add feature !");
     }
@@ -74,6 +87,8 @@ class EditTool extends Component {
       openForm: false,
       newFeature: null,
       EditFeature: null,
+      addingIcon: false,
+      editIcon: true,
     });
     if (this.interactions.getVectorSource(this.interactions.TYPES.DRAW)) {
       this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
@@ -159,9 +174,22 @@ class EditTool extends Component {
             openForm={this.state.openForm}
           />
         )}
-
-        <button onClick={this.onAddFeature}>add feature</button>
-        <button onClick={this.onIdentifyFeature}>Identify</button>
+        <IconButton
+          className={`ui icon button pointer ${
+            this.state.addingIcon ? "secondary" : "primary"
+          }`}
+          onClick={this.onAddFeature}
+          icon="plus-square"
+          size="lg"
+        />
+        <IconButton
+          className={`ui icon button pointer ${
+            this.state.editIcon ? "secondary" : "primary"
+          }`}
+          onClick={this.onIdentifyFeature}
+          icon="edit"
+          size="lg"
+        />
         <Confirm
           open={this.state.openConfirm}
           size="mini"

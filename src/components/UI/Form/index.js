@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Button, Form, Message } from "semantic-ui-react";
 import _ from "lodash";
 import "./style.css";
+import IconButton from "../Buttons/IconButton";
 
 const bannedFields = ["geometry"];
 export default (props) => {
@@ -41,7 +42,11 @@ export default (props) => {
               </div>
             )
         )}
-        <input type="submit" />
+        <IconButton
+          className={`ui icon button pointer positive`}
+          icon="save"
+          size="lg"
+        />
       </form>
       <div className="optionalButtons">
         {props.optionalButton && props.optionalButton()}

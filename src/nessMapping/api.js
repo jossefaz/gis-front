@@ -175,8 +175,6 @@ export const getNessLayers = () => {
   return getFocusedMapProxy()._layers;
 };
 
-
-
 // SET add layer to map proxy object
 export const addLayerToMapProxy = (mdId, alias, lyr, lyrConfig) => {
   const Layer = new NessLayer(mdId, alias, lyr, lyrConfig);
