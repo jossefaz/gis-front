@@ -5,13 +5,6 @@ import { renderTools } from "../../components/tool/func";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getFocusedMapProxy } from "../../nessMapping/api";
 class TopNav extends React.Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    //TODO implement should component update for avoiding performance issue and rerendering on every tols single change !
-    console.log("nextProps", nextProps);
-    console.log("nextState", nextState);
-
-    return true;
-  }
   get Tools() {
     return getFocusedMapProxy()
       ? this.props.Tools[getFocusedMapProxy().uuid.value]
@@ -28,12 +21,12 @@ class TopNav extends React.Component {
           </div>
         </div>
         {renderTools(this.Tools, "TopNav")}
-        <a
+        <button
           className="ui fixed item image pointerCursor"
           onClick={() => this.props.toogleSideNav()}
         >
           <FontAwesomeIcon icon="layer-group" size="lg" />
-        </a>
+        </button>
       </div>
     );
   }

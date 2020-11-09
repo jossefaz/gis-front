@@ -1,52 +1,55 @@
 import { getFocusedMap, getCurrentExtent } from "../nessMapping/api";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
-import { bbox } from "ol/loadingstrategy";
+import styles from "../nessMapping/mapStyle";
+import { bbox as bboxStrategy } from "ol/loadingstrategy";
 import GeoJSON from "ol/format/GeoJSON";
 import { projIsrael } from "./projections";
 import axios from "axios";
-import { WFS } from "ol/format";
+import { WFS, GML } from "ol/format";
 export const getCurrentLayersSource = () => {
   const sources = [];
-  console.log(getFocusedMap());
   getFocusedMap()
     .getLayers()
     .getArray()
     .map((lyr) => {
-      if (lyr instanceof VectorLayer) {
+      if (lyr instanceof VectorLayer && lyr.get("ref_name") !== "drawlayer") {
         sources.push(lyr.getSource());
       }
     });
   return sources;
 };
 
-export const getFeaturesByExtent = (extent, sources) => {
+export const getFeaturesByExtent = (extent) => {
   const features = [];
-  sources.map((vs) => {
+  getCurrentLayersSource().map((vs) => {
     const editable = vs.get("editable");
-    vs.forEachFeatureInExtent(extent, (feature) => {
+    vs.forEachFeatureIntersectingExtent(extent, (feature) => {
       feature.set("editable", editable);
       features.push(feature);
-      console.log("feature", feature);
     });
   });
   return features;
 };
 
-window.document.geoserverWFSTransaction = (
+export const geoserverWFSTransaction = (
   domain,
   featureType,
   srs,
   mode,
-  featuresArray
+  featuresArray,
+  onlyAlphanum
 ) => {
   const formatWFS = new WFS();
   const xs = new XMLSerializer();
-  const options = {
-    featureNS: `${domain}/wfs`,
+  const options = new GML({
+    featureNS: `${domain}`,
     featureType,
     srsName: srs,
-  };
+  });
+  // if (onlyAlphanum) {
+  //   featuresArray.map((f) => f.unset("geometry"));
+  // }
   let node;
   switch (mode) {
     case "insert":
@@ -58,43 +61,139 @@ window.document.geoserverWFSTransaction = (
     case "delete":
       node = formatWFS.writeTransaction(null, null, featuresArray, options);
       break;
-    default :
-      return
+    default:
+      return;
   }
   const wfsNode = xs.serializeToString(node);
-  console.log(wfsNode);
-  axios.post(
-    "http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3Adimigcompile",
+  return axios.post(
+    `${domain}/ows?service=WFS&typeName=Jeru:${featureType}`,
     wfsNode,
     {
       headers: { "Content-Type": "text/xml" },
     }
   );
-  // $.ajax('http://localhost:8080/geoserver/Jeru/ows?service=WFS&typeName=Jeru%3AGANANUTFORGEOSERVER', {
-  //     type: 'POST',
-  //     dataType: 'xml',
-  //     processData: false,
-  //     contentType: 'text/xml',
-  //     data: wfsNode
-  // }).done(function() {
-  //   sourceWFS.clear();
-  // });
 };
 
-export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
+export const updateSingleFeature = async (feature) => {
+  let success;
+  await geoserverWFSTransaction(
+    "http://localhost:8080/geoserver/Jeru",
+    feature.type,
+    "EPSG:2039",
+    "update",
+    [feature.ol_feature]
+  )
+    .then((res) => {
+      // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
+      getFocusedMap()
+        .getLayers()
+        .getArray()
+        .map((lyr) => {
+          if (lyr instanceof ImageLayer) {
+            const src = lyr.getSource().getParams().LAYERS;
+            if (src && src.includes(feature.type)) {
+              lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+            }
+          }
+        });
+      success = true;
+    })
+    .catch((err) => {
+      console.log(err);
+      success = false;
+    });
+  return success;
+};
+
+export const deleteSingleFeature = async (feature) => {
+  let success;
+  await geoserverWFSTransaction(
+    "http://localhost:8080/geoserver/Jeru",
+    feature.type,
+    "EPSG:2039",
+    "delete",
+    [feature.ol_feature]
+  )
+    .then((res) => {
+      // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
+      getFocusedMap()
+        .getLayers()
+        .getArray()
+        .map((lyr) => {
+          if (lyr instanceof ImageLayer) {
+            const src = lyr.getSource().getParams().LAYERS;
+            if (src && src.includes(feature.type)) {
+              lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
+            }
+          }
+        });
+      success = true;
+    })
+    .catch((err) => {
+      console.log(err);
+      success = false;
+    });
+  return success;
+};
+
+export const getVectorLayersByRefName = (refname) => {
+  let found = false;
+  getFocusedMap()
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof VectorLayer && lyr.get("ref_name") == refname) {
+        found = lyr;
+      }
+    });
+  return found;
+};
+
+export const initVectorLayers = (arrayOfLayerNames) => {
+  getFocusedMap()
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      const exists = Boolean(getVectorLayersByRefName(lyr.get("ref_name")));
+      if (
+        lyr instanceof ImageLayer &&
+        arrayOfLayerNames.includes(lyr.get("ref_name")) &&
+        !exists
+      ) {
+        debugger;
+        const source = lyr.getSource();
+        const vectorSource = newVectorSource(
+          `${source.getUrl()}/wfs`,
+          source.getParams().SRS,
+          source.getParams().LAYERS,
+          lyr.get("editable"),
+          null
+        );
+        const vectorLayer = new VectorLayer({
+          source: vectorSource,
+        });
+        vectorLayer.set("ref_name", lyr.get("ref_name"));
+        vectorLayer.set("editable", lyr.get("editable"));
+
+        getFocusedMap().addLayer(vectorLayer);
+        vectorLayer.setStyle(styles.HIDDEN);
+      }
+    });
+};
+
+export const newVectorSource = (url, srs, layername, editable, formatWFS) => {
   const params = {
-    service: "WMS",
-    version: "1.1.0",
-    request: "GetMap",
-    bbox: getCurrentExtent().join(","),
-    srs: srs,
-    format: "geojson",
-    width: getFocusedMap().getSize()[0],
+    service: "WFS",
+    version: "1.3.0",
+    request: "GetFeature",
+    typeName: layername,
+    srsname: srs,
+    outputFormat: "application/json",
     height: getFocusedMap().getSize()[1],
   };
 
-  if (layernames) {
-    params.layers = layernames;
+  if (layername) {
+    params.layers = layername;
   }
 
   const vectorSource = new VectorSource({
@@ -107,11 +206,74 @@ export const newVectorSource = (url, srs, layernames, editable, formatWFS) => {
     format: new GeoJSON({
       dataProjection: projIsrael,
     }),
-    strategy: bbox,
+    strategy: bboxStrategy,
   });
   if (editable) {
     vectorSource.set("editable", true);
   }
 
   return vectorSource;
+};
+
+export const getWFSFeatureById = async (layername, FID) => {
+  //http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Adimigcompile&maxFeatures=50&outputFormat=application%2Fjson&featureID=dimigcompile.16
+
+  const params = {
+    service: "WFS",
+    version: "1.3.0",
+    request: "GetFeature",
+    typeName: layername,
+    outputFormat: "application/json",
+    featureID: FID,
+    height: getFocusedMap().getSize()[1],
+  };
+
+  const feature = await axios.get("http://localhost:8080/geoserver/Jeru/ows", {
+    params,
+  });
+
+  return feature.data.features[0];
+};
+
+export const getWFSMetadata = async (layername) => {
+  const params = {
+    service: "WFS",
+    version: "1.3.0",
+    request: "DescribeFeatureType",
+    typeName: layername,
+    outputFormat: "application/json",
+    height: getFocusedMap().getSize()[1],
+  };
+
+  const metadata = await axios.get("http://localhost:8080/geoserver/Jeru/ows", {
+    params,
+  });
+
+  return metadata.data;
+};
+
+export const getFeatureFromNamedLayer = (layer_ref_name, fid) => {
+  let feature = null;
+  getFocusedMap()
+    .getLayers()
+    .getArray()
+    .map((lyr) => {
+      if (lyr instanceof VectorLayer) {
+        const src = lyr.get("ref_name");
+        if (src && src.includes(layer_ref_name)) {
+          feature = lyr.getSource().getFeatureById(fid);
+        }
+      }
+    });
+  if (feature) {
+    return feature;
+  }
+  return false;
+};
+
+export const zoomToFeature = (feature) => {
+  const extent = feature.getGeometry().getExtent();
+  getFocusedMap()
+    .getView()
+    .fit(extent, { padding: [850, 850, 850, 850] });
 };

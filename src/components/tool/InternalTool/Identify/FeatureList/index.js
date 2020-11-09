@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { setCurrentFeature } from "../../../../../redux/actions/features";
+import { getFeatureFromNamedLayer } from "../../../../../utils/features";
 import { setToolProp } from "../../../../../redux/actions/tools";
 import {
   zoomTo,
@@ -115,11 +116,15 @@ class FeatureList extends Component {
                 : feature.id}
               <IconButton
                 className="ui icon button primary pointer margin05em"
-                onClick={() => {
-                  zoomTo(feature.geometry);
+                onClick={async () => {
+                  const f = getFeatureFromNamedLayer(feature.type, feature.id);
+                  f && zoomTo(f.getGeometry());
                   // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
                 }}
-                onHover={() => highlightFeature(feature.geometry)}
+                onHover={async () => {
+                  const f = getFeatureFromNamedLayer(feature.type, feature.id);
+                  f && highlightFeature(f.getGeometry());
+                }}
                 icon="crosshairs"
                 size="1x"
               />
@@ -142,9 +147,9 @@ class FeatureList extends Component {
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="scrollContent">
             {this.renderFieldsSelect()}
-            <div className="scrollContent">{this.renderSelectedFeature()}</div>
+            {this.renderSelectedFeature()}
           </tbody>
         </table>
       </React.Fragment>

@@ -1,10 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import {
-  getOverlay,
-  getFocusedMap,
-} from "../../../../nessMapping/api";
+import { getOverlay, getFocusedMap } from "../../../../nessMapping/api";
 import {
   setInteraction,
   unsetInteraction,
@@ -124,7 +121,6 @@ class MeasureDistance extends React.Component {
   };
 
   addInteraction = async (drawtype) => {
-    await this.interactions.unDraw();
     await this.interactions.newDraw({ type: drawtype });
   };
 

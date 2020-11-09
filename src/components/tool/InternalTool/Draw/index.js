@@ -112,7 +112,6 @@ class Draw extends React.Component {
   };
 
   addInteraction = async (drawtype) => {
-    this.interactions.unDraw();
     await this.interactions.newDraw({ type: drawtype });
   };
 
@@ -123,12 +122,15 @@ class Draw extends React.Component {
   };
 
   onOpenEditSession = async (featureID) => {
-    this.removeSelectAndEdit();
-    this.interactions.unDraw();
-    await this.interactions.newSelect(featureID, [
+    const feature = this.interactions
+      .getVectorSource(this.interactions.TYPES.DRAW)
+      .getFeatureById(featureID);
+    await this.interactions.newSelect(feature, [
       this.interactions.getVectorLayer(this.interactions.TYPES.DRAW),
     ]);
-    await this.interactions.newModify();
+    await this.interactions.newModify(
+      this.interactions.currentSelect.getFeatures()
+    );
     this.setState({ editSession: { status: true, current: featureID } });
     this.onModifyEnd();
   };
@@ -199,9 +201,8 @@ class Draw extends React.Component {
   };
 
   onDrawEnd = () => {
-    const draw = this.interactions.currentDraw;
-    if (draw) {
-      draw.on("drawend", async (e) => {
+    if (this.interactions.currentDraw) {
+      this.interactions.currentDraw.on("drawend", async (e) => {
         const newFeatureId =
           (await createNewGeometry(e.feature)) || generateID();
         e.feature.setId(newFeatureId);
@@ -216,9 +217,9 @@ class Draw extends React.Component {
   };
 
   onModifyEnd = () => {
-    const modify = this.interactions.currentModify;
-    if (modify) {
-      modify.on("modifyend", async (e) => {
+    if (this.interactions.currentModify) {
+      console.log("modify END");
+      this.interactions.currentModify.on("modifyend", async (e) => {
         await updateGeometry(e.features.getArray()[0]);
       });
     }

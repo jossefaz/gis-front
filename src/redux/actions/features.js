@@ -5,7 +5,13 @@ export const setSelectedFeatures = (features) => (dispatch) => {
     const focusedmap = getFocusedMapProxy().uuid.value;
     const featuresByLayers = {};
     features.map((f) => {
-      const layer = f.id_.split(".")[0];
+      let layer;
+      try {
+        layer = f.getId().split(".")[0];
+      } catch (error) {
+        return false;
+      }
+
       if (!(layer in featuresByLayers)) {
         featuresByLayers[layer] = [];
       }
@@ -17,9 +23,8 @@ export const setSelectedFeatures = (features) => (dispatch) => {
         }, {});
       featuresByLayers[layer].push({
         properties,
-        geometry: f.values_.geometry,
-        id: f.id_,
-        ol_feature: f,
+        id: f.getId(),
+        type: layer,
       });
     });
     dispatch({
@@ -39,6 +44,29 @@ export const setCurrentFeature = (featureId) => (dispatch, getState) => {
     dispatch({
       type: types.SET_CURRENT_FEATURE,
       payload: { focusedmap, currentFeature: currentFeature[0] },
+    });
+  }
+};
+
+export const updateFeature = (featureId, newFeature) => (
+  dispatch,
+  getState
+) => {
+  const focusedmap = getFocusedMapProxy().uuid.value;
+  if (focusedmap in getState().Features) {
+    dispatch({
+      type: types.UPDATE_FEATURE,
+      payload: { focusedmap, featureId, newFeature },
+    });
+  }
+};
+
+export const removeFeature = (featureId) => (dispatch, getState) => {
+  const focusedmap = getFocusedMapProxy().uuid.value;
+  if (focusedmap in getState().Features) {
+    dispatch({
+      type: types.REMOVE_FEATURE,
+      payload: { focusedmap, featureId },
     });
   }
 };

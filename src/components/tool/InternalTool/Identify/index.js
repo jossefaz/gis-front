@@ -3,27 +3,27 @@ import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../../nessMapping/api";
+import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
+
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
 import {
-  getCurrentLayersSource,
   getFeaturesByExtent,
+  initVectorLayers,
+  zoomToFeature,
 } from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
+import EditProxy from "../../../../nessMapping/EditProxy";
+
+import Collection from "ol/Collection";
 class Identify extends Component {
   WIDGET_NAME = "Identify";
-  INTERACTIONS = {
-    Select: "Select",
-    DragBox: "DragBox",
-  };
+
+  modifyGeom = null;
 
   constructor() {
     super();
-    this.state = {
-      sources: [],
-    };
     this.interactions = new InteractionUtil(this.WIDGET_NAME);
   }
 
@@ -31,67 +31,92 @@ class Identify extends Component {
     return getFocusedMapProxy().uuid.value;
   }
 
-  get select() {
-    return this.interactions.currentSelectUUID;
-  }
-
   get selfInteraction() {
     return this.interactions.store;
   }
-  createSources = () => {
-    this.setState({
-      sources: getCurrentLayersSource(),
-    });
+
+  sanityCheck = () => {
+    const focusedmapInFeatures = this.focusedmap in this.props.Features;
+    const selectedFeaturesInFeatures = focusedmapInFeatures
+      ? "selectedFeatures" in this.props.Features[this.focusedmap]
+      : false;
+    return focusedmapInFeatures && selectedFeaturesInFeatures;
   };
+
+  onEditGeometry = async (feature) => {
+    this.removeInteraction();
+    const layer = feature.type;
+    this.modifyGeom = feature;
+
+    const f = this.editProxy[layer].getFeatureById(feature.id);
+    zoomToFeature(f);
+    this.editProxy[layer].edit(f);
+    await this.interactions.newModify(new Collection([f]));
+    getFocusedMap().on("dblclick", (e) =>
+      this.autoClosingEditSession(e, layer)
+    );
+  };
+
+  autoClosingEditSession = async (e, layer) => {
+    if (Boolean(this.modifyGeom)) {
+      await this.editProxy[layer].save();
+      await this.interactions.unModify();
+      this.addInteraction();
+      this.modifyGeom = null;
+    }
+  };
+
   onBoxEnd = () => {
     if (this.interactions.currentDragBoxUUID) {
       const dragBox = this.interactions.currentDragBox;
-      if (dragBox && this.select) {
-        dragBox.on("boxstart", () => {
-          this.interactions.currentSelect.getFeatures().clear();
-        });
-        dragBox.on("boxend", () => {
-          const extent = dragBox.getGeometry().getExtent();
-          const features = getFeaturesByExtent(extent, this.state.sources);
-          if (features.length > 0) {
-            this.props.setSelectedFeatures(features);
-          }
-        });
+      const endListener = () => {
+        const extent = dragBox.getGeometry().getExtent();
+        const features = getFeaturesByExtent(extent);
+        if (features.length > 0) {
+          this.props.setSelectedFeatures(features);
+        }
+      };
+      if (dragBox) {
+        dragBox.on("boxend", endListener);
       }
     }
   };
 
-  addInteraction = async (drawtype) => {
-    await this.interactions.newSelect(null, null, true);
-    await this.interactions.newDragBox();
+  addInteraction = (drawtype) => {
+    this.interactions.newDragBox();
     this.onBoxEnd();
-    this.createSources();
+  };
+
+  removeInteraction = () => {
+    this.interactions.unDragBox();
   };
 
   componentDidMount() {
     this.addInteraction();
+    // TODO : change with real state
   }
 
-  onReset = () => {
-    console.log("Reset Identify");
-  };
-  onUnfocus = async () => {
-    this.selfInteraction && this.interactions.unsetAll();
+  componentDidUpdate() {
+    if (this.sanityCheck()) {
+      const currentLayersArray = Object.keys(
+        this.props.Features[this.focusedmap].selectedFeatures
+      );
+
+      this.editProxy = EditProxy.getInstance(currentLayersArray);
+    }
+    initVectorLayers(["dimigcompile"]);
+  }
+
+  onUnfocus = () => {
+    this.removeInteraction();
   };
 
-  onFocus = async () => {
-    this.interactions.setAll();
-    this.onBoxEnd();
-    this.createSources();
+  onFocus = () => {
+    this.addInteraction();
   };
 
   componentWillUnmount() {
     this.onUnfocus();
-  }
-
-  componentDidUpdate() {
-    //TODO : implement shouldcomponentupdate from store
-    console.log("Layers from store", this.props.Layers);
   }
 
   render() {
@@ -104,7 +129,7 @@ class Identify extends Component {
             <div className="flexDisplay">
               <LayersList />
               <FeatureList />
-              <FeatureDetail />
+              <FeatureDetail onEditGeometry={this.onEditGeometry} />
             </div>
           ) : (
             <p> SELECT FEATURES ON MAP </p>

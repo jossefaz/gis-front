@@ -15,7 +15,7 @@ import {
 } from "../redux/actions/overlay";
 import store from "../redux/store";
 import _ from "lodash";
-
+import ReactDOM from "react-dom";
 export class OverlayUtil {
   constructor(widgetName) {
     this.widget = widgetName;
@@ -33,18 +33,34 @@ export class OverlayUtil {
    * @param {string} classes represents a string of the generated div classes
    * @param {string} widgetName represents the widget name that consume this overlay
    */
-  static generateTextOverlay = (selector, classes, text, widgetName) => {
+  static generateTextOverlay = (selector, classes, widgetName, text) => {
+    const content = text || "";
     return {
       overlay: {
-        element: generateNewDiv(selector, classes, text),
+        element: generateNewDiv(selector, classes, content),
         offset: [0, -15],
         positioning: "bottom-center",
         stopEvent: false,
         dragging: false,
       },
       widgetName,
-      content: text,
+      content: content,
       selector,
+    };
+  };
+
+  static generateReadyOverlay = (IDselector, classes, widgetName) => {
+    return {
+      overlay: {
+        element: document.getElementById(IDselector),
+        offset: [0, -15],
+        positioning: "bottom-center",
+        stopEvent: false,
+        dragging: false,
+      },
+      widgetName,
+      content: "",
+      selector: IDselector,
     };
   };
 
@@ -81,16 +97,27 @@ export class OverlayUtil {
     const style = classes ? classes : this.CLASSNAMES.TEXT;
     await store.dispatch(
       setOverlay(
-        OverlayUtil.generateTextOverlay(selector, style, text, this.widget)
+        OverlayUtil.generateTextOverlay(selector, style, this.widget, text)
       )
     );
     const lastID = this.focused;
     return lastID;
   };
 
-  addToMap = (uuid) => {
+  newReact = async (reactComponentId, classes) => {
+    const selector = reactComponentId;
+    const style = classes ? classes : this.CLASSNAMES.TEXT;
+    await store.dispatch(
+      setOverlay(OverlayUtil.generateReadyOverlay(selector, style, this.widget))
+    );
+    const lastID = this.focused;
+    return lastID;
+  };
+
+  addToMap = (uuid, position) => {
     const overlay = getOverlay(uuid);
-    overlay.setPosition(getFocusedMap().getView().getCenter());
+    const pos = position || getFocusedMap().getView().getCenter();
+    overlay.setPosition(pos);
   };
 
   addDraggable = (uuid, color) => {
