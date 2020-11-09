@@ -136,7 +136,7 @@ export class InteractionUtil {
     }
   };
 
-  newSelect = async (feature, layers, multi) => {
+  newSelect = async (feature, layers, multi, condition) => {
     const style = new Style({
       image: new Circle({
         radius: 7,
@@ -159,6 +159,7 @@ export class InteractionUtil {
           ...(layers && { layers }),
           ...(multi && { multi }),
           ...(feature && { features: new Collection([feature]) }),
+          ...(condition && { condition }),
           style,
         },
         widgetName: this.widget,

@@ -136,7 +136,7 @@ export const deleteSingleFeature = async (feature) => {
   return success;
 };
 
-const getVectorLayersByRefName = (refname) => {
+export const getVectorLayersByRefName = (refname) => {
   let found = false;
   getFocusedMap()
     .getLayers()

@@ -17,6 +17,7 @@ import Widget from "./containers/Widget";
 import { ToastProvider } from 'react-toast-notifications'
 // REMOVE: this is just for searching debug
 import NessSearching from "./searches/searches";
+import "./style.css";
 
 // REMOVE: this is just for searching debug
 
@@ -83,6 +84,7 @@ class App extends React.Component {
               </div>
             </div>
           </SideNav>
+          <div id="append-element-container" className="append-element-container"></div>
           <Widget />
         </ToastProvider>
       </React.Fragment>

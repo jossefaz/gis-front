@@ -13,21 +13,22 @@ import { getCenter, getWidth } from "ol/extent";
 import { fromLonLat, transform } from "ol/proj";
 import "./style.css";
 import withNotifications from "../../../../HOC/withNotifications";
-class EditForm extends Component {
+import AppendBodyComponent from "../../../../HOC/appendBodyElement";
+
+class EditForm extends AppendBodyComponent {
   WIDGET_NAME = "EditForm";
 
   constructor() {
     super();
-    this.state = {
-      formUUID: `EditForm_${GenerateUUID()}`,
-    };
+    this.uniqueId = `EditForm_${GenerateUUID()}`;
+    this.setAppendElementId(this.uniqueId);
   }
 
   getFormPosition = () => {
     const center = getCenter(this.props.feature.getGeometry().getExtent());
     var pixel = getFocusedMap().getPixelFromCoordinate(center);
-    var pixelX = pixel[0] - 1000;
-    var pixelY = pixel[1] - 250;
+    var pixelX = pixel[0] - 770;
+    var pixelY = pixel[1] - 70;
     return [pixelX, pixelY];
   };
 
@@ -41,39 +42,40 @@ class EditForm extends Component {
     } else {
       this.props.errorNotification("Failed to add feature !");
     }
-    ReactDOM.unmountComponentAtNode(this.container);
+    this.removeAppendElement();
     this.props.onSubmit();
   };
 
-  generateForm = async () => {
-    const position = this.getFormPosition();
-    ReactDOM.render(
-      <Popup
-        position={{
-          x: position[0],
-          y: position[1],
-        }}
-      >
-        <div className="speech-bubble">
+  generateForm = () => {
+    this.props.feature &&
+      this.updateAppendElement(
+        <div className="speech-bubble" key="edit-form-div">
           <Form
             config={this.props.fields}
-            formId={this.state.formUUID}
             onSubmit={this.onSubmit}
+            values={this.props.values}
           />
         </div>
-      </Popup>,
-      document.body.appendChild(this.container)
-    );
+      );
   };
 
   componentDidMount() {
-    this.overlays = new OverlayUtil(this.WIDGET_NAME);
-    this.container = document.createElement("DIV");
     this.generateForm();
   }
 
+  componentDidUpdate() {
+    if (!this.props.openForm) {
+      this.removeAppendElement();
+    } else {
+      this.generateForm();
+    }
+  }
+  componentWillUnmount() {
+    this.removeAppendElement();
+  }
+
   render() {
-    return <React.Fragment></React.Fragment>;
+    return null;
   }
 }
 
