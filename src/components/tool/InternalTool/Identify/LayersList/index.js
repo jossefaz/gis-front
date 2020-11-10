@@ -2,40 +2,36 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setCurrentLayer } from "../../../../../redux/actions/features";
 import { getFocusedMapProxy } from "../../../../../nessMapping/api";
+import {
+  selectCurrentLayer,
+  selectSelectedFeatureInCurrentLayer,
+  selectCurrentFeature,
+  selectSelectedFeatures,
+} from "../../../../../redux/reducers";
 import "./style.css";
 class FeatureList extends Component {
   get focusedmap() {
     return getFocusedMapProxy().uuid.value;
   }
 
-  sanityCheck = () => {
-    const focusedmapInFeatures = this.focusedmap in this.props.Features;
-    const selectedFeaturesInFeatures = focusedmapInFeatures
-      ? "selectedFeatures" in this.props.Features[this.focusedmap]
-      : false;
-    return focusedmapInFeatures && selectedFeaturesInFeatures;
-  };
-
   renderSelectedFeature = () => {
-    return this.sanityCheck()
-      ? Object.keys(this.props.Features[this.focusedmap].selectedFeatures).map(
-          (layer) => (
-            <tr key={layer}>
-              <td
-                className={
-                  this.props.Features[this.focusedmap].currentLayer
-                    ? this.props.Features[this.focusedmap].currentLayer == layer
-                      ? "currentLayer pointerCur"
-                      : "pointerCur"
+    return this.props.selectedFeatures
+      ? Object.keys(this.props.selectedFeatures).map((layer) => (
+          <tr key={layer}>
+            <td
+              className={
+                this.props.currentLayer
+                  ? this.props.currentLayer == layer
+                    ? "currentLayer pointerCur"
                     : "pointerCur"
-                }
-                onClick={() => this.props.setCurrentLayer(layer)}
-              >
-                {layer}
-              </td>
-            </tr>
-          )
-        )
+                  : "pointerCur"
+              }
+              onClick={() => this.props.setCurrentLayer(layer)}
+            >
+              {layer}
+            </td>
+          </tr>
+        ))
       : null;
   };
 
@@ -58,7 +54,14 @@ class FeatureList extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { Features: state.Features, map: state.map.focused };
+  return {
+    Features: state.Features,
+    map: state.map.focused,
+    selectedFeatures: selectSelectedFeatures(state),
+    currentLayer: selectCurrentLayer(state),
+    currentFeature: selectCurrentFeature(state),
+    currentSelectedFeatures: selectSelectedFeatureInCurrentLayer(state),
+  };
 };
 
 export default connect(mapStateToProps, { setCurrentLayer })(FeatureList);

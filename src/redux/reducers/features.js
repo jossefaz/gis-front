@@ -65,21 +65,20 @@ export default function (state = {}, action) {
             ];
             draftState[focusedmap].currentLayer = null;
           }
-          if (
-            draftState[action.payload.focusedmap].currentFeature.id == featureId
-          ) {
-            draftState[action.payload.focusedmap].currentFeature = null;
+          if (draftState[focusedmap].currentFeature.id == featureId) {
+            draftState[focusedmap].currentFeature = null;
           }
         }
       });
 
     case types.SET_CURRENT_LAYER:
       return produce(state, (draftState) => {
-        if (!(action.payload.focusedmap in state)) {
-          draftState[action.payload.focusedmap] = {};
+        const { focusedmap, currentLayer } = action.payload;
+        if (!(focusedmap in state)) {
+          draftState[focusedmap] = {};
         }
-        draftState[action.payload.focusedmap].currentLayer =
-          action.payload.currentLayer;
+        draftState[focusedmap].currentLayer = currentLayer;
+        draftState[focusedmap].currentFeature = null;
       });
 
     default:
@@ -105,7 +104,7 @@ export const selectSelectedFeatures = (state) => {
   if (map.focused in Features && "selectedFeatures" in Features[map.focused]) {
     return Features[map.focused].selectedFeatures;
   }
-  return {};
+  return false;
 };
 
 export const selectCurrentLayer = (state) => {
@@ -126,5 +125,5 @@ export const selectSelectedFeatureInCurrentLayer = (state) => {
   if (layer && features && layer in features) {
     return features[layer];
   }
-  return [];
+  return false;
 };
