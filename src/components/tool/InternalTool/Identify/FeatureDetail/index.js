@@ -1,10 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-  getFocusedMapProxy,
-  getFeatureProperties,
-  getFocusedMap,
-} from "../../../../../nessMapping/api";
+import { getFocusedMapProxy } from "../../../../../nessMapping/api";
 
 import withNotifications from "../../../../HOC/withNotifications";
 
@@ -15,10 +11,17 @@ import {
   updateFeature,
   removeFeature,
 } from "../../../../../redux/actions/features";
+
+import {
+  selectCurrentLayerUUID,
+  selectCurrentFeature,
+  selectSelectedFeatures,
+} from "../../../../../redux/reducers";
 import _ from "lodash";
 import EditTool from "../../EditTool";
 import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../../UI/Buttons/IconButton";
+import EditButton from "../../../../UI/Buttons/EditButton";
 import "./style.css";
 class FeatureDetail extends React.Component {
   state = {
@@ -85,22 +88,9 @@ class FeatureDetail extends React.Component {
   get focusedmap() {
     return getFocusedMapProxy().uuid.value;
   }
-  sanityCheck = () => {
-    const focusedmapInFeatures = this.focusedmap in this.props.Features;
-    const currentFeatureInFeatures = focusedmapInFeatures
-      ? "currentFeature" in this.props.Features[this.focusedmap]
-      : false;
-    const currentFeatureNotNull = currentFeatureInFeatures
-      ? this.props.Features[this.focusedmap].currentFeature
-      : false;
-    return (
-      focusedmapInFeatures && currentFeatureInFeatures && currentFeatureNotNull
-    );
-  };
+
   get currentFeature() {
-    return this.sanityCheck()
-      ? this.props.Features[this.focusedmap].currentFeature
-      : null;
+    return this.props.currentFeature;
   }
 
   handleValueChange = (propertyname, value) => {
@@ -114,7 +104,7 @@ class FeatureDetail extends React.Component {
 
   componentDidMount() {
     this._editProxy = EditProxy.getInstance(
-      Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
+      Object.keys(this.props.selectedFeatures)
     );
   }
 
@@ -128,11 +118,9 @@ class FeatureDetail extends React.Component {
       this.currentFeature && (
         <React.Fragment>
           <div onMouseDownCapture={(e) => e.stopPropagation()}>
-            {/* {this.props.Features[this.focusedmap].currentLayer && (
-              <EditTool
-                ref_name={this.props.Features[this.focusedmap].currentLayer}
-              />
-            )} */}
+            {this.props.CurrentLayerUUID && (
+              <EditTool uuid={this.props.CurrentLayerUUID} />
+            )}
             <table className="ui celled table">
               <thead>
                 <tr>
@@ -141,12 +129,7 @@ class FeatureDetail extends React.Component {
                     {properties.editable ? (
                       !this.state.editing ? (
                         <div>
-                          <IconButton
-                            className={`ui icon button pointer primary`}
-                            onClick={this.onStartEdit}
-                            icon="edit"
-                            size="xs"
-                          />
+                          <EditButton onStartEdit={this.onStartEdit} />
                           <IconButton
                             className={`ui icon button pointer primary`}
                             onClick={this.onStartEditGeom}
@@ -228,7 +211,13 @@ class FeatureDetail extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { Features: state.Features, map: state.map.focused };
+  return {
+    Features: state.Features,
+    map: state.map.focused,
+    CurrentLayerUUID: selectCurrentLayerUUID(state),
+    currentFeature: selectCurrentFeature(state),
+    selectedFeatures: selectSelectedFeatures(state),
+  };
 };
 
 export default connect(mapStateToProps, {

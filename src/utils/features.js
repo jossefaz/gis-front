@@ -13,7 +13,10 @@ export const getCurrentLayersSource = () => {
     .getLayers()
     .getArray()
     .map((lyr) => {
-      if (lyr instanceof VectorLayer && lyr.get("ref_name") !== "drawlayer") {
+      if (
+        lyr instanceof VectorLayer &&
+        lyr.get("__NessUUID__") !== "drawlayer"
+      ) {
         sources.push(lyr.getSource());
       }
     });
@@ -26,6 +29,7 @@ export const getFeaturesByExtent = (extent) => {
     const editable = vs.get("editable");
     vs.forEachFeatureIntersectingExtent(extent, (feature) => {
       feature.set("editable", editable);
+      feature.set("__NessUUID__", vs.get("__NessUUID__"));
       features.push(feature);
     });
   });
@@ -136,13 +140,16 @@ export const deleteSingleFeature = async (feature) => {
   return success;
 };
 
-export const getVectorLayersByRefName = (refname) => {
+export const getVectorLayersByRefName = (__NessUUID__) => {
   let found = false;
   getFocusedMap()
     .getLayers()
     .getArray()
     .map((lyr) => {
-      if (lyr instanceof VectorLayer && lyr.get("ref_name") == refname) {
+      if (
+        lyr instanceof VectorLayer &&
+        lyr.get("__NessUUID__") == __NessUUID__
+      ) {
         found = lyr;
       }
     });
@@ -154,17 +161,18 @@ export const initVectorLayers = (arrayOfLayerNames) => {
     .getLayers()
     .getArray()
     .map((lyr) => {
-      const exists = Boolean(getVectorLayersByRefName(lyr.get("ref_name")));
+      console.log(lyr);
+      const exists = Boolean(getVectorLayersByRefName(lyr.get("__NessUUID__")));
       if (
         lyr instanceof ImageLayer &&
-        arrayOfLayerNames.includes(lyr.get("ref_name")) &&
+        arrayOfLayerNames.includes(lyr.get("__NessUUID__")) &&
         !exists
       ) {
         debugger;
         const source = lyr.getSource();
         const vectorSource = newVectorSource(
           `${source.getUrl()}/wfs`,
-          source.getParams().SRS,
+          "EPSG:2039",
           source.getParams().LAYERS,
           lyr.get("editable"),
           null
@@ -172,8 +180,9 @@ export const initVectorLayers = (arrayOfLayerNames) => {
         const vectorLayer = new VectorLayer({
           source: vectorSource,
         });
-        vectorLayer.set("ref_name", lyr.get("ref_name"));
-        vectorLayer.set("editable", lyr.get("editable"));
+        vectorLayer.set("__NessUUID__", lyr.get("__NessUUID__"));
+        vectorSource.set("__NessUUID__", lyr.get("__NessUUID__"));
+        vectorLayer.set("editable", true); //TODO : change this to real editable check
 
         getFocusedMap().addLayer(vectorLayer);
         vectorLayer.setStyle(styles.HIDDEN);
@@ -252,15 +261,15 @@ export const getWFSMetadata = async (layername) => {
   return metadata.data;
 };
 
-export const getFeatureFromNamedLayer = (layer_ref_name, fid) => {
+export const getFeatureFromNamedLayer = (__NessUUID__, fid) => {
   let feature = null;
   getFocusedMap()
     .getLayers()
     .getArray()
     .map((lyr) => {
       if (lyr instanceof VectorLayer) {
-        const src = lyr.get("ref_name");
-        if (src && src.includes(layer_ref_name)) {
+        const src = lyr.get("__NessUUID__");
+        if (src && src.includes(__NessUUID__)) {
           feature = lyr.getSource().getFeatureById(fid);
         }
       }

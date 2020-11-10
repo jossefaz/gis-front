@@ -5,7 +5,7 @@ import LayersList from "./LayersList";
 import { connect } from "react-redux";
 import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
-
+import { selectVisibleLayers } from "../../../../redux/reducers";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
 import {
@@ -15,7 +15,7 @@ import {
 } from "../../../../utils/features";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditProxy from "../../../../nessMapping/EditProxy";
-
+import _ from "lodash";
 import Collection from "ol/Collection";
 class Identify extends Component {
   WIDGET_NAME = "Identify";
@@ -93,7 +93,11 @@ class Identify extends Component {
 
   componentDidMount() {
     this.addInteraction();
-    // TODO : change with real state
+    if (getFocusedMapProxy().uuid.value in this.props.Layers) {
+      this.setState({
+        currentLayers: [],
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -104,7 +108,16 @@ class Identify extends Component {
 
       this.editProxy = EditProxy.getInstance(currentLayersArray);
     }
-    initVectorLayers(["dimigcompile"]);
+    const areEquals = _.isEqual(
+      this.state.currentLayers,
+      this.props.VisibleLayers
+    );
+    if (!areEquals) {
+      initVectorLayers(this.props.VisibleLayers);
+      this.setState({
+        currentLayers: this.props.VisibleLayers,
+      });
+    }
   }
 
   onUnfocus = () => {
@@ -146,6 +159,7 @@ const mapStateToProps = (state) => {
     Features: state.Features,
     Interactions: state.Interactions,
     Layers: state.Layers,
+    VisibleLayers: selectVisibleLayers(state),
   };
 };
 

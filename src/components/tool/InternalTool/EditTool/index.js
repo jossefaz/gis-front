@@ -41,7 +41,7 @@ class EditTool extends Component {
   }
 
   get editProxy() {
-    return this._editProxy ? this._editProxy[this.props.ref_name] : false;
+    return this._editProxy ? this._editProxy[this.props.uuid] : false;
   }
 
   onAddFeature = async () => {
@@ -150,9 +150,9 @@ class EditTool extends Component {
   };
 
   componentDidMount() {
-    initVectorLayers([this.props.ref_name]);
-    this.currentLayer = getVectorLayersByRefName(this.props.ref_name);
-    this._editProxy = EditProxy.getInstance([this.props.ref_name]);
+    initVectorLayers([this.props.uuid]);
+    this.currentLayer = getVectorLayersByRefName(this.props.uuid);
+    this._editProxy = EditProxy.getInstance([this.props.uuid]);
     this.getMetadata();
   }
   render() {

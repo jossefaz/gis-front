@@ -288,8 +288,8 @@ export const newDraw = (drawType, vectorSource, Layer) => {
     getFocusedMap().addLayer(vector);
     vectorSource = source;
     Layer = vector;
-    Layer.set("ref_name", "drawlayer");
-    vectorSource.set("ref_name", "drawlayer");
+    Layer.set("__NessUUID__", "drawlayer");
+    vectorSource.set("__NessUUID__", "drawlayer");
   }
   const Interaction = getDrawObject(vectorSource, drawType);
   return { Interaction, vectorSource, Layer };

@@ -86,3 +86,45 @@ export default function (state = {}, action) {
       return state;
   }
 }
+
+export const selectCurrentLayerUUID = (state) => {
+  const { Features, map } = state;
+  const selectedFeatures = Features[map.focused].selectedFeatures || false;
+  const currentLayer = Features[map.focused].currentLayer || false;
+  const currentId =
+    selectedFeatures &&
+    currentLayer &&
+    selectedFeatures[currentLayer].length > 0
+      ? selectedFeatures[currentLayer][0].__Parent_NessUUID__
+      : false;
+  return currentId;
+};
+
+export const selectSelectedFeatures = (state) => {
+  const { Features, map } = state;
+  if (map.focused in Features && "selectedFeatures" in Features[map.focused]) {
+    return Features[map.focused].selectedFeatures;
+  }
+  return {};
+};
+
+export const selectCurrentLayer = (state) => {
+  const { Features, map } = state;
+  const currentLayer = Features[map.focused].currentLayer || false;
+  return currentLayer;
+};
+
+export const selectCurrentFeature = (state) => {
+  const { Features, map } = state;
+  const currentFeature = Features[map.focused].currentFeature || false;
+  return currentFeature;
+};
+
+export const selectSelectedFeatureInCurrentLayer = (state) => {
+  const layer = selectCurrentLayer(state);
+  const features = selectSelectedFeatures(state);
+  if (layer && features && layer in features) {
+    return features[layer];
+  }
+  return [];
+};
