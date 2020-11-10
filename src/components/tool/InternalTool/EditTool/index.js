@@ -98,8 +98,12 @@ class EditTool extends Component {
 
   getMetadata = async () => {
     this.metadata = await this.editProxy.getMetadata();
+    const geomType = this.metadata.featureTypes[0].properties.find((t) =>
+      t.name.includes("geom")
+    ).localType;
+    console.log("geomType", geomType);
     this.setState({
-      geomType: this.metadata.featureTypes[0].properties[0].localType,
+      geomType,
       fields: this.metadata.featureTypes[0].properties,
     });
   };

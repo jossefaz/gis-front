@@ -5,7 +5,10 @@ import LayersList from "./LayersList";
 import { connect } from "react-redux";
 import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
-import { selectVisibleLayers } from "../../../../redux/reducers";
+import {
+  selectVisibleLayers,
+  selectSelectedFeatures,
+} from "../../../../redux/reducers";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
 import {
@@ -101,12 +104,8 @@ class Identify extends Component {
   }
 
   componentDidUpdate() {
-    if (this.sanityCheck()) {
-      const currentLayersArray = Object.keys(
-        this.props.Features[this.focusedmap].selectedFeatures
-      );
-
-      this.editProxy = EditProxy.getInstance(currentLayersArray);
+    if (this.props.SelectedFeatures) {
+      this.editProxy = EditProxy.getInstance(this.props.VisibleLayers);
     }
     const areEquals = _.isEqual(
       this.state.currentLayers,
@@ -135,21 +134,14 @@ class Identify extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.focusedmap in this.props.Features &&
-        "selectedFeatures" in this.props.Features[this.focusedmap] ? (
-          Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
-            .length > 0 ? (
+        {this.props.SelectedFeatures &&
+          Object.keys(this.props.SelectedFeatures).length > 0 && (
             <div className="flexDisplay">
               <LayersList />
               <FeatureList />
               <FeatureDetail onEditGeometry={this.onEditGeometry} />
             </div>
-          ) : (
-            <p> SELECT FEATURES ON MAP </p>
-          )
-        ) : (
-          <p>SELECT FEATURES ON MAP</p>
-        )}
+          )}
       </React.Fragment>
     );
   }
@@ -160,6 +152,7 @@ const mapStateToProps = (state) => {
     Interactions: state.Interactions,
     Layers: state.Layers,
     VisibleLayers: selectVisibleLayers(state),
+    SelectedFeatures: selectSelectedFeatures(state),
   };
 };
 

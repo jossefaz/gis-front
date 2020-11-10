@@ -103,9 +103,7 @@ class FeatureDetail extends React.Component {
   };
 
   componentDidMount() {
-    this._editProxy = EditProxy.getInstance(
-      Object.keys(this.props.selectedFeatures)
-    );
+    this._editProxy = EditProxy.getInstance([this.props.CurrentLayerUUID]);
   }
 
   render() {
