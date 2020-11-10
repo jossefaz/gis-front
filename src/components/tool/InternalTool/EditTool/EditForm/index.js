@@ -1,16 +1,6 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import { OverlayUtil } from "../../../../../utils/overlay";
+import React from "react";
 import Form from "../../../../UI/Form";
 import GenerateUUID from "../../../../../utils/uuid";
-import Popup from "../../../../popup";
-import {
-  getFocusedMap,
-  getCurrentProjection,
-  getCurrentResolution,
-} from "../../../../../nessMapping/api";
-import { getCenter, getWidth } from "ol/extent";
-import { fromLonLat, transform } from "ol/proj";
 import "./style.css";
 import withNotifications from "../../../../HOC/withNotifications";
 import AppendBodyComponent from "../../../../HOC/appendBodyElement";
@@ -24,14 +14,6 @@ class EditForm extends AppendBodyComponent {
     this.uniqueId = `EditForm_${GenerateUUID()}`;
     this.setAppendElementId(this.uniqueId);
   }
-
-  getFormPosition = () => {
-    const center = getCenter(this.props.feature.getGeometry().getExtent());
-    var pixel = getFocusedMap().getPixelFromCoordinate(center);
-    var pixelX = pixel[0] - 770;
-    var pixelY = pixel[1] - 70;
-    return [pixelX, pixelY];
-  };
 
   onSubmit = async (data) => {
     if (this.props.existingFeature) {

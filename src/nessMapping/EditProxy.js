@@ -20,30 +20,23 @@ export default (function () {
           .getLayers()
           .getArray()
           .map((lyr) => {
-            const ref_name = lyr.get("ref_name");
-            if (lyr.get("editable") && layernames.includes(ref_name)) {
+            const __NessUUID__ = lyr.get("__NessUUID__");
+            lyr.set("editable", true); //TODO : REMOVE AND REPLACE BY REAL LOGIC
+            if (lyr.get("editable") && layernames.includes(__NessUUID__)) {
               if (lyr instanceof VectorLayer) {
-                if (!this[ref_name]) {
-                  // TODO : replace url by configuration
-                  this[ref_name] = new editLayer(
-                    "http://localhost:8080/geoserver/Jeru",
-                    ref_name
-                  );
+                if (!this[__NessUUID__]) {
+                  this[__NessUUID__] = new editLayer();
                 }
-                if (!this[ref_name].vectorlayer) {
-                  this[ref_name].vectorlayer = lyr;
+                if (!this[__NessUUID__].vectorlayer) {
+                  this[__NessUUID__].vectorlayer = lyr;
                 }
               }
               if (lyr instanceof ImageLayer) {
-                if (!this[ref_name]) {
-                  // TODO : replace url by configuration
-                  this[ref_name] = new editLayer(
-                    "http://localhost:8080/geoserver/Jeru",
-                    ref_name
-                  );
+                if (!this[__NessUUID__]) {
+                  this[__NessUUID__] = new editLayer();
                 }
-                if (!this[ref_name].imagelayer) {
-                  this[ref_name].imagelayer = lyr;
+                if (!this[__NessUUID__].imagelayer) {
+                  this[__NessUUID__].imagelayer = lyr;
                 }
               }
             }
@@ -68,10 +61,9 @@ export default (function () {
 })();
 
 class editLayer {
-  constructor(url, featureType) {
-    this.baseUrl = url;
-    this.featureType = featureType;
-    this.store = {};
+  constructor() {
+    this.baseUrl = null;
+    this.featureType = null;
     this.currentFeature = null;
   }
   EDIT_KW = "editable";
@@ -92,8 +84,19 @@ class editLayer {
     return this._imagelayer;
   }
 
-  set imagelayer(vl) {
-    this._imagelayer = vl;
+  set imagelayer(il) {
+    if (il instanceof ImageLayer) {
+      console.log("image layer in constructor", il);
+      if (il.getSource().getUrl()) {
+        this.baseUrl = il.getSource().getUrl().split("/wms")[0];
+        this.featureType = il.getSource().getUrl().split("LAYERS=")[1];
+        if (this.featureType.includes("%3A")) {
+          this.featureType = this.featureType.split("%3A")[1];
+        }
+      }
+      console.log("this.baseUrl", this.baseUrl);
+      this._imagelayer = il;
+    }
   }
 
   _updatePropertiesOnFeature = (feature, newProperties) => {
@@ -128,7 +131,9 @@ class editLayer {
   };
 
   getMetadata = async () => {
-    return await getWFSMetadata(this._vectorLayer.get("ref_name"));
+    if (this.isValid()) {
+      return await getWFSMetadata(this.featureType);
+    }
   };
 
   addFeature = async (feature, properties) => {
@@ -209,8 +214,6 @@ class editLayer {
   };
 
   isValid = () => {
-    return (
-      this.baseUrl && this.featureType && this.imagelayer && this.vectorlayer
-    );
+    return this.baseUrl && this.featureType && this.vectorlayer;
   };
 }

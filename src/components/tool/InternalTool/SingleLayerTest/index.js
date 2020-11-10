@@ -39,7 +39,7 @@ class SingleLayerTest extends React.Component {
         }),
       });
       newLyr.set("editable", LayerSample.editable);
-      newLyr.set("ref_name", LayerSample.name);
+      newLyr.set("__NessUUID__", LayerSample.name);
       getFocusedMap().addLayer(newLyr);
       this.setState({ added: true });
     }

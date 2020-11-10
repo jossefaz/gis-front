@@ -6,6 +6,8 @@ export const setSelectedFeatures = (features) => (dispatch) => {
     const featuresByLayers = {};
     features.map((f) => {
       let layer;
+      const parentuuid = f.get("__NessUUID__");
+      f.unset("__NessUUID__");
       try {
         layer = f.getId().split(".")[0];
       } catch (error) {
@@ -25,6 +27,7 @@ export const setSelectedFeatures = (features) => (dispatch) => {
         properties,
         id: f.getId(),
         type: layer,
+        __Parent_NessUUID__: parentuuid,
       });
     });
     dispatch({
