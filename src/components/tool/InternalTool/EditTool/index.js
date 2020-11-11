@@ -18,11 +18,19 @@ const initialState = {
   EditFeature: null,
   fields: null,
   openConfirm: false,
+  openCancelConfirm: false,
   addingIcon: false,
   editIcon: false,
   eraseFeature: {
     openAlert: false,
     content: "? האם באמת למחוק את היישות",
+    confirmBtn: "כן",
+    cancelBtn: "לא",
+  },
+
+  cancelFeature: {
+    openAlert: false,
+    content: "? האם באמת לבטל את כלל השינוים ",
     confirmBtn: "כן",
     cancelBtn: "לא",
   },
@@ -147,8 +155,13 @@ class EditTool extends Component {
   };
 
   onEditCancel = () => {
+    this.setState({ openCancelConfirm: true });
+  };
+
+  onEditCancelConfirm = () => {
     this.setState({
       openConfirm: false,
+      openCancelConfirm: false,
       openForm: false,
       newFeature: null,
       EditFeature: null,
@@ -187,7 +200,7 @@ class EditTool extends Component {
                 ? this.state.EditFeature.getProperties()
                 : null
             }
-            onAddingCancel={this.onEditCancel}
+            onCancel={this.onEditCancel}
             onDeleteFeature={this.onDeleteFeature}
             existingFeature={Boolean(this.state.EditFeature)}
             openForm={this.state.openForm}
@@ -217,6 +230,15 @@ class EditTool extends Component {
           confirmButton={this.state.eraseFeature.confirmBtn}
           onCancel={() => this.setState({ openConfirm: false })}
           onConfirm={this.onDeleteConfirm}
+        />
+        <Confirm
+          open={this.state.openCancelConfirm}
+          size="mini"
+          content={this.state.cancelFeature.content}
+          cancelButton={this.state.cancelFeature.cancelBtn}
+          confirmButton={this.state.cancelFeature.confirmBtn}
+          onCancel={() => this.setState({ openCancelConfirm: false })}
+          onConfirm={this.onEditCancelConfirm}
         />
       </React.Fragment>
     );
