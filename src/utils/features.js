@@ -26,9 +26,9 @@ export const getCurrentLayersSource = () => {
 export const getFeaturesByExtent = (extent) => {
   const features = [];
   getCurrentLayersSource().map((vs) => {
-    const editable = vs.get("editable");
+    // const editable = vs.get("editable"); //TODO : uncomment and change for real editable
     vs.forEachFeatureIntersectingExtent(extent, (feature) => {
-      feature.set("editable", editable);
+      feature.set("editable", true); // TODO : change true value by real editable value
       feature.set("__NessUUID__", vs.get("__NessUUID__"));
       features.push(feature);
     });
@@ -51,9 +51,6 @@ export const geoserverWFSTransaction = (
     featureType,
     srsName: srs,
   });
-  // if (onlyAlphanum) {
-  //   featuresArray.map((f) => f.unset("geometry"));
-  // }
   let node;
   switch (mode) {
     case "insert":
@@ -69,6 +66,7 @@ export const geoserverWFSTransaction = (
       return;
   }
   const wfsNode = xs.serializeToString(node);
+
   return axios.post(
     `${domain}/ows?service=WFS&typeName=Jeru:${featureType}`,
     wfsNode,
@@ -76,68 +74,6 @@ export const geoserverWFSTransaction = (
       headers: { "Content-Type": "text/xml" },
     }
   );
-};
-
-export const updateSingleFeature = async (feature) => {
-  let success;
-  await geoserverWFSTransaction(
-    "http://localhost:8080/geoserver/Jeru",
-    feature.type,
-    "EPSG:2039",
-    "update",
-    [feature.ol_feature]
-  )
-    .then((res) => {
-      // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
-      getFocusedMap()
-        .getLayers()
-        .getArray()
-        .map((lyr) => {
-          if (lyr instanceof ImageLayer) {
-            const src = lyr.getSource().getParams().LAYERS;
-            if (src && src.includes(feature.type)) {
-              lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
-            }
-          }
-        });
-      success = true;
-    })
-    .catch((err) => {
-      console.log(err);
-      success = false;
-    });
-  return success;
-};
-
-export const deleteSingleFeature = async (feature) => {
-  let success;
-  await geoserverWFSTransaction(
-    "http://localhost:8080/geoserver/Jeru",
-    feature.type,
-    "EPSG:2039",
-    "delete",
-    [feature.ol_feature]
-  )
-    .then((res) => {
-      // TODO : Use the Ness Mapping to access directly to the correct layer and perform a real refresh
-      getFocusedMap()
-        .getLayers()
-        .getArray()
-        .map((lyr) => {
-          if (lyr instanceof ImageLayer) {
-            const src = lyr.getSource().getParams().LAYERS;
-            if (src && src.includes(feature.type)) {
-              lyr.getSource().updateParams({ TIMESTAMP: Date.now() });
-            }
-          }
-        });
-      success = true;
-    })
-    .catch((err) => {
-      console.log(err);
-      success = false;
-    });
-  return success;
 };
 
 export const getVectorLayersByRefName = (__NessUUID__) => {
@@ -161,7 +97,6 @@ export const initVectorLayers = (arrayOfLayerNames) => {
     .getLayers()
     .getArray()
     .map((lyr) => {
-      console.log(lyr);
       const exists = Boolean(getVectorLayersByRefName(lyr.get("__NessUUID__")));
       if (
         lyr instanceof ImageLayer &&
@@ -225,8 +160,6 @@ export const newVectorSource = (url, srs, layername, editable, formatWFS) => {
 };
 
 export const getWFSFeatureById = async (layername, FID) => {
-  //http://localhost:8080/geoserver/Jeru/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Jeru%3Adimigcompile&maxFeatures=50&outputFormat=application%2Fjson&featureID=dimigcompile.16
-
   const params = {
     service: "WFS",
     version: "1.3.0",

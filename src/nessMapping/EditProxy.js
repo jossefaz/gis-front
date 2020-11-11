@@ -9,6 +9,7 @@ import store from "../redux/store";
 import { removeFeature, updateFeature } from "../redux/actions/features";
 import _ from "lodash";
 import styles from "./mapStyle";
+import convert from "xml-js";
 
 export default (function () {
   let instance;
@@ -86,7 +87,6 @@ class editLayer {
 
   set imagelayer(il) {
     if (il instanceof ImageLayer) {
-      console.log("image layer in constructor", il);
       if (il.getSource().getUrl()) {
         this.baseUrl = il.getSource().getUrl().split("/wms")[0];
         this.featureType = il.getSource().getUrl().split("LAYERS=")[1];
@@ -94,7 +94,6 @@ class editLayer {
           this.featureType = this.featureType.split("%3A")[1];
         }
       }
-      console.log("this.baseUrl", this.baseUrl);
       this._imagelayer = il;
     }
   }
@@ -167,7 +166,7 @@ class editLayer {
       this.currentFeature.set(this.EDIT_KW, true);
       return true;
     }
-    console.log(
+    console.error(
       `feature with id ${this.currentFeature.getId()} was not found in its edit proxy`
     );
     return false;
@@ -182,7 +181,7 @@ class editLayer {
       await store.dispatch(removeFeature(fid || this.currentFeature.getId()));
       return true;
     }
-    console.log(`feature with id ${fid} was not found in its edit proxy`);
+    console.error(`feature with id ${fid} was not found in its edit proxy`);
     return false;
   };
 
@@ -205,9 +204,22 @@ class editLayer {
       .then((res) => {
         this.refreshLayers();
         success = true;
+        var xml = convert.xml2js(res.data);
+        if (xml.elements[0].name.includes("Exception")) {
+          let message = "Error from WFT-T transaction ";
+          try {
+            let error =
+              xml.elements[0].elements[0].elements[0].elements[0].text;
+            message = `${message}${error}`;
+          } catch (error) {
+            // nothing to do here
+          }
+          console.error(message);
+          success = false;
+        }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         success = false;
       });
     return success;

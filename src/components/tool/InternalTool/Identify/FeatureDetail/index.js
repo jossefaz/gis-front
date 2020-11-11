@@ -37,7 +37,7 @@ class FeatureDetail extends React.Component {
   };
 
   get editProxy() {
-    return this._editProxy[this.currentFeature.type];
+    return this._editProxy[this.currentFeature.__Parent_NessUUID__];
   }
 
   onStartEdit = () => {
@@ -116,9 +116,9 @@ class FeatureDetail extends React.Component {
       this.currentFeature && (
         <React.Fragment>
           <div onMouseDownCapture={(e) => e.stopPropagation()}>
-            {this.props.CurrentLayerUUID && (
+            {/* {this.props.CurrentLayerUUID && (
               <EditTool uuid={this.props.CurrentLayerUUID} />
-            )}
+            )} */}
             <table className="ui celled table">
               <thead>
                 <tr>
@@ -145,6 +145,7 @@ class FeatureDetail extends React.Component {
                         <div>
                           <IconButton
                             className={`ui icon button pointer positive`}
+                            onClick={this.onSave}
                             icon="save"
                             size="xs"
                           />

@@ -48,7 +48,7 @@ class Identify extends Component {
 
   onEditGeometry = async (feature) => {
     this.removeInteraction();
-    const layer = feature.type;
+    const layer = feature.__Parent_NessUUID__;
     this.modifyGeom = feature;
 
     const f = this.editProxy[layer].getFeatureById(feature.id);
@@ -135,13 +135,15 @@ class Identify extends Component {
     return (
       <React.Fragment>
         {this.props.SelectedFeatures &&
-          Object.keys(this.props.SelectedFeatures).length > 0 && (
-            <div className="flexDisplay">
-              <LayersList />
-              <FeatureList />
-              <FeatureDetail onEditGeometry={this.onEditGeometry} />
-            </div>
-          )}
+        Object.keys(this.props.SelectedFeatures).length > 0 ? (
+          <div className="flexDisplay">
+            <LayersList />
+            <FeatureList />
+            <FeatureDetail onEditGeometry={this.onEditGeometry} />
+          </div>
+        ) : (
+          <p>Select on the map</p>
+        )}
       </React.Fragment>
     );
   }
