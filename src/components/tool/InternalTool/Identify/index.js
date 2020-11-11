@@ -3,7 +3,11 @@ import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import { getFocusedMapProxy, getFocusedMap } from "../../../../nessMapping/api";
+import {
+  getFocusedMapProxy,
+  getFocusedMap,
+  zoomTo,
+} from "../../../../nessMapping/api";
 import { setSelectedFeatures } from "../../../../redux/actions/features";
 import {
   selectVisibleLayers,
@@ -11,11 +15,7 @@ import {
 } from "../../../../redux/reducers";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
-import {
-  getFeaturesByExtent,
-  initVectorLayers,
-  zoomToFeature,
-} from "../../../../utils/features";
+import VectorLayerRegistry from "../../../../utils/vectorlayers";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditProxy from "../../../../nessMapping/EditProxy";
 import _ from "lodash";
@@ -38,6 +38,10 @@ class Identify extends Component {
     return this.interactions.store;
   }
 
+  get vectorLayerRegistry() {
+    return VectorLayerRegistry.getInstance();
+  }
+
   sanityCheck = () => {
     const focusedmapInFeatures = this.focusedmap in this.props.Features;
     const selectedFeaturesInFeatures = focusedmapInFeatures
@@ -52,7 +56,7 @@ class Identify extends Component {
     this.modifyGeom = feature;
 
     const f = this.editProxy[layer].getFeatureById(feature.id);
-    zoomToFeature(f);
+    zoomTo(f.getGeometry());
     this.editProxy[layer].edit(f);
     await this.interactions.newModify(new Collection([f]));
     getFocusedMap().on("dblclick", (e) =>
@@ -74,7 +78,7 @@ class Identify extends Component {
       const dragBox = this.interactions.currentDragBox;
       const endListener = () => {
         const extent = dragBox.getGeometry().getExtent();
-        const features = getFeaturesByExtent(extent);
+        const features = this.vectorLayerRegistry.getFeaturesByExtent(extent);
         if (features.length > 0) {
           this.props.setSelectedFeatures(features);
         }
@@ -112,7 +116,7 @@ class Identify extends Component {
       this.props.VisibleLayers
     );
     if (!areEquals) {
-      initVectorLayers(this.props.VisibleLayers);
+      this.vectorLayerRegistry.initVectorLayers(this.props.VisibleLayers);
       this.setState({
         currentLayers: this.props.VisibleLayers,
       });

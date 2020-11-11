@@ -3,9 +3,7 @@ import { connect } from "react-redux";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import { getFocusedMap } from "../../../../nessMapping/api";
-import { newVectorSource } from "../../../../utils/features";
 import { addLayers } from "../../../../redux/actions/layers";
-import { Fill, Stroke, Style, Text } from "ol/style";
 const LayerSample = {
   id: 1,
   name: "dimigcompile",

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { setCurrentFeature } from "../../../../../redux/actions/features";
-import { getFeatureFromNamedLayer } from "../../../../../utils/features";
+import VectorLayerRegistry from "../../../../../utils/vectorlayers";
 import {
   selectCurrentLayer,
   selectSelectedFeatureInCurrentLayer,
@@ -22,6 +22,10 @@ class FeatureList extends Component {
   };
   get focusedmap() {
     return getFocusedMapProxy().uuid.value;
+  }
+
+  get vectorLayerRegistry() {
+    return VectorLayerRegistry.getInstance();
   }
 
   get selectedFeatures() {
@@ -91,7 +95,7 @@ class FeatureList extends Component {
               <IconButton
                 className="ui icon button primary pointer margin05em"
                 onClick={async () => {
-                  const f = getFeatureFromNamedLayer(
+                  const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
                     feature.__Parent_NessUUID__,
                     feature.id
                   );
@@ -99,7 +103,7 @@ class FeatureList extends Component {
                   // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
                 }}
                 onHover={async () => {
-                  const f = getFeatureFromNamedLayer(
+                  const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
                     feature.__Parent_NessUUID__,
                     feature.id
                   );

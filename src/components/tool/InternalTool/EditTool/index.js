@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import {
-  initVectorLayers,
-  getWFSMetadata,
-  getVectorLayersByRefName,
-} from "../../../../utils/features";
+import { getVectorLayersByRefName } from "../../../../utils/WFS-T";
 import EditProxy from "../../../../nessMapping/EditProxy";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditForm from "./EditForm";
@@ -14,6 +10,7 @@ import Collection from "ol/Collection";
 import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
+import VectorLayerRegistry from "../../../../utils/vectorlayers";
 const initialState = {
   geomType: null,
   openForm: false,
@@ -21,11 +18,19 @@ const initialState = {
   EditFeature: null,
   fields: null,
   openConfirm: false,
+  openCancelConfirm: false,
   addingIcon: false,
   editIcon: false,
   eraseFeature: {
     openAlert: false,
     content: "? האם באמת למחוק את היישות",
+    confirmBtn: "כן",
+    cancelBtn: "לא",
+  },
+
+  cancelFeature: {
+    openAlert: false,
+    content: "? האם באמת לבטל את כלל השינוים ",
     confirmBtn: "כן",
     cancelBtn: "לא",
   },
@@ -42,6 +47,9 @@ class EditTool extends Component {
 
   get editProxy() {
     return this._editProxy ? this._editProxy[this.props.uuid] : false;
+  }
+  get registry() {
+    return VectorLayerRegistry.getInstance();
   }
 
   onAddFeature = async () => {
@@ -146,6 +154,26 @@ class EditTool extends Component {
     }
   };
 
+  onEditCancel = () => {
+    this.setState({ openCancelConfirm: true });
+  };
+
+  onEditCancelConfirm = () => {
+    this.setState({
+      openConfirm: false,
+      openCancelConfirm: false,
+      openForm: false,
+      newFeature: null,
+      EditFeature: null,
+      addingIcon: false,
+      editIcon: false,
+    });
+    if (this.interactions.getVectorSource(this.interactions.TYPES.DRAW)) {
+      this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
+    }
+    this.registry.getVectorLayer(this.props.uuid).hideAllFeatures();
+  };
+
   onSubmit = async (data) => {
     this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
     this.interactions.unsetAll();
@@ -153,8 +181,8 @@ class EditTool extends Component {
   };
 
   componentDidMount() {
-    initVectorLayers([this.props.uuid]);
-    this.currentLayer = getVectorLayersByRefName(this.props.uuid);
+    this.registry.initVectorLayers([this.props.uuid]);
+    this.currentLayer = this.registry.getVectorLayersByRefName(this.props.uuid);
     this._editProxy = EditProxy.getInstance([this.props.uuid]);
     this.getMetadata();
   }
@@ -172,6 +200,7 @@ class EditTool extends Component {
                 ? this.state.EditFeature.getProperties()
                 : null
             }
+            onCancel={this.onEditCancel}
             onDeleteFeature={this.onDeleteFeature}
             existingFeature={Boolean(this.state.EditFeature)}
             openForm={this.state.openForm}
@@ -201,6 +230,15 @@ class EditTool extends Component {
           confirmButton={this.state.eraseFeature.confirmBtn}
           onCancel={() => this.setState({ openConfirm: false })}
           onConfirm={this.onDeleteConfirm}
+        />
+        <Confirm
+          open={this.state.openCancelConfirm}
+          size="mini"
+          content={this.state.cancelFeature.content}
+          cancelButton={this.state.cancelFeature.cancelBtn}
+          confirmButton={this.state.cancelFeature.confirmBtn}
+          onCancel={() => this.setState({ openCancelConfirm: false })}
+          onConfirm={this.onEditCancelConfirm}
         />
       </React.Fragment>
     );
