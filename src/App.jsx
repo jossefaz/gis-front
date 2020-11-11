@@ -19,9 +19,7 @@ import { ToastProvider } from 'react-toast-notifications'
 import NessSearching from "./searches/searches";
 import "./style.css";
 
-// REMOVE: this is just for searching debug
 
-import "./utils/features"
 
 class App extends React.Component {
   bootstrap = async () => {

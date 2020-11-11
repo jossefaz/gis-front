@@ -1,10 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../../../nessMapping/api";
+import { getFocusedMapProxy, zoomTo } from "../../../../../nessMapping/api";
 
 import withNotifications from "../../../../HOC/withNotifications";
 
-import { zoomToFeature } from "../../../../../utils/features";
 import EditProxy from "../../../../../nessMapping/EditProxy";
 import {
   setSelectedFeatures,
@@ -42,7 +41,7 @@ class FeatureDetail extends React.Component {
 
   onStartEdit = () => {
     const feature = this.editProxy.getFeatureById(this.currentFeature.id);
-    zoomToFeature(feature);
+    zoomTo(feature.getGeometry());
     this.editProxy.edit(feature);
     this.editProxy.getMetadata();
     this.setState({
@@ -116,9 +115,9 @@ class FeatureDetail extends React.Component {
       this.currentFeature && (
         <React.Fragment>
           <div onMouseDownCapture={(e) => e.stopPropagation()}>
-            {/* {this.props.CurrentLayerUUID && (
+            {this.props.CurrentLayerUUID && (
               <EditTool uuid={this.props.CurrentLayerUUID} />
-            )} */}
+            )}
             <table className="ui celled table">
               <thead>
                 <tr>

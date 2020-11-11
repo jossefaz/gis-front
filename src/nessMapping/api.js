@@ -118,8 +118,7 @@ export const zoomTo = (config) => {
     const view = getFocusedMap().getView();
     highlightFeature(config);
     view.fit(newGeometry, {
-      padding: [170, 50, 30, 150],
-      maxZoom: 10,
+      padding: [850, 850, 850, 850],
     });
   } else {
     console.log(config);

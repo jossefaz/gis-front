@@ -3,13 +3,14 @@ import {
   getFeatureProperties,
   unhighlightFeature,
 } from "../nessMapping/api";
-import { geoserverWFSTransaction, getWFSMetadata } from "../utils/features";
+import { geoserverWFSTransaction, getWFSMetadata } from "../utils/WFS-T";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import store from "../redux/store";
 import { removeFeature, updateFeature } from "../redux/actions/features";
 import _ from "lodash";
 import styles from "./mapStyle";
 import convert from "xml-js";
+import VectorLayerRegistry from "../utils/vectorlayers";
 
 export default (function () {
   let instance;
@@ -29,7 +30,13 @@ export default (function () {
                   this[__NessUUID__] = new editLayer();
                 }
                 if (!this[__NessUUID__].vectorlayer) {
-                  this[__NessUUID__].vectorlayer = lyr;
+                  const registry = VectorLayerRegistry.getInstance();
+                  if (!registry.getVectorLayer(__NessUUID__)) {
+                    registry.setNewVectorLayer(lyr);
+                  }
+                  this[__NessUUID__].vectorlayer = registry.getVectorLayer(
+                    __NessUUID__
+                  );
                 }
               }
               if (lyr instanceof ImageLayer) {
@@ -37,6 +44,10 @@ export default (function () {
                   this[__NessUUID__] = new editLayer();
                 }
                 if (!this[__NessUUID__].imagelayer) {
+                  const registry = VectorLayerRegistry.getInstance();
+                  if (!registry.getVectorLayer(__NessUUID__)) {
+                    registry.setFromImageLayer(lyr);
+                  }
                   this[__NessUUID__].imagelayer = lyr;
                 }
               }
@@ -76,8 +87,6 @@ class editLayer {
   }
 
   set vectorlayer(vl) {
-    vl.getSource().forEachFeature((feature) => feature.setStyle(styles.HIDDEN));
-    vl.setZIndex(99);
     this._vectorLayer = vl;
   }
 
@@ -115,18 +124,12 @@ class editLayer {
   };
 
   edit = (eFeature) => {
-    this.vectorlayer.getSource().forEachFeature((feature) => {
-      if (feature.getId() === eFeature.getId()) {
-        feature.setStyle(styles.EDIT);
-      } else {
-        feature.setStyle(styles.HIDDEN);
-      }
-    });
+    this.vectorlayer.highlightFeature(eFeature);
     this.currentFeature = eFeature;
   };
 
   getFeatureById = (fid) => {
-    return this.vectorlayer.getSource().getFeatureById(fid);
+    return this.vectorlayer.getFeatureById(fid);
   };
 
   getMetadata = async () => {
@@ -187,7 +190,7 @@ class editLayer {
 
   refreshLayers = () => {
     this.imagelayer.getSource().updateParams({ TIMESTAMP: Date.now() });
-    this.vectorlayer.getSource().refresh();
+    this.vectorlayer.refresh();
     unhighlightFeature();
   };
 

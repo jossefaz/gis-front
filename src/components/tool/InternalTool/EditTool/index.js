@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import {
-  initVectorLayers,
-  getWFSMetadata,
-  getVectorLayersByRefName,
-} from "../../../../utils/features";
+import { getVectorLayersByRefName } from "../../../../utils/WFS-T";
 import EditProxy from "../../../../nessMapping/EditProxy";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditForm from "./EditForm";
@@ -14,6 +10,7 @@ import Collection from "ol/Collection";
 import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
+import VectorLayerRegistry from "../../../../utils/vectorlayers";
 const initialState = {
   geomType: null,
   openForm: false,
@@ -42,6 +39,9 @@ class EditTool extends Component {
 
   get editProxy() {
     return this._editProxy ? this._editProxy[this.props.uuid] : false;
+  }
+  get registry() {
+    return VectorLayerRegistry.getInstance();
   }
 
   onAddFeature = async () => {
@@ -153,8 +153,8 @@ class EditTool extends Component {
   };
 
   componentDidMount() {
-    initVectorLayers([this.props.uuid]);
-    this.currentLayer = getVectorLayersByRefName(this.props.uuid);
+    this.registry.initVectorLayers([this.props.uuid]);
+    this.currentLayer = this.registry.getVectorLayersByRefName(this.props.uuid);
     this._editProxy = EditProxy.getInstance([this.props.uuid]);
     this.getMetadata();
   }
