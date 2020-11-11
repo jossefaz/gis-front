@@ -106,6 +106,7 @@ export class VectorLayerUtils {
       this.vl = vl;
       this.uid = vl.get("__NessUUID__");
     }
+    this.data = [];
   }
 
   fromImageLayer = (il) => {
@@ -138,7 +139,6 @@ export class VectorLayerUtils {
     this.vl.set("__NessUUID__", this.uid);
     this.vl.set("editable", true); //TODO : change this to real editable check
     this.vl.setStyle(styles.HIDDEN);
-
     this.vl.setZIndex(99);
   };
 
@@ -152,6 +152,23 @@ export class VectorLayerUtils {
 
   refresh = () => {
     this.source.refresh();
+  };
+
+  getFeaturesData = () => {
+    return new Promise((resolve, reject) => {
+      if (this.data.length > 0) {
+        resolve(this.data);
+      } else {
+        this.source.on("change", (evt) => {
+          const source = evt.target;
+          if (source.getState() === "ready") {
+            const features = this.vl.getSource().getFeatures();
+            this.data = features.map((feature) => feature.getProperties());
+            resolve(this.data);
+          }
+        });
+      }
+    });
   };
 
   highlightFeature = (eFeature) => {
@@ -170,7 +187,7 @@ export class VectorLayerUtils {
     });
   };
 
-  highlightAllFeature = () => {
+  highlightAllFeatures = () => {
     this.source.forEachFeature((feature) => {
       feature.setStyle(styles.EDIT);
     });

@@ -280,6 +280,24 @@
         "ToolGroupId": 0,
         "ToolContainer": "TopNav",
         "IsOpen": 0
+      },
+      {
+        "Id": 13,
+        "ToolName": "TestTableOfFeature",
+        "ToolTip": "טבלת נתונים",
+        "ToolIcon": "table",
+        "ToolActionInvoker": "",
+        "ToolInvokerType": 0,
+        "ToolTypeID": 1,
+        "OnCreate": "default",
+        "OnDestroy": "default",
+        "ToolParams": "",
+        "ToolLocation": "",
+        "Order": 1,
+        "IsAGroup": 0,
+        "ToolGroupId": 0,
+        "ToolContainer": "TopNav",
+        "IsOpen": 0
       }
     ],
     "groups": [{

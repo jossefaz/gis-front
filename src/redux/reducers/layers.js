@@ -43,3 +43,11 @@ export const selectVisibleLayers = (state) => {
   );
   return visibles;
 };
+
+export const selectCurrentMapLayers = (state) => {
+  const { Layers, map } = state;
+  if (map.focused in Layers) {
+    return Layers[map.focused].layers;
+  }
+  return null;
+};
