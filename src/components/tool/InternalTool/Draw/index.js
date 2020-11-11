@@ -218,7 +218,6 @@ class Draw extends React.Component {
 
   onModifyEnd = () => {
     if (this.interactions.currentModify) {
-      console.log("modify END");
       this.interactions.currentModify.on("modifyend", async (e) => {
         await updateGeometry(e.features.getArray()[0]);
       });

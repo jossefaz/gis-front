@@ -27,9 +27,9 @@ class EditForm extends AppendBodyComponent {
   editFeature = async (data) => {
     const updated = await this.props.editProxy.save(data);
     if (updated) {
-      this.props.successNotification("Successfully added feature !");
+      this.props.successNotification("Successfully saved feature !");
     } else {
-      this.props.errorNotification("Failed to add feature !");
+      this.props.errorNotification("Failed to save feature !");
     }
     this.removeAppendElement();
   };

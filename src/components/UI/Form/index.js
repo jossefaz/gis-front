@@ -6,7 +6,7 @@ import _ from "lodash";
 import "./style.css";
 import IconButton from "../Buttons/IconButton";
 
-const bannedFields = ["geometry"];
+const bannedFields = ["geometry", "geom"];
 export default (props) => {
   const { register, handleSubmit, errors, setValue } = useForm();
   const [config, setConfig] = useState(props.config);

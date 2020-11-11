@@ -101,7 +101,6 @@ class EditTool extends Component {
     const geomType = this.metadata.featureTypes[0].properties.find((t) =>
       t.name.includes("geom")
     ).localType;
-    console.log("geomType", geomType);
     this.setState({
       geomType,
       fields: this.metadata.featureTypes[0].properties,
