@@ -7,6 +7,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import { projIsrael } from "./projections";
 import axios from "axios";
 import { WFS, GML } from "ol/format";
+import VectorLayerRegistry from "./vectolayers";
 export const getCurrentLayersSource = () => {
   const sources = [];
   getFocusedMap()
@@ -77,19 +78,8 @@ export const geoserverWFSTransaction = (
 };
 
 export const getVectorLayersByRefName = (__NessUUID__) => {
-  let found = false;
-  getFocusedMap()
-    .getLayers()
-    .getArray()
-    .map((lyr) => {
-      if (
-        lyr instanceof VectorLayer &&
-        lyr.get("__NessUUID__") == __NessUUID__
-      ) {
-        found = lyr;
-      }
-    });
-  return found;
+  const registry = VectorLayerRegistry.getInstance();
+  return registry.getVectorLayer(__NessUUID__).vl;
 };
 
 export const initVectorLayers = (arrayOfLayerNames) => {
@@ -97,66 +87,16 @@ export const initVectorLayers = (arrayOfLayerNames) => {
     .getLayers()
     .getArray()
     .map((lyr) => {
-      const exists = Boolean(getVectorLayersByRefName(lyr.get("__NessUUID__")));
+      const registry = VectorLayerRegistry.getInstance();
+      const exists = Boolean(registry.getVectorLayer(lyr.get("__NessUUID__")));
       if (
         lyr instanceof ImageLayer &&
         arrayOfLayerNames.includes(lyr.get("__NessUUID__")) &&
         !exists
       ) {
-        debugger;
-        const source = lyr.getSource();
-        const vectorSource = newVectorSource(
-          `${source.getUrl()}/wfs`,
-          "EPSG:2039",
-          source.getParams().LAYERS,
-          lyr.get("editable"),
-          null
-        );
-        const vectorLayer = new VectorLayer({
-          source: vectorSource,
-        });
-        vectorLayer.set("__NessUUID__", lyr.get("__NessUUID__"));
-        vectorSource.set("__NessUUID__", lyr.get("__NessUUID__"));
-        vectorLayer.set("editable", true); //TODO : change this to real editable check
-
-        getFocusedMap().addLayer(vectorLayer);
-        vectorLayer.setStyle(styles.HIDDEN);
+        registry.setFromImageLayer(lyr);
       }
     });
-};
-
-export const newVectorSource = (url, srs, layername, editable, formatWFS) => {
-  const params = {
-    service: "WFS",
-    version: "1.3.0",
-    request: "GetFeature",
-    typeName: layername,
-    srsname: srs,
-    outputFormat: "application/json",
-    height: getFocusedMap().getSize()[1],
-  };
-
-  if (layername) {
-    params.layers = layername;
-  }
-
-  const vectorSource = new VectorSource({
-    loader: () => {
-      axios.get(url, { params }).then((res) => {
-        const format = formatWFS ? formatWFS : vectorSource.getFormat();
-        vectorSource.addFeatures(format.readFeatures(res.data));
-      });
-    },
-    format: new GeoJSON({
-      dataProjection: projIsrael,
-    }),
-    strategy: bboxStrategy,
-  });
-  if (editable) {
-    vectorSource.set("editable", true);
-  }
-
-  return vectorSource;
 };
 
 export const getWFSFeatureById = async (layername, FID) => {
