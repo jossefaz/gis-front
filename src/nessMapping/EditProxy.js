@@ -134,7 +134,7 @@ class editLayer {
 
   getMetadata = async () => {
     if (this.isValid()) {
-      return await getWFSMetadata(this.featureType);
+      return await this.vectorlayer.getAttributes();
     }
   };
 

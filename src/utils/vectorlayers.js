@@ -120,7 +120,7 @@ export class VectorLayerUtils {
   };
 
   getAttributes = async () => {
-    if (this.isValid()) {
+    if (this._isValid()) {
       return await getWFSMetadata(this.layername);
     }
   };
@@ -164,8 +164,19 @@ export class VectorLayerUtils {
     });
   };
 
+  hideAllFeatures = () => {
+    this.source.forEachFeature((feature) => {
+      feature.setStyle(styles.HIDDEN);
+    });
+  };
+
+  highlightAllFeature = () => {
+    this.source.forEachFeature((feature) => {
+      feature.setStyle(styles.EDIT);
+    });
+  };
+
   getFeatureById = (id) => {
-    console.log("vector layer util", this);
     return this.source.getFeatureById(id);
   };
 

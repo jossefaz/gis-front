@@ -55,14 +55,31 @@ class EditForm extends AppendBodyComponent {
             config={this.props.fields}
             onSubmit={this.onSubmit}
             values={this.props.values}
-            optionalButton={() => (
-              <IconButton
-                className={`ui icon button pointer negative`}
-                onClick={this.props.onDeleteFeature}
-                icon="trash-alt"
-                size="lg"
-              />
-            )}
+            optionalButton={() =>
+              this.props.existingFeature ? (
+                <React.Fragment>
+                  <IconButton
+                    className={`ui icon button pointer negative`}
+                    onClick={this.props.onDeleteFeature}
+                    icon="trash-alt"
+                    size="lg"
+                  />
+                  <IconButton
+                    className={`ui icon button pointer negative`}
+                    onClick={this.props.onCancel}
+                    icon="window-close"
+                    size="lg"
+                  />
+                </React.Fragment>
+              ) : (
+                <IconButton
+                  className={`ui icon button pointer negative`}
+                  onClick={this.props.onCancel}
+                  icon="window-close"
+                  size="lg"
+                />
+              )
+            }
           />
         </div>
       );

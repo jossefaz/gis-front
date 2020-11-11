@@ -146,6 +146,21 @@ class EditTool extends Component {
     }
   };
 
+  onEditCancel = () => {
+    this.setState({
+      openConfirm: false,
+      openForm: false,
+      newFeature: null,
+      EditFeature: null,
+      addingIcon: false,
+      editIcon: false,
+    });
+    if (this.interactions.getVectorSource(this.interactions.TYPES.DRAW)) {
+      this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
+    }
+    this.registry.getVectorLayer(this.props.uuid).hideAllFeatures();
+  };
+
   onSubmit = async (data) => {
     this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
     this.interactions.unsetAll();
@@ -172,6 +187,7 @@ class EditTool extends Component {
                 ? this.state.EditFeature.getProperties()
                 : null
             }
+            onAddingCancel={this.onEditCancel}
             onDeleteFeature={this.onDeleteFeature}
             existingFeature={Boolean(this.state.EditFeature)}
             openForm={this.state.openForm}
