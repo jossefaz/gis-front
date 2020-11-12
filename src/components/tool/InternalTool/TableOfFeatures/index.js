@@ -4,7 +4,7 @@ import { InteractionUtil } from "../../../../utils/interactions";
 import withNotifications from "../../../HOC/withNotifications";
 import VectorLayerRegistry from "../../../../utils/vectorlayers";
 import Table from "../../../UI/Table";
-
+import ActionRegistry from "../../../UI/Table/Actions";
 const initialState = {
   geomType: null,
   openForm: false,
@@ -87,11 +87,23 @@ class EditTool extends Component {
         }
       })
       .filter((f) => f != undefined);
+    // this.columns = [
+    //   ...this.columns,
+    //   { Header: "Actions", accessor: "actions", id: "actions" },
+    // ];
   };
 
   generateData = () => {
     this.vectorLayer.getFeaturesData().then((data) => {
       if (data.length !== this.state.data.lentgh) {
+        // let ActionsData = data.map((row) => {
+        //   row.actions = [];
+        //   Object.keys(ActionRegistry).forEach((action) => {
+        //     row.actions.push(ActionRegistry[action].icon);
+        //   });
+        //   return row;
+        // });
+
         this.setState({ data });
       }
     });
@@ -143,7 +155,11 @@ class EditTool extends Component {
     return (
       <React.Fragment>
         {this.state.data.length > 0 && this.columns && (
-          <Table data={this.state.data} columns={this.columns} />
+          <Table
+            data={this.state.data}
+            columns={this.columns}
+            uuid={this.props.uuid}
+          />
         )}
       </React.Fragment>
     );

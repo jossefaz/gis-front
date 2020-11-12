@@ -115,9 +115,6 @@ class FeatureDetail extends React.Component {
       this.currentFeature && (
         <React.Fragment>
           <div onMouseDownCapture={(e) => e.stopPropagation()}>
-            {this.props.CurrentLayerUUID && (
-              <EditTool uuid={this.props.CurrentLayerUUID} />
-            )}
             <table className="ui celled table">
               <thead>
                 <tr>
@@ -193,6 +190,9 @@ class FeatureDetail extends React.Component {
               </tbody>
             </table>
           </div>
+          {this.props.CurrentLayerUUID && (
+            <EditTool uuid={this.props.CurrentLayerUUID} />
+          )}
           <Confirm
             open={this.state.openConfirm}
             size="mini"

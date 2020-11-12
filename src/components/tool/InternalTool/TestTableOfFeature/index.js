@@ -28,14 +28,18 @@ class GeneralTableOfFeature extends Component {
 
   generateOptions = () => {
     if (this.props.Layers) {
-      const layersOptions = Object.keys(this.props.Layers).map((layer) => {
-        const l = this.props.Layers[layer];
-        return {
-          key: l.uuid,
-          text: l.name,
-          value: l.uuid,
-        };
-      });
+      const layersOptions = Object.keys(this.props.Layers)
+        .map((layer) => {
+          if (this.props.VisibleLayers.includes(layer)) {
+            const l = this.props.Layers[layer];
+            return {
+              key: l.uuid,
+              text: l.name,
+              value: l.uuid,
+            };
+          }
+        })
+        .filter((f) => f != undefined);
       this.setState({ layersOptions });
     }
   };
