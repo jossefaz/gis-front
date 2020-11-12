@@ -101,7 +101,6 @@ class MyCustomWidget extends Component {
         Y.value,
         X.value,
       ]);
-      console.log(coord);
       const pointPosition = new Point(coord);
       return pointPosition;
     }

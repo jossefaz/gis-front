@@ -18,6 +18,8 @@ import {
 } from "../redux/actions/interaction";
 import Collection from "ol/Collection";
 
+import { Style, Fill, Stroke, Circle } from "ol/style";
+
 export class InteractionUtil {
   constructor(widgetName) {
     this.widget = widgetName;
@@ -109,14 +111,8 @@ export class InteractionUtil {
       : null;
   };
 
-  testIt = () => {
-    console.log("*****FIRST TEST***");
-    console.log(this.widget);
-    console.log(this.store);
-    console.log("*****END TEST***");
-  };
-
   newDraw = async (drawConfig) => {
+    await this.unDraw();
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.DRAW,
@@ -140,10 +136,21 @@ export class InteractionUtil {
     }
   };
 
-  newSelect = async (featureID, layers, multi) => {
-    const feature = featureID
-      ? this.getVectorSource(this.TYPES.DRAW).getFeatureById(featureID)
-      : null;
+  newSelect = async (feature, layers, multi, condition) => {
+    const style = new Style({
+      image: new Circle({
+        radius: 7,
+        fill: new Fill({
+          color: [0, 153, 255, 1],
+        }),
+        stroke: new Stroke({
+          color: [255, 255, 255, 0.75],
+          width: 1.5,
+        }),
+      }),
+      zIndex: 100000,
+    });
+    await this.unSelect();
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.SELECT,
@@ -152,6 +159,8 @@ export class InteractionUtil {
           ...(layers && { layers }),
           ...(multi && { multi }),
           ...(feature && { features: new Collection([feature]) }),
+          ...(condition && { condition }),
+          style,
         },
         widgetName: this.widget,
       })
@@ -170,12 +179,14 @@ export class InteractionUtil {
     }
   };
 
-  newModify = async () => {
+  newModify = async (features, source) => {
+    await this.unModify();
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.MODIFY,
         interactionConfig: {
-          features: getInteraction(this.currentSelectUUID).getFeatures(),
+          ...(features && { features }),
+          ...(source && { source }),
         },
         widgetName: this.widget,
       })
@@ -186,9 +197,9 @@ export class InteractionUtil {
     if (this.currentModifyUUID) {
       await store.dispatch(
         unsetInteraction({
-          uuid: this.currentSelectUUID,
+          uuid: this.currentModifyUUID,
           widgetName: this.widget,
-          Type: this.TYPES.SELECT,
+          Type: this.TYPES.MODIFY,
         })
       );
     }
@@ -204,6 +215,12 @@ export class InteractionUtil {
       if (InteractionArray.length > 0) {
         await store.dispatch(unsetInteractions(InteractionArray));
       }
+    }
+  };
+
+  clearVectorSource = (type) => {
+    if (this.getVectorSource(type)) {
+      this.getVectorSource(type).clear();
     }
   };
 
@@ -227,12 +244,26 @@ export class InteractionUtil {
   };
 
   newDragBox = async () => {
+    this.unDragBox();
+
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.DRAGBOX,
         widgetName: this.widget,
       })
     );
+  };
+
+  unDragBox = async () => {
+    if (this.currentDragBox) {
+      await store.dispatch(
+        unsetInteraction({
+          uuid: this.currentDragBoxUUID,
+          widgetName: this.widget,
+          Type: this.TYPES.DRAGBOX,
+        })
+      );
+    }
   };
 }
 
@@ -257,6 +288,8 @@ export const newDraw = (drawType, vectorSource, Layer) => {
     getFocusedMap().addLayer(vector);
     vectorSource = source;
     Layer = vector;
+    Layer.set("__NessUUID__", "drawlayer");
+    vectorSource.set("__NessUUID__", "drawlayer");
   }
   const Interaction = getDrawObject(vectorSource, drawType);
   return { Interaction, vectorSource, Layer };

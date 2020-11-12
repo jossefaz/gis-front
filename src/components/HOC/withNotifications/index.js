@@ -3,6 +3,25 @@ import React from "react";
 export default (Component) => {
   return function WrappedComponent(props) {
     const toastFuncs = useToasts();
-    return <Component {...props} {...toastFuncs} />;
+    const successNotification = (message) => {
+      toastFuncs.addToast(message, {
+        appearance: "success",
+        autoDismiss: true,
+      });
+    };
+    const errorNotification = (message) => {
+      toastFuncs.addToast(message, {
+        appearance: "error",
+        autoDismiss: true,
+      });
+    };
+    return (
+      <Component
+        {...props}
+        {...toastFuncs}
+        successNotification={successNotification}
+        errorNotification={errorNotification}
+      />
+    );
   };
 };

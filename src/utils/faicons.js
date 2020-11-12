@@ -24,11 +24,17 @@ import {
   faAngleDoubleLeft,
   faMapMarkedAlt,
   faCameraRetro,
-  faPhotoVideo
+  faPhotoVideo,
+  faPlusSquare,
+  faSave,
+  faWindowClose,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
   library.add(
+    faWindowClose,
+    faSave,
+    faPlusSquare,
     faPhotoVideo,
     fab,
     faItalic,

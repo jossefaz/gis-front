@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { setCurrentFeature } from "../../../../../redux/actions/features";
-import { setToolProp } from "../../../../../redux/actions/tools";
+import VectorLayerRegistry from "../../../../../utils/vectorlayers";
+import {
+  selectCurrentLayer,
+  selectSelectedFeatureInCurrentLayer,
+  selectCurrentFeature,
+  selectSelectedFeatures,
+} from "../../../../../redux/reducers";
 import {
   zoomTo,
   highlightFeature,
@@ -18,87 +24,60 @@ class FeatureList extends Component {
     return getFocusedMapProxy().uuid.value;
   }
 
-  sanityCheck = () => {
-    const focusedmapInFeatures = this.focusedmap in this.props.Features;
-    const selectedFeaturesInFeatures = focusedmapInFeatures
-      ? "selectedFeatures" in this.props.Features[this.focusedmap]
-      : false;
-    const currentLayerInFeatures = focusedmapInFeatures
-      ? "currentLayer" in this.props.Features[this.focusedmap]
-      : false;
-    const currentLayer = currentLayerInFeatures
-      ? this.props.Features[this.focusedmap].currentLayer
-      : false;
-    const currentLayerInSelectedFeatures = currentLayer
-      ? this.props.Features[this.focusedmap].currentLayer in
-        this.props.Features[this.focusedmap].selectedFeatures
-      : false;
-    const lengthOfSelectedFeatures = selectedFeaturesInFeatures
-      ? Object.keys(this.props.Features[this.focusedmap].selectedFeatures)
-          .length > 0
-      : false;
-    return (
-      focusedmapInFeatures &&
-      selectedFeaturesInFeatures &&
-      currentLayerInFeatures &&
-      currentLayer &&
-      currentLayerInSelectedFeatures &&
-      lengthOfSelectedFeatures
-    );
-  };
+  get vectorLayerRegistry() {
+    return VectorLayerRegistry.getInstance();
+  }
 
   get selectedFeatures() {
-    return this.sanityCheck()
-      ? this.props.Features[this.focusedmap].selectedFeatures
-      : null;
+    return this.props.selectedFeatures;
   }
 
   get currentLayer() {
-    return this.sanityCheck()
-      ? this.props.Features[this.focusedmap].currentLayer
-      : null;
+    return this.props.currentLayer;
   }
 
   get currentFeature() {
-    return this.sanityCheck()
-      ? this.props.Features[this.focusedmap].currentFeature
-      : null;
+    return this.props.currentFeature;
+  }
+
+  get currentSelectedFeatures() {
+    return this.props.currentSelectedFeatures;
   }
 
   renderFieldsSelect = () => {
-    return this.sanityCheck() ? (
-      <tr>
-        <td>
-          <select
-            className="ui fluid dropdown"
-            onChange={(event) =>
-              this.setState({ current_field: event.target.value })
-            }
-          >
-            {Object.keys(
-              this.selectedFeatures[this.currentLayer][0].properties
-            ).map((field) =>
-              typeof this.selectedFeatures[this.currentLayer][0].properties[
-                field
-              ] == "string" ||
-              typeof this.selectedFeatures[this.currentLayer][0].properties[
-                field
-              ] == "number" ? (
-                <option key={field} value={field}>
-                  {" "}
-                  {field}
-                </option>
-              ) : null
-            )}
-          </select>
-        </td>
-      </tr>
-    ) : null;
+    return (
+      this.selectedFeatures &&
+      this.currentLayer && (
+        <tr>
+          <td>
+            <select
+              className="ui fluid dropdown"
+              onChange={(event) =>
+                this.setState({ current_field: event.target.value })
+              }
+            >
+              {Object.keys(this.currentSelectedFeatures[0].properties).map(
+                (field) =>
+                  typeof this.currentSelectedFeatures[0].properties[field] ==
+                    "string" ||
+                  typeof this.currentSelectedFeatures[0].properties[field] ==
+                    "number" ? (
+                    <option key={field} value={field}>
+                      {" "}
+                      {field}
+                    </option>
+                  ) : null
+              )}
+            </select>
+          </td>
+        </tr>
+      )
+    );
   };
   renderSelectedFeature = () => {
-    return this.sanityCheck ? (
-      this.selectedFeatures[this.currentLayer].length > 0 ? (
-        this.selectedFeatures[this.currentLayer].map((feature) => (
+    return this.currentSelectedFeatures ? (
+      this.currentSelectedFeatures.length > 0 ? (
+        this.currentSelectedFeatures.map((feature) => (
           <tr key={feature.id}>
             <td
               className={
@@ -115,11 +94,21 @@ class FeatureList extends Component {
                 : feature.id}
               <IconButton
                 className="ui icon button primary pointer margin05em"
-                onClick={() => {
-                  zoomTo(feature.geometry);
+                onClick={async () => {
+                  const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
+                    feature.__Parent_NessUUID__,
+                    feature.id
+                  );
+                  f && zoomTo(f.getGeometry());
                   // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
                 }}
-                onHover={() => highlightFeature(feature.geometry)}
+                onHover={async () => {
+                  const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
+                    feature.__Parent_NessUUID__,
+                    feature.id
+                  );
+                  f && highlightFeature(f.getGeometry());
+                }}
                 icon="crosshairs"
                 size="1x"
               />
@@ -142,9 +131,9 @@ class FeatureList extends Component {
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="scrollContent">
             {this.renderFieldsSelect()}
-            <div className="scrollContent">{this.renderSelectedFeature()}</div>
+            {this.renderSelectedFeature()}
           </tbody>
         </table>
       </React.Fragment>
@@ -153,7 +142,14 @@ class FeatureList extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { Features: state.Features, map: state.map.focused };
+  return {
+    Features: state.Features,
+    map: state.map.focused,
+    selectedFeatures: selectSelectedFeatures(state),
+    currentLayer: selectCurrentLayer(state),
+    currentFeature: selectCurrentFeature(state),
+    currentSelectedFeatures: selectSelectedFeatureInCurrentLayer(state),
+  };
 };
 
 export default connect(mapStateToProps, { setCurrentFeature })(FeatureList);

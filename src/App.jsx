@@ -17,9 +17,9 @@ import Widget from "./containers/Widget";
 import { ToastProvider } from 'react-toast-notifications'
 // REMOVE: this is just for searching debug
 import NessSearching from "./searches/searches";
-// REMOVE: this is just for searching debug
+import "./style.css";
 
-import "./utils/features"
+
 
 class App extends React.Component {
   bootstrap = async () => {
@@ -30,6 +30,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+
     LogIt(logLevel.INFO, "App init");
 
     InitIcons();
@@ -81,6 +82,7 @@ class App extends React.Component {
               </div>
             </div>
           </SideNav>
+          <div id="append-element-container" className="append-element-container"></div>
           <Widget />
         </ToastProvider>
       </React.Fragment>

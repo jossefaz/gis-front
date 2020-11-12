@@ -1,25 +1,15 @@
 /* eslint-disable default-case */
 /* eslint-disable no-throw-literal */
-import GenerateUUID from '../utils/uuid';
-import MapProxy from './mapProxy';
+import GenerateUUID from "../utils/uuid";
+import MapProxy from "./mapProxy";
 
-import {
-    Image as ImageLayer
-} from 'ol/layer';
-import ImageWMS
-    from "ol/source/ImageWMS";
-import {
-    ImageArcGISRest
-} from 'ol/source';
+import { Image as ImageLayer } from "ol/layer";
+import ImageWMS from "ol/source/ImageWMS";
+import { ImageArcGISRest } from "ol/source";
 
-import {
-    MDUtils as md
-} from '../utils/metadataUtils';
-import {
-    LYRUtils as lu
-} from '../utils/layerUtils';
-import NessKeys from './keys'
-
+import { MDUtils as md } from "../utils/metadataUtils";
+import { LYRUtils as lu } from "../utils/layerUtils";
+import NessKeys from "./keys";
 
 export default class NessLayer {
     constructor(mdId = null, alias = null, lyr = null, json = null) {
@@ -27,17 +17,19 @@ export default class NessLayer {
         this.mapIndex = -1;
         this.parent = null;
 
-        var nl = md.getMDLayerFromJson(json) || md.getMDLayerById(mdId) || lu.getMDLayerByObject(lyr);
+        var nl =
+            md.getMDLayerFromJson(json) ||
+            md.getMDLayerById(mdId) ||
+            lu.getMDLayerByObject(lyr);
         if (nl) {
             // must-have props
             var uuid = {
-                value: GenerateUUID()
+                value: GenerateUUID(),
             };
             Object.freeze(uuid); // freeze uuid, it is too important !
             this.uuid = uuid;
 
             this.semanticId = nl.semanticId;
-            this.restId = nl.restId;
             this.displayExpression = nl.displayExpression;
 
             // must-have layer configuration props
@@ -84,7 +76,7 @@ export default class NessLayer {
                 // add the layer to the map
                 this.parent.OLMap.addLayer(olLayer);
 
-                // OK, layer is in! set uuid 
+                // OK, layer is in! set uuid
                 olLayer.set(NessKeys.NESS_LAYER_UUID_KEY, this.uuid.value, true);
 
                 // and now refresh mapIndex
@@ -94,7 +86,7 @@ export default class NessLayer {
 
                 return true;
             } else {
-                throw "AddLayer failed - layer not created correctly"
+                throw "AddLayer failed - layer not created correctly";
             }
         }
     }
@@ -123,7 +115,7 @@ const _toOLLayer = (nl) => {
                 source: new ImageWMS({
                     url: nl.config.SourceOptions.url,
                     params: nl.config.SourceOptions.params,
-                    serverType: "geoserver"
+                    serverType: "geoserver",
                 }),
             });
             newLyr.alias = nl.title;
@@ -145,7 +137,7 @@ const _toOLLayer = (nl) => {
     }
 
     return newLyr;
-}
+};
 
 const _getMapIndex = (nl) => {
     if (nl instanceof NessLayer && nl.uuid && nl.parent && nl.parent.OLMap) {
@@ -158,23 +150,24 @@ const _getMapIndex = (nl) => {
     }
 
     return -1;
-}
+};
 export const getLayerObject = (layerId, OLMap) => {
     if (layerId) {
         const layers = OLMap.getLayers().getArray();
-        return layers.find(layer => layer.get(NessKeys.NESS_LAYER_UUID_KEY) === layerId)
+        return layers.find(
+            (layer) => layer.get(NessKeys.NESS_LAYER_UUID_KEY) === layerId
+        );
     }
     return -1;
-}
+};
 export const deleteLayerObject = (layer, OLMap) => {
     try {
-        OLMap.removeLayer(layer)
-        return true
+        OLMap.removeLayer(layer);
+        return true;
     } catch (error) {
         return -1;
-
     }
-}
+};
 export const setVisible = (uuid, OLMap, visibilty) => {
     var layer = getLayerObject(uuid, OLMap);
     if (layer !== -1) {
@@ -182,14 +175,14 @@ export const setVisible = (uuid, OLMap, visibilty) => {
         return true;
     }
     return false;
-}
+};
 export const getVisible = (uuid, OLMap) => {
     var layer = getLayerObject(uuid, OLMap);
     if (layer !== -1) {
         return layer.getVisible();
     }
     return -1;
-}
+};
 export const setOpacity = (uuid, OLMap, opacity) => {
     var layer = getLayerObject(uuid, OLMap);
     if (layer !== -1) {
@@ -197,11 +190,11 @@ export const setOpacity = (uuid, OLMap, opacity) => {
         return true;
     }
     return false;
-}
+};
 export const getOpacity = (uuid, OLMap) => {
     var layer = getLayerObject(uuid, OLMap);
     if (layer !== -1) {
         return layer.getOpacity();
     }
     return -1;
-}
+};
