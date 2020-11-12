@@ -29,8 +29,9 @@ class LayerListMenuItem extends Component {
     };
 
     handleItemClick = (e, { name }) => {
-        this.setState({ activeItem: name })
+        this.setState({ activeItem: name });
     }
+
     zoomToLayer = (lyr) => {
         let map = getFocusedMap();
         let OlLayer = getOlLayer(lyr.uuid);
@@ -99,12 +100,11 @@ class LayerListMenuItem extends Component {
         const { layer } = this.props;
 
         return (
-            <Menu styled secondary vertical className="content uirtl">
+            <Menu secondary vertical className="content uirtl">
                 <Menu.Item
                     name='transparency'
                     active={activeItem === 'transparency'}
-                    onClick={this.handleItemClick}
-                >
+                    onClick={this.handleItemClick}>
                     <div>
                         <label>שקיפות</label>
                         <Slider color="blue" settings={this.settings} />

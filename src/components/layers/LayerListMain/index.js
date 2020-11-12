@@ -1,6 +1,5 @@
 import React from "react";
 import LayerList from "../LayerList";
-import LayerListDetails from "../LayerListDetails";
 import LayerListMenuItem from "../LayerListMenuItem";
 import LayerListMenuItemEx from "../LayerListMenuItemEx";
 import LayerListVisible from "../LayerListVisible";
@@ -27,9 +26,6 @@ class LayerListMain extends React.Component {
                 component = <LayerListVisible setMode={this.setMode}></LayerListVisible>
                 break;
             case 3:
-                // component = <LayerListDetails
-                //     layerId={this.state.layerId}
-                //     setMode={this.setMode}></LayerListDetails>
                 component = <LayerListMenuItemEx
                     layerId={this.state.layerId}
                     setMode={this.setMode}>

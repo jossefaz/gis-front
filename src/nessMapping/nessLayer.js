@@ -37,6 +37,7 @@ export default class NessLayer {
             this.uuid = uuid;
 
             this.semanticId = nl.semanticId;
+            this.restId = nl.restId;
             this.displayExpression = nl.displayExpression;
 
             // must-have layer configuration props

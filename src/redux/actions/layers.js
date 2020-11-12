@@ -68,7 +68,7 @@ export const setMapLayerVisible = (layerId, visible) => (dispatch) => {
 export const setMapLayerOpacity = (layerId, Opacity) => (dispatch) => {
   const mapId = getFocusedMapProxy().uuid.value;
   if (setLayerOpacity(layerId, Opacity)) {
-    layerId = layerId.value;
+    layerId = layerId;
     dispatch({
       type: types.SET_LAYER_OPACITY,
       payload: {

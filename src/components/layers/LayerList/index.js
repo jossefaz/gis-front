@@ -15,6 +15,7 @@ class LayerList extends Component {
     subjects: {},
     layerSubjectRelation: [],
     layerListObject: {},
+    closeLayerListItem: false
   };
 
   handleClick = (e, titleProps) => {
@@ -85,9 +86,16 @@ class LayerList extends Component {
 
   createLayerListItems = (layers) => {
     return Object.keys(layers).map((layerId, index) => (
-      <LayerListItem layerId={layerId} key={index}></LayerListItem>
+      <LayerListItem layerId={layerId}
+        execCloseLayerListItem={this.execCloseLayerListItem}
+        key={index}
+        closeItem={this.state.closeLayerListItem}></LayerListItem>
     ));
   };
+
+  execCloseLayerListItem = (close) => {
+    this.setState({ closeLayerListItem: close });
+  }
 
   render() {
     return (

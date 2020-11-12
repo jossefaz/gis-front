@@ -11,6 +11,7 @@ export const nessLayerToReduxLayer = (nessLayer) => {
     newLayer.visible = false;
     newLayer.opacity = 0.5;
     newLayer.uuid = nessLayer.uuid.value;
+    newLayer.restid = nessLayer.restid;
     return newLayer;
   }
 }
