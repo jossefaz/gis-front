@@ -1,6 +1,4 @@
-import {
-  Image as ImageLayer
-} from "ol/layer";
+import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 
 export const nessLayerToReduxLayer = (nessLayer) => {
@@ -14,7 +12,7 @@ export const nessLayerToReduxLayer = (nessLayer) => {
     newLayer.restid = nessLayer.restid;
     return newLayer;
   }
-}
+};
 
 export const convertMdLayerToMapLayer = (mdLayer) => {
   //TODO add all types of layers coming from MD
@@ -26,7 +24,7 @@ export const convertMdLayerToMapLayer = (mdLayer) => {
   newLyr.name = mdLayer.restid;
   newLyr.id = mdLayer.semanticid;
   newLyr.alias = mdLayer.title;
-  newLyr.setVisible(Boolean(true)); //TODO get info from md 
-  newLyr.selectable = mdLayer.selectable; //TODO get info from md 
+  newLyr.setVisible(Boolean(true)); //TODO get info from md
+  newLyr.selectable = mdLayer.selectable; //TODO get info from md
   return newLyr;
-}
+};

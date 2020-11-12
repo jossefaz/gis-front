@@ -1,0 +1,42 @@
+/* scrolltable rules */
+.ctable {
+  border: 1px solid black;
+  width: 100%;
+}
+
+.cth,
+.ctd {
+  width: 150px;
+  border: 1px solid black;
+}
+
+.cthead > tr {
+  position: relative;
+  display: block;
+}
+.ctr:hover {
+  background-color: #f5f5f5;
+}
+
+.ctr {
+  cursor: pointer;
+}
+
+.ctbody {
+  display: block;
+  height: 50rem;
+  overflow: auto;
+}
+
+.cHeaders {
+  border-bottom: solid 3px red;
+  background: aliceblue;
+  color: black;
+  font-weight: bold;
+}
+
+.cRow {
+  padding: 10px;
+  border: solid 1px gray;
+  /* background: papayawhip; */
+}
