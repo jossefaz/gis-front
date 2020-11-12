@@ -8,6 +8,7 @@ import {
   getCurrentExtent,
   getCurrentProjection,
 } from "../../../../../nessMapping/api";
+import { selectCurrentMapLayers } from "../../../../../redux/reducers";
 import { Accordion, Icon } from "semantic-ui-react";
 import { getHeight, getWidth } from "ol/extent";
 import { Checkbox } from "semantic-ui-react";
@@ -26,18 +27,27 @@ const LegendItem = (props) => {
   getFocusedMap().on("moveend", () => setResolution(getCurrentResolution()));
   const renderLegendItem = () => {
     const layer = getOlLayer(props.uuid);
+    const crs = `&CRS=${getCurrentProjection().getCode()}`;
+    const heightAndWidth = `&srcwidth=${getHeight(
+      getCurrentExtent()
+    )}&srcheight=${getWidth(getCurrentExtent())}`;
     let url;
     let name;
     if (layer) {
       const baseurl = layer.getSource().getLegendUrl();
-      const crs = `&CRS=${getCurrentProjection().getCode()}`;
+
       const cql = `&BBOX=${getCurrentExtent().join(",")}`;
-      const heightAndWidth = `&srcwidth=${getHeight(
-        getCurrentExtent()
-      )}&srcheight=${getWidth(getCurrentExtent())}`;
+
       name = layer.getSource().getParams().LAYERS.split(":")[1];
       url = `${baseurl}${cql}${crs}${heightAndWidth}&legend_options=countMatched:true;fontAntiAliasing:true;hideEmptyRules:true;forceLabels:on`;
+    } else {
+      if (props.uuid in props.Layers) {
+        const { restid } = props.Layers[props.uuid];
+        // TODO : change baseurl from config
+        url = `http://localhost:8080/geoserver/Jeru/wms?&LAYERS=${restid}&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=${restid}&legend_options=countMatched:false;fontAntiAliasing:true;hideEmptyRules:false;forceLabels:on`;
+      }
     }
+    console.log("props.Layers", props.Layers);
     return url ? (
       props.global ? (
         <React.Fragment>
@@ -67,7 +77,7 @@ const LegendItem = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    Layers: state.Layers,
+    Layers: selectCurrentMapLayers(state),
   };
 };
 
