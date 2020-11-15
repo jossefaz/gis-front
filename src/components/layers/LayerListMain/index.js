@@ -1,6 +1,5 @@
 import React from "react";
 import LayerList from "../LayerList";
-import LayerListMenuItem from "../LayerListMenuItem";
 import LayerListMenuItemEx from "../LayerListMenuItemEx";
 import LayerListVisible from "../LayerListVisible";
 

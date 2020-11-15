@@ -41,7 +41,7 @@
     "react-scripts": "^3.4.3",
     "react-semantic-ui-range": "^0.7.0",
     "react-socket-io": "^0.2.5",
-    "react-table": "^7.6.1",
+    "react-table": "^7.6.2",
     "react-toast-notifications": "^2.4.0",
     "react-websocket": "^2.1.0",
     "react-window": "^1.8.6",

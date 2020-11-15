@@ -10,10 +10,13 @@ import { getXMLResponse } from '../../../communication/apiManager';
 import { getOlLayer, getFocusedMap } from "../../../nessMapping/api";
 import LegendItem from '../../tool/InternalTool/Legend/LegendItem';
 import AttributeTable from '../../tool/InternalTool/AttributeTable';
+import EditTool from '../../tool/InternalTool/EditTool';
+import TableOfFeatures from '../../tool/InternalTool/TableOfFeatures';
 
 class LayerListMenuItem extends Component {
     state = {
         activeItem: null,
+        previousItem: null,
         boundingBox: null,
         map: null,
         OlLayer: null
@@ -29,7 +32,10 @@ class LayerListMenuItem extends Component {
     };
 
     handleItemClick = (e, { name }) => {
-        this.setState({ activeItem: name });
+        this.setState({
+            previousItem: this.state.activeItem === name ? null : this.state.activeItem,
+            activeItem: name
+        });
     }
 
     zoomToLayer = (lyr) => {
@@ -95,6 +101,17 @@ class LayerListMenuItem extends Component {
         }
     }
 
+    editLayer = (layer) => {
+        console.log(layer.uuid);
+        if (this.state.activeItem === 'editLayer')
+            return (
+                <EditTool uuid={layer.uuid}></EditTool>
+            )
+        else {
+            return null;
+        }
+    }
+
     render() {
         const { activeItem } = this.state
         const { layer } = this.props;
@@ -121,21 +138,26 @@ class LayerListMenuItem extends Component {
                     active={activeItem === 'editLayer'}
                     onClick={this.handleItemClick}>
                     <div>ערוך שכבה</div>
+                    <div>{this.editLayer(layer)}</div>
                 </Menu.Item>
                 <Menu.Item
                     name='legend'
                     active={activeItem === 'legend'}
                     onClick={this.handleItemClick}>
                     <div>מקרא</div>
-                    <div>{this.showLegend(layer)}</div>
+                    <div>{this.state.activeItem === 'legend' &&
+                        this.state.previousItem === 'legend' ? null :
+                        this.state.activeItem === 'legend' ? <TableOfFeatures uuid={layer.uuid}></TableOfFeatures> : null}</div>
                 </Menu.Item>
                 <Menu.Item
                     name='attributeTable'
                     active={activeItem === 'attributeTable'}
                     onClick={this.handleItemClick}>
                     <div>מאפיינים</div>
-                    <div>{this.state.activeItem === 'attributeTable' ? <AttributeTable>
-                    </AttributeTable> : null}</div>
+                    <div>{this.state.activeItem === 'attributeTable'
+                        && this.state.previousItem == null ?
+                        <TableOfFeatures uuid={layer.uuid}></TableOfFeatures> :
+                        null}</div>
                 </Menu.Item>
             </Menu>
         )
