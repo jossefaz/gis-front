@@ -1,6 +1,6 @@
 import React from "react";
 import { Segment, Dropdown, Checkbox } from "semantic-ui-react";
-import { useTable } from "react-table";
+import { useTable, useSortBy } from "react-table";
 import "./style.css";
 import { zoomTo } from "../../../nessMapping/api";
 import ActionRegistry from "./Actions";
@@ -16,7 +16,13 @@ export default (props) => {
     allColumns,
     rows,
     prepareRow,
-  } = useTable({ columns, data });
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy
+  );
 
   return (
     <React.Fragment>
@@ -36,10 +42,23 @@ export default (props) => {
       >
         <thead className="cthead">
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()} className="ctr">
+            <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()} className="cHeaders cth">
-                  {column.render("Header")}
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  className="cth cHeaders"
+                >
+                  <div className="sortingHeader">
+                    <div> {column.render("Header")}</div>
+                    <div>
+                      {" "}
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? " 🔽"
+                          : " 🔼"
+                        : ""}
+                    </div>
+                  </div>
                 </th>
               ))}
             </tr>

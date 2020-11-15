@@ -71,4 +71,18 @@ export class GeoserverUtil {
     const metadata = await axios.get(`${this.domain}/ows`, { params });
     return metadata.data;
   };
+
+  getAllFeatures = async () => {
+    const params = {
+      service: "WFS",
+      version: "1.1.0",
+      request: "GetFeature",
+      typeName: this.fType,
+      outputFormat: "application/json",
+    };
+    const feature = await axios.get(`${this.domain}/wfs`, { params });
+    return feature.data.features.map((f) => {
+      return { ...f.properties, geometry: f.geometry };
+    });
+  };
 }

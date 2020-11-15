@@ -1,80 +1,12 @@
 import React, { Component } from "react";
-import EditProxy from "../../../../nessMapping/EditProxy";
-import { InteractionUtil } from "../../../../utils/interactions";
-import withNotifications from "../../../HOC/withNotifications";
-import VectorLayerRegistry from "../../../../utils/vectorlayers";
 import Table from "../../../UI/Table";
-import ActionRegistry from "../../../UI/Table/Actions";
-const initialState = {
-  geomType: null,
-  openForm: false,
-  newFeature: null,
-  EditFeature: null,
-  fields: null,
-  openConfirm: false,
-  openCancelConfirm: false,
-  addingIcon: false,
-  editIcon: false,
-  data: [],
-  eraseFeature: {
-    openAlert: false,
-    content: "? האם באמת למחוק את היישות",
-    confirmBtn: "כן",
-    cancelBtn: "לא",
-  },
-
-  cancelFeature: {
-    openAlert: false,
-    content: "? האם באמת לבטל את כלל השינוים ",
-    confirmBtn: "כן",
-    cancelBtn: "לא",
-  },
-};
-
-class EditTool extends Component {
+import { GeoserverUtil } from "../../../../utils/Geoserver";
+import { connect } from "react-redux";
+import { selectCurrentMapLayers } from "../../../../redux/reducers";
+class TableOfFeature extends Component {
   WIDGET_NAME = "EditTool";
 
-  constructor() {
-    super();
-    this.interactions = new InteractionUtil(this.WIDGET_NAME);
-    this.state = initialState;
-  }
-
-  get editProxy() {
-    return this._editProxy ? this._editProxy[this.props.uuid] : false;
-  }
-  get registry() {
-    return VectorLayerRegistry.getInstance();
-  }
-
-  get vectorLayer() {
-    return this.registry.getVectorLayer(this.props.uuid);
-  }
-
-  onDeleteFeature = () => {
-    this.setState({ openConfirm: true });
-  };
-
-  onDeleteConfirm = async () => {
-    const deleted = await this.editProxy.remove();
-    if (deleted) {
-      this.props.successNotification("Successfully added feature !");
-      this.setState({
-        openConfirm: false,
-        EditFeature: null,
-      });
-    } else {
-      this.props.errorNotification("Failed to add feature !");
-    }
-  };
-
-  onIdentifyFeature = async (fid) => {
-    // await this.interactions.newSelect(null, [this.currentLayer], false, click);
-    // this.interactions.newModify(new Collection([]));
-    this.setState({
-      EditFeature: null,
-    });
-  };
+  state = { data: [] };
 
   generateColumns = () => {
     this.columns = this.metadata.featureTypes[0].properties
@@ -93,57 +25,27 @@ class EditTool extends Component {
     // ];
   };
 
-  generateData = () => {
-    this.vectorLayer.getFeaturesData().then((data) => {
-      if (data.length !== this.state.data.lentgh) {
-        // let ActionsData = data.map((row) => {
-        //   row.actions = [];
-        //   Object.keys(ActionRegistry).forEach((action) => {
-        //     row.actions.push(ActionRegistry[action].icon);
-        //   });
-        //   return row;
-        // });
-
-        this.setState({ data });
-      }
-    });
-  };
-
-  getMetadata = async () => {
-    this.metadata = await this.editProxy.getMetadata();
+  getdata = async () => {
+    this.metadata = await this.geoserverUtil.getWFSMetadata();
     this.generateColumns();
-    this.generateData();
-  };
-
-  onEditCancel = () => {
-    this.setState({ openCancelConfirm: true });
-  };
-
-  onEditCancelConfirm = () => {
-    this.setState({
-      openConfirm: false,
-      openCancelConfirm: false,
-      openForm: false,
-      EditFeature: null,
-      addingIcon: false,
-      editIcon: false,
-    });
-    this.registry.getVectorLayer(this.props.uuid).hideAllFeatures();
-  };
-
-  onSubmit = async (data) => {
-    this.setState({ openForm: false });
+    const data = await this.geoserverUtil.getAllFeatures();
+    this.setState({ data });
   };
 
   initTable = () => {
-    this.registry.initVectorLayers([this.props.uuid]);
-    this.currentLayer = this.registry.getVectorLayersByRefName(this.props.uuid);
-    this._editProxy = EditProxy.getInstance([this.props.uuid]);
-    this.getMetadata();
+    this.updateLayer();
+    this.getdata();
   };
 
   componentDidMount() {
     this.initTable();
+  }
+
+  updateLayer() {
+    const layer = this.props.Layers[this.props.uuid];
+    const workspace = layer.restid.split(":")[0];
+    const layername = layer.restid.split(":")[1];
+    this.geoserverUtil = new GeoserverUtil(workspace, layername);
   }
 
   componentDidUpdate(prevProps) {
@@ -151,6 +53,7 @@ class EditTool extends Component {
       this.initTable();
     }
   }
+
   render() {
     return (
       <React.Fragment>
@@ -165,5 +68,10 @@ class EditTool extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    Layers: selectCurrentMapLayers(state),
+  };
+};
 
-export default withNotifications(EditTool);
+export default connect(mapStateToProps)(TableOfFeature);
