@@ -2,9 +2,6 @@ import React from "react";
 import { render } from "react-dom";
 
 const appenedElements = {};
-const appendElementContainer = document.getElementById(
-  "append-element-container"
-);
 
 function getAppendedElements() {
   const elements = [];
@@ -25,7 +22,9 @@ class AppendBodyComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.appendElementContainer = appendElementContainer;
+    this.appendElementContainer = document.getElementById(
+      "append-element-container"
+    );
   }
 
   setAppendElementId(id) {
@@ -39,12 +38,13 @@ class AppendBodyComponent extends React.Component {
   }
 
   updateAppendElements() {
-    render(<span>{getAppendedElements()}</span>, appendElementContainer);
+    render(<span>{getAppendedElements()}</span>, this.appendElementContainer);
   }
 
   removeAppendElement() {
-    delete appenedElements[this.appendElementId];
-
+    if (this.appendElementId && this.appendElementId in appenedElements) {
+      delete appenedElements[this.appendElementId];
+    }
     this.updateAppendElements();
   }
 }

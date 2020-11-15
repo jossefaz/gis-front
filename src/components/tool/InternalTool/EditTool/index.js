@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { getVectorLayersByRefName } from "../../../../utils/WFS-T";
 import EditProxy from "../../../../nessMapping/EditProxy";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditForm from "./EditForm";
@@ -11,6 +10,8 @@ import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
 import VectorLayerRegistry from "../../../../utils/vectorlayers";
+import { selectVisibleLayers } from "../../../../redux/reducers";
+import { connect } from "react-redux";
 const initialState = {
   geomType: null,
   openForm: false,
@@ -53,6 +54,8 @@ class EditTool extends Component {
   }
 
   onAddFeature = async () => {
+    await this.interactions.unSelect();
+    await this.interactions.newDraw({ type: this.state.geomType });
     this.setState({
       openForm: false,
       newFeature: null,
@@ -60,8 +63,7 @@ class EditTool extends Component {
       addingIcon: true,
       editIcon: false,
     });
-    await this.interactions.unSelect();
-    await this.interactions.newDraw({ type: this.state.geomType });
+
     this.onDrawEnd();
   };
 
@@ -72,7 +74,7 @@ class EditTool extends Component {
   onDeleteConfirm = async () => {
     const deleted = await this.editProxy.remove();
     if (deleted) {
-      this.props.successNotification("Successfully added feature !");
+      this.props.successNotification("Successfully remooved feature !");
       this.setState({
         openConfirm: false,
         openForm: false,
@@ -84,13 +86,16 @@ class EditTool extends Component {
       await this.interactions.unModify();
       await this.interactions.unDraw();
     } else {
-      this.props.errorNotification("Failed to add feature !");
+      this.props.errorNotification("Failed to remove feature !");
+      this.setState({
+        openConfirm: false,
+      });
     }
   };
 
   onIdentifyFeature = async () => {
     await this.interactions.unDraw();
-    await this.interactions.newSelect(null, [this.currentLayer], false, click);
+    await this.interactions.newSelect(null, [this.currentLayer], true, click);
     this.setState({
       openForm: false,
       newFeature: null,
@@ -125,15 +130,39 @@ class EditTool extends Component {
             newFeature: null,
             openForm: true,
           });
-          await this.interactions.newModify(new Collection([selectedF]));
+          await this.interactions.newModify(
+            this.interactions.currentSelect.getFeatures()
+          );
           this.editProxy.edit(selectedF);
           const extent = selectedF.getGeometry().getExtent();
           selectedF.setStyle(styles.EDIT);
           getFocusedMap()
             .getView()
             .fit(extent, { padding: [850, 850, 850, 850] });
+        } else if (this.state.EditFeature) {
+          console.log("PUSSH");
+          this.interactions.currentSelect
+            .getFeatures()
+            .push(this.state.EditFeature);
         }
       });
+    }
+  };
+
+  autoClosingEditSession = async () => {
+    debugger;
+    if (Boolean(this.state.EditFeature)) {
+      console.log("CONNARD", this.state);
+      const updated = await this.editProxy.save();
+      if (updated) {
+        this.props.successNotification("Successfully saved feature !");
+        const extent = this.state.EditFeature.getGeometry().getExtent();
+        getFocusedMap()
+          .getView()
+          .fit(extent, { padding: [850, 850, 850, 850] });
+      } else {
+        this.props.errorNotification("Failed to save feature !");
+      }
     }
   };
 
@@ -181,68 +210,91 @@ class EditTool extends Component {
   };
 
   componentDidMount() {
-    this.registry.initVectorLayers([this.props.uuid]);
-    this.currentLayer = this.registry.getVectorLayersByRefName(this.props.uuid);
-    this._editProxy = EditProxy.getInstance([this.props.uuid]);
-    this.getMetadata();
+    if (this.props.uuid && this.props.VisibleLayers.includes(this.props.uuid)) {
+      this.registry.initVectorLayers([this.props.uuid]);
+      this.currentLayer = this.registry.getVectorLayersByRefName(
+        this.props.uuid
+      );
+      this._editProxy = EditProxy.getInstance([this.props.uuid]);
+      this.getMetadata();
+      console.log("this.registry", this.registry);
+      console.log("this.currentLayer", this.currentLayer);
+      console.log("this.editProxy", this.editProxy);
+    }
+  }
+  componentWillUnmount() {
+    this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
+    this.interactions.unsetAll();
+    EditProxy.getInstance().removeItem(this.props.uuid);
   }
   render() {
     return (
       <React.Fragment>
-        {this.editProxy && this.state.fields && (
-          <EditForm
-            fields={this.state.fields}
-            feature={this.state.newFeature || this.state.EditFeature}
-            onSubmit={this.onSubmit}
-            editProxy={this.editProxy}
-            values={
-              this.state.EditFeature
-                ? this.state.EditFeature.getProperties()
-                : null
-            }
-            onCancel={this.onEditCancel}
-            onDeleteFeature={this.onDeleteFeature}
-            existingFeature={Boolean(this.state.EditFeature)}
-            openForm={this.state.openForm}
-          />
+        {this.editProxy &&
+          this.state.fields &&
+          (this.state.newFeature || this.state.EditFeature) && (
+            <EditForm
+              fields={this.state.fields}
+              feature={this.state.newFeature || this.state.EditFeature}
+              onSubmit={this.onSubmit}
+              editProxy={this.editProxy}
+              values={
+                this.state.EditFeature
+                  ? this.state.EditFeature.getProperties()
+                  : null
+              }
+              onCancel={this.onEditCancel}
+              onDeleteFeature={this.onDeleteFeature}
+              existingFeature={Boolean(this.state.EditFeature)}
+              openForm={this.state.openForm}
+            />
+          )}
+        {this.props.uuid && this.props.VisibleLayers.includes(this.props.uuid) && (
+          <React.Fragment>
+            <IconButton
+              className={`ui icon button pointer ${
+                this.state.addingIcon ? "secondary" : "primary"
+              }`}
+              onClick={this.onAddFeature}
+              icon="plus-square"
+              size="lg"
+            />
+            <IconButton
+              className={`ui icon button pointer ${
+                this.state.editIcon ? "secondary" : "primary"
+              }`}
+              onClick={this.onIdentifyFeature}
+              icon="edit"
+              size="lg"
+            />
+            <Confirm
+              open={this.state.openConfirm}
+              size="mini"
+              content={this.state.eraseFeature.content}
+              cancelButton={this.state.eraseFeature.cancelBtn}
+              confirmButton={this.state.eraseFeature.confirmBtn}
+              onCancel={() => this.setState({ openConfirm: false })}
+              onConfirm={this.onDeleteConfirm}
+            />
+            <Confirm
+              open={this.state.openCancelConfirm}
+              size="mini"
+              content={this.state.cancelFeature.content}
+              cancelButton={this.state.cancelFeature.cancelBtn}
+              confirmButton={this.state.cancelFeature.confirmBtn}
+              onCancel={() => this.setState({ openCancelConfirm: false })}
+              onConfirm={this.onEditCancelConfirm}
+            />{" "}
+          </React.Fragment>
         )}
-        <IconButton
-          className={`ui icon button pointer ${
-            this.state.addingIcon ? "secondary" : "primary"
-          }`}
-          onClick={this.onAddFeature}
-          icon="plus-square"
-          size="lg"
-        />
-        <IconButton
-          className={`ui icon button pointer ${
-            this.state.editIcon ? "secondary" : "primary"
-          }`}
-          onClick={this.onIdentifyFeature}
-          icon="edit"
-          size="lg"
-        />
-        <Confirm
-          open={this.state.openConfirm}
-          size="mini"
-          content={this.state.eraseFeature.content}
-          cancelButton={this.state.eraseFeature.cancelBtn}
-          confirmButton={this.state.eraseFeature.confirmBtn}
-          onCancel={() => this.setState({ openConfirm: false })}
-          onConfirm={this.onDeleteConfirm}
-        />
-        <Confirm
-          open={this.state.openCancelConfirm}
-          size="mini"
-          content={this.state.cancelFeature.content}
-          cancelButton={this.state.cancelFeature.cancelBtn}
-          confirmButton={this.state.cancelFeature.confirmBtn}
-          onCancel={() => this.setState({ openCancelConfirm: false })}
-          onConfirm={this.onEditCancelConfirm}
-        />
       </React.Fragment>
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    VisibleLayers: selectVisibleLayers(state),
+  };
+};
 
-export default withNotifications(EditTool);
+export default connect(mapStateToProps)(withNotifications(EditTool));

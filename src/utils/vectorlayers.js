@@ -3,7 +3,7 @@ import { Vector as VectorLayer, Image as ImageLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import styles from "../nessMapping/mapStyle";
 import { bbox as bboxStrategy } from "ol/loadingstrategy";
-import { getWFSMetadata } from "./WFS-T";
+import { GeoserverUtil } from "./Geoserver";
 import GeoJSON from "ol/format/GeoJSON";
 import { projIsrael } from "./projections";
 import axios from "axios";
@@ -62,6 +62,13 @@ export default (function () {
         return features;
       };
 
+      removeLayer = (__NessUUID__) => {
+        if (__NessUUID__ in this.registry) {
+          getFocusedMap().removeLayer(this.registry[__NessUUID__].vl);
+          delete this.registry[__NessUUID__];
+        }
+      };
+
       initVectorLayers = (arrayOfLayerNames) => {
         getFocusedMap()
           .getLayers()
@@ -115,6 +122,11 @@ export class VectorLayerUtils {
     this.sourceUrl = source.getUrl();
     this.layername = source.getParams().LAYERS;
     this.editable = il.get("editable");
+    this.geoserverUtil = new GeoserverUtil(
+      this.layername.split(":")[0],
+      this.layername.split(":")[1]
+    );
+    console.log("this.geoserverUtil", this.geoserverUtil);
     this._initVectorLayer();
     this._addToMap();
     this._initVectorSource();
@@ -122,7 +134,7 @@ export class VectorLayerUtils {
 
   getAttributes = async () => {
     if (this._isValid()) {
-      return await getWFSMetadata(this.layername);
+      return await this.geoserverUtil.getWFSMetadata();
     }
   };
 

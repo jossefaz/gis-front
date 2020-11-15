@@ -18,7 +18,7 @@ import {
 } from "../redux/actions/interaction";
 import Collection from "ol/Collection";
 
-import { Style, Fill, Stroke, Circle } from "ol/style";
+import styles from "../nessMapping/mapStyle";
 
 export class InteractionUtil {
   constructor(widgetName) {
@@ -137,31 +137,19 @@ export class InteractionUtil {
   };
 
   newSelect = async (feature, layers, multi, condition) => {
-    const style = new Style({
-      image: new Circle({
-        radius: 7,
-        fill: new Fill({
-          color: [0, 153, 255, 1],
-        }),
-        stroke: new Stroke({
-          color: [255, 255, 255, 0.75],
-          width: 1.5,
-        }),
-      }),
-      zIndex: 100000,
-    });
+    const config = {
+      ...(layers && { layers }),
+      ...(multi && { multi }),
+      ...(feature && { features: new Collection([feature]) }),
+      ...(condition && { condition }),
+      style: styles.EDIT,
+    };
+    console.log("select config", config);
     await this.unSelect();
     await store.dispatch(
       setInteraction({
         Type: this.TYPES.SELECT,
-        interactionConfig: {
-          wrapX: false,
-          ...(layers && { layers }),
-          ...(multi && { multi }),
-          ...(feature && { features: new Collection([feature]) }),
-          ...(condition && { condition }),
-          style,
-        },
+        interactionConfig: config,
         widgetName: this.widget,
       })
     );
