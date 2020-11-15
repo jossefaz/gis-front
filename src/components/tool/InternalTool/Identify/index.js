@@ -20,6 +20,7 @@ import { InteractionUtil } from "../../../../utils/interactions";
 import EditProxy from "../../../../nessMapping/EditProxy";
 import _ from "lodash";
 import Collection from "ol/Collection";
+import withNotifications from "../../../HOC/withNotifications";
 class Identify extends Component {
   WIDGET_NAME = "Identify";
 
@@ -42,14 +43,6 @@ class Identify extends Component {
     return VectorLayerRegistry.getInstance();
   }
 
-  sanityCheck = () => {
-    const focusedmapInFeatures = this.focusedmap in this.props.Features;
-    const selectedFeaturesInFeatures = focusedmapInFeatures
-      ? "selectedFeatures" in this.props.Features[this.focusedmap]
-      : false;
-    return focusedmapInFeatures && selectedFeaturesInFeatures;
-  };
-
   onEditGeometry = async (feature) => {
     this.removeInteraction();
     const layer = feature.__Parent_NessUUID__;
@@ -66,10 +59,15 @@ class Identify extends Component {
 
   autoClosingEditSession = async (e, layer) => {
     if (Boolean(this.modifyGeom)) {
-      await this.editProxy[layer].save();
-      await this.interactions.unModify();
-      this.addInteraction();
-      this.modifyGeom = null;
+      const updated = await this.editProxy[layer].save();
+      if (updated) {
+        this.props.successNotification("Successfully saved feature !");
+        await this.interactions.unModify();
+        this.addInteraction();
+        this.modifyGeom = null;
+      } else {
+        this.props.errorNotification("Failed to save feature !");
+      }
     }
   };
 
@@ -169,4 +167,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withWidgetLifeCycle(Identify));
+)(withNotifications(withWidgetLifeCycle(Identify)));

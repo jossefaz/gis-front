@@ -3,7 +3,7 @@ import {
   getFeatureProperties,
   unhighlightFeature,
 } from "../nessMapping/api";
-import { geoserverWFSTransaction, getWFSMetadata } from "../utils/WFS-T";
+import { GeoserverUtil } from "../utils/Geoserver";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import store from "../redux/store";
 import { removeFeature, updateFeature } from "../redux/actions/features";
@@ -17,7 +17,13 @@ export default (function () {
 
   function createInstance(layernames) {
     class editLayers {
-      refresh(layernames) {
+      removeItem = (__NessUUID__) => {
+        if (__NessUUID__ in this) {
+          this[__NessUUID__].unedit();
+          delete this[__NessUUID__];
+        }
+      };
+      refresh = (layernames) => {
         getFocusedMap()
           .getLayers()
           .getArray()
@@ -53,7 +59,7 @@ export default (function () {
               }
             }
           });
-      }
+      };
     }
     const el = new editLayers();
     el.refresh(layernames);
@@ -74,8 +80,6 @@ export default (function () {
 
 class editLayer {
   constructor() {
-    this.baseUrl = null;
-    this.featureType = null;
     this.currentFeature = null;
   }
   EDIT_KW = "editable";
@@ -98,9 +102,12 @@ class editLayer {
     if (il instanceof ImageLayer) {
       if (il.getSource().getUrl()) {
         this.baseUrl = il.getSource().getUrl().split("/wms")[0];
-        this.featureType = il.getSource().getUrl().split("LAYERS=")[1];
-        if (this.featureType.includes("%3A")) {
-          this.featureType = this.featureType.split("%3A")[1];
+        console.log("this.baseUrl", this.baseUrl);
+        const featureType = il.getSource().getUrl().split("LAYERS=")[1];
+        if (featureType.includes("%3A")) {
+          const workspace = featureType.split("%3A")[0];
+          const layername = featureType.split("%3A")[1];
+          this.geoserverUtil = new GeoserverUtil(workspace, layername);
         }
       }
       this._imagelayer = il;
@@ -133,9 +140,7 @@ class editLayer {
   };
 
   getMetadata = async () => {
-    if (this.isValid()) {
-      return await this.vectorlayer.getAttributes();
-    }
+    return await this.vectorlayer.getAttributes();
   };
 
   addFeature = async (feature, properties) => {
@@ -152,6 +157,12 @@ class editLayer {
     return false;
   };
 
+  unedit = () => {
+    this.currentFeature = null;
+    const registry = VectorLayerRegistry.getInstance();
+    registry.removeLayer(this.vectorlayer.uid);
+  };
+
   save = async (newProperties) => {
     if (this.currentFeature) {
       if (newProperties) {
@@ -162,16 +173,16 @@ class editLayer {
       if (
         !(await this.transaction(this.currentFeature, this.UPDATE_KW, true))
       ) {
-        this._rollBackUpdateProperties(this.currentFeature);
+        if (newProperties) {
+          this._rollBackUpdateProperties(this.currentFeature);
+        }
         this.currentFeature.set(this.EDIT_KW, true);
         return false;
       }
       this.currentFeature.set(this.EDIT_KW, true);
       return true;
     }
-    console.error(
-      `feature with id ${this.currentFeature.getId()} was not found in its edit proxy`
-    );
+
     return false;
   };
 
@@ -191,19 +202,12 @@ class editLayer {
   refreshLayers = () => {
     this.imagelayer.getSource().updateParams({ TIMESTAMP: Date.now() });
     this.vectorlayer.refresh();
-    unhighlightFeature();
   };
 
   transaction = async (feature, transactionType, onlyAlphanum) => {
     let success;
-    await geoserverWFSTransaction(
-      this.baseUrl,
-      this.featureType,
-      "EPSG:2039",
-      transactionType,
-      [feature],
-      onlyAlphanum
-    )
+    await this.geoserverUtil
+      .WFSTransaction(transactionType, [feature])
       .then((res) => {
         this.refreshLayers();
         success = true;
@@ -226,9 +230,5 @@ class editLayer {
         success = false;
       });
     return success;
-  };
-
-  isValid = () => {
-    return this.baseUrl && this.featureType && this.vectorlayer;
   };
 }
