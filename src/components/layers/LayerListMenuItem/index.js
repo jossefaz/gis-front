@@ -16,7 +16,6 @@ import TableOfFeatures from '../../tool/InternalTool/TableOfFeatures';
 class LayerListMenuItem extends Component {
     state = {
         activeItem: null,
-        previousItem: null,
         boundingBox: null,
         map: null,
         OlLayer: null,
@@ -90,8 +89,8 @@ class LayerListMenuItem extends Component {
             let minx = boundingBox.minx;
             let miny = boundingBox.miny;
 
-            OlLayer.setExtent([minx, miny, maxx, maxy]);
-            map.getView().fit(OlLayer.getExtent(), { constrainResolution: false });
+            //OlLayer.setExtent([minx, miny, maxx, maxy]);
+            map.getView().fit([minx, miny, maxx, maxy], { constrainResolution: false });
 
             let newRes = map.getView().getResolution();
             if (newRes <= 0)

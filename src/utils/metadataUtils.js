@@ -6,6 +6,7 @@ export const MDUtils = {
                 semanticId: jsonLayer.semanticid,
                 alias: jsonLayer.title,
                 restId: jsonLayer.restid,
+                workspace: jsonLayer.workspace,
                 displayExpression: jsonLayer.displayexpression,
                 config: {
                     LayerType: "OL_ImageLayer",
