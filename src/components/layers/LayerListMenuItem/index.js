@@ -19,7 +19,8 @@ class LayerListMenuItem extends Component {
         previousItem: null,
         boundingBox: null,
         map: null,
-        OlLayer: null
+        OlLayer: null,
+        showHide: true
     }
     settings = {
         start: 0.7,
@@ -32,10 +33,18 @@ class LayerListMenuItem extends Component {
     };
 
     handleItemClick = (e, { name }) => {
-        this.setState({
-            previousItem: this.state.activeItem === name ? null : this.state.activeItem,
-            activeItem: name
-        });
+        if (this.state.activeItem === name) {
+            this.setState({
+                showHide: !this.state.showHide,
+                activeItem: name
+            });
+        }
+        else {
+            this.setState({
+                showHide: true,
+                activeItem: name
+            });
+        }
     }
 
     zoomToLayer = (lyr) => {
@@ -90,28 +99,6 @@ class LayerListMenuItem extends Component {
         }
     }
 
-    showLegend = (layer) => {
-        if (this.state.activeItem === 'legend')
-            return (
-                <LegendItem key={layer.uuid} uuid={layer.uuid} global={false}>
-                </LegendItem>
-            )
-        else {
-            return null;
-        }
-    }
-
-    editLayer = (layer) => {
-        console.log(layer.uuid);
-        if (this.state.activeItem === 'editLayer')
-            return (
-                <EditTool uuid={layer.uuid}></EditTool>
-            )
-        else {
-            return null;
-        }
-    }
-
     render() {
         const { activeItem } = this.state
         const { layer } = this.props;
@@ -138,16 +125,19 @@ class LayerListMenuItem extends Component {
                     active={activeItem === 'editLayer'}
                     onClick={this.handleItemClick}>
                     <div>ערוך שכבה</div>
-                    <div>{this.editLayer(layer)}</div>
+                    <div>{this.state.activeItem === 'editLayer' && this.state.showHide ?
+                        <EditTool uuid={layer.uuid}></EditTool>
+                        : null}</div>
                 </Menu.Item>
                 <Menu.Item
                     name='legend'
                     active={activeItem === 'legend'}
                     onClick={this.handleItemClick}>
                     <div>מקרא</div>
-                    <div>{this.state.activeItem === 'legend' &&
-                        this.state.previousItem === 'legend' ? null :
-                        this.state.activeItem === 'legend' ? <TableOfFeatures uuid={layer.uuid}></TableOfFeatures> : null}</div>
+                    <div>{this.state.activeItem === 'legend' && this.state.showHide ?
+                        <LegendItem key={layer.uuid} uuid={layer.uuid} global={false}>
+                        </LegendItem> : null}
+                    </div>
                 </Menu.Item>
                 <Menu.Item
                     name='attributeTable'
@@ -155,9 +145,8 @@ class LayerListMenuItem extends Component {
                     onClick={this.handleItemClick}>
                     <div>מאפיינים</div>
                     <div>{this.state.activeItem === 'attributeTable'
-                        && this.state.previousItem == null ?
-                        <TableOfFeatures uuid={layer.uuid}></TableOfFeatures> :
-                        null}</div>
+                        && this.state.showHide ? <TableOfFeatures uuid={layer.uuid}>
+                        </TableOfFeatures> : null}</div>
                 </Menu.Item>
             </Menu>
         )
