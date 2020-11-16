@@ -50,7 +50,6 @@ class LayerListItem extends Component {
       this.props.execCloseLayerListItem(true))
   }
 
-
   createMenu = () => {
     if (this.state.showMenu) {
       return (
@@ -60,7 +59,6 @@ class LayerListItem extends Component {
     else
       return null;
   }
-
 
   renderLayerMenu = () => {
     const layer = this.props.layer;

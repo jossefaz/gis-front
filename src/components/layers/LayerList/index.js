@@ -108,7 +108,9 @@ class LayerList extends Component {
                 index={index}
                 onClick={this.handleClick}>
                 <Icon name="dropdown" />
-                {this.state.layerListObject[subjectId].description}
+                {this.state.layerListObject[subjectId].description + "(" +
+                  Object.keys(this.state.layerListObject[subjectId].layers).length
+                  + ")"}
               </Accordion.Title>
               <Accordion.Content active={this.state.activeIndex === index}>
                 {this.createLayerListItems(this.state.layerListObject[subjectId].layers)}

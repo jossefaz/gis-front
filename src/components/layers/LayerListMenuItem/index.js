@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import config from "react-global-configuration";
-import { Menu } from "semantic-ui-react";
+import { Menu, Icon } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
 import { parseString } from "xml2js";
 import { setMapLayerOpacity } from "../../../redux/actions/layers";
 import { selectLayers } from "../../../redux/selectors/layersSelector";
 import { getXMLResponse } from "../../../communication/apiManager";
-import { getOlLayer, getFocusedMap } from "../../../nessMapping/api";
+import { getFocusedMap } from "../../../nessMapping/api";
 import LegendItem from "../../tool/InternalTool/Legend/LegendItem";
-import AttributeTable from "../../tool/InternalTool/AttributeTable";
 import EditTool from "../../tool/InternalTool/EditTool";
 import TableOfFeatures from "../../tool/InternalTool/TableOfFeatures";
 
@@ -22,10 +21,11 @@ class LayerListMenuItem extends Component {
         showHide: true,
     };
     settings = {
-        start: 0.7,
+        start: this.props.opacity,
         min: 0,
         max: 1,
         step: 0.1,
+        width: '15px',
         onChange: (value) => {
             this.props.setMapLayerOpacity(this.props.layer.uuid, value);
         },
@@ -36,23 +36,30 @@ class LayerListMenuItem extends Component {
             this.setState({
                 showHide: !this.state.showHide,
                 activeItem: name,
-            });
+            }, this.execAction(name));
         } else {
             this.setState({
                 showHide: true,
                 activeItem: name,
-            });
+            }, () => { this.execAction(name) });
         }
     };
 
+    execAction = (name) => {
+        switch (name) {
+            case "fullExtent":
+                this.zoomToLayer(this.props.layer)
+                break;
+            default:
+                break;
+        }
+    }
+
     zoomToLayer = (lyr) => {
         let map = getFocusedMap();
-        // let OlLayer = getOlLayer(lyr.uuid);
-
         if (lyr.restid) {
             this.setState({
-                map: map,
-                // OlLayer: OlLayer,
+                map: map
             });
 
             if (this.state.boundingBox) this.fitExtent();
@@ -64,22 +71,24 @@ class LayerListMenuItem extends Component {
                     ).then((response) => {
                         let boundingBox;
                         parseString(response, function (err, result) {
-                            let layers;
+                            let layers, layer;
                             layers = result.WMS_Capabilities.Capability[0].Layer[0];
-                            let layer = layers.Layer.find((lyr) => lyr.name === lyr.restId);
-                            boundingBox = layer.BoundingBox[1].$;
+                            layer = layers.Layer.find((l) => (
+                                l.Name.find((name) => {
+                                    return name === lyr.restid;
+                                })));
+                            if (layer)
+                                boundingBox = layer.BoundingBox[1].$;
                         });
                         this.setState({ boundingBox: boundingBox }, this.fitExtent);
                     });
                 }
             }
-        } else {
-            alert("השכבה אינה דלוקה");
         }
     };
 
     fitExtent = () => {
-        let { boundingBox, map, OlLayer } = this.state;
+        let { boundingBox, map } = this.state;
         if (boundingBox) {
             let res = map.getView().getResolution();
             let maxx = boundingBox.maxx;
@@ -87,11 +96,7 @@ class LayerListMenuItem extends Component {
             let minx = boundingBox.minx;
             let miny = boundingBox.miny;
 
-            //OlLayer.setExtent([minx, miny, maxx, maxy]);
-            map
-                .getView()
-                .fit([minx, miny, maxx, maxy], { constrainResolution: false });
-
+            map.getView().fit([minx, miny, maxx, maxy], { constrainResolution: false });
             let newRes = map.getView().getResolution();
             if (newRes <= 0) this.map.getView().setResolution(res);
         }
@@ -99,68 +104,66 @@ class LayerListMenuItem extends Component {
 
     render() {
         const { activeItem } = this.state;
-        const { layer } = this.props;
+        const { layer, visible } = this.props;
+        const color = visible ? { color: 'black' } : { color: 'grey' };
 
         return (
             <Menu secondary vertical className="content uirtl">
                 <Menu.Item
                     name="transparency"
                     active={activeItem === "transparency"}
-                    onClick={this.handleItemClick}
-                >
-                    <div>
-                        <label>שקיפות</label>
-                        <Slider color="blue" settings={this.settings} />
+                    onClick={this.handleItemClick}>
+                    <div style={color}>
+                        שקיפות
+                        <Slider
+                            style={{ width: "80%" }}
+                            color={visible ? 'blue' : 'grey'}
+                            disabled={!visible}
+                            settings={this.settings} />
                     </div>
                 </Menu.Item>
                 <Menu.Item
                     name="fullExtent"
                     active={activeItem === "fullExtent"}
-                    onClick={this.handleItemClick}
-                >
-                    <div onClick={() => this.zoomToLayer(layer)}>מבט מלא על השכבה</div>
+                    onClick={this.handleItemClick}>
+                    <div style={{ color: 'black' }}
+                    >מבט מלא על השכבה<Icon link
+                        name='zoom' size="large" /></div>
                 </Menu.Item>
                 <Menu.Item
                     name="editLayer"
                     active={activeItem === "editLayer"}
                     onClick={this.handleItemClick}
-                >
-                    <div>ערוך שכבה</div>
-                    <div>
-                        {this.state.activeItem === "editLayer" && this.state.showHide ? (
-                            <EditTool uuid={layer.uuid}></EditTool>
-                        ) : null}
-                    </div>
+                    disabled={!visible}>
+                    <div style={color}>ערוך שכבה<Icon link
+                        name='edit' size="large" /></div>
                 </Menu.Item>
+                <div>
+                    {this.state.activeItem === "editLayer" && this.state.showHide ? (
+                        <EditTool uuid={layer.uuid}></EditTool>) : null}
+                </div>
                 <Menu.Item
                     name="legend"
                     active={activeItem === "legend"}
-                    onClick={this.handleItemClick}
-                >
-                    <div>מקרא</div>
-                    <div>
-                        {this.state.activeItem === "legend" && this.state.showHide ? (
-                            <LegendItem
-                                key={layer.uuid}
-                                uuid={layer.uuid}
-                                global={false}
-                            ></LegendItem>
-                        ) : null}
-                    </div>
+                    onClick={this.handleItemClick}>
+                    <div style={{ color: 'black' }}>מקרא<Icon link
+                        name='tasks' size="large" /></div>
                 </Menu.Item>
+                <div>
+                    {this.state.activeItem === "legend" && this.state.showHide ? (
+                        <LegendItem key={layer.uuid} uuid={layer.uuid} global={false}></LegendItem>) : null}
+                </div>
                 <Menu.Item
                     name="attributeTable"
                     active={activeItem === "attributeTable"}
-                    onClick={this.handleItemClick}
-                >
-                    <div>מאפיינים</div>
-                    <div>
-                        {this.state.activeItem === "attributeTable" &&
-                            this.state.showHide ? (
-                                <TableOfFeatures uuid={layer.uuid}></TableOfFeatures>
-                            ) : null}
-                    </div>
+                    onClick={this.handleItemClick}>
+                    <div style={{ color: 'black' }}>מאפיינים<Icon link
+                        name='table' size='large' /></div>
                 </Menu.Item>
+                <div>
+                    {this.state.activeItem === "attributeTable" &&
+                        this.state.showHide ? (<TableOfFeatures uuid={layer.uuid}></TableOfFeatures>) : null}
+                </div>
             </Menu>
         );
     }
@@ -168,6 +171,8 @@ class LayerListMenuItem extends Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         layer: selectLayers(state)[ownProps.layerId],
+        opacity: selectLayers(state)[ownProps.layerId].opacity,
+        visible: selectLayers(state)[ownProps.layerId].visible
     };
 };
 
