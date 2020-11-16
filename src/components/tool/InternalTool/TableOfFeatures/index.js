@@ -43,8 +43,8 @@ class TableOfFeature extends Component {
 
   updateLayer() {
     const layer = this.props.Layers[this.props.uuid];
-    const workspace = layer.restid.split(":")[0];
-    const layername = layer.restid.split(":")[1];
+    const workspace = layer.workspace;
+    const layername = layer.restid;
     this.geoserverUtil = new GeoserverUtil(workspace, layername);
   }
 
