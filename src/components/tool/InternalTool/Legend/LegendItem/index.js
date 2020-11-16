@@ -38,7 +38,7 @@ const LegendItem = (props) => {
 
       const cql = `&BBOX=${getCurrentExtent().join(",")}`;
 
-      name = layer.getSource().getParams().LAYERS.split(":")[1];
+      name = props.Layers[props.uuid].restid;
       url = `${baseurl}${cql}${crs}${heightAndWidth}&legend_options=countMatched:true;fontAntiAliasing:true;hideEmptyRules:true;forceLabels:on`;
     } else {
       if (props.uuid in props.Layers) {

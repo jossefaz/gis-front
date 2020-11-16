@@ -24,41 +24,43 @@ export default (function () {
         }
       };
       refresh = (layernames) => {
-        getFocusedMap()
-          .getLayers()
-          .getArray()
-          .map((lyr) => {
-            const __NessUUID__ = lyr.get("__NessUUID__");
-            lyr.set("editable", true); //TODO : REMOVE AND REPLACE BY REAL LOGIC
-            if (lyr.get("editable") && layernames.includes(__NessUUID__)) {
-              if (lyr instanceof VectorLayer) {
-                if (!this[__NessUUID__]) {
-                  this[__NessUUID__] = new editLayer();
-                }
-                if (!this[__NessUUID__].vectorlayer) {
-                  const registry = VectorLayerRegistry.getInstance();
-                  if (!registry.getVectorLayer(__NessUUID__)) {
-                    registry.setNewVectorLayer(lyr);
+        if (layernames) {
+          getFocusedMap()
+            .getLayers()
+            .getArray()
+            .map((lyr) => {
+              const __NessUUID__ = lyr.get("__NessUUID__");
+              lyr.set("editable", true); //TODO : REMOVE AND REPLACE BY REAL LOGIC
+              if (lyr.get("editable") && layernames.includes(__NessUUID__)) {
+                if (lyr instanceof VectorLayer) {
+                  if (!this[__NessUUID__]) {
+                    this[__NessUUID__] = new editLayer();
                   }
-                  this[__NessUUID__].vectorlayer = registry.getVectorLayer(
-                    __NessUUID__
-                  );
+                  if (!this[__NessUUID__].vectorlayer) {
+                    const registry = VectorLayerRegistry.getInstance();
+                    if (!registry.getVectorLayer(__NessUUID__)) {
+                      registry.setNewVectorLayer(lyr);
+                    }
+                    this[__NessUUID__].vectorlayer = registry.getVectorLayer(
+                      __NessUUID__
+                    );
+                  }
+                }
+                if (lyr instanceof ImageLayer) {
+                  if (!this[__NessUUID__]) {
+                    this[__NessUUID__] = new editLayer();
+                  }
+                  if (!this[__NessUUID__].imagelayer) {
+                    const registry = VectorLayerRegistry.getInstance();
+                    if (!registry.getVectorLayer(__NessUUID__)) {
+                      registry.setFromImageLayer(lyr);
+                    }
+                    this[__NessUUID__].imagelayer = lyr;
+                  }
                 }
               }
-              if (lyr instanceof ImageLayer) {
-                if (!this[__NessUUID__]) {
-                  this[__NessUUID__] = new editLayer();
-                }
-                if (!this[__NessUUID__].imagelayer) {
-                  const registry = VectorLayerRegistry.getInstance();
-                  if (!registry.getVectorLayer(__NessUUID__)) {
-                    registry.setFromImageLayer(lyr);
-                  }
-                  this[__NessUUID__].imagelayer = lyr;
-                }
-              }
-            }
-          });
+            });
+        }
       };
     }
     const el = new editLayers();
@@ -101,8 +103,6 @@ class editLayer {
   set imagelayer(il) {
     if (il instanceof ImageLayer) {
       if (il.getSource().getUrl()) {
-        this.baseUrl = il.getSource().getUrl().split("/wms")[0];
-        console.log("this.baseUrl", this.baseUrl);
         const featureType = il.getSource().getUrl().split("LAYERS=")[1];
         if (featureType.includes("%3A")) {
           const workspace = featureType.split("%3A")[0];
