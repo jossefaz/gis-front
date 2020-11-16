@@ -13,7 +13,7 @@ export const MDUtils = {
                     SourceOptions: {
                         ratio: 1,
                         params: {
-                            "LAYERS": jsonLayer.restid
+                            "LAYERS": jsonLayer.workspace + ":" + jsonLayer.restid
                         },
                         url: jsonLayer.restaddress
                     }
