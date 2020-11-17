@@ -1,9 +1,10 @@
 import React from "react";
 import { Segment, Dropdown, Checkbox } from "semantic-ui-react";
-import { useTable, useSortBy } from "react-table";
+import { useTable, useSortBy, useFilters, useGlobalFilter } from "react-table";
 import "./style.css";
 import { zoomTo } from "../../../nessMapping/api";
 import ActionRegistry from "./Actions";
+import Search from "./Filters/Global";
 import DirectionProvider, {
   DIRECTIONS,
 } from "react-with-direction/dist/DirectionProvider";
@@ -17,27 +18,45 @@ export default (props) => {
     headerGroups,
     allColumns,
     rows,
+    state,
+    preGlobalFilteredRows,
+    setGlobalFilter,
     prepareRow,
   } = useTable(
     {
       columns,
       data,
     },
+
+    useFilters, // useFilters!
+    useGlobalFilter,
     useSortBy
   );
 
   return (
     <DirectionProvider direction={DIRECTIONS.RTL}>
       <React.Fragment>
-        <Dropdown item simple text="Show/Hide columns">
-          <Dropdown.Menu>
-            {allColumns.map(({ id, getToggleHiddenProps }) => (
-              <Dropdown.Item key={id}>
-                <input type="checkbox" {...getToggleHiddenProps()} /> {id}
-              </Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
+        <div className="actions">
+          <div>
+            <Search
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={state.globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          </div>
+          <div>
+            <Dropdown item simple text="Show/Hide columns">
+              <Dropdown.Menu>
+                {allColumns.map(({ id, getToggleHiddenProps }) => (
+                  <Dropdown.Item key={id}>
+                    <input type="checkbox" {...getToggleHiddenProps()} /> {id}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </div>
+
         <div className="tableFixHead">
           <table {...getTableProps()} className="blueTable">
             <thead className="cthead">

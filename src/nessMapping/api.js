@@ -119,6 +119,7 @@ export const zoomTo = (config) => {
     highlightFeature(config);
     view.fit(newGeometry, {
       padding: [850, 850, 850, 850],
+      maxZoom: 12,
     });
   } else {
     console.log(config);

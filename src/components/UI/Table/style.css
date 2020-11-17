@@ -8,6 +8,12 @@
   display: flex;
   justify-content: space-between;
 }
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(to bottom, #5592bb 0%, #327cad 66%, #1c6ea4 100%);
+}
 .tableFixHead {
   overflow-y: auto;
   height: 61.2em;
