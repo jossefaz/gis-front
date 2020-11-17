@@ -38,7 +38,7 @@ export default (props) => {
           ))}
         </Dropdown.Menu>
       </Dropdown>
-      <table {...getTableProps()} className="blueTable">
+      <table {...getTableProps()} style={{ border: "solid 1px blue" }}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
