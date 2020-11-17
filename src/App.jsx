@@ -82,6 +82,7 @@ class App extends React.Component {
               </div>
             </div>
           </SideNav>
+          <div id="append-element-sideNav" className="append-element-sideNav"></div>
           <div id="append-element-container" className="append-element-container"></div>
           <Widget />
         </ToastProvider>

@@ -10,7 +10,7 @@ class EditForm extends AppendBodyComponent {
   WIDGET_NAME = "EditForm";
 
   constructor() {
-    super();
+    super("append-element-container");
     this.uniqueId = `EditForm_${GenerateUUID()}`;
     this.setAppendElementId(this.uniqueId);
   }
@@ -72,13 +72,13 @@ class EditForm extends AppendBodyComponent {
                   />
                 </React.Fragment>
               ) : (
-                <IconButton
-                  className={`ui icon button pointer negative`}
-                  onClick={this.props.onCancel}
-                  icon="window-close"
-                  size="lg"
-                />
-              )
+                  <IconButton
+                    className={`ui icon button pointer negative`}
+                    onClick={this.props.onCancel}
+                    icon="window-close"
+                    size="lg"
+                  />
+                )
             }
           />
         </div>

@@ -11,6 +11,7 @@ import { getFocusedMap } from "../../../nessMapping/api";
 import LegendItem from "../../tool/InternalTool/Legend/LegendItem";
 import EditTool from "../../tool/InternalTool/EditTool";
 import TableOfFeatures from "../../tool/InternalTool/TableOfFeatures";
+import LayerListTOF from "../LayerListTOF";
 
 class LayerListMenuItem extends Component {
     state = {
@@ -162,7 +163,7 @@ class LayerListMenuItem extends Component {
                 </Menu.Item>
                 <div>
                     {this.state.activeItem === "attributeTable" &&
-                        this.state.showHide ? (<TableOfFeatures uuid={layer.uuid}></TableOfFeatures>) : null}
+                        (<LayerListTOF openTable={this.state.showHide} uuid={layer.uuid} />)}
                 </div>
             </Menu>
         );

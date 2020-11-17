@@ -19,11 +19,11 @@ function getAppendedElements() {
 }
 
 class AppendBodyComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
+  constructor(selector) {
+    super();
     this.appendElementContainer = document.getElementById(
-      "append-element-container"
+      // "append-element-container"
+      selector
     );
   }
 
