@@ -10,7 +10,7 @@ body {
   height: 50px;
   overflow: auto;
 } */
-.ui.modal>.content {
+.ui.modal > .content {
   width: auto !important;
 }
 
@@ -22,6 +22,8 @@ body {
 
 .append-element-sideNav {
   position: absolute;
-  top: 38em;
-  left: 15em;
+  top: 5.1em;
+  left: 19.7em;
+  direction: rtl;
+  text-align: right;
 }

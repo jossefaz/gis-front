@@ -1,6 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
-
+import { Provider } from "react-redux";
+import store from "../../../redux/store";
 const appenedElements = {};
 
 function getAppendedElements() {
@@ -38,7 +39,12 @@ class AppendBodyComponent extends React.Component {
   }
 
   updateAppendElements() {
-    render(<span>{getAppendedElements()}</span>, this.appendElementContainer);
+    render(
+      <Provider store={store}>
+        <span>{getAppendedElements()}</span>
+      </Provider>,
+      this.appendElementContainer
+    );
   }
 
   removeAppendElement() {
