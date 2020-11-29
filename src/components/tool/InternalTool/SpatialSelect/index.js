@@ -8,6 +8,9 @@ import { getEmptyVectorLayer } from "../../../../utils/interactions";
 import styles from "../../../../nessMapping/mapStyle";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import LayerList from "./LayerList";
+import { setSelectionForLayers } from "../../../../redux/actions/features";
+import { selectSelectionLayers } from "../../../../redux/reducers";
+
 import _ from "lodash";
 class SpatialSelect extends Component {
   WIDGET_NAME = "SpatialSelect";
@@ -23,7 +26,6 @@ class SpatialSelect extends Component {
     this.interactions = new InteractionUtil(this.WIDGET_NAME);
     this.state = {
       drawtype: null,
-      newVectorLayers: [],
     };
   }
 
@@ -35,12 +37,15 @@ class SpatialSelect extends Component {
     this.registry.initVectorLayers([this.props.uuid]);
   }
 
-  onOpenDrawSession = async (drawtype) => {
-    await this.interactions.newDraw({ type: drawtype });
+  onOpenDrawSession = async (drawtype, freehand) => {
+    await this.interactions.newDraw({
+      type: drawtype,
+      ...(freehand && { freehand: true }),
+    });
     this.onDrawEnd();
   };
 
-  onDrawEnd = () => {
+  onDrawEnd = async () => {
     if (this.interactions.currentDraw) {
       this.interactions.currentDraw.on("drawend", async (e) => {
         const features = this.registry
@@ -51,30 +56,30 @@ class SpatialSelect extends Component {
         this.registry.setNewVectorLayer(vector);
         features.map((f) => source.addFeature(f));
         const newVectorLayers = [
-          ...this.state.newVectorLayers,
+          ...this.props.spatialSelection,
           vector.get("__NessUUID__"),
         ];
-        this.setState({ newVectorLayers });
-        this.interactions.unDraw();
+        await this.props.setSelectionForLayers(newVectorLayers);
+        await this.interactions.unDraw();
       });
     }
   };
 
   removeLayer = (uuid) => {
     this.registry.removeLayer(uuid);
-    const newVectorLayers = this.state.newVectorLayers.filter(
+    const newVectorLayers = this.props.spatialSelection.filter(
       (id) => id != uuid
     );
-    this.setState({ newVectorLayers });
+    this.props.setSelectionForLayers(newVectorLayers);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!_.isEqual(prevState.newVectorLayers, this.state.newVectorLayers)) {
-      const LayersToRemove = prevState.newVectorLayers.filter(
-        (id) => !this.state.newVectorLayers.includes(id)
+  componentDidUpdate(prevProps) {
+    if (!_.isEqual(prevProps.spatialSelection, this.props.spatialSelection)) {
+      const LayersToRemove = prevProps.spatialSelection.filter(
+        (id) => !this.props.spatialSelection.includes(id)
       );
-      const LayersToAdd = this.state.newVectorLayers.filter(
-        (id) => !prevState.newVectorLayers.includes(id)
+      const LayersToAdd = this.props.spatialSelection.filter(
+        (id) => !prevProps.spatialSelection.includes(id)
       );
       LayersToRemove.map((id) => this.registry.removeLayer(id));
       LayersToAdd.map((id) => this.registry.getVectorLayer(id)._addToMap());
@@ -96,16 +101,16 @@ class SpatialSelect extends Component {
           icon="draw-polygon"
           size="lg"
         />
-        <IconButton
+        {/* <IconButton
           className={`ui icon button pointer ${
             this.state.drawtype == this.DRAW_TYPES.Line
               ? "secondary"
               : "primary"
           }`}
-          onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
-          icon="grip-lines"
+          onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon, true)}
+          icon="signature"
           size="lg"
-        />
+        /> */}
 
         <IconButton
           className={`ui icon button pointer ${
@@ -119,7 +124,7 @@ class SpatialSelect extends Component {
         />
 
         <LayerList
-          layersUUID={this.state.newVectorLayers}
+          layersUUID={this.props.spatialSelection}
           removeLayer={(uuid) => this.removeLayer(uuid)}
         />
       </React.Fragment>
@@ -129,7 +134,10 @@ class SpatialSelect extends Component {
 const mapStateToProps = (state) => {
   return {
     Layers: selectCurrentMapLayers(state),
+    spatialSelection: selectSelectionLayers(state),
   };
 };
 
-export default connect(mapStateToProps)(SpatialSelect);
+export default connect(mapStateToProps, { setSelectionForLayers })(
+  SpatialSelect
+);

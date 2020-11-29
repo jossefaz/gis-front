@@ -42,3 +42,6 @@ export const selectCurrentFeature = (state) =>
 
 export const selectCurrentMapLayers = (state) =>
   fromLayers.selectCurrentMapLayers(state);
+
+export const selectSelectionLayers = (state) =>
+  fromFeatures.selectSelectionLayers(state);

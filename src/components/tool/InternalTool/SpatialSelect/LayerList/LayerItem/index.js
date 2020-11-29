@@ -25,18 +25,18 @@ const LayerItem = ({ uuid, index, removeLayer }) => {
 
   return (
     <React.Fragment>
-      <IconButton
-        className={`ui icon button pointer negative`}
-        onClick={() => setModal(true)}
-        icon="trash-alt"
-        size="xs"
-      />
       <Checkbox
         key={uuid}
         value={uuid}
         label={`selection ${index}`}
         onChange={toggleLayer}
         checked={Checked}
+      />
+      <IconButton
+        className={`ui icon button pointer negative`}
+        onClick={() => setModal(true)}
+        icon="trash-alt"
+        size="xs"
       />
       <Confirm
         open={Modal}
