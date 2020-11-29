@@ -13,13 +13,15 @@ export default (function () {
         providerFunction,
         providerCategory,
         subscriberFunction,
-        selectedEventCallBack
+        selectedEventCallBack,
+        renderFunc
       ) => {
         this.registry[providerCategory] = {
           provide: providerFunction,
           subscribe: subscriberFunction,
           category: providerCategory,
           cb: selectedEventCallBack,
+          render: renderFunc,
         };
       };
 
@@ -41,8 +43,9 @@ export default (function () {
           }).then((res) => {
             //Add the call back to each item
             res = res.map((item) => {
-              return { ...item, cb: pub_sub.cb };
+              return { ...item, cb: pub_sub.cb, render: pub_sub.render };
             });
+
             pub_sub.subscribe(res, pub_sub.category);
           });
         });

@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
+import withWidgetLifeCycle from "../../../../HOC/withWidgetLifeCycle";
 import { Dropdown } from "semantic-ui-react";
 import {
   selectVisibleLayers,
   selectCurrentMapLayers,
-} from "../../../../redux/reducers";
-import TableOfFeature from "../TableOfFeatures";
+} from "../../../../../redux/reducers";
+import SpatialSelect from "..";
+
 import _ from "lodash";
 
-class GeneralTableOfFeature extends Component {
-  WIDGET_NAME = "TableOfFeature";
+class GeneralSpatialSelect extends Component {
+  WIDGET_NAME = "GeneralSpatialSelect";
 
   state = {
     layersOptions: null,
@@ -72,7 +73,7 @@ class GeneralTableOfFeature extends Component {
           />
         )}
         {this.state.currentLayerId && (
-          <TableOfFeature uuid={this.state.currentLayerId} />
+          <SpatialSelect uuid={this.state.currentLayerId} />
         )}
       </React.Fragment>
     );
@@ -86,5 +87,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(
-  withWidgetLifeCycle(GeneralTableOfFeature)
+  withWidgetLifeCycle(GeneralSpatialSelect)
 );

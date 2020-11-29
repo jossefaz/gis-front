@@ -59,8 +59,8 @@ table.blueTable tbody td {
 table.blueTable tr:nth-child(even) {
   background: #d0e4f5;
 }
-table.blueTable tr:nth-child(even):hover {
-  background-color: #f5f5f5;
+table.blueTable tr:hover {
+  background-color: #aae7b2;
   cursor: pointer;
 }
 

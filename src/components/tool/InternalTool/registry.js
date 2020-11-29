@@ -10,5 +10,6 @@ export default {
   Coordinates: lazy(() => import("./Coordinates")),
   Screenshooter: lazy(() => import("./Screenshooter")),
   MapEditor: lazy(() => import("./MapEditor")),
-  TestTableOfFeature: lazy(() => import("./TestTableOfFeature")),
+  TestTableOfFeature: lazy(() => import("./TableOfFeatures/Container")),
+  TestSpatialSelect: lazy(() => import("./SpatialSelect/Container")),
 };

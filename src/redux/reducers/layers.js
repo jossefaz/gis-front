@@ -38,9 +38,11 @@ export default function (state = {}, action) {
 
 export const selectVisibleLayers = (state) => {
   const { Layers, map } = state;
-  const visibles = Object.keys(Layers[map.focused].layers).filter(
-    (id) => Layers[map.focused].layers[id].visible === true
-  );
+  let visibles = false;
+  if (map.focused in Layers && Layers[map.focused].layers)
+    visibles = Object.keys(Layers[map.focused].layers).filter(
+      (id) => Layers[map.focused].layers[id].visible === true
+    );
   return visibles;
 };
 

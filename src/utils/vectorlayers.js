@@ -49,15 +49,9 @@ export default (function () {
       };
 
       getFeaturesByExtent = (extent) => {
-        const sources = this.getSources();
         const features = [];
-        sources.map((vs) => {
-          // const editable = vs.get("editable"); //TODO : uncomment and change for real editable
-          vs.forEachFeatureIntersectingExtent(extent, (feature) => {
-            feature.set("editable", true); // TODO : change true value by real editable value
-            feature.set("__NessUUID__", vs.get("__NessUUID__"));
-            features.push(feature);
-          });
+        Object.values(this.registry).map((vl) => {
+          features.push(...vl.getFeaturesByExtent(extent));
         });
         return features;
       };
@@ -112,6 +106,9 @@ export class VectorLayerUtils {
     if (vl) {
       this.vl = vl;
       this.uid = vl.get("__NessUUID__");
+      if (this.vl.getSource()) {
+        this.source = this.vl.getSource();
+      }
     }
     this.data = [];
   }
@@ -126,7 +123,6 @@ export class VectorLayerUtils {
       this.layername.split(":")[0],
       this.layername.split(":")[1]
     );
-    console.log("this.geoserverUtil", this.geoserverUtil);
     this._initVectorLayer();
     this._addToMap();
     this._initVectorSource();
@@ -160,6 +156,20 @@ export class VectorLayerUtils {
     this.source.set("__NessUUID__", this.uid);
     this.source.forEachFeature((feature) => feature.setStyle(styles.HIDDEN));
     this.vl.setSource(this.source);
+  };
+
+  _toggleVisibility = () => {
+    this.vl.setVisible(!this.vl.getVisible());
+  };
+
+  getFeaturesByExtent = (extent) => {
+    const features = [];
+    this.source.forEachFeatureIntersectingExtent(extent, (feature) => {
+      feature.set("editable", true); // TODO : change true value by real editable value
+      feature.set("__NessUUID__", this.source.get("__NessUUID__"));
+      features.push(feature);
+    });
+    return features;
   };
 
   refresh = () => {

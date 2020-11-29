@@ -29,10 +29,12 @@ import {
   faSave,
   faWindowClose,
   faTable,
+  faObjectGroup,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
   library.add(
+    faObjectGroup,
     faTable,
     faWindowClose,
     faSave,

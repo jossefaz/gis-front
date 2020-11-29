@@ -6,8 +6,6 @@ import "./style.css";
 
 const getSuggestionValue = (suggestion) => suggestion.name;
 
-const renderSuggestion = (suggestion) => <div>{suggestion.name}</div>;
-
 export default class Example extends React.Component {
   constructor() {
     super();
@@ -50,7 +48,7 @@ export default class Example extends React.Component {
     const { value, suggestions } = this.state;
 
     const inputProps = {
-      placeholder: "Type a programming language",
+      placeholder: "Search ...",
       value,
       onChange: this.onChange,
     };
@@ -61,12 +59,11 @@ export default class Example extends React.Component {
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-        onSuggestionSelected={(
-          selection,
-          { suggestion, suggestionValue, index, method }
-        ) => suggestion.cb(suggestion)}
+        onSuggestionSelected={(selection, { suggestion }) =>
+          suggestion.cb(suggestion)
+        }
         getSuggestionValue={getSuggestionValue}
-        renderSuggestion={renderSuggestion}
+        renderSuggestion={(suggestion) => suggestion.render(suggestion)}
         inputProps={inputProps}
       />
     );

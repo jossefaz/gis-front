@@ -17,7 +17,7 @@ import {
   setInteractions,
 } from "../redux/actions/interaction";
 import Collection from "ol/Collection";
-
+import GenerateUUID from "./uuid";
 import styles from "../nessMapping/mapStyle";
 
 export class InteractionUtil {
@@ -126,6 +126,8 @@ export class InteractionUtil {
 
   unDraw = async () => {
     if (this.currentDrawUUID) {
+      this.getVectorLayer(this.TYPES.DRAW) &&
+        getFocusedMap().removeLayer(this.getVectorLayer(this.TYPES.DRAW));
       await store.dispatch(
         unsetInteraction({
           uuid: this.currentDrawUUID,
@@ -259,6 +261,9 @@ export const getEmptyVectorLayer = (inStyle) => {
   const style = inStyle || mapStyle.draw;
   const source = new VectorSource();
   const vector = new VectorLayer({ source, style });
+  const uuid = GenerateUUID();
+  source.set("__NessUUID__", uuid);
+  vector.set("__NessUUID__", uuid);
   return { source, vector };
 };
 
