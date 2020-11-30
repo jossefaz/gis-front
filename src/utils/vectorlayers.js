@@ -162,6 +162,10 @@ export class VectorLayerUtils {
     this.vl.setVisible(!this.vl.getVisible());
   };
 
+  _setStyle = (style) => {
+    this.vl.setStyle(style);
+  };
+
   getFeaturesByExtent = (extent) => {
     const features = [];
     this.source.forEachFeatureIntersectingExtent(extent, (feature) => {

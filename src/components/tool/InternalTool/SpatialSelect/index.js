@@ -101,16 +101,6 @@ class SpatialSelect extends Component {
           icon="draw-polygon"
           size="lg"
         />
-        {/* <IconButton
-          className={`ui icon button pointer ${
-            this.state.drawtype == this.DRAW_TYPES.Line
-              ? "secondary"
-              : "primary"
-          }`}
-          onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon, true)}
-          icon="signature"
-          size="lg"
-        /> */}
 
         <IconButton
           className={`ui icon button pointer ${

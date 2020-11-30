@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ColorPicker from "../../ColorPicker/ColorPicker";
+import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
 import { generateNewStyle } from "../../../../../../utils/func";
 import IconButton from "../../../../../UI/Buttons/IconButton";
 import { unhighlightFeature } from "../../../../../../nessMapping/api";
