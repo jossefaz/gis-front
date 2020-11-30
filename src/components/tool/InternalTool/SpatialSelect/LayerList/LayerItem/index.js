@@ -6,8 +6,14 @@ import { Confirm } from "semantic-ui-react";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
 import { generateNewStyle } from "../../../../../../utils/func";
+import FeatureList from "./FeatureList";
+import styles from "../../../../../../nessMapping/mapStyle";
 import "./style.css";
 const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
+  const registry = VectorLayerRegistry.getInstance();
+  const currentlayerSource = registry.getVectorLayer(uuid)
+    ? registry.getVectorLayer(uuid).source
+    : null;
   const [Checked, setChecked] = useState(true);
   const [Modal, setModal] = useState(false);
   const [fillColor, setFillColor] = useState({
@@ -24,13 +30,16 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
     a: "1",
   });
 
+  const [update, setUpdate] = useState(false);
+
+  const [layerStyle, setLayerStyle] = useState(styles.DRAW_END);
+
   const eraselayer = {
     content: "? האם באמת למחוק את היישות",
     confirmBtn: "כן",
     cancelBtn: "לא",
   };
   const toggleLayer = () => {
-    const registry = VectorLayerRegistry.getInstance();
     registry.getVectorLayer(uuid)._toggleVisibility();
     setChecked(!Checked);
   };
@@ -38,6 +47,14 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
   const removeLocalLayer = () => {
     removeLayer(uuid);
     setModal(false);
+  };
+
+  const removeFeature = (feature) => {
+    currentlayerSource.removeFeature(feature);
+    if (currentlayerSource.getFeatures().length == 0) {
+      removeLocalLayer();
+    }
+    setUpdate(!update);
   };
 
   const updateColor = (width, stroke, Fill) => {
@@ -52,10 +69,9 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
     }
     const currentStroke = `rgba(${stroke.r},${stroke.g},${stroke.b},${stroke.a})`;
     const currentFill = `rgba(${Fill.r},${Fill.g},${Fill.b},${Fill.a})`;
-    const registry = VectorLayerRegistry.getInstance();
-    registry
-      .getVectorLayer(uuid)
-      ._setStyle(generateNewStyle(currentFill, currentStroke, outlineWidth));
+    const style = generateNewStyle(currentFill, currentStroke, outlineWidth);
+    registry.getVectorLayer(uuid)._setStyle(style);
+    setLayerStyle(style);
   };
 
   return (
@@ -112,6 +128,29 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
             </div>
           </Accordion.Content>
         </Accordion>
+        {currentlayerSource && (
+          <Accordion>
+            <Accordion.Title
+              active={activeIndex === 2}
+              index={2}
+              onClick={openItem}
+            >
+              <IconButton
+                className={`ui icon button pointer positive`}
+                onClick={() => {}}
+                icon="table"
+                size="xs"
+              />
+            </Accordion.Title>
+            <Accordion.Content active={activeIndex === 2}>
+              <FeatureList
+                featuresArray={currentlayerSource.getFeatures()}
+                removeFeature={removeFeature}
+                layerStyle={layerStyle}
+              />
+            </Accordion.Content>
+          </Accordion>
+        )}
       </div>
 
       <Confirm

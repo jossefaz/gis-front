@@ -51,15 +51,18 @@ class SpatialSelect extends Component {
         const features = this.registry
           .getVectorLayer(this.props.uuid)
           .getFeaturesByExtent(e.feature.getGeometry().getExtent());
-        const { source, vector } = getEmptyVectorLayer(styles.EDIT);
-        vector.setSource(source);
-        this.registry.setNewVectorLayer(vector);
-        features.map((f) => source.addFeature(f));
-        const newVectorLayers = [
-          ...this.props.spatialSelection,
-          vector.get("__NessUUID__"),
-        ];
-        await this.props.setSelectionForLayers(newVectorLayers);
+        if (features.length > 0) {
+          const { source, vector } = getEmptyVectorLayer(styles.DRAW_END);
+          vector.setSource(source);
+          this.registry.setNewVectorLayer(vector);
+          features.map((f) => source.addFeature(f));
+          const newVectorLayers = [
+            ...this.props.spatialSelection,
+            vector.get("__NessUUID__"),
+          ];
+          await this.props.setSelectionForLayers(newVectorLayers);
+        }
+
         await this.interactions.unDraw();
       });
     }
