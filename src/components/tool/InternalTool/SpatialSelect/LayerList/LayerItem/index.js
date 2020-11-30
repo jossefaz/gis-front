@@ -5,10 +5,11 @@ import IconButton from "../../../../../UI/Buttons/IconButton";
 import { Confirm } from "semantic-ui-react";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
-import { generateNewStyle } from "../../../../../../utils/func";
+import { generateNewPolygonStyle } from "../../../../../../utils/func";
 import FeatureList from "./FeatureList";
 import styles from "../../../../../../nessMapping/mapStyle";
 import "./style.css";
+import { unhighlightFeature } from "../../../../../../nessMapping/api";
 const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
   const registry = VectorLayerRegistry.getInstance();
   const currentlayerSource = registry.getVectorLayer(uuid)
@@ -34,17 +35,32 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
 
   const [layerStyle, setLayerStyle] = useState(styles.DRAW_END);
 
+  const setStyleToFeatures = (style) => {
+    registry
+      .getVectorLayer(uuid)
+      .source.getFeatures()
+      .map((f) => f.setStyle(style));
+  };
+
   const eraselayer = {
     content: "? האם באמת למחוק את היישות",
     confirmBtn: "כן",
     cancelBtn: "לא",
   };
   const toggleLayer = () => {
+    if (Checked) {
+      setStyleToFeatures(styles.HIDDEN);
+    } else {
+      setStyleToFeatures(layerStyle);
+    }
     registry.getVectorLayer(uuid)._toggleVisibility();
     setChecked(!Checked);
   };
 
   const removeLocalLayer = () => {
+    // TODO : Remove the line on setting the style of each feature to hidden...it just here to fix a bug of remainings features after delete
+    currentlayerSource.getFeatures().map((f) => f.setStyle(styles.HIDDEN));
+    unhighlightFeature();
     removeLayer(uuid);
     setModal(false);
   };
@@ -69,8 +85,13 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
     }
     const currentStroke = `rgba(${stroke.r},${stroke.g},${stroke.b},${stroke.a})`;
     const currentFill = `rgba(${Fill.r},${Fill.g},${Fill.b},${Fill.a})`;
-    const style = generateNewStyle(currentFill, currentStroke, outlineWidth);
+    const style = generateNewPolygonStyle(
+      currentFill,
+      currentStroke,
+      outlineWidth
+    );
     registry.getVectorLayer(uuid)._setStyle(style);
+    setStyleToFeatures(style);
     setLayerStyle(style);
   };
 
@@ -99,7 +120,7 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
             <IconButton
               className={`ui icon button pointer positive`}
               onClick={() => {}}
-              icon="cogs"
+              icon="palette"
               size="xs"
             />
           </Accordion.Title>
@@ -144,7 +165,7 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
             </Accordion.Title>
             <Accordion.Content active={activeIndex === 2}>
               <FeatureList
-                featuresArray={currentlayerSource.getFeatures()}
+                currentlayerSource={currentlayerSource}
                 removeFeature={removeFeature}
                 layerStyle={layerStyle}
               />

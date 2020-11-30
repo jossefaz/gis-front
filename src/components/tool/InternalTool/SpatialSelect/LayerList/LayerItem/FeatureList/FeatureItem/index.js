@@ -4,7 +4,11 @@ import VectorLayerRegistry from "../../../../../../../../utils/vectorlayers";
 import IconButton from "../../../../../../../UI/Buttons/IconButton";
 import { Confirm } from "semantic-ui-react";
 import styles from "../../../../../../../../nessMapping/mapStyle";
-import { getFeatureProperties } from "../../../../../../../../nessMapping/api";
+import {
+  zoomTo,
+  highlightFeature,
+  unhighlightFeature,
+} from "../../../../../../../../nessMapping/api";
 
 const FeatureItem = ({ feature, style, removeFeature }) => {
   const [Checked, setChecked] = useState(true);
@@ -25,6 +29,7 @@ const FeatureItem = ({ feature, style, removeFeature }) => {
 
   const removeLocalFeature = () => {
     feature.setStyle(styles.HIDDEN);
+    unhighlightFeature();
     removeFeature(feature);
     setModal(false);
   };
@@ -42,6 +47,15 @@ const FeatureItem = ({ feature, style, removeFeature }) => {
           onClick={() => setModal(true)}
           icon="trash-alt"
           size="xs"
+        />
+        <IconButton
+          className="ui icon button primary pointer margin05em"
+          onClick={() => zoomTo(feature.getGeometry())}
+          onHover={() => {
+            highlightFeature(feature.getGeometry());
+          }}
+          icon="crosshairs"
+          size="1x"
         />
       </div>
 

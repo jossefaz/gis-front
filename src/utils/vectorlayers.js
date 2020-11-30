@@ -58,6 +58,7 @@ export default (function () {
 
       removeLayer = (__NessUUID__) => {
         if (__NessUUID__ in this.registry) {
+          this.registry[__NessUUID__].source.clear();
           getFocusedMap().removeLayer(this.registry[__NessUUID__].vl);
           delete this.registry[__NessUUID__];
         }

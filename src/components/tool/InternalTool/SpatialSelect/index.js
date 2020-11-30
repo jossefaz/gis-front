@@ -55,7 +55,10 @@ class SpatialSelect extends Component {
           const { source, vector } = getEmptyVectorLayer(styles.DRAW_END);
           vector.setSource(source);
           this.registry.setNewVectorLayer(vector);
-          features.map((f) => source.addFeature(f));
+          features.map((f) => {
+            f.setStyle(styles.DRAW_END);
+            source.addFeature(f);
+          });
           const newVectorLayers = [
             ...this.props.spatialSelection,
             vector.get("__NessUUID__"),
@@ -63,7 +66,7 @@ class SpatialSelect extends Component {
           await this.props.setSelectionForLayers(newVectorLayers);
         }
 
-        await this.interactions.unDraw();
+        await this.interactions.unDraw(true);
       });
     }
   };
@@ -77,6 +80,9 @@ class SpatialSelect extends Component {
   };
 
   componentDidUpdate(prevProps) {
+    if (prevProps.uuid != this.props.uuid) {
+      this.registry.initVectorLayers([this.props.uuid]);
+    }
     if (!_.isEqual(prevProps.spatialSelection, this.props.spatialSelection)) {
       const LayersToRemove = prevProps.spatialSelection.filter(
         (id) => !this.props.spatialSelection.includes(id)

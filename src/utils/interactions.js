@@ -124,9 +124,10 @@ export class InteractionUtil {
     );
   };
 
-  unDraw = async () => {
+  unDraw = async (removePreviousLayer) => {
     if (this.currentDrawUUID) {
       this.getVectorLayer(this.TYPES.DRAW) &&
+        removePreviousLayer &&
         getFocusedMap().removeLayer(this.getVectorLayer(this.TYPES.DRAW));
       await store.dispatch(
         unsetInteraction({

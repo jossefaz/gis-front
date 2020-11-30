@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { List } from "semantic-ui-react";
 import FeatureItem from "./FeatureItem";
 const CheckboxExampleCheckbox = ({
-  featuresArray,
+  currentlayerSource,
   removeFeature,
   layerStyle,
 }) => {
   const renderFeatures = () => (
     <List>
-      {featuresArray.map((feature, index) => (
+      {currentlayerSource.getFeatures().map((feature, index) => (
         <List.Item key={feature.getId()}>
           <FeatureItem
             feature={feature}
