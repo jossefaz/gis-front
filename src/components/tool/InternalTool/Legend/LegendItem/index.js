@@ -12,6 +12,7 @@ import { selectCurrentMapLayers } from "../../../../../redux/reducers";
 import { Accordion, Icon } from "semantic-ui-react";
 import { getHeight, getWidth } from "ol/extent";
 import { Checkbox } from "semantic-ui-react";
+import config from "react-global-configuration";
 const LegendItem = (props) => {
   const [active, toggle] = useState(true);
   const [resolution, setResolution] = useState();
@@ -44,7 +45,9 @@ const LegendItem = (props) => {
       if (props.uuid in props.Layers) {
         const { restid } = props.Layers[props.uuid];
         // TODO : change baseurl from config
-        url = `http://localhost:8080/geoserver/Jeru/wms?&LAYERS=${restid}&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=${restid}&legend_options=countMatched:false;fontAntiAliasing:true;hideEmptyRules:false;forceLabels:on`;
+        url = `${config.get(
+          "Geoserver"
+        )}/Jeru/wms?&LAYERS=${restid}&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=${restid}&legend_options=countMatched:false;fontAntiAliasing:true;hideEmptyRules:false;forceLabels:on`;
       }
     }
     console.log("props.Layers", props.Layers);
