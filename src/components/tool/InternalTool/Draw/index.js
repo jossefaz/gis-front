@@ -17,7 +17,7 @@ import TextForm from "./Texts/TextForm";
 import { Confirm } from "semantic-ui-react";
 import FeatureTable from "./FeatureTable";
 import TextTable from "./Texts";
-import ColorPicker from "./ColorPicker/ColorPicker";
+import ColorPicker from "../../../UI/ColorPicker/ColorPicker";
 import { DragPan } from "ol/interaction";
 import { Grid } from "semantic-ui-react";
 import Point from "ol/geom/Point";

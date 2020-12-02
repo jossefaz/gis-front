@@ -1,0 +1,10 @@
+.displayFlex {
+  display: flex;
+  align-items: baseline;
+}
+.controls {
+  right: 1em;
+  top: 9em;
+  align-items: flex-end;
+  display: flex;
+}

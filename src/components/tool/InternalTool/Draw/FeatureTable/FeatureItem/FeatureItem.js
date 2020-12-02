@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ColorPicker from "../../ColorPicker/ColorPicker";
-import { generateNewStyle } from "../../../../../../utils/func";
+import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
+import { generateNewPolygonStyle } from "../../../../../../utils/func";
 import IconButton from "../../../../../UI/Buttons/IconButton";
 import { unhighlightFeature } from "../../../../../../nessMapping/api";
 import { Table, Form, Input } from "semantic-ui-react";
@@ -38,7 +38,7 @@ export default (props) => {
       const currentStroke = `rgba(${strokeColor.r},${strokeColor.g},${strokeColor.b},${strokeColor.a})`;
       const currentFill = `rgba(${fillColor.r},${fillColor.g},${fillColor.b},${fillColor.a})`;
       getFeature().setStyle(
-        generateNewStyle(currentFill, currentStroke, outlineWidth)
+        generateNewPolygonStyle(currentFill, currentStroke, outlineWidth)
       );
     }
   };
@@ -47,7 +47,7 @@ export default (props) => {
   } else {
     if (props.editSession.current == props.fid) {
       getFeature().setStyle(
-        generateNewStyle(editStyle.fill, editStyle.stroke, 3)
+        generateNewPolygonStyle(editStyle.fill, editStyle.stroke, 3)
       );
     } else {
       updateStyle();

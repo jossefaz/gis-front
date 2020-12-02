@@ -4,6 +4,7 @@ import { toogleSideNav } from "../../redux/actions/ui";
 import { renderTools } from "../../components/tool/func";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getFocusedMapProxy } from "../../nessMapping/api";
+import SeachComp from "../../components/Search";
 class TopNav extends React.Component {
   get Tools() {
     return getFocusedMapProxy()
@@ -15,10 +16,7 @@ class TopNav extends React.Component {
     return (
       <div className="ui top fixed menu ">
         <div className="item align left">
-          <div className="ui icon input">
-            <input type="text" placeholder="...חיפוש" />
-            <i className="search link icon"></i>
-          </div>
+          <SeachComp />
         </div>
         {renderTools(this.Tools, "TopNav")}
         <button

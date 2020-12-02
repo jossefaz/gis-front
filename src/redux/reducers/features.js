@@ -1,5 +1,6 @@
 import types from "../actions/actionsTypes";
 import produce from "immer";
+import { type } from "os";
 
 // selectedFeatures: {},
 // currentLayer: null,
@@ -71,6 +72,15 @@ export default function (state = {}, action) {
         }
       });
 
+    case types.SET_SPATIAL_LAYER_SELECTION:
+      const { arrayOfLayerId, focusedmap } = action.payload;
+      return produce(state, (draftState) => {
+        if (!(focusedmap in state)) {
+          draftState[focusedmap] = {};
+        }
+        draftState[focusedmap].spatialSelection = arrayOfLayerId;
+      });
+
     case types.SET_CURRENT_LAYER:
       return produce(state, (draftState) => {
         const { focusedmap, currentLayer } = action.payload;
@@ -126,4 +136,12 @@ export const selectSelectedFeatureInCurrentLayer = (state) => {
     return features[layer];
   }
   return false;
+};
+
+export const selectSelectionLayers = (state) => {
+  const { Features, map } = state;
+  if (map.focused in Features && "spatialSelection" in Features[map.focused]) {
+    return Features[map.focused].spatialSelection;
+  }
+  return [];
 };

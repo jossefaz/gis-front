@@ -190,9 +190,9 @@ class FeatureDetail extends React.Component {
               </tbody>
             </table>
           </div>
-          {this.props.CurrentLayerUUID && (
+          {/* {this.props.CurrentLayerUUID && (
             <EditTool uuid={this.props.CurrentLayerUUID} />
-          )}
+          )} */}
           <Confirm
             open={this.state.openConfirm}
             size="mini"

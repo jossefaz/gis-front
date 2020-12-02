@@ -81,3 +81,11 @@ export const setCurrentLayer = (currentLayer) => (dispatch) => {
     payload: { currentLayer, focusedmap },
   });
 };
+
+export const setSelectionForLayers = (arrayOfLayerId) => (dispatch) => {
+  const focusedmap = getFocusedMapProxy().uuid.value;
+  dispatch({
+    type: types.SET_SPATIAL_LAYER_SELECTION,
+    payload: { arrayOfLayerId, focusedmap },
+  });
+};

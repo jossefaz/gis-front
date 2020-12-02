@@ -217,9 +217,6 @@ class EditTool extends Component {
       );
       this._editProxy = EditProxy.getInstance([this.props.uuid]);
       this.getMetadata();
-      console.log("this.registry", this.registry);
-      console.log("this.currentLayer", this.currentLayer);
-      console.log("this.editProxy", this.editProxy);
     }
   }
   componentWillUnmount() {
