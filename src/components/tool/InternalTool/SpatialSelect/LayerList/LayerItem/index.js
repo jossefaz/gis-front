@@ -152,8 +152,8 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
         {currentlayerSource && (
           <Accordion>
             <Accordion.Title
-              active={activeIndex === 2}
-              index={2}
+              active={activeIndex === `${uuid}_2`}
+              index={`${uuid}_2`}
               onClick={openItem}
             >
               <IconButton
@@ -163,7 +163,7 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
                 size="xs"
               />
             </Accordion.Title>
-            <Accordion.Content active={activeIndex === 2}>
+            <Accordion.Content active={activeIndex === `${uuid}_2`}>
               <FeatureList
                 currentlayerSource={currentlayerSource}
                 removeFeature={removeFeature}
