@@ -10,8 +10,8 @@ import { getXMLResponse } from "../../../communication/apiManager";
 import { getFocusedMap } from "../../../nessMapping/api";
 import LegendItem from "../../tool/InternalTool/Legend/LegendItem";
 import EditTool from "../../tool/InternalTool/EditTool";
-import TableOfFeatures from "../../tool/InternalTool/TableOfFeatures";
 import LayerListTOF from "../LayerListTOF";
+import SpatialSelect from "../../tool/InternalTool/SpatialSelect";
 
 class LayerListMenuItem extends Component {
     state = {
@@ -164,6 +164,17 @@ class LayerListMenuItem extends Component {
                 <div>
                     {this.state.activeItem === "attributeTable" &&
                         (<LayerListTOF openTable={this.state.showHide} uuid={layer.uuid} />)}
+                </div>
+                <Menu.Item
+                    name="spatialSelect"
+                    active={activeItem === "spatialSelect"}
+                    onClick={this.handleItemClick}>
+                    <div style={{ color: 'black' }}>ניתוח מרחבי<Icon link
+                        name='tasks' size="large" /></div>
+                </Menu.Item>
+                <div>
+                    {this.state.activeItem === "spatialSelect" && this.state.showHide ? (
+                        <SpatialSelect key={layer.uuid} uuid={layer.uuid} global={false}></SpatialSelect>) : null}
                 </div>
             </Menu>
         );
