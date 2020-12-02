@@ -168,7 +168,8 @@ class LayerListMenuItem extends Component {
                 <Menu.Item
                     name="spatialSelect"
                     active={activeItem === "spatialSelect"}
-                    onClick={this.handleItemClick}>
+                    onClick={this.handleItemClick}
+                    disabled={!visible}>                    
                     <div style={{ color: 'black' }}>ניתוח מרחבי<Icon link
                         name='tasks' size="large" /></div>
                 </Menu.Item>
