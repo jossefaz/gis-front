@@ -13,6 +13,7 @@ class MapTabs extends React.Component {
       await this.props.resetTools();
       if (uuid == "+") {
         await this.props.InitMap();
+        await this.props.InitLayers();
       } else {
         await this.props.setMapFocus(uuid);
         getFocusedMap().setTarget("map");

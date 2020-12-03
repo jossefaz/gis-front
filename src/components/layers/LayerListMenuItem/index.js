@@ -149,7 +149,7 @@ class LayerListMenuItem extends Component {
                     onClick={this.handleItemClick}>
                     <div style={{ color: 'black' }}>מקרא<Icon link
                         name='tasks' size="large" /></div>
-                </Menu.Item>
+                </Menu.Item>    
                 <div>
                     {this.state.activeItem === "legend" && this.state.showHide ? (
                         <LegendItem key={layer.uuid} uuid={layer.uuid} global={false}></LegendItem>) : null}
