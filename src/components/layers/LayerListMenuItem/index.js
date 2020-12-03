@@ -118,7 +118,6 @@ class LayerListMenuItem extends Component {
     const { layer, visible } = this.props;
     const color = visible ? { color: "black" } : { color: "grey" };
 
-<<<<<<< HEAD
     return (
       <Menu secondary vertical className="content uirtl">
         <Menu.Item
@@ -200,6 +199,7 @@ class LayerListMenuItem extends Component {
           name="spatialSelect"
           active={activeItem === "spatialSelect"}
           onClick={this.handleItemClick}
+          disabled={!visible}
         >
           <div style={{ color: "black" }}>
             ניתוח מרחבי
@@ -218,80 +218,6 @@ class LayerListMenuItem extends Component {
       </Menu>
     );
   }
-=======
-        return (
-            <Menu secondary vertical className="content uirtl">
-                <Menu.Item
-                    name="transparency"
-                    active={activeItem === "transparency"}
-                    onClick={this.handleItemClick}>
-                    <div style={color}>
-                        שקיפות
-                        <Slider
-                            style={{ width: "80%" }}
-                            color={visible ? 'blue' : 'grey'}
-                            disabled={!visible}
-                            settings={this.settings} />
-                    </div>
-                </Menu.Item>
-                <Menu.Item
-                    name="fullExtent"
-                    active={activeItem === "fullExtent"}
-                    onClick={this.handleItemClick}>
-                    <div style={{ color: 'black' }}
-                    >מבט מלא על השכבה<Icon link
-                        name='zoom' size="large" /></div>
-                </Menu.Item>
-                <Menu.Item
-                    name="editLayer"
-                    active={activeItem === "editLayer"}
-                    onClick={this.handleItemClick}
-                    disabled={!visible}>
-                    <div style={color}>ערוך שכבה<Icon link
-                        name='edit' size="large" /></div>
-                </Menu.Item>
-                <div>
-                    {this.state.activeItem === "editLayer" && this.state.showHide ? (
-                        <EditTool uuid={layer.uuid}></EditTool>) : null}
-                </div>
-                <Menu.Item
-                    name="legend"
-                    active={activeItem === "legend"}
-                    onClick={this.handleItemClick}>
-                    <div style={{ color: 'black' }}>מקרא<Icon link
-                        name='tasks' size="large" /></div>
-                </Menu.Item>    
-                <div>
-                    {this.state.activeItem === "legend" && this.state.showHide ? (
-                        <LegendItem key={layer.uuid} uuid={layer.uuid} global={false}></LegendItem>) : null}
-                </div>
-                <Menu.Item
-                    name="attributeTable"
-                    active={activeItem === "attributeTable"}
-                    onClick={this.handleItemClick}>
-                    <div style={{ color: 'black' }}>מאפיינים<Icon link
-                        name='table' size='large' /></div>
-                </Menu.Item>
-                <div>
-                    {this.state.activeItem === "attributeTable" &&
-                        (<LayerListTOF openTable={this.state.showHide} uuid={layer.uuid} />)}
-                </div>
-                <Menu.Item
-                    name="spatialSelect"
-                    active={activeItem === "spatialSelect"}
-                    onClick={this.handleItemClick}
-                    disabled={!visible}>                    
-                    <div style={{ color: 'black' }}>ניתוח מרחבי<Icon link
-                        name='tasks' size="large" /></div>
-                </Menu.Item>
-                <div>
-                    {this.state.activeItem === "spatialSelect" && this.state.showHide ? (
-                        <SpatialSelect key={layer.uuid} uuid={layer.uuid} global={false}></SpatialSelect>) : null}
-                </div>
-            </Menu>
-        );
-    }
->>>>>>> upstream/master
 }
 const mapStateToProps = (state, ownProps) => {
   return {
