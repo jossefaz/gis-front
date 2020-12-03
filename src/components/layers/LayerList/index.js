@@ -38,7 +38,8 @@ class LayerList extends Component {
 
   componentDidUpdate(prevProps, prevState) {
 
-    if (Object.keys(prevState.layers).length !== Object.keys(this.state.layers).length) {
+    if (Object.keys(prevState.layers).length !== Object.keys(this.state.layers).length 
+    || prevState.layers !== this.state.layers) {
       this.renderLayerList();
     }
   }

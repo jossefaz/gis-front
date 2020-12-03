@@ -60,12 +60,7 @@ class App extends React.Component {
     // REMOVE: this is just for searching debug
   }
 
-  fetchDataFromServer = async () => {
-    const [layersResult] = await Promise.all([getMetaData("layers")]);
-    if (layersResult) {
-      this.props.InitLayers(layersResult);
-    }
-  };
+
 
   render() {
     return (
