@@ -4,6 +4,7 @@ import LifeCycleRegistry from "./LifeCycle";
 import { getFocusedMapProxy, addLayerToMapProxy } from "../../nessMapping/api";
 import { nessLayerToReduxLayer } from "../../utils/convertors/layerConverter";
 import { getMetaData } from "../../communication/mdFetcher";
+import { config } from "process";
 export const toggleTool = (ToolId) => async (dispatch, getState) => {
   const mapId = getFocusedMapProxy().uuid.value;
   const toolConfig = getState().Tools[mapId].tools[ToolId];
@@ -19,7 +20,29 @@ export const toggleTool = (ToolId) => async (dispatch, getState) => {
     payload: { ToolId, mapId },
   });
 };
+export const toggleToolByName = (ToolName) => async (dispatch, getState) => {
+  const mapId = getFocusedMapProxy().uuid.value;
+  const ToolState = getState().Tools[mapId].tools;
+  const ToolId = Object.keys(ToolState).find(
+    (Id) => ToolState[Id].ToolName == ToolName
+  );
+  const toolConfig = ToolState[ToolId];
+  if (toolConfig) {
+    await _getLifeCycleFunc(toolConfig)(
+      dispatch,
+      getState,
+      toolConfig.ToolName,
+      toolConfig.IsOpen
+    );
 
+    dispatch({
+      type: types.TOGGLE_TOOLS,
+      payload: { ToolId, mapId },
+    });
+  } else {
+    console.error(`The tool ${ToolName} does not exists in the state`);
+  }
+};
 export const toggleGroupTool = (GroupToolId) => (dispatch) => {
   const mapId = getFocusedMapProxy().uuid.value;
   dispatch({
