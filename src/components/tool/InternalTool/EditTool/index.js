@@ -10,8 +10,16 @@ import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
 import VectorLayerRegistry from "../../../../utils/vectorlayers";
-import { selectVisibleLayers } from "../../../../redux/reducers";
+import {
+  selectVisibleLayers,
+  selectSelectedFeatures,
+} from "../../../../redux/reducers";
 import { toggleToolByName } from "../../../../redux/actions/tools";
+import {
+  setSelectedFeatures,
+  setCurrentFeature,
+  setCurrentLayer,
+} from "../../../../redux/actions/features";
 import { connect } from "react-redux";
 const initialState = {
   geomType: null,
@@ -124,7 +132,6 @@ class EditTool extends Component {
   onSelectEnd = () => {
     if (this.interactions.currentSelect) {
       this.interactions.currentSelect.on("select", async (e) => {
-        this.props.toggleToolByName("Identify");
         if (e.selected.length > 0) {
           const selectedF = e.selected[0];
           this.setState({
@@ -132,9 +139,13 @@ class EditTool extends Component {
             newFeature: null,
             openForm: true,
           });
-          await this.interactions.newModify(
-            this.interactions.currentSelect.getFeatures()
-          );
+          selectedF.set("editable", true);
+          // TODO : change true value by real editable value
+          selectedF.set("__NessUUID__", this.currentLayer.get("__NessUUID__"));
+          await this.props.setSelectedFeatures([selectedF]);
+          await this.props.setCurrentFeature(selectedF.getId());
+          await this.props.toggleToolByName("Identify");
+
           this.editProxy.edit(selectedF);
           const extent = selectedF.getGeometry().getExtent();
           selectedF.setStyle(styles.EDIT);
@@ -290,9 +301,13 @@ class EditTool extends Component {
 const mapStateToProps = (state) => {
   return {
     VisibleLayers: selectVisibleLayers(state),
+    selectedFeatures: selectSelectedFeatures(state),
   };
 };
 
-export default connect(mapStateToProps, { toggleToolByName })(
-  withNotifications(EditTool)
-);
+export default connect(mapStateToProps, {
+  toggleToolByName,
+  setSelectedFeatures,
+  setCurrentFeature,
+  setCurrentLayer,
+})(withNotifications(EditTool));

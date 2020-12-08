@@ -97,6 +97,7 @@ export default function (state = {}, action) {
 }
 
 export const selectCurrentLayerUUID = (state) => {
+  debugger;
   const { Features, map } = state;
   const selectedFeatures = Features[map.focused].selectedFeatures || false;
   const currentLayer = Features[map.focused].currentLayer || false;
