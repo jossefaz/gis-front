@@ -237,25 +237,23 @@ class EditTool extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.editProxy &&
-          this.state.fields &&
-          (this.state.newFeature || this.state.EditFeature) && (
-            <EditForm
-              fields={this.state.fields}
-              feature={this.state.newFeature || this.state.EditFeature}
-              onSubmit={this.onSubmit}
-              editProxy={this.editProxy}
-              values={
-                this.state.EditFeature
-                  ? this.state.EditFeature.getProperties()
-                  : null
-              }
-              onCancel={this.onEditCancel}
-              onDeleteFeature={this.onDeleteFeature}
-              existingFeature={Boolean(this.state.EditFeature)}
-              openForm={this.state.openForm}
-            />
-          )}
+        {this.editProxy && this.state.fields && this.state.newFeature && (
+          <EditForm
+            fields={this.state.fields}
+            feature={this.state.newFeature}
+            onSubmit={this.onSubmit}
+            editProxy={this.editProxy}
+            values={
+              this.state.EditFeature
+                ? this.state.EditFeature.getProperties()
+                : null
+            }
+            onCancel={this.onEditCancel}
+            onDeleteFeature={this.onDeleteFeature}
+            existingFeature={Boolean(this.state.EditFeature)}
+            openForm={this.state.openForm}
+          />
+        )}
         {this.props.uuid && this.props.VisibleLayers.includes(this.props.uuid) && (
           <React.Fragment>
             <IconButton
