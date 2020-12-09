@@ -144,7 +144,7 @@ class EditTool extends Component {
           selectedF.set("__NessUUID__", this.currentLayer.get("__NessUUID__"));
           await this.props.setSelectedFeatures([selectedF]);
           await this.props.setCurrentFeature(selectedF.getId());
-          await this.props.toggleToolByName("Identify");
+          await this.props.toggleToolByName("Identify", true);
 
           this.editProxy.edit(selectedF);
           const extent = selectedF.getGeometry().getExtent();
