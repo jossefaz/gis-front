@@ -158,11 +158,6 @@ export const exportGeoJSonToShp = (geojson) => {
   // (optional) set names for feature types and zipped folder
   var options = {
     folder: "export",
-    types: {
-      point: "mypoints",
-      polygon: "mypolygons",
-      line: "mylines",
-    },
   };
   // a GeoJSON bridge for features
   shpwrite.download(JSON.parse(geojson), options);
