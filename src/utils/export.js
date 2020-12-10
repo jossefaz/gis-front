@@ -3,6 +3,8 @@ import { NewCanvas } from "./html";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 import { getFocusedMap } from "../nessMapping/api";
+import { GeoJSON } from "ol/format";
+import shpwrite from "shp-write";
 export const ORIENTATION = {
   portrait: "portrait",
   landscape: "landscape",
@@ -145,3 +147,24 @@ export class MapImage {
     return mapCanvas;
   };
 }
+
+export const featuresToGeoJson = (features) => {
+  var writer = new GeoJSON();
+  return writer.writeFeatures(features);
+};
+
+export const exportGeoJSonToShp = (geojson) => {
+  debugger;
+  // (optional) set names for feature types and zipped folder
+  var options = {
+    folder: "export",
+    types: {
+      point: "mypoints",
+      polygon: "mypolygons",
+      line: "mylines",
+    },
+  };
+  // a GeoJSON bridge for features
+  shpwrite.download(JSON.parse(geojson), options);
+  // triggers a download of a zip file with shapefiles contained within.
+};

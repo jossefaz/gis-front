@@ -33,10 +33,12 @@ import {
   faSignature,
   faCogs,
   faPalette,
+  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const InitIcons = () => {
   library.add(
+    faDownload,
     faPalette,
     faCogs,
     faSignature,
