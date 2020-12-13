@@ -154,7 +154,6 @@ export const featuresToGeoJson = (features) => {
 };
 
 export const exportGeoJSonToShp = (geojson) => {
-  debugger;
   // (optional) set names for feature types and zipped folder
   var options = {
     folder: "export",

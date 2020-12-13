@@ -8,6 +8,13 @@
     ],
     "zoom": 6
   },
+  "ContextMenus" : {
+    "Manti" : {
+      "url" : "http://meitarimds:5002/api/BankPkudot/groupBy?filter={\"AdaptorId\": \"MTCS\", \"category\": \"Cmd_SystemActivate\"}&MENU_TYPE=BY_LAYERID",
+      "path" : "./Manti",
+      "up" : true
+    }
+  },
   "SearchConfigs": [{
       "name": "חיפוש לדוגמא",
       "type": "OBJ_ARRAY",

@@ -45,3 +45,6 @@ export const selectCurrentMapLayers = (state) =>
 
 export const selectSelectionLayers = (state) =>
   fromFeatures.selectSelectionLayers(state);
+
+export const selectContextMenus = (state) =>
+  fromFeatures.selectContextMenus(state);

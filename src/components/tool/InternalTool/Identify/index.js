@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
-import ContextMenu from "./ContextMenu";
+import ContextMenu from "../../../ContextMenus";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
 import {

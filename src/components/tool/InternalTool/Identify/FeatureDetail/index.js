@@ -102,7 +102,6 @@ class FeatureDetail extends React.Component {
   };
 
   componentDidMount() {
-    debugger;
     this._editProxy = EditProxy.getInstance([this.props.CurrentLayerUUID]);
   }
 
