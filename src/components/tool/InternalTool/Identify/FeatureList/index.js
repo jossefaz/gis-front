@@ -88,7 +88,6 @@ class FeatureList extends Component {
                   : "pointerCur flexDisplay"
               }
               onClick={() => {
-                console.log("one feature from identify", feature);
                 this.props.setCurrentFeature(feature.id);
               }}
             >

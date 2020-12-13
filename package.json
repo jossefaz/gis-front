@@ -64,7 +64,7 @@
     "xml2js": "^0.4.23"
   },
   "scripts": {
-    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://localhost:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:5001/MetaData/getMetaData/ REACT_APP_APP_CONFIG=/home/yossefaz/projects/ness/gis_os/gis_front/src/configuration/config.json react-scripts start ",
+    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://localhost:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:5001/MetaData/getMetaData/ REACT_APP_APP_CONFIG=/home/jossefaz/projects/ness/gis_os/gis_front/src/configuration/config.json react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

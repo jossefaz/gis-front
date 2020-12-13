@@ -126,8 +126,10 @@ export const selectCurrentLayer = (state) => {
 
 export const selectCurrentFeature = (state) => {
   const { Features, map } = state;
-  const currentFeature = Features[map.focused].currentFeature || false;
-  return currentFeature;
+  if (Features && map.focused in Features) {
+    return Features[map.focused].currentFeature;
+  }
+  return false;
 };
 
 export const selectSelectedFeatureInCurrentLayer = (state) => {

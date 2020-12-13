@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
+import ContextMenu from "./ContextMenu";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
 import {
@@ -12,6 +13,7 @@ import { setSelectedFeatures } from "../../../../redux/actions/features";
 import {
   selectVisibleLayers,
   selectSelectedFeatures,
+  selectCurrentFeature,
 } from "../../../../redux/reducers";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
@@ -141,7 +143,12 @@ class Identify extends Component {
           <div className="flexDisplay">
             <LayersList />
             <FeatureList />
-            <FeatureDetail onEditGeometry={this.onEditGeometry} />
+            {this.props.currentFeature && (
+              <React.Fragment>
+                <FeatureDetail onEditGeometry={this.onEditGeometry} />
+                <ContextMenu Feature={this.props.currentFeature} />
+              </React.Fragment>
+            )}
           </div>
         ) : (
           <p>Select on the map</p>
@@ -155,6 +162,7 @@ const mapStateToProps = (state) => {
     Features: state.Features,
     Interactions: state.Interactions,
     Layers: state.Layers,
+    currentFeature: selectCurrentFeature(state),
     VisibleLayers: selectVisibleLayers(state),
     SelectedFeatures: selectSelectedFeatures(state),
   };
