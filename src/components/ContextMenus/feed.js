@@ -10,7 +10,7 @@ export default async (layerId, featureId) => {
   Object.keys(REGISTRY).map((source) => {
     const config = REGISTRY[source];
     if (config.status) {
-      import(`${config.path}/feeder.js`).then((fn) => {
+      import(`./${config.path}/feeder.js`).then((fn) => {
         fn.default(config.url, layerId, featureId, (menu) =>
           callback(source, featureId, menu)
         );

@@ -1,4 +1,3 @@
-import { defaultTextAlign } from "ol/render/canvas";
 import axios from "axios";
 
 export default async (baseURL, LayerID, FeatureID, cb) => {

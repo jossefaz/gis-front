@@ -27,8 +27,16 @@ class ContextMenuContainer extends React.Component {
 
     return (
       source in this.props.menus &&
-      this.props.Feature.id in this.props.menus[source] && (
-        <InternalTool config={config} />
+      this.props.Feature.id in this.props.menus[source] &&
+      this.props.menus[source][this.props.Feature.id].length > 0 && (
+        <tr key={source}>
+          <td>
+            <b>{source}</b>
+          </td>
+          <td>
+            <InternalTool config={config} />
+          </td>
+        </tr>
       )
     );
   }
@@ -48,21 +56,12 @@ class ContextMenuContainer extends React.Component {
                 </tr>
               </thead>
               <tbody className="scrollContent">
-                {Object.keys(this.props.menus).map((source) => (
-                  <tr key={source}>
-                    <td>
-                      <b>{source}</b>
-                    </td>
-                    <td>
-                      <Suspense fallback={<div>Loading ...</div>}>
-                        {this.renderMenu(
-                          source,
-                          this.props.menus[source][this.props.Feature.id]
-                        )}
-                      </Suspense>
-                    </td>
-                  </tr>
-                ))}
+                {Object.keys(this.props.menus).map((source) => {
+                  return this.renderMenu(
+                    source,
+                    this.props.menus[source][this.props.Feature.id]
+                  );
+                })}
               </tbody>
             </table>
           </div>

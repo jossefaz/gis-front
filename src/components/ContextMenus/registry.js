@@ -1,11 +1,19 @@
-import { lazy } from "react";
 import config from "react-global-configuration";
+import loadable from "@loadable/component";
 const conf = config.get("ContextMenus");
-export default {
-  Manti: {
-    component: lazy(() => import("./Manti")),
-    url: conf.Manti.url,
-    status: conf.Manti.up,
-    path: conf.Manti.path,
-  },
+
+const buildRegistry = () => {
+  const registry = {};
+  Object.keys(conf).map((provider) => {
+    const { path, url, status } = conf[provider];
+    registry[provider] = {
+      component: loadable(() => import(`./${path}`)),
+      status,
+      url,
+      path,
+    };
+  });
+  return registry;
 };
+
+export default buildRegistry();

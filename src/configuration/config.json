@@ -11,8 +11,13 @@
   "ContextMenus" : {
     "Manti" : {
       "url" : "http://meitarimds:5002/api/BankPkudot/groupBy?filter={\"AdaptorId\": \"MTCS\", \"category\": \"Cmd_SystemActivate\"}&MENU_TYPE=BY_LAYERID",
-      "path" : "./Manti",
-      "up" : true
+      "path" : "Manti",
+      "status" : 1
+    },
+    "Junctions" : {
+      "url" : "",
+      "path" : "Junctions",
+      "status" : 1
     }
   },
   "SearchConfigs": [{
