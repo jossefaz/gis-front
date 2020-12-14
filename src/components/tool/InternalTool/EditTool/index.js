@@ -5,7 +5,6 @@ import EditForm from "./EditForm";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import { click } from "ol/events/condition";
 import styles from "../../../../nessMapping/mapStyle";
-import Collection from "ol/Collection";
 import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";

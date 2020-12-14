@@ -11,7 +11,7 @@ import { InitMap } from "./redux/actions/map";
 import { InitLayers } from "./redux/actions/layers";
 import { InitRasters } from "./redux/actions/raster";
 import { InitIcons } from "./utils/faicons";
-import { getMetaData } from "./communication/mdFetcher";
+import { toggleToolByName } from "./redux/actions/tools";
 import { InitSearching } from "./utils/searchUtils";
 import Widget from "./containers/Widget";
 import { ToastProvider } from 'react-toast-notifications'
@@ -30,6 +30,8 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+
+
 
     LogIt(logLevel.INFO, "App init");
 
@@ -94,4 +96,5 @@ export default connect(mapStateToProps, {
   InitLayers,
   InitRasters,
   InitMap,
+  toggleToolByName
 })(App);

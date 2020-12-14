@@ -1,19 +1,53 @@
 import React from "react";
 import "./style.css";
 import PropTypes from "prop-types";
+import { getFocusedMap, getFocusedMapProxy } from "../../nessMapping/api";
+import VectorLayerRegistry from "../../utils/vectorlayers";
 
+import _ from "lodash";
 class MapComponent extends React.Component {
+  state = {};
+
+  defaultClickTool = async (e) => {
+    const opennedTools = this.props.Tools[getFocusedMapProxy().uuid.value];
+    if (opennedTools.order.length === 0) {
+      const features = this.vectorLayerRegistry.getFeaturesAtCoordinate(
+        e.coordinate
+      );
+      if (features.length > 0) {
+        await this.props.setSelectedFeatures(features);
+        await this.props.toggleToolByName("Identify", true);
+      }
+    }
+  };
+  get vectorLayerRegistry() {
+    return VectorLayerRegistry.getInstance();
+  }
+
   componentDidMount() {
-    if (this.props.getFocusedMap().getLayers().getArray().length == 0) {
+    if (getFocusedMap().getLayers().getArray().length == 0) {
       this.props.setRaster("osm");
+    }
+    getFocusedMap().on("pointerdown", this.defaultClickTool);
+    if (getFocusedMapProxy().uuid.value in this.props.Layers) {
+      this.setState({
+        currentLayers: [],
+      });
     }
   }
   componentDidUpdate() {
-    if (this.props.map) {
-      this.map = this.props.getFocusedMap();
-    }
-    if (this.map.getLayers().getArray().length == 0) {
+    if (getFocusedMap().getLayers().getArray().length == 0) {
       this.props.setRaster("osm");
+    }
+    const areEquals = _.isEqual(
+      this.state.currentLayers,
+      this.props.VisibleLayers
+    );
+    if (!areEquals) {
+      this.vectorLayerRegistry.initVectorLayers(this.props.VisibleLayers);
+      this.setState({
+        currentLayers: this.props.VisibleLayers,
+      });
     }
   }
   render() {
@@ -22,7 +56,6 @@ class MapComponent extends React.Component {
 }
 
 MapComponent.propTypes = {
-  getFocusedMap: PropTypes.func, // should be imported from NessMapping
   setRaster: PropTypes.func, // should be imported from redux action
 };
 

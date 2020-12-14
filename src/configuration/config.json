@@ -10,14 +10,19 @@
   },
   "ContextMenus" : {
     "Manti" : {
-      "url" : "http://meitarimds:5002/api/BankPkudot/groupBy?filter={\"AdaptorId\": \"MTCS\", \"category\": \"Cmd_SystemActivate\"}&MENU_TYPE=BY_LAYERID",
+      "url" : "http://meitarimds:5002/api/BankPkudot/groupBy?filter={\"AdaptorId\": \"MTCS\", \"category\": \"Tsirkel\"}&MENU_TYPE=BY_LAYERID",
       "path" : "Manti",
-      "status" : 1
+      "status" : 1,
+      "configuration" : {
+        "commandApiAddress": "http://meitarimds:2210/api/commands",
+        "mockUpApiAddress": "http://meitarimds:5002/api/MockupData/byName?name="
+      }
     },
     "Junctions" : {
       "url" : "",
       "path" : "Junctions",
-      "status" : 1
+      "status" : 1,
+      "configuration" : {}
     }
   },
   "SearchConfigs": [{

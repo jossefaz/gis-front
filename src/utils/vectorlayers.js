@@ -56,6 +56,14 @@ export default (function () {
         return features;
       };
 
+      getFeaturesAtCoordinate = (coordinates) => {
+        const features = [];
+        Object.values(this.registry).map((vl) => {
+          features.push(...vl.getFeaturesAtCoordinate(coordinates));
+        });
+        return features;
+      };
+
       removeLayer = (__NessUUID__) => {
         if (__NessUUID__ in this.registry) {
           this.registry[__NessUUID__].source.clear();
@@ -174,6 +182,15 @@ export class VectorLayerUtils {
       feature.set("__NessUUID__", this.source.get("__NessUUID__"));
       features.push(feature);
     });
+    return features;
+  };
+  getFeaturesAtCoordinate = (coordinates) => {
+    let features = this.source.getFeaturesAtCoordinate(coordinates);
+    features.forEach((feature) => {
+      feature.set("editable", true); // TODO : change true value by real editable value
+      feature.set("__NessUUID__", this.source.get("__NessUUID__"));
+    });
+    debugger;
     return features;
   };
 

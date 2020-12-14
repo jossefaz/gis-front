@@ -1,9 +1,9 @@
 import React from "react";
 
-export default function index({ config }) {
+export default function index({ menu_config, local_config }) {
   return (
     <div style={{ display: "grid" }}>
-      {config.map((item) => (
+      {menu_config.map((item) => (
         <button
           key={item.ID}
           onClick={() => console.log(`${item.Name} will be invoked`)}

@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import _ from "lodash";
 import "./style.css";
 import { connect } from "react-redux";
@@ -10,16 +10,19 @@ class ContextMenuContainer extends React.Component {
     menus: null,
   };
 
+  updateMenu = ({ type, id, properties }) => {
+    UpdateMenu(type, id, properties);
+  };
+
   componentDidMount() {
-    this.props.Feature &&
-      UpdateMenu(this.props.Feature.type, this.props.Feature.id);
+    this.props.Feature && this.updateMenu(this.props.Feature);
   }
 
   componentDidUpdate(prevProps) {
     this.props.Feature &&
       (!_.isEqual(prevProps.menus, this.props.menus) ||
         prevProps.Feature.id !== this.props.Feature.id) &&
-      UpdateMenu(this.props.Feature.type, this.props.Feature.id);
+      this.updateMenu(this.props.Feature);
   }
 
   renderMenu(source, config) {
@@ -34,7 +37,11 @@ class ContextMenuContainer extends React.Component {
             <b>{source}</b>
           </td>
           <td>
-            <InternalTool config={config} />
+            <InternalTool
+              menu_config={config}
+              local_config={REGISTRY[source].configuration}
+              feature={this.props.Feature}
+            />
           </td>
         </tr>
       )

@@ -1,4 +1,4 @@
-export default async (baseURL, LayerID, FeatureID, cb) => {
+export default async (baseURL, LayerID, FeatureID, properties, cb) => {
   if (LayerID == "dimigcompile") {
     cb([
       {
