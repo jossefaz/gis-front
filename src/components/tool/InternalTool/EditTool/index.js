@@ -82,7 +82,7 @@ class EditTool extends Component {
   onDeleteConfirm = async () => {
     const deleted = await this.editProxy.remove();
     if (deleted) {
-      this.props.successNotification("Successfully remooved feature !");
+      this.props.successNotification("Successfully removed feature !");
       this.setState({
         openConfirm: false,
         openForm: false,
