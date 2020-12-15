@@ -1,7 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { setSelectedFeatures } from "../../redux/actions/features";
-import { selectVisibleLayers } from "../../redux/reducers";
+import {
+  selectVisibleLayers,
+  selectCurrentInteractions,
+} from "../../redux/reducers";
 import { setRaster } from "../../redux/actions/raster";
 import MapComp from "../../components/Map/Map";
 import { toggleToolByName } from "../../redux/actions/tools";
@@ -16,6 +19,7 @@ const mapStateToProps = (state) => {
     Tools: state.Tools,
     VisibleLayers: selectVisibleLayers(state),
     Layers: state.Layers,
+    CurrentInteractions: selectCurrentInteractions(state),
   };
 };
 

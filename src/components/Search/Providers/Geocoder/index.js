@@ -3,8 +3,9 @@ import Providers from "../index";
 import axios from "axios";
 import { zoomTo } from "../../../../nessMapping/api";
 import { convertCoordToIsraelTM } from "../../../../utils/projections";
+import config from "react-global-configuration";
 export default (subscriber_func) => {
-  const BASE_URL = "http://127.0.0.1:4000";
+  const BASE_URL = config.get("Search").Geocode.url;
   const renderSuggestion = (suggestion) => {
     let content = suggestion.name;
     if ("housenumber" in suggestion && suggestion.housenumber) {

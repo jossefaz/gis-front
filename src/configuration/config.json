@@ -8,6 +8,13 @@
     ],
     "zoom": 6
   },
+  "Search" : {
+    "Geocode" : {
+      "url" : "http://127.0.0.1:4000"
+    }
+
+    
+  },
   "ContextMenus" : {
     "Manti" : {
       "url" : "http://meitarimds:5002/api/BankPkudot/groupBy?filter={\"AdaptorId\": \"MTCS\", \"category\": \"Tsirkel\"}&MENU_TYPE=BY_LAYERID",

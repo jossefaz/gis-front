@@ -10,7 +10,11 @@ class MapComponent extends React.Component {
 
   defaultClickTool = async (e) => {
     const opennedTools = this.props.Tools[getFocusedMapProxy().uuid.value];
-    if (opennedTools.order.length === 0) {
+    console.log("CurrentInteractions", this.props.CurrentInteractions);
+    if (
+      opennedTools.order.length === 0 &&
+      Object.keys(this.props.CurrentInteractions).length === 0
+    ) {
       const features = this.vectorLayerRegistry.getFeaturesAtCoordinate(
         e.coordinate
       );

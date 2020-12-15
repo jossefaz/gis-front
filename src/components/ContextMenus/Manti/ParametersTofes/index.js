@@ -190,15 +190,15 @@ class ParametersTofesComponent extends Component {
       var apiAddress = this.props.local_config["commandApiAddress"];
       console.log("Will be sent to the server :", JSON.stringify(resultBody));
       this.props.successNotification("Successfully sent action to MTCS !");
-      // fetch(apiAddress, postMethod)
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     alert("פקודה נשלחה");
-      //     console.log(data);
-      //   })
-      //   .catch((err) => {
-      //     alert("פקודה לא נשלחה" + err);
-      //   });
+      fetch(apiAddress, postMethod)
+        .then((response) => response.json())
+        .then((data) => {
+          // alert("פקודה נשלחה");
+          console.log(data);
+        })
+        .catch((err) => {
+          alert("פקודה לא נשלחה" + err);
+        });
 
       this.props.toggleModal();
     }

@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import Layers, * as fromLayers from "./layers";
-import Interactions from "./interactions";
+import Interactions, * as fromInteractions from "./interactions";
 import Overlays from "./overlay";
 import Features, * as fromFeatures from "./features";
 import Rasters from "./rasters";
@@ -48,3 +48,6 @@ export const selectSelectionLayers = (state) =>
 
 export const selectContextMenus = (state) =>
   fromFeatures.selectContextMenus(state);
+
+export const selectCurrentInteractions = (state) =>
+  fromInteractions.selectCurrentInteractions(state);
