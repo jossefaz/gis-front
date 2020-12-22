@@ -4,11 +4,12 @@ import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import { addLayers } from "../../../../redux/actions/layers";
+import config from "react-global-configuration";
 const LayerSample = {
   id: 1,
   name: "dimigcompile",
   alias: "שכבה לדוגמא",
-  url: "http://localhost:8080/geoserver/Jeru",
+  url: config.get("Geoserver"),
   params: {
     LAYERS: "Jeru:dimigcompile",
     SRS: "EPSG:2039",

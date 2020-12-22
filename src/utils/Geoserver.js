@@ -1,11 +1,12 @@
 import { getFocusedMap } from "../nessMapping/api";
 import axios from "axios";
 import { WFS, GML } from "ol/format";
+import config from "react-global-configuration";
 
 export class GeoserverUtil {
   constructor(ws, layername) {
     this.layername = layername;
-    this.domain = `http://localhost:8080/geoserver/${ws}`;
+    this.domain = `${config.get("Geoserver")}${ws}`;
     this.workspace = ws;
     this.srs = "EPSG:2039";
   }

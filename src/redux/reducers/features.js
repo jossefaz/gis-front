@@ -91,6 +91,21 @@ export default function (state = {}, action) {
         draftState[focusedmap].currentFeature = null;
       });
 
+    case types.SET_CONTEXT_MENU:
+      return produce(state, (draftState) => {
+        const { source, featureID, menu, focusedmap } = action.payload;
+        if (!(focusedmap in state)) {
+          draftState[focusedmap] = {};
+        }
+        if (!("contextMenus" in draftState[focusedmap])) {
+          draftState[focusedmap].contextMenus = {};
+        }
+        if (!(source in draftState[focusedmap].contextMenus)) {
+          draftState[focusedmap].contextMenus[source] = {};
+        }
+        draftState[focusedmap].contextMenus[source][featureID] = menu;
+      });
+
     default:
       return state;
   }
@@ -125,8 +140,10 @@ export const selectCurrentLayer = (state) => {
 
 export const selectCurrentFeature = (state) => {
   const { Features, map } = state;
-  const currentFeature = Features[map.focused].currentFeature || false;
-  return currentFeature;
+  if (Features && map.focused in Features) {
+    return Features[map.focused].currentFeature;
+  }
+  return false;
 };
 
 export const selectSelectedFeatureInCurrentLayer = (state) => {
@@ -134,6 +151,14 @@ export const selectSelectedFeatureInCurrentLayer = (state) => {
   const features = selectSelectedFeatures(state);
   if (layer && features && layer in features) {
     return features[layer];
+  }
+  return false;
+};
+
+export const selectContextMenus = (state) => {
+  const { Features, map } = state;
+  if (map.focused in Features && "contextMenus" in Features[map.focused]) {
+    return Features[map.focused].contextMenus;
   }
   return false;
 };

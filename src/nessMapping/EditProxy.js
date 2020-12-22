@@ -131,7 +131,10 @@ class editLayer {
   };
 
   edit = (eFeature) => {
-    this.vectorlayer.highlightFeature(eFeature);
+    if (eFeature.getGeometry().getType() !== "Point") {
+      this.vectorlayer.highlightFeature(eFeature);
+    }
+
     this.currentFeature = eFeature;
   };
 

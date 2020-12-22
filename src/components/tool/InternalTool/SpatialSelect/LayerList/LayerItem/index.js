@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Checkbox } from "semantic-ui-react";
 import VectorLayerRegistry from "../../../../../../utils/vectorlayers";
 import IconButton from "../../../../../UI/Buttons/IconButton";
@@ -9,7 +9,12 @@ import { generateNewPolygonStyle } from "../../../../../../utils/func";
 import FeatureList from "./FeatureList";
 import styles from "../../../../../../nessMapping/mapStyle";
 import "./style.css";
+import ContentEditable from "react-contenteditable";
 import { unhighlightFeature } from "../../../../../../nessMapping/api";
+import {
+  exportGeoJSonToShp,
+  featuresToGeoJson,
+} from "../../../../../../utils/export";
 const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
   const registry = VectorLayerRegistry.getInstance();
   const currentlayerSource = registry.getVectorLayer(uuid)
@@ -72,6 +77,18 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
     }
     setUpdate(!update);
   };
+  const title = useRef(`selection ${index + 1}`);
+
+  const handleTitleChange = (evt) => {
+    title.current = evt.target.value;
+  };
+
+  const exportToShape = () => {
+    if (currentlayerSource.getFeatures().length > 0) {
+      const geoJson = featuresToGeoJson(currentlayerSource.getFeatures());
+      exportGeoJSonToShp(geoJson);
+    }
+  };
 
   const updateColor = (width, stroke, Fill) => {
     if (width) {
@@ -101,14 +118,20 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
         <Checkbox
           key={uuid}
           value={uuid}
-          label={`selection ${index}`}
           onChange={toggleLayer}
           checked={Checked}
         />
+        <ContentEditable html={title.current} onChange={handleTitleChange} />
         <IconButton
           className={`ui icon button pointer negative`}
           onClick={() => setModal(true)}
           icon="trash-alt"
+          size="xs"
+        />
+        <IconButton
+          className={`ui icon button pointer negative`}
+          onClick={exportToShape}
+          icon="download"
           size="xs"
         />
         <Accordion>

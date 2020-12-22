@@ -5,12 +5,20 @@ import EditForm from "./EditForm";
 import { getFocusedMap } from "../../../../nessMapping/api";
 import { click } from "ol/events/condition";
 import styles from "../../../../nessMapping/mapStyle";
-import Collection from "ol/Collection";
 import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
 import VectorLayerRegistry from "../../../../utils/vectorlayers";
-import { selectVisibleLayers } from "../../../../redux/reducers";
+import {
+  selectVisibleLayers,
+  selectSelectedFeatures,
+} from "../../../../redux/reducers";
+import { toggleToolByName } from "../../../../redux/actions/tools";
+import {
+  setSelectedFeatures,
+  setCurrentFeature,
+  setCurrentLayer,
+} from "../../../../redux/actions/features";
 import { connect } from "react-redux";
 const initialState = {
   geomType: null,
@@ -74,7 +82,7 @@ class EditTool extends Component {
   onDeleteConfirm = async () => {
     const deleted = await this.editProxy.remove();
     if (deleted) {
-      this.props.successNotification("Successfully remooved feature !");
+      this.props.successNotification("Successfully removed feature !");
       this.setState({
         openConfirm: false,
         openForm: false,
@@ -130,9 +138,13 @@ class EditTool extends Component {
             newFeature: null,
             openForm: true,
           });
-          await this.interactions.newModify(
-            this.interactions.currentSelect.getFeatures()
-          );
+          selectedF.set("editable", true);
+          // TODO : change true value by real editable value
+          selectedF.set("__NessUUID__", this.currentLayer.get("__NessUUID__"));
+          await this.props.setSelectedFeatures([selectedF]);
+          await this.props.setCurrentFeature(selectedF.getId());
+          await this.props.toggleToolByName("Identify", true);
+
           this.editProxy.edit(selectedF);
           const extent = selectedF.getGeometry().getExtent();
           selectedF.setStyle(styles.EDIT);
@@ -140,7 +152,6 @@ class EditTool extends Component {
             .getView()
             .fit(extent, { padding: [850, 850, 850, 850] });
         } else if (this.state.EditFeature) {
-          console.log("PUSSH");
           this.interactions.currentSelect
             .getFeatures()
             .push(this.state.EditFeature);
@@ -150,9 +161,7 @@ class EditTool extends Component {
   };
 
   autoClosingEditSession = async () => {
-    debugger;
     if (Boolean(this.state.EditFeature)) {
-      console.log("CONNARD", this.state);
       const updated = await this.editProxy.save();
       if (updated) {
         this.props.successNotification("Successfully saved feature !");
@@ -227,25 +236,23 @@ class EditTool extends Component {
   render() {
     return (
       <React.Fragment>
-        {this.editProxy &&
-          this.state.fields &&
-          (this.state.newFeature || this.state.EditFeature) && (
-            <EditForm
-              fields={this.state.fields}
-              feature={this.state.newFeature || this.state.EditFeature}
-              onSubmit={this.onSubmit}
-              editProxy={this.editProxy}
-              values={
-                this.state.EditFeature
-                  ? this.state.EditFeature.getProperties()
-                  : null
-              }
-              onCancel={this.onEditCancel}
-              onDeleteFeature={this.onDeleteFeature}
-              existingFeature={Boolean(this.state.EditFeature)}
-              openForm={this.state.openForm}
-            />
-          )}
+        {this.editProxy && this.state.fields && this.state.newFeature && (
+          <EditForm
+            fields={this.state.fields}
+            feature={this.state.newFeature}
+            onSubmit={this.onSubmit}
+            editProxy={this.editProxy}
+            values={
+              this.state.EditFeature
+                ? this.state.EditFeature.getProperties()
+                : null
+            }
+            onCancel={this.onEditCancel}
+            onDeleteFeature={this.onDeleteFeature}
+            existingFeature={Boolean(this.state.EditFeature)}
+            openForm={this.state.openForm}
+          />
+        )}
         {this.props.uuid && this.props.VisibleLayers.includes(this.props.uuid) && (
           <React.Fragment>
             <IconButton
@@ -291,7 +298,13 @@ class EditTool extends Component {
 const mapStateToProps = (state) => {
   return {
     VisibleLayers: selectVisibleLayers(state),
+    selectedFeatures: selectSelectedFeatures(state),
   };
 };
 
-export default connect(mapStateToProps)(withNotifications(EditTool));
+export default connect(mapStateToProps, {
+  toggleToolByName,
+  setSelectedFeatures,
+  setCurrentFeature,
+  setCurrentLayer,
+})(withNotifications(EditTool));

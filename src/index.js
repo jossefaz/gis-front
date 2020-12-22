@@ -6,13 +6,13 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import "./style.css";
 
-
-const config = fetchConfig();
-if (config) {
-  ReactDOM.render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
-    document.querySelector("#root")
-  );
-}
+fetchConfig().then((config) => {
+  if (config) {
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.querySelector("#root")
+    );
+  }
+});

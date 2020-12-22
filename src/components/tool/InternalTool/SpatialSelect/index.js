@@ -10,13 +10,17 @@ import { getFocusedMap } from "../../../../nessMapping/api";
 import LayerList from "./LayerList";
 import { setSelectionForLayers } from "../../../../redux/actions/features";
 import { selectSelectionLayers } from "../../../../redux/reducers";
+import { escapeHandler } from "../../../../utils/eventHandlers";
+import { getBufferedFeature } from "../../../../utils/jsts";
 
 import _ from "lodash";
+import { BlockMapBuilder } from "draft-js";
 class SpatialSelect extends Component {
   WIDGET_NAME = "SpatialSelect";
   DRAW_TYPES = {
     Polygon: "Polygon",
     Line: "LineString",
+    Point: "Point",
     Circle: "Circle",
     Text: "Text",
   };
@@ -26,6 +30,7 @@ class SpatialSelect extends Component {
     this.interactions = new InteractionUtil(this.WIDGET_NAME);
     this.state = {
       drawtype: null,
+      buffer: 0,
     };
   }
 
@@ -38,19 +43,35 @@ class SpatialSelect extends Component {
   }
 
   onOpenDrawSession = async (drawtype, freehand) => {
-    await this.interactions.newDraw({
-      type: drawtype,
-      ...(freehand && { freehand: true }),
-    });
-    this.onDrawEnd();
+    const { buffer } = this.state;
+    const { Point, Line, Polygon, Circle } = this.DRAW_TYPES;
+    if (
+      ((drawtype == Point || drawtype == Line) && Boolean(buffer)) ||
+      drawtype == Polygon ||
+      drawtype == Circle
+    ) {
+      await this.interactions.newDraw({
+        type: drawtype,
+        ...(freehand && { freehand: true }),
+      });
+      this.onDrawEnd();
+    }
+    this.setState({ drawtype });
   };
 
   onDrawEnd = async () => {
     if (this.interactions.currentDraw) {
       this.interactions.currentDraw.on("drawend", async (e) => {
+        let featureSelectore = e.feature;
+        if (this.state.buffer) {
+          featureSelectore = getBufferedFeature(
+            featureSelectore,
+            this.state.buffer
+          );
+        }
         const features = this.registry
           .getVectorLayer(this.props.uuid)
-          .getFeaturesByExtent(e.feature.getGeometry().getExtent());
+          .getFeaturesByExtent(featureSelectore.getGeometry().getExtent());
         if (features.length > 0) {
           const { source, vector } = getEmptyVectorLayer(styles.DRAW_END);
           vector.setSource(source);
@@ -71,12 +92,21 @@ class SpatialSelect extends Component {
     }
   };
 
+  handleBufferChange = (e, v) => {
+    this.setState({ buffer: e.target.value, drawtype: null });
+  };
+
   removeLayer = (uuid) => {
     this.registry.removeLayer(uuid);
     const newVectorLayers = this.props.spatialSelection.filter(
       (id) => id != uuid
     );
     this.props.setSelectionForLayers(newVectorLayers);
+  };
+  abortDrawing = () => {
+    if (this.interactions.currentDraw) {
+      this.interactions.currentDraw.abortDrawing();
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -92,33 +122,67 @@ class SpatialSelect extends Component {
       );
       LayersToRemove.map((id) => this.registry.removeLayer(id));
       LayersToAdd.map((id) => this.registry.getVectorLayer(id)._addToMap());
-      console.log("map", getFocusedMap());
     }
-    console.log("registry", this.registry);
-  }
 
+    document.addEventListener("keydown", (e) =>
+      escapeHandler(e, this.abortDrawing)
+    );
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", (e) =>
+      escapeHandler(e, this.abortDrawing)
+    );
+    this.interactions.unDraw();
+  }
   render() {
+    const { drawtype, buffer } = this.state;
+    const { Point, Line, Polygon, Circle } = this.DRAW_TYPES;
     return (
       <React.Fragment>
+        <div className="ui input" style={{ display: "block" }}>
+          <input
+            type="number"
+            placeholder="buffer"
+            onChange={this.handleBufferChange}
+          />
+          {(drawtype == Point || drawtype == Line) && !Boolean(buffer) && (
+            <div style={{ color: "red" }}>
+              לבחירה קווית או נקודתי חייבים להכניס ערך חיץ
+            </div>
+          )}
+        </div>
+
         <IconButton
           className={`ui icon button pointer ${
-            this.state.drawtype == this.DRAW_TYPES.Polygon
-              ? "secondary"
-              : "primary"
+            drawtype == Polygon ? "secondary" : "primary"
           }`}
-          onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
+          onClick={() => this.onOpenDrawSession(Polygon)}
           icon="draw-polygon"
           size="lg"
         />
 
         <IconButton
           className={`ui icon button pointer ${
-            this.state.drawtype == this.DRAW_TYPES.Circle
-              ? "secondary"
-              : "primary"
+            drawtype == Circle ? "secondary" : "primary"
           }`}
-          onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
+          onClick={() => this.onOpenDrawSession(Circle)}
           icon="circle"
+          size="lg"
+        />
+        <IconButton
+          className={`ui icon button pointer ${
+            drawtype == Line && Boolean(buffer) ? "secondary" : "primary"
+          }`}
+          onClick={() => this.onOpenDrawSession(Line)}
+          icon="grip-lines"
+          size="lg"
+        />
+        <IconButton
+          className={`ui icon button pointer ${
+            drawtype == Point && Boolean(buffer) ? "secondary" : "primary"
+          }`}
+          onClick={() => this.onOpenDrawSession(Point)}
+          icon="map-marker-alt"
           size="lg"
         />
 

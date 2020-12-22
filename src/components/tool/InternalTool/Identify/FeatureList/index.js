@@ -87,7 +87,9 @@ class FeatureList extends Component {
                     : "pointerCur flexDisplay"
                   : "pointerCur flexDisplay"
               }
-              onClick={() => this.props.setCurrentFeature(feature.id)}
+              onClick={() => {
+                this.props.setCurrentFeature(feature.id);
+              }}
             >
               {this.state.current_field
                 ? feature.properties[this.state.current_field]

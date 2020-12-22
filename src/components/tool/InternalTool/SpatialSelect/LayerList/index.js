@@ -5,7 +5,6 @@ import LayerItem from "./LayerItem";
 const CheckboxExampleCheckbox = ({ layersUUID, removeLayer }) => {
   const [activeIndex, setactiveIndex] = useState(-1);
   const openItem = (e, titleProps) => {
-    debugger;
     const { index } = titleProps;
     const newIndex = activeIndex === index ? -1 : index;
     setactiveIndex(newIndex);

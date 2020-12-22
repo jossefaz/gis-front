@@ -81,6 +81,13 @@ export const setCurrentLayer = (currentLayer) => (dispatch) => {
     payload: { currentLayer, focusedmap },
   });
 };
+export const setContextMenu = (source, featureID, menu) => (dispatch) => {
+  const focusedmap = getFocusedMapProxy().uuid.value;
+  dispatch({
+    type: types.SET_CONTEXT_MENU,
+    payload: { source, featureID, menu, focusedmap },
+  });
+};
 
 export const setSelectionForLayers = (arrayOfLayerId) => (dispatch) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
