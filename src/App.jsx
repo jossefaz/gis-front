@@ -71,12 +71,14 @@ class App extends React.Component {
     return (
       <React.Fragment>
         <ToastProvider placement="bottom-left">
-          <div className="app__side">
-            <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
-            <div id="app-side-content-container" className="app-side-content-container"></div>
-          </div>
-          <div className="app__main">
-            {currentMapId && <React.Fragment><MapTabs /><Map /></React.Fragment>}
+          <div className="app">
+            <div className="app__side">
+              <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
+              <div id="app-side-content-container" className="app-side-content-container"></div>
+            </div>
+            <div className="app__main">
+              {currentMapId && <React.Fragment><MapTabs /><Map /></React.Fragment>}
+            </div>
           </div>
         </ToastProvider>
       </React.Fragment>
