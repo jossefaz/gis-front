@@ -54,7 +54,7 @@ class GroupTool extends React.Component {
           </Dropdown.Menu>
         </Dropdown>
       </React.Fragment>}
-      </React.Fragment>;
+    </React.Fragment>;
   }
 }
 const mapStateToProps = (state) => {
