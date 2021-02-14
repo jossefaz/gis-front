@@ -21,8 +21,8 @@ class GroupTool extends React.Component {
     const CloseCB = () => this.props.toggleGroupTool(GroupID);
 
     return (
-      (this.Tools.Groups[GroupID].tools)
-      ? <React.Fragment>
+      (this.Tools.Groups[GroupID].tools) &&
+      <React.Fragment>
         <style>
           {`
 #${"Group" + GroupID} {
@@ -53,7 +53,6 @@ class GroupTool extends React.Component {
           </Dropdown.Menu>
         </Dropdown>
       </React.Fragment>
-    : null
     );
   }
 }
