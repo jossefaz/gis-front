@@ -4,8 +4,7 @@ import App from "./App.jsx";
 import { fetchConfig } from "./configuration";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-// import "./style.css";
-import "./style/style.scss";
+import "./style.css";
 
 fetchConfig().then((config) => {
   if (config) {

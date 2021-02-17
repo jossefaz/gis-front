@@ -17,8 +17,7 @@ import Widget from "./containers/Widget";
 import { ToastProvider } from 'react-toast-notifications'
 // REMOVE: this is just for searching debug
 import NessSearching from "./searches/searches";
-import { getFocusedMapProxy } from "./nessMapping/api";
-// import "./style.css";
+import "./style.css";
 
 
 
@@ -66,24 +65,6 @@ class App extends React.Component {
 
 
   render() {
-    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null;
-
-    return (
-      <React.Fragment>
-        <ToastProvider placement="bottom-left">
-          <div className="app">
-            <div className="app__side">
-              <TopNav onLayerMenuOpen={this.onLayerMenuOpen} />
-              <div id="app-side-content-container" className="app-side-content-container"></div>
-            </div>
-            <div className="app__main">
-              {currentMapId && <React.Fragment><MapTabs /><Map /></React.Fragment>}
-            </div>
-          </div>
-        </ToastProvider>
-      </React.Fragment>
-    );
-
     return (
       <React.Fragment>
         <ToastProvider placement="bottom-left">
