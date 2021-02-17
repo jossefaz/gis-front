@@ -20,9 +20,7 @@ class GroupTool extends React.Component {
     } = this.Tools.Groups[this.props.GroupID];
     const CloseCB = () => this.props.toggleGroupTool(GroupID);
 
-    return <React.Fragment>
-      {this.Tools.Groups[GroupID].tools
-      &&
+    return (
       <React.Fragment>
         <style>
           {`
@@ -53,8 +51,9 @@ class GroupTool extends React.Component {
             </div>
           </Dropdown.Menu>
         </Dropdown>
-      </React.Fragment>}
-    </React.Fragment>;
+      </React.Fragment>
+
+    );
   }
 }
 const mapStateToProps = (state) => {
