@@ -12,7 +12,7 @@ const SideMenu = (props) => {
   return currentMapId ?
     (
 
-      <Sidebar.Pushable styleName="sidebar-container" className="cSideNav">
+      <Sidebar.Pushable className="cSideNav">
         <Sidebar
           as={Menu}
           vertical

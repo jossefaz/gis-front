@@ -18,6 +18,7 @@
     "@types/react-redux": "^7.1.5",
     "antd": "^4.9.3",
     "axios": "^0.19.2",
+    "bootstrap": "^4.5.3",
     "downloadjs": "^1.4.7",
     "draft-js": "^0.11.7",
     "file-saver": "^2.0.2",
@@ -27,12 +28,14 @@
     "jspdf": "^2.1.1",
     "jsts": "^2.6.1",
     "lodash": "^4.17.20",
+    "node-sass": "^4.14.1",
     "ol": "^6.2.1",
     "ol-layerlist": "^1.1.8",
     "parsejson": "0.0.3",
     "proj4": "^2.6.1",
     "react": "^16.10.1",
     "react-autosuggest": "^10.0.4",
+    "react-bootstrap": "^1.4.3",
     "react-color": "^2.18.1",
     "react-contenteditable": "^3.3.5",
     "react-dom": "^16.10.1",
@@ -68,7 +71,7 @@
     "xml2js": "^0.4.23"
   },
   "scripts": {
-    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://localhost:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:5001/MetaData/getMetaData/ REACT_APP_APP_CONFIG=/home/jossefaz/projects/ness/gis_os/gis_front/src/configuration/config.json react-scripts start ",
+    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://localhost:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:5001/MetaData/getMetaData/ REACT_APP_APP_CONFIG=/mnt/c/code/ness/gis/gis_front/src/configuration/config.json react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
