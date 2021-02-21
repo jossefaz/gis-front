@@ -1,12 +1,13 @@
-import types from "../actions/actionsTypes";
+import types from "../actions/types";
 import produce from "immer";
+import { MapState } from "../types/map";
 
 const initialLayersState = {
     uuids: [],
     focused: ''
 };
 
-export default function (state = initialLayersState, action) {
+const reducer = (state: MapState = initialLayersState, action): MapState => {
     switch (action.type) {
         case types.INIT_MAP:
             return produce(state, (draftState) => {
@@ -21,3 +22,4 @@ export default function (state = initialLayersState, action) {
             return state;
     }
 }
+export default reducer;

@@ -12,7 +12,7 @@ const initialState = {
   },
 };
 
-export default function (state = initialState, action) {
+export default function (state = initialState, action): any {
   switch (action.type) {
     case types.UPDATE_FEATURE_ATTRIBUTES:
       var data = action.data;

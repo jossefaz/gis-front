@@ -1,7 +1,9 @@
-import types from "../actions/actionsTypes";
+import types from "../actions/types";
 import produce from "immer";
+import { LayerState } from "../types/layers";
 
-export default function (state = {}, action) {
+
+const reducer = (state: LayerState = {}, action): LayerState => {
   switch (action.type) {
     case types.ADD_LAYER:
       return produce(state, (draftState) => {
@@ -53,3 +55,4 @@ export const selectCurrentMapLayers = (state) => {
   }
   return null;
 };
+export default reducer

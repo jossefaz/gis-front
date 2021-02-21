@@ -8,8 +8,10 @@ import map from "./map";
 import Tools from "./tools";
 import mantiSystems from "./mantiSystems";
 import ui from "./ui";
+import { GisState } from "../types/state";
 
-export default combineReducers({
+
+export default combineReducers<GisState>({
   Layers,
   Features,
   Rasters,
@@ -22,32 +24,32 @@ export default combineReducers({
   // filter
 });
 
-export const selectCurrentLayerUUID = (state) =>
+export const selectCurrentLayerUUID = (state: GisState) =>
   fromFeatures.selectCurrentLayerUUID(state);
 
-export const selectVisibleLayers = (state) =>
+export const selectVisibleLayers = (state: GisState) =>
   fromLayers.selectVisibleLayers(state);
 
-export const selectSelectedFeatures = (state) =>
+export const selectSelectedFeatures = (state: GisState) =>
   fromFeatures.selectSelectedFeatures(state);
 
-export const selectCurrentLayer = (state) =>
+export const selectCurrentLayer = (state: GisState) =>
   fromFeatures.selectCurrentLayer(state);
 
-export const selectSelectedFeatureInCurrentLayer = (state) =>
+export const selectSelectedFeatureInCurrentLayer = (state: GisState) =>
   fromFeatures.selectSelectedFeatureInCurrentLayer(state);
 
-export const selectCurrentFeature = (state) =>
+export const selectCurrentFeature = (state: GisState) =>
   fromFeatures.selectCurrentFeature(state);
 
-export const selectCurrentMapLayers = (state) =>
+export const selectCurrentMapLayers = (state: GisState) =>
   fromLayers.selectCurrentMapLayers(state);
 
-export const selectSelectionLayers = (state) =>
+export const selectSelectionLayers = (state: GisState) =>
   fromFeatures.selectSelectionLayers(state);
 
-export const selectContextMenus = (state) =>
+export const selectContextMenus = (state: GisState) =>
   fromFeatures.selectContextMenus(state);
 
-export const selectCurrentInteractions = (state) =>
+export const selectCurrentInteractions = (state: GisState) =>
   fromInteractions.selectCurrentInteractions(state);

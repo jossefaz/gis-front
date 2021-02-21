@@ -1,59 +1,59 @@
 import types from "./actionsTypes";
 import { getFocusedMapProxy } from "../../nessMapping/api";
-export const setSelectedFeatures = (features) => (dispatch) => {
+import OLFeature from "ol/Feature"
+import { Feature } from "../types/feature"
+import { Dispatch } from "redux";
+import { SetCurrentFeatureAction, SetSelectedFeaturesAction } from "./types/features/actions"
+import { GisState } from "../types/state"
+
+export const setSelectedFeatures = (features: OLFeature[]) => (dispatch: Dispatch) => {
   if (features) {
     const focusedmap = getFocusedMapProxy().uuid.value;
-    const featuresByLayers = {};
+    const featuresByLayers: { [layerid: string]: Feature[] } = {};
     features.map((f) => {
       let layer;
       const parentuuid = f.get("__NessUUID__");
       f.unset("__NessUUID__");
-      try {
-        layer = f.getId().split(".")[0];
-      } catch (error) {
-        return false;
-      }
+      let featureId = f.getId()
+      if (featureId) {
+        featureId = featureId.toString()
+        layer = featureId.split(".")[0];
+        if (!(layer in featuresByLayers)) {
+          featuresByLayers[layer] = [];
+        }
+        const properties = f.getProperties()
+        featuresByLayers[layer].push({
+          properties,
+          id: featureId,
+          type: layer,
+          __Parent_NessUUID__: parentuuid,
+        });
 
-      if (!(layer in featuresByLayers)) {
-        featuresByLayers[layer] = [];
       }
-      const properties = Object.keys(f.values_)
-        .filter((key) => key !== "geometry")
-        .reduce((obj, key) => {
-          obj[key] = f.values_[key];
-          return obj;
-        }, {});
-      featuresByLayers[layer].push({
-        properties,
-        id: f.getId(),
-        type: layer,
-        __Parent_NessUUID__: parentuuid,
-      });
     });
-    dispatch({
+    dispatch<SetSelectedFeaturesAction>({
       type: types.SET_SELECTED_FEATURES,
       payload: { focusedmap, featuresByLayers },
     });
   }
 };
 
-export const setCurrentFeature = (featureId) => (dispatch, getState) => {
+export const setCurrentFeature = (featureId: string) => (dispatch: Dispatch, getState: () => GisState) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
   if (focusedmap in getState().Features) {
     const { selectedFeatures, currentLayer } = getState().Features[focusedmap];
     const currentFeature = selectedFeatures[currentLayer].filter(
-      (feature) => feature.id == featureId
+      (feature: Feature) => feature.id == featureId
     );
-    dispatch({
+    dispatch<SetCurrentFeatureAction>({
       type: types.SET_CURRENT_FEATURE,
       payload: { focusedmap, currentFeature: currentFeature[0] },
     });
   }
 };
 
-export const updateFeature = (featureId, newFeature) => (
-  dispatch,
-  getState
+export const updateFeature = (featureId: string, newFeature) => (
+  dispatch: Dispatch, getState: () => GisState
 ) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
   if (focusedmap in getState().Features) {
@@ -64,7 +64,7 @@ export const updateFeature = (featureId, newFeature) => (
   }
 };
 
-export const removeFeature = (featureId) => (dispatch, getState) => {
+export const removeFeature = (featureId: string) => (dispatch: Dispatch, getState: () => GisState) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
   if (focusedmap in getState().Features) {
     dispatch({
@@ -74,14 +74,14 @@ export const removeFeature = (featureId) => (dispatch, getState) => {
   }
 };
 
-export const setCurrentLayer = (currentLayer) => (dispatch) => {
+export const setCurrentLayer = (currentLayer) => (dispatch: Dispatch) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.SET_CURRENT_LAYER,
     payload: { currentLayer, focusedmap },
   });
 };
-export const setContextMenu = (source, featureID, menu) => (dispatch) => {
+export const setContextMenu = (source, featureID, menu) => (dispatch: Dispatch) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.SET_CONTEXT_MENU,
@@ -89,7 +89,7 @@ export const setContextMenu = (source, featureID, menu) => (dispatch) => {
   });
 };
 
-export const setSelectionForLayers = (arrayOfLayerId) => (dispatch) => {
+export const setSelectionForLayers = (arrayOfLayerId) => (dispatch: Dispatch) => {
   const focusedmap = getFocusedMapProxy().uuid.value;
   dispatch({
     type: types.SET_SPATIAL_LAYER_SELECTION,

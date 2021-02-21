@@ -1,11 +1,12 @@
-import types from "../actions/actionsTypes";
+import types from "../actions/types";
+import { FeatureState } from "../types/feature"
 import produce from "immer";
 import { type } from "os";
 
 // selectedFeatures: {},
 // currentLayer: null,
 // currentFeature: null,
-export default function (state = {}, action) {
+const reducer = (state: FeatureState = {}, action): FeatureState => {
   switch (action.type) {
     case types.SET_SELECTED_FEATURES:
       return produce(state, (draftState) => {
@@ -111,14 +112,16 @@ export default function (state = {}, action) {
   }
 }
 
+export default reducer;
+
 export const selectCurrentLayerUUID = (state) => {
   const { Features, map } = state;
   const selectedFeatures = Features[map.focused].selectedFeatures || false;
   const currentLayer = Features[map.focused].currentLayer || false;
   const currentId =
     selectedFeatures &&
-    currentLayer &&
-    selectedFeatures[currentLayer].length > 0
+      currentLayer &&
+      selectedFeatures[currentLayer].length > 0
       ? selectedFeatures[currentLayer][0].__Parent_NessUUID__
       : false;
   return currentId;

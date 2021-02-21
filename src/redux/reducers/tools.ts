@@ -1,11 +1,15 @@
-import types from "../actions/actionsTypes";
+import types from "../actions/types";
 import produce from "immer";
+import { ToolState } from "../types/tools";
 
 const InitialState = {
-  blueprint: {},
+  blueprint: {
+    tools: {},
+    Groups: {}
+  },
 };
 
-export default function (state = InitialState, action) {
+const reducer = (state: ToolState = InitialState, action): ToolState => {
   switch (action.type) {
     case types.INIT_TOOLS:
       return produce(state, (draftState) => {
@@ -33,8 +37,8 @@ export default function (state = InitialState, action) {
         const futureToolStatus = forceOpen
           ? true
           : forceClose
-          ? false
-          : !IsOpen;
+            ? false
+            : !IsOpen;
 
         currentMapTools.tools[currentToolId].IsOpen = futureToolStatus;
         if (futureToolStatus) {
@@ -124,3 +128,5 @@ export default function (state = InitialState, action) {
       return state;
   }
 }
+
+export default reducer;

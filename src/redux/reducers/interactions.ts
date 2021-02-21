@@ -1,8 +1,9 @@
-import types from "../actions/actionsTypes";
+import types from "../actions/types";
+import { InteractionState } from "../types/interactions"
 import produce from "immer";
 import _ from "lodash";
 
-const interactionsReducer = (state = {}, action) => {
+const interactionsReducer = (state: InteractionState = {}, action): InteractionState => {
   switch (action.type) {
     case types.SET_INTERACTION:
       return produce(state, (draftState) => {

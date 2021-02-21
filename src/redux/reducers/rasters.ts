@@ -1,7 +1,12 @@
-import types from "../actions/actionsTypes";
+import types from "../actions/types";
 import produce from "immer";
+import { RasterState } from "../types/raster";
 
-export default function (state = {}, action) {
+const initialState: RasterState = {
+  Catalog: {},
+  Focused: null
+}
+const reducer = (state: RasterState = initialState, action): RasterState => {
   switch (action.type) {
     case types.SET_RASTER:
       return produce(state, (draftState) => {
@@ -17,3 +22,4 @@ export default function (state = {}, action) {
       return state;
   }
 }
+export default reducer;

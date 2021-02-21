@@ -1,7 +1,7 @@
-import types from "../actions/actionsTypes";
+import types from "../actions/types";
 import produce, { finishDraft } from "immer";
-
-const overlayReducer = (state = {}, action) => {
+import { OverlayState } from "../types/overlays";
+const overlayReducer = (state: OverlayState = {}, action): OverlayState => {
   switch (action.type) {
     case types.SET_OVERLAY:
       return produce(state, (draftState) => {

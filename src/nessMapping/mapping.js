@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import MapProxy from "./mapProxy";
-import store from '../redux/store';
+import store from '../redux/store.ts';
 
 const NessMapping = (function () {
     var instance;

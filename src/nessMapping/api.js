@@ -1,4 +1,4 @@
-import store from "../redux/store";
+import store from "../redux/store.ts";
 import NessMapping from "./mapping";
 import NessLayer, {
   getLayerObject,
