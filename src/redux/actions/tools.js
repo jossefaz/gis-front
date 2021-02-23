@@ -1,10 +1,7 @@
 import types from "./actionsTypes";
 import { getRandomInt } from "../../utils/func";
 import LifeCycleRegistry from "./LifeCycle";
-import { getFocusedMapProxy, addLayerToMapProxy } from "../../nessMapping/api";
-import { nessLayerToReduxLayer } from "../../utils/convertors/layerConverter";
-import { getMetaData } from "../../communication/mdFetcher";
-import { config } from "process";
+import { getFocusedMapProxy } from "../../nessMapping/api";
 export const toggleTool = (ToolId, forceOpen, forceClose) => async (
   dispatch,
   getState

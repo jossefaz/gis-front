@@ -1,7 +1,7 @@
 /* eslint-disable default-case */
 /* eslint-disable no-throw-literal */
 import GenerateUUID from "../utils/uuid";
-import MapProxy from "./mapProxy";
+import MapProxy from "./proxy/map";
 import NessKeys from "./keys";
 import {
   newDraw,

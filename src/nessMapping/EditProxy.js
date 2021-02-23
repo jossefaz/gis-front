@@ -6,7 +6,7 @@ import {
 import { GeoserverUtil } from "../utils/Geoserver";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import store from "../redux/store";
-import { removeFeature, updateFeature } from "../redux/actions/features";
+import { removeFeature } from "../redux/actions/features";
 import _ from "lodash";
 import styles from "./mapStyle";
 import convert from "xml-js";

@@ -1,7 +1,7 @@
 /* eslint-disable default-case */
 /* eslint-disable no-throw-literal */
 import GenerateUUID from "../utils/uuid";
-import MapProxy from "./mapProxy";
+import MapProxy from "./proxy/mapProxy";
 
 import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";

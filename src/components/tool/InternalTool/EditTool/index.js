@@ -17,7 +17,7 @@ import { toggleToolByName } from "../../../../redux/actions/tools";
 import {
   setSelectedFeatures,
   setCurrentFeature,
-  setCurrentLayer,
+  setCurrentFeatureLayer,
 } from "../../../../redux/actions/features";
 import { connect } from "react-redux";
 const initialState = {
@@ -256,17 +256,15 @@ class EditTool extends Component {
         {this.props.uuid && this.props.VisibleLayers.includes(this.props.uuid) && (
           <React.Fragment>
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.addingIcon ? "secondary" : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.addingIcon ? "secondary" : "primary"
+                }`}
               onClick={this.onAddFeature}
               icon="plus-square"
               size="lg"
             />
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.editIcon ? "secondary" : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.editIcon ? "secondary" : "primary"
+                }`}
               onClick={this.onIdentifyFeature}
               icon="edit"
               size="lg"
@@ -306,5 +304,5 @@ export default connect(mapStateToProps, {
   toggleToolByName,
   setSelectedFeatures,
   setCurrentFeature,
-  setCurrentLayer,
+  setCurrentFeatureLayer,
 })(withNotifications(EditTool));

@@ -9,7 +9,7 @@ import {
 } from "../nessMapping/api";
 import mapStyle from "../nessMapping/mapStyle";
 import { Draw, DragBox, Select, Modify } from "ol/interaction";
-import store from "../redux/store";
+import store from "../redux/store.ts";
 import {
   setInteraction,
   unsetInteraction,
