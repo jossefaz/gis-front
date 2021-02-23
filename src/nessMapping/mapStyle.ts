@@ -1,5 +1,4 @@
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
-import { MultiPoint, MultiPolygon } from "ol/geom";
 const _drawEndstyle = new Style({
   fill: new Fill({
     color: "rgba(255, 255, 255, 0.2)",
@@ -61,19 +60,6 @@ const _editStyle = [
     fill: new Fill({
       color: "rgba(0, 0, 255, 0.1)",
     }),
-  }),
-  // style for the vertices
-  new Style({
-    image: new CircleStyle({
-      radius: 5,
-      fill: new Fill({
-        color: "orange",
-      }),
-    }),
-    geometry: function (feature) {
-      var coordinates = feature.getGeometry().getCoordinates()[0];
-      return new MultiPoint(coordinates);
-    },
   }),
 ];
 

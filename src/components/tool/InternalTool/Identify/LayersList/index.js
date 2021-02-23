@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { setCurrentLayer } from "../../../../../redux/actions/features";
+import { setCurrentFeatureLayer } from "../../../../../redux/actions/features";
 import { getFocusedMapProxy } from "../../../../../nessMapping/api";
 import {
   selectCurrentLayer,
@@ -17,21 +17,21 @@ class FeatureList extends Component {
   renderSelectedFeature = () => {
     return this.props.selectedFeatures
       ? Object.keys(this.props.selectedFeatures).map((layer) => (
-          <tr key={layer}>
-            <td
-              className={
-                this.props.currentLayer
-                  ? this.props.currentLayer == layer
-                    ? "currentLayer pointerCur"
-                    : "pointerCur"
+        <tr key={layer}>
+          <td
+            className={
+              this.props.currentLayer
+                ? this.props.currentLayer == layer
+                  ? "currentLayer pointerCur"
                   : "pointerCur"
-              }
-              onClick={() => this.props.setCurrentLayer(layer)}
-            >
-              {layer}
-            </td>
-          </tr>
-        ))
+                : "pointerCur"
+            }
+            onClick={() => this.props.setCurrentFeatureLayer(layer)}
+          >
+            {layer}
+          </td>
+        </tr>
+      ))
       : null;
   };
 
@@ -64,4 +64,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setCurrentLayer })(FeatureList);
+export default connect(mapStateToProps, { setCurrentFeatureLayer })(FeatureList);

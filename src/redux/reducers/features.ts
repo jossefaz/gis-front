@@ -82,7 +82,7 @@ const reducer = (state: FeatureState = {}, action): FeatureState => {
         draftState[focusedmap].spatialSelection = arrayOfLayerId;
       });
 
-    case types.SET_CURRENT_LAYER:
+    case types.:
       return produce(state, (draftState) => {
         const { focusedmap, currentLayer } = action.payload;
         if (!(focusedmap in state)) {
