@@ -1,7 +1,7 @@
 /* eslint-disable no-throw-literal */
 import { GenerateUUID } from "../../utils/uuid";
 import NessLayer from "../nessLayer";
-import { getEmptyVectorLayer } from "../../utils/interactions";
+import { getEmptyVectorLayer } from "../api/interaction";
 import NessKeys from "../keys";
 import { Map } from "ol";
 import mapStyle from "../mapStyle";
@@ -53,16 +53,16 @@ export default class MapProxy implements IMapProxy {
 
   setHighLight() {
     const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
-    this.setGraphicLayer(vector, source.ol_uid);
+    this.setGraphicLayer(vector, source.get("ol_uid"));
     this.setVectorSource(source);
-    this._highlight.source = source.ol_uid;
-    this._highlight.vector = vector.ol_uid;
+    this._highlight.source = source.get("ol_uid");
+    this._highlight.vector = vector.get("ol_uid");
     this.OLMap.addLayer(vector);
   }
 
   setGraphicLayer(
     ol_layer: VectorLayer,
-    source_uid: string | null
+    source_uid?: string | null
   ): string | null {
     if (source_uid) {
       ol_layer.set(NessKeys.VECTOR_SOURCE, source_uid);

@@ -1,2 +1,2 @@
-export * from "./actions"
-export * from "./actiontypes"
+export * from "./actions";
+export * from "./actionsTypes";

@@ -19,30 +19,32 @@ import {
 import Collection from "ol/Collection";
 import GenerateUUID from "./uuid";
 import styles from "../nessMapping/mapStyle";
+import { Options as SelectOptions } from "ol/interaction/Select";
+import { Options as DragBoxOptions } from "ol/interaction/DragBox";
+import { Options as ModifyOptions } from "ol/interaction/Modify";
+import { Options as DrawOptions } from "ol/interaction/Draw";
+import Feature from "ol/Feature";
+import { InteractionSupportedTypes as INTERACTION_TYPE } from "../nessMapping/types/interaction";
 
 export class InteractionUtil {
-  constructor(widgetName) {
-    this.widget = widgetName;
-    this.TYPES = {
-      DRAW: "Draw",
-      SELECT: "Select",
-      MODIFY: "Modify",
-      DRAGBOX: "DragBox",
-    };
+  private _widget: string;
+
+  constructor(widgetName: string) {
+    this._widget = widgetName;
   }
 
   get store() {
     const currentInteractionStore = store.getState().Interactions;
     if (
-      this.widget in currentInteractionStore &&
-      this.currentMapUUID in currentInteractionStore[this.widget]
+      this._widget in currentInteractionStore &&
+      this.currentMapUUID in currentInteractionStore[this._widget]
     ) {
-      return currentInteractionStore[this.widget][this.currentMapUUID];
+      return currentInteractionStore[this._widget][this.currentMapUUID];
     }
     return false;
   }
 
-  getinteractionUUID = (interaction) => {
+  getinteractionUUID = (interaction: INTERACTION_TYPE): string | boolean => {
     if (this.store && interaction in this.store) {
       return this.store[interaction].uuid;
     }
@@ -50,19 +52,19 @@ export class InteractionUtil {
   };
 
   get currentDrawUUID() {
-    return this.getinteractionUUID(this.TYPES.DRAW);
+    return this.getinteractionUUID(INTERACTION_TYPE.DRAW);
   }
 
   get currentSelectUUID() {
-    return this.getinteractionUUID(this.TYPES.SELECT);
+    return this.getinteractionUUID(INTERACTION_TYPE.SELECT);
   }
 
   get currentModifyUUID() {
-    return this.getinteractionUUID(this.TYPES.MODIFY);
+    return this.getinteractionUUID(INTERACTION_TYPE.MODIFY);
   }
 
   get currentDragBoxUUID() {
-    return this.getinteractionUUID(this.TYPES.DRAGBOX);
+    return this.getinteractionUUID(INTERACTION_TYPE.DRAGBOX);
   }
 
   get currentMapUUID() {
@@ -97,63 +99,55 @@ export class InteractionUtil {
     return false;
   }
 
-  getVectorLayer = (interaction) => {
+  getVectorLayer = (interaction: INTERACTION_TYPE) => {
     const currentInteractionUUID = this.getinteractionUUID(interaction);
     return currentInteractionUUID
       ? getInteractionGraphicLayer(currentInteractionUUID)
       : null;
   };
 
-  getVectorSource = (interaction) => {
+  getVectorSource = (interaction: INTERACTION_TYPE) => {
     const currentInteractionUUID = this.getinteractionUUID(interaction);
     return currentInteractionUUID
       ? getInteractionVectorSource(currentInteractionUUID)
       : null;
   };
 
-  newDraw = async (drawConfig) => {
+  newDraw = async (drawConfig: DrawOptions) => {
     await this.unDraw();
     await store.dispatch(
       setInteraction({
-        Type: this.TYPES.DRAW,
-        drawConfig,
-        sourceLayer: this.getVectorSource(this.TYPES.DRAW),
-        Layer: this.getVectorLayer(this.TYPES.DRAW),
-        widgetName: this.widget,
+        Type: INTERACTION_TYPE.DRAW,
+        interactionConfig: drawConfig,
+        sourceLayer: this.getVectorSource(INTERACTION_TYPE.DRAW),
+        Layer: this.getVectorLayer(INTERACTION_TYPE.DRAW),
+        widgetName: this._widget,
       })
     );
   };
 
-  unDraw = async (removePreviousLayer) => {
+  unDraw = async (removePreviousLayer?: boolean) => {
     if (this.currentDrawUUID) {
-      this.getVectorLayer(this.TYPES.DRAW) &&
+      this.getVectorLayer(INTERACTION_TYPE.DRAW) &&
         removePreviousLayer &&
-        getFocusedMap().removeLayer(this.getVectorLayer(this.TYPES.DRAW));
+        getFocusedMap().removeLayer(this.getVectorLayer(INTERACTION_TYPE.DRAW));
       await store.dispatch(
         unsetInteraction({
           uuid: this.currentDrawUUID,
-          widgetName: this.widget,
-          Type: this.TYPES.DRAW,
+          widgetName: this._widget,
+          Type: INTERACTION_TYPE.DRAW,
         })
       );
     }
   };
 
-  newSelect = async (feature, layers, multi, condition) => {
-    const config = {
-      ...(layers && { layers }),
-      ...(multi && { multi }),
-      ...(feature && { features: new Collection([feature]) }),
-      ...(condition && { condition }),
-      style: styles.EDIT,
-    };
-    console.log("select config", config);
+  newSelect = async (selectOptions: SelectOptions) => {
     await this.unSelect();
     await store.dispatch(
       setInteraction({
-        Type: this.TYPES.SELECT,
-        interactionConfig: config,
-        widgetName: this.widget,
+        Type: INTERACTION_TYPE.SELECT,
+        interactionConfig: selectOptions,
+        widgetName: this._widget,
       })
     );
   };
@@ -163,23 +157,20 @@ export class InteractionUtil {
       await store.dispatch(
         unsetInteraction({
           uuid: this.currentSelectUUID,
-          widgetName: this.widget,
-          Type: this.TYPES.SELECT,
+          widgetName: this._widget,
+          Type: INTERACTION_TYPE.SELECT,
         })
       );
     }
   };
 
-  newModify = async (features, source) => {
+  newModify = async (modifyOptions: ModifyOptions) => {
     await this.unModify();
     await store.dispatch(
       setInteraction({
-        Type: this.TYPES.MODIFY,
-        interactionConfig: {
-          ...(features && { features }),
-          ...(source && { source }),
-        },
-        widgetName: this.widget,
+        Type: INTERACTION_TYPE.MODIFY,
+        interactionConfig: modifyOptions,
+        widgetName: this._widget,
       })
     );
   };
@@ -189,8 +180,8 @@ export class InteractionUtil {
       await store.dispatch(
         unsetInteraction({
           uuid: this.currentModifyUUID,
-          widgetName: this.widget,
-          Type: this.TYPES.MODIFY,
+          widgetName: this._widget,
+          Type: INTERACTION_TYPE.MODIFY,
         })
       );
     }
@@ -201,7 +192,7 @@ export class InteractionUtil {
       const InteractionArray = [];
       Object.keys(this.store).map((InteractionName) => {
         const { uuid, Type } = this.store[InteractionName];
-        InteractionArray.push({ uuid, widgetName: this.widget, Type });
+        InteractionArray.push({ uuid, widgetName: this._widget, Type });
       });
       if (InteractionArray.length > 0) {
         await store.dispatch(unsetInteractions(InteractionArray));
@@ -223,7 +214,7 @@ export class InteractionUtil {
         if (!status) {
           InteractionArray.push({
             Type: Type,
-            widgetName: this.widget,
+            widgetName: this._widget,
             interactionConfig: interactionConfig,
           });
         }
@@ -239,8 +230,8 @@ export class InteractionUtil {
 
     await store.dispatch(
       setInteraction({
-        Type: this.TYPES.DRAGBOX,
-        widgetName: this.widget,
+        Type: INTERACTION_TYPE.DRAGBOX,
+        widgetName: this._widget,
       })
     );
   };
@@ -250,8 +241,8 @@ export class InteractionUtil {
       await store.dispatch(
         unsetInteraction({
           uuid: this.currentDragBoxUUID,
-          widgetName: this.widget,
-          Type: this.TYPES.DRAGBOX,
+          widgetName: this._widget,
+          Type: INTERACTION_TYPE.DRAGBOX,
         })
       );
     }
@@ -274,40 +265,6 @@ export const getDrawObject = (source, type) => {
     type: type,
     style: mapStyle.DRAW_START,
   });
-};
-
-export const newDraw = (drawType, vectorSource, Layer) => {
-  if (!vectorSource) {
-    const { source, vector } = getEmptyVectorLayer();
-    getFocusedMap().addLayer(vector);
-    vectorSource = source;
-    Layer = vector;
-    Layer.set("__NessUUID__", "drawlayer");
-    vectorSource.set("__NessUUID__", "drawlayer");
-  }
-  const Interaction = getDrawObject(vectorSource, drawType);
-  return { Interaction, vectorSource, Layer };
-};
-
-export const newSelect = (config) => {
-  if (config) {
-    return new Select(config);
-  }
-  return new Select();
-};
-
-export const newDragBox = (config) => {
-  if (config) {
-    return new DragBox(config);
-  }
-  return new DragBox();
-};
-
-export const newModify = (config) => {
-  if (config) {
-    return new Modify(config);
-  }
-  return new Modify();
 };
 
 /**

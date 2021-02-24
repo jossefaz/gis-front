@@ -3,10 +3,6 @@ import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import { getOverlay, getFocusedMap } from "../../../../nessMapping/api";
 import {
-  setInteraction,
-  unsetInteraction,
-} from "../../../../redux/actions/interaction";
-import {
   setOverlay,
   unsetOverlays,
   unsetOverlay,
@@ -294,8 +290,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  setInteraction,
-  unsetInteraction,
   setOverlay,
   unsetOverlays,
   unsetOverlay,

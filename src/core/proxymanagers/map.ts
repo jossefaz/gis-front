@@ -17,17 +17,17 @@ class MapProxyManager {
     return MapProxyManager.instance;
   }
 
-  public getMapProxy(uuid: string): MapProxy {
+  public getProxy(uuid: string): MapProxy {
     return this._mapProxies[uuid];
   }
 
-  public addMapProxy(mapConfig: MapOptions): string {
-    var mp = new MapProxy(mapConfig);
+  public addProxy(mapConfig: MapOptions): string {
+    const mp = new MapProxy(mapConfig);
     this._mapProxies[mp.uuid.value] = mp;
     return mp.uuid.value;
   }
 
-  public killMapProxy(uuid: string): boolean {
+  public killProxy(uuid: string): boolean {
     if (this._mapProxies.hasOwnProperty(uuid)) {
       delete this._mapProxies[uuid];
       return true;

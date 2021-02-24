@@ -9,7 +9,7 @@ import NessLayer, {
   getOpacity,
 } from "./nessLayer";
 import NessOverlay from "./overlay";
-import NessInteraction from "./interaction";
+import NessInteraction from "./proxymanagers/interaction";
 
 import Feature from "ol/Feature";
 import _ from "lodash";

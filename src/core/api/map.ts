@@ -4,12 +4,12 @@ import Map from "ol/Map";
 
 export const getFocusedMap = (): Map => {
   const state = store.getState();
-  return MapProxyManager.getInstance().getMapProxy(state.map.focused).OLMap;
+  return MapProxyManager.getInstance().getProxy(state.map.focused).OLMap;
 };
 
 export const getFocusedMapProxy = () => {
   const state = store.getState();
-  return MapProxyManager.getInstance().getMapProxy(state.map.focused);
+  return MapProxyManager.getInstance().getProxy(state.map.focused);
 };
 
 export const getCurrentResolution = () => {
