@@ -1,6 +1,9 @@
 import layersActionsTypes from "./layers";
 import { ActionTypes as FeatureTypeActions, FeatureActions } from "./features";
-import interactionsActionsTypes from "./interactions/actionsTypes";
+import {
+  ActionTypes as interactionsActionsTypes,
+  InteractionActions,
+} from "./interactions";
 import mapActionsTypes from "./map";
 import overlaysActionsTypes from "./overlays";
 import rasterActionsTypes from "./raster";
@@ -18,6 +21,6 @@ const actionTypes = {
   ...uiActionsTypes,
 };
 
-export type Actions = FeatureActions;
+export type Actions = FeatureActions | InteractionActions;
 
 export default actionTypes;

@@ -1,19 +1,25 @@
 import types from "../actions/types";
-import { FeatureState } from "../types/feature"
+import { FeatureState } from "../types/feature";
 import produce from "immer";
-import { type } from "os";
+import { Actions } from "../actions/types";
+import { GisState } from "../types/state";
 
-// selectedFeatures: {},
-// currentLayer: null,
-// currentFeature: null,
-const reducer = (state: FeatureState = {}, action): FeatureState => {
+const getinitialFeatureState = () => {
+  return {
+    selectedFeatures: {},
+    currentLayer: null,
+    currentFeature: null,
+  };
+};
+
+const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
   switch (action.type) {
     case types.SET_SELECTED_FEATURES:
       return produce(state, (draftState) => {
         const { focusedmap, featuresByLayers } = action.payload;
         if (!(focusedmap in state)) {
           // if the current map does not have any selected feature yet : add the mapID in the state
-          draftState[focusedmap] = {};
+          draftState[focusedmap] = getinitialFeatureState();
         }
         draftState[focusedmap].selectedFeatures = featuresByLayers;
         draftState[focusedmap].currentLayer = Object.keys(featuresByLayers)[0];
@@ -23,7 +29,7 @@ const reducer = (state: FeatureState = {}, action): FeatureState => {
     case types.SET_CURRENT_FEATURE:
       return produce(state, (draftState) => {
         if (!(action.payload.focusedmap in state)) {
-          draftState[action.payload.focusedmap] = {};
+          draftState[action.payload.focusedmap] = getinitialFeatureState();
         }
         draftState[action.payload.focusedmap].currentFeature =
           action.payload.currentFeature;
@@ -32,17 +38,22 @@ const reducer = (state: FeatureState = {}, action): FeatureState => {
     case types.UPDATE_FEATURE:
       return produce(state, (draftState) => {
         const { focusedmap, featureId, newFeature } = action.payload;
-        const index = draftState[focusedmap].selectedFeatures[
-          draftState[focusedmap].currentLayer
-        ].findIndex((el) => el.id == featureId);
-        if (index != -1) {
-          draftState[focusedmap].selectedFeatures[
-            draftState[focusedmap].currentLayer
-          ].splice(index, 1, newFeature);
-          if (
-            draftState[action.payload.focusedmap].currentFeature.id == featureId
-          ) {
-            draftState[action.payload.focusedmap].currentFeature = newFeature;
+        const currentLayer = draftState[focusedmap].currentLayer;
+        if (currentLayer) {
+          const index = draftState[focusedmap].selectedFeatures[
+            currentLayer
+          ].findIndex((el) => el.id == featureId);
+          if (index != -1) {
+            draftState[focusedmap].selectedFeatures[currentLayer].splice(
+              index,
+              1,
+              newFeature
+            );
+            const currentFeature =
+              draftState[action.payload.focusedmap].currentFeature;
+            if (currentFeature && currentFeature.id == featureId) {
+              draftState[action.payload.focusedmap].currentFeature = newFeature;
+            }
           }
         }
       });
@@ -50,25 +61,26 @@ const reducer = (state: FeatureState = {}, action): FeatureState => {
     case types.REMOVE_FEATURE:
       return produce(state, (draftState) => {
         const { focusedmap, featureId } = action.payload;
-        const index = draftState[focusedmap].selectedFeatures[
-          draftState[focusedmap].currentLayer
-        ].findIndex((el) => el.id == featureId);
-        if (index != -1) {
-          draftState[focusedmap].selectedFeatures[
-            draftState[focusedmap].currentLayer
-          ].splice(index, 1);
-          if (
-            draftState[focusedmap].selectedFeatures[
-              draftState[focusedmap].currentLayer
-            ].length === 0
-          ) {
-            delete draftState[focusedmap].selectedFeatures[
-              draftState[focusedmap].currentLayer
-            ];
-            draftState[focusedmap].currentLayer = null;
-          }
-          if (draftState[focusedmap].currentFeature.id == featureId) {
-            draftState[focusedmap].currentFeature = null;
+        const currentLayer = draftState[focusedmap].currentLayer;
+        if (currentLayer) {
+          const index = draftState[focusedmap].selectedFeatures[
+            currentLayer
+          ].findIndex((el) => el.id == featureId);
+          if (index != -1) {
+            draftState[focusedmap].selectedFeatures[currentLayer].splice(
+              index,
+              1
+            );
+            if (
+              draftState[focusedmap].selectedFeatures[currentLayer].length === 0
+            ) {
+              delete draftState[focusedmap].selectedFeatures[currentLayer];
+              draftState[focusedmap].currentLayer = null;
+            }
+            const currentFeature = draftState[focusedmap].currentFeature;
+            if (currentFeature && currentFeature.id == featureId) {
+              draftState[focusedmap].currentFeature = null;
+            }
           }
         }
       });
@@ -77,18 +89,18 @@ const reducer = (state: FeatureState = {}, action): FeatureState => {
       const { arrayOfLayerId, focusedmap } = action.payload;
       return produce(state, (draftState) => {
         if (!(focusedmap in state)) {
-          draftState[focusedmap] = {};
+          draftState[focusedmap] = getinitialFeatureState();
         }
         draftState[focusedmap].spatialSelection = arrayOfLayerId;
       });
 
-    case types.:
+    case types.SET_CURRENT_FEATURE_LAYER:
       return produce(state, (draftState) => {
-        const { focusedmap, currentLayer } = action.payload;
+        const { focusedmap, currentFeatureLayer } = action.payload;
         if (!(focusedmap in state)) {
-          draftState[focusedmap] = {};
+          draftState[focusedmap] = getinitialFeatureState();
         }
-        draftState[focusedmap].currentLayer = currentLayer;
+        draftState[focusedmap].currentLayer = currentFeatureLayer;
         draftState[focusedmap].currentFeature = null;
       });
 
@@ -96,7 +108,7 @@ const reducer = (state: FeatureState = {}, action): FeatureState => {
       return produce(state, (draftState) => {
         const { source, featureID, menu, focusedmap } = action.payload;
         if (!(focusedmap in state)) {
-          draftState[focusedmap] = {};
+          draftState[focusedmap] = getinitialFeatureState();
         }
         if (!("contextMenus" in draftState[focusedmap])) {
           draftState[focusedmap].contextMenus = {};
@@ -110,24 +122,24 @@ const reducer = (state: FeatureState = {}, action): FeatureState => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;
 
-export const selectCurrentLayerUUID = (state) => {
+export const selectCurrentLayerUUID = (state: GisState) => {
   const { Features, map } = state;
   const selectedFeatures = Features[map.focused].selectedFeatures || false;
   const currentLayer = Features[map.focused].currentLayer || false;
   const currentId =
     selectedFeatures &&
-      currentLayer &&
-      selectedFeatures[currentLayer].length > 0
+    currentLayer &&
+    selectedFeatures[currentLayer].length > 0
       ? selectedFeatures[currentLayer][0].__Parent_NessUUID__
       : false;
   return currentId;
 };
 
-export const selectSelectedFeatures = (state) => {
+export const selectSelectedFeatures = (state: GisState) => {
   const { Features, map } = state;
   if (map.focused in Features && "selectedFeatures" in Features[map.focused]) {
     return Features[map.focused].selectedFeatures;
@@ -135,13 +147,13 @@ export const selectSelectedFeatures = (state) => {
   return false;
 };
 
-export const selectCurrentLayer = (state) => {
+export const selectCurrentLayer = (state: GisState) => {
   const { Features, map } = state;
   const currentLayer = Features[map.focused].currentLayer || false;
   return currentLayer;
 };
 
-export const selectCurrentFeature = (state) => {
+export const selectCurrentFeature = (state: GisState) => {
   const { Features, map } = state;
   if (Features && map.focused in Features) {
     return Features[map.focused].currentFeature;
@@ -149,7 +161,7 @@ export const selectCurrentFeature = (state) => {
   return false;
 };
 
-export const selectSelectedFeatureInCurrentLayer = (state) => {
+export const selectSelectedFeatureInCurrentLayer = (state: GisState) => {
   const layer = selectCurrentLayer(state);
   const features = selectSelectedFeatures(state);
   if (layer && features && layer in features) {
@@ -158,7 +170,7 @@ export const selectSelectedFeatureInCurrentLayer = (state) => {
   return false;
 };
 
-export const selectContextMenus = (state) => {
+export const selectContextMenus = (state: GisState) => {
   const { Features, map } = state;
   if (map.focused in Features && "contextMenus" in Features[map.focused]) {
     return Features[map.focused].contextMenus;
@@ -166,7 +178,7 @@ export const selectContextMenus = (state) => {
   return false;
 };
 
-export const selectSelectionLayers = (state) => {
+export const selectSelectionLayers = (state: GisState) => {
   const { Features, map } = state;
   if (map.focused in Features && "spatialSelection" in Features[map.focused]) {
     return Features[map.focused].spatialSelection;

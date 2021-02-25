@@ -14,5 +14,7 @@ export interface FeatureState {
     selectedFeatures: SelectedFeature;
     currentLayer: string | null;
     currentFeature: Feature | null;
+    spatialSelection?: number[] | string[];
+    contextMenus?: any;
   };
 }

@@ -1,7 +1,13 @@
-import types from "./actionsTypes";
+import { ActionTypes as types } from "../actions/types/interactions";
 import API from "../../core/api";
 import { InteractionOptions } from "../../core/types/interaction";
-import { SetInteractionAction } from "../actions/types/interactions/actions";
+import {
+  SetInteractionAction,
+  SetInteractionsAction,
+  UnsetInteractionAction,
+  UnsetInteractionsAction,
+} from "../actions/types/interactions/actions";
+import { InteractionConfigStore } from "../types/interactions";
 import { Dispatch } from "redux";
 
 export const setInteraction = (config: InteractionOptions) => (
@@ -39,53 +45,61 @@ export const setInteraction = (config: InteractionOptions) => (
 export const setInteractions = (interactionsArray: InteractionOptions[]) => (
   dispatch: Dispatch
 ) => {
-  const newArray: InteractionOptions[] = [];
+  const interactionsPayloadArray: InteractionConfigStore[] = [];
   interactionsArray.map((config) => {
-    const uuid = addInteraction(config);
-    if ("sourceLayer" in config) {
+    const uuid = API.interactions.addInteraction(config);
+    if ("sourceLayer" in config && uuid) {
       if (config.sourceLayer) {
+        // Replace source layer by its id
         config.sourceLayer = config.sourceLayer.get("ol_uid");
       } else {
-        const sourceLayer = getInteractionProxy(uuid).OLInteraction.get(
-          "__VECTOR_SOURCE__"
-        );
-        config.sourceLayer = sourceLayer;
+        const proxy = API.interactions.getInteractionProxy(uuid);
+        if (proxy && proxy.OLInteraction) {
+          const sourceLayer = proxy.OLInteraction.get("__VECTOR_SOURCE__");
+          config.sourceLayer = sourceLayer;
+        }
       }
     }
-
     if ("interactionConfig" in config) {
       delete config.interactionConfig;
     }
-    config.uuid = uuid;
-    newArray.push(config);
+    if (uuid) {
+      config.uuid = uuid;
+    }
+    interactionsPayloadArray.push(config);
   });
-
-  const focusedmap = getFocusedMapProxy().uuid.value;
-  dispatch({
+  const focusedmap = API.map.getFocusedMapProxy().uuid.value;
+  dispatch<SetInteractionsAction>({
     type: types.SET_INTERACTIONS,
     payload: {
-      newArray,
+      interactionsPayloadArray,
       focusedmap,
     },
   });
 };
 
-export const unsetInteraction = (config) => (dispatch) => {
-  removeInteraction(config.uuid);
-  dispatch({
+export const unsetInteraction = (config: InteractionOptions) => (
+  dispatch: Dispatch
+) => {
+  config.uuid && API.interactions.removeInteraction(config.uuid);
+  dispatch<UnsetInteractionAction>({
     type: types.UNSET_INTERACTION,
     payload: config,
   });
 };
 
-export const unsetInteractions = (interactionsArray) => (dispatch) => {
-  const newArray = [];
+export const unsetInteractions = (interactionsArray: InteractionOptions[]) => (
+  dispatch: Dispatch
+) => {
+  const interactionsPayloadArray: InteractionConfigStore[] = [];
   interactionsArray.map((config) => {
-    removeInteraction(config.uuid);
-    newArray.push(config);
+    if (config.uuid) {
+      API.interactions.removeInteraction(config.uuid);
+      interactionsPayloadArray.push(config);
+    }
   });
-  dispatch({
+  dispatch<UnsetInteractionsAction>({
     type: types.UNSET_INTERACTIONS,
-    payload: newArray,
+    payload: interactionsPayloadArray,
   });
 };

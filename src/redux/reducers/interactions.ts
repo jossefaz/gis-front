@@ -1,54 +1,91 @@
 import types from "../actions/types";
-import { InteractionState } from "../types/interactions"
+import {
+  InteractionState,
+  InteractionConfigStore,
+} from "../types/interactions";
+import { Actions } from "../actions/types";
+import { GisState } from "../types/state";
 import produce from "immer";
 import _ from "lodash";
+import { WritableDraft } from "immer/dist/internal";
 
-const interactionsReducer = (state: InteractionState = {}, action): InteractionState => {
+const getinitialInteractionState = () => {
+  return {
+    focused: "",
+  };
+};
+
+const interactionsReducer = (
+  state: InteractionState = {},
+  action: Actions
+): InteractionState => {
   switch (action.type) {
     case types.SET_INTERACTION:
       return produce(state, (draftState) => {
         const { config, focusedmap } = action.payload;
-        if (!(config.widgetName in draftState)) {
-          draftState[config.widgetName] = {};
+        const widgetName = config.widgetName;
+        if (widgetName) {
+          if (!(widgetName in draftState)) {
+            draftState[widgetName] = {};
+          }
+          if (!(focusedmap in draftState[widgetName])) {
+            draftState[widgetName][focusedmap] = getinitialInteractionState();
+          }
+          draftState[widgetName][focusedmap][config.Type] = config;
+          const interactionConfig = <WritableDraft<InteractionConfigStore>>(
+            draftState[widgetName][focusedmap][config.Type]
+          );
+          interactionConfig.status = 1;
         }
-        if (!(focusedmap in draftState[config.widgetName])) {
-          draftState[config.widgetName][focusedmap] = {};
-        }
-        draftState[config.widgetName][focusedmap][config.Type] = config;
-        draftState[config.widgetName][focusedmap][config.Type].status = 1;
       });
 
     case types.SET_INTERACTIONS:
       return produce(state, (draftState) => {
-        const { newArray, focusedmap } = action.payload;
-        newArray.map((config) => {
-          if (!(config.widgetName in draftState)) {
-            draftState[config.widgetName] = {};
+        const { interactionsPayloadArray, focusedmap } = action.payload;
+        interactionsPayloadArray.map((config) => {
+          const widgetName = config.widgetName;
+          if (widgetName) {
+            if (!(widgetName in draftState)) {
+              draftState[widgetName] = {};
+            }
+            if (!(focusedmap in draftState[widgetName])) {
+              draftState[widgetName][focusedmap] = getinitialInteractionState();
+            }
+            draftState[widgetName][focusedmap][config.Type] = config;
+            const interactionConfig = <WritableDraft<InteractionConfigStore>>(
+              draftState[widgetName][focusedmap][config.Type]
+            );
+            interactionConfig.status = 1;
           }
-          if (!(focusedmap in draftState[config.widgetName])) {
-            draftState[config.widgetName][focusedmap] = {};
-          }
-          draftState[config.widgetName][focusedmap][config.Type] = config;
-          draftState[config.widgetName][focusedmap][config.Type].status = 1;
         });
       });
     case types.UNSET_INTERACTION:
       return produce(state, (draftState) => {
         const { uuid, widgetName, Type } = action.payload;
-        Object.keys(draftState[widgetName]).map((mapId) => {
-          if (draftState[widgetName][mapId][Type].uuid == uuid) {
-            draftState[widgetName][mapId][Type].status = 0;
-          }
-        });
+        if (widgetName) {
+          Object.keys(draftState[widgetName]).map((mapId) => {
+            const interactionConfig = <WritableDraft<InteractionConfigStore>>(
+              draftState[widgetName][mapId][Type]
+            );
+            if (interactionConfig.uuid == uuid) {
+              interactionConfig.status = 0;
+            }
+          });
+        }
       });
     case types.UNSET_INTERACTIONS:
       return produce(state, (draftState) => {
         action.payload.map(({ uuid, widgetName, Type }) => {
-          Object.keys(draftState[widgetName]).map((mapId) => {
-            if (draftState[widgetName][mapId][Type].uuid == uuid) {
-              draftState[widgetName][mapId][Type].status = 0;
-            }
-          });
+          if (widgetName) {
+            Object.keys(draftState[widgetName]).map((mapId) => {
+              const interactionConfig = <WritableDraft<InteractionConfigStore>>(
+                draftState[widgetName][mapId][Type]
+              );
+              if (interactionConfig.uuid == uuid) {
+                interactionConfig.status = 0;
+              }
+            });
+          }
         });
       });
 
@@ -59,7 +96,7 @@ const interactionsReducer = (state: InteractionState = {}, action): InteractionS
 
 export default interactionsReducer;
 
-export const selectCurrentInteractions = (state) => {
+export const selectCurrentInteractions = (state: GisState) => {
   const { Interactions, map } = state;
   const result = {};
   if (Interactions) {

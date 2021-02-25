@@ -1,30 +1,31 @@
 import { InteractionSupportedTypes } from "../../core/types/interaction";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
-
-interface InteractionMetadata {
+import { Options as SelectOptions } from "ol/interaction/Select";
+import { Options as DragBoxOptions } from "ol/interaction/DragBox";
+import { Options as ModifyOptions } from "ol/interaction/Modify";
+import { Options as DrawOptions } from "ol/interaction/Draw";
+export interface InteractionConfigStore {
   Type: InteractionSupportedTypes;
-  widgetName: string;
+  interactionConfig?:
+    | SelectOptions
+    | DragBoxOptions
+    | ModifyOptions
+    | DrawOptions;
   uuid?: string;
   status: number;
-  interactionConfig?: { [type: string]: string };
   sourceLayer?: VectorSource;
   Layer?: VectorLayer;
+  widgetName?: string;
 }
 
 interface InteractionWidgetItem {
   [mapUUID: string]: {
-    [interactionName: string]: InteractionMetadata | boolean;
-    focused: boolean;
+    [interactionName: string]: InteractionConfigStore | string;
+    focused: string;
   };
 }
 
 export interface InteractionState {
   [widgetName: string]: InteractionWidgetItem;
-}
-
-export interface InteractionConfigStore {
-  Type: InteractionSupportedTypes;
-  uuid?: string;
-  status: number;
 }
