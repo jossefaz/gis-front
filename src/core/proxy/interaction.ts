@@ -174,19 +174,3 @@ export default class InteractionProxy {
     }
   }
 }
-
-const _getMapIndex = (ni) => {
-  if (
-    ni instanceof NessInteraction &&
-    ni.uuid &&
-    ni.parent &&
-    ni.parent.OLMap
-  ) {
-    const interactions = ni.parent.OLMap.getInteractions().getArray();
-    return interactions.find(
-      (overlay) =>
-        overlay.get(NessKeys.NESS_INTERACTION_UUID_KEY) === ni.uuid.value
-    );
-  }
-  return -1;
-};

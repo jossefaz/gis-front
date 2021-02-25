@@ -1,4 +1,4 @@
-import { InteractionSupportedTypes } from "../../nessMapping/types/interaction";
+import { InteractionSupportedTypes } from "../../core/types/interaction";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 

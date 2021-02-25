@@ -1,5 +1,5 @@
 import types from "./actionsTypes";
-import API from "../../nessMapping/api";
+import API from "../../core/api";
 
 export const setInteraction = (config) => (dispatch) => {
   const uuid = addInteraction(config);

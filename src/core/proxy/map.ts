@@ -1,6 +1,5 @@
 /* eslint-disable no-throw-literal */
 import { GenerateUUID } from "../../utils/uuid";
-import NessLayer from "../nessLayer";
 import { getEmptyVectorLayer } from "../api/interaction";
 import NessKeys from "../keys";
 import { Map } from "ol";
@@ -9,11 +8,11 @@ import { MapOptions } from "ol/PluggableMap";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { IMapProxy } from "../types/map";
-import { INessLayer } from "../types/layers";
+import LayerProxy from "./layer";
 
 export default class MapProxy implements IMapProxy {
   public uuid: { value: string };
-  private _layers: INessLayer[];
+  private _layers: LayerProxy[];
   private _graphicLayers: { [ol_id: string]: VectorLayer };
   private _vectorSource: { [ol_id: string]: VectorSource };
   private _highlight: { source: string | null; vector: string | null };
@@ -35,8 +34,12 @@ export default class MapProxy implements IMapProxy {
   }
 
   // TODO: consider hiding map completely...
-  get OLMap() {
+  get OLMap(): Map {
     return this._olmap;
+  }
+
+  public get layers(): LayerProxy[] {
+    return this._layers;
   }
 
   getGraphicLayer(ol_id: string | number): VectorLayer {
@@ -84,16 +87,9 @@ export default class MapProxy implements IMapProxy {
     return null;
   }
 
-  AddLayer(lyrOrId: NessLayer | number, addToMap: boolean = false): NessLayer {
-    if (typeof lyrOrId === "number") {
-      lyrOrId = new NessLayer(lyrOrId);
-    }
-    if (lyrOrId instanceof NessLayer) {
-      this._layers.push(lyrOrId);
-      addToMap && lyrOrId.AddSelfToMap(this);
-      return lyrOrId;
-    } else {
-      throw "AddLayer failed - invalid input";
-    }
+  AddLayer(lyrOrId: LayerProxy, addToMap: boolean = false): LayerProxy {
+    this._layers.push(lyrOrId);
+    addToMap && lyrOrId.AddSelfToMap(this);
+    return lyrOrId;
   }
 }

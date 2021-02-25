@@ -77,10 +77,3 @@ export const getEmptyVectorLayer = (inStyle?: Style) => {
   vector.set("__NessUUID__", uuid);
   return { source, vector };
 };
-export const getDrawObject = (source: VectorSource, type: GeometryType) => {
-  return new Draw({
-    source: source,
-    type: type,
-    style: mapStyle.DRAW_START,
-  });
-};

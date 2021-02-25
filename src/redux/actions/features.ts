@@ -1,5 +1,5 @@
 import types from "./types";
-import { getFocusedMapProxy } from "../../nessMapping/api";
+import { getFocusedMapProxy } from "../../core/api";
 import OLFeature from "ol/Feature";
 import { Feature } from "../types/feature";
 import { Dispatch } from "redux";

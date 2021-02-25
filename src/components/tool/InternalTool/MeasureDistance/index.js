@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import { getOverlay, getFocusedMap } from "../../../../nessMapping/api";
+import { getOverlay, getFocusedMap } from "../../../../core/api";
 import {
   setOverlay,
   unsetOverlays,

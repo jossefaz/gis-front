@@ -1,0 +1,70 @@
+import API from "../api";
+import EditProxy from "../proxy/edit";
+import VectorLayerRegistry from "../proxymanagers/vectorlayer";
+import { Vector as VectorLayer, Image as ImageLayer } from "ol/layer";
+
+class EditProxyManager {
+  private static instance: EditProxyManager;
+  private _registry: { [uuid: string]: EditProxy };
+
+  private constructor(layernames?: string[]) {
+    layernames && this._refresh(layernames);
+    this._registry = {};
+  }
+
+  public static getInstance(layernames?: string[]): EditProxyManager {
+    if (!EditProxyManager.instance) {
+      EditProxyManager.instance = layernames
+        ? new EditProxyManager(layernames)
+        : new EditProxyManager();
+    } else {
+      layernames &&
+        layernames.length > 0 &&
+        EditProxyManager.instance._refresh(layernames);
+    }
+    return EditProxyManager.instance;
+  }
+
+  private _refresh = (layernames: string[]) => {
+    if (layernames) {
+      API.map
+        .getFocusedMap()
+        .getLayers()
+        .getArray()
+        .map((lyr) => {
+          const lyrid = lyr.get("__NessUUID__");
+          lyr.set("editable", true); //TODO : REMOVE AND REPLACE BY REAL LOGIC
+          if (lyr.get("editable") && layernames.includes(lyrid)) {
+            if (lyr instanceof VectorLayer) {
+              if (!this._registry[lyrid]) {
+                this._registry[lyrid] = new EditProxy();
+              }
+              if (!this._registry[lyrid].vectorLayerProxy) {
+                const registry = VectorLayerRegistry.getInstance();
+                if (!registry.getVectorLayer(lyrid)) {
+                  registry.setNewVectorLayer(lyr);
+                }
+                this._registry[
+                  lyrid
+                ].vectorLayerProxy = registry.getVectorLayer(lyrid);
+              }
+            }
+            if (lyr instanceof ImageLayer) {
+              if (!this._registry[lyrid]) {
+                this._registry[lyrid] = new EditProxy();
+              }
+              if (!this._registry[lyrid].imagelayer) {
+                const registry = VectorLayerRegistry.getInstance();
+                if (!registry.getVectorLayer(lyrid)) {
+                  registry.setFromImageLayer(lyr);
+                }
+                this._registry[lyrid].imagelayer = lyr;
+              }
+            }
+          }
+        });
+    }
+  };
+}
+
+export default EditProxyManager;

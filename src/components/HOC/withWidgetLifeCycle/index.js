@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { unsetUnfocused } from "../../../redux/actions/tools";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../nessMapping/api";
+import { getFocusedMapProxy } from "../../../core/api";
 import _ from "lodash";
 export default (WrappedComponent) => {
   class withWidgetLifeCycle extends React.Component {

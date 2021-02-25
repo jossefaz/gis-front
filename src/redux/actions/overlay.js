@@ -1,9 +1,5 @@
 import types from "./actionsTypes";
-import {
-  addOverlay,
-  getFocusedMapProxy,
-  removeOverlay,
-} from "../../nessMapping/api";
+import { addOverlay, getFocusedMapProxy, removeOverlay } from "../../core/api";
 
 export const setOverlay = (config) => (dispatch) => {
   const uuid = addOverlay(config.overlay);

@@ -1,7 +1,7 @@
 import types from "./actionsTypes";
 import { getRandomInt } from "../../utils/func";
 import LifeCycleRegistry from "./LifeCycle";
-import { getFocusedMapProxy } from "../../nessMapping/api";
+import { getFocusedMapProxy } from "../../core/api";
 export const toggleTool = (ToolId, forceOpen, forceClose) => async (
   dispatch,
   getState

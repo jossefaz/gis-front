@@ -1,7 +1,7 @@
 import Map from "ol/Map";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
-import { INessLayer } from "./layers";
+import LayerProxy from "../proxy/layer";
 
 export interface IMapProxy {
   uuid: { value: string };
@@ -14,5 +14,5 @@ export interface IMapProxy {
   getVectorSource(ol_id: string | number): VectorSource;
   setVectorSource(ol_vectorSource: VectorSource): string | null;
   setHighLight(): void;
-  AddLayer(lyrOrId: INessLayer | number, addToMap: boolean): INessLayer;
+  AddLayer(lyrOrId: LayerProxy | number, addToMap: boolean): LayerProxy;
 }

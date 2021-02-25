@@ -6,8 +6,8 @@ import {
   getInteractionGraphicLayer,
   getInteractionVectorSource,
   getInteraction,
-} from "../nessMapping/api";
-import mapStyle from "../nessMapping/mapStyle";
+} from "../core/api";
+import mapStyle from "../core/mapStyle";
 import { Draw, DragBox, Select, Modify } from "ol/interaction";
 import store from "../redux/store.ts";
 import {
@@ -18,13 +18,13 @@ import {
 } from "../redux/actions/interaction";
 import Collection from "ol/Collection";
 import GenerateUUID from "./uuid";
-import styles from "../nessMapping/mapStyle";
+import styles from "../core/mapStyle";
 import { Options as SelectOptions } from "ol/interaction/Select";
 import { Options as DragBoxOptions } from "ol/interaction/DragBox";
 import { Options as ModifyOptions } from "ol/interaction/Modify";
 import { Options as DrawOptions } from "ol/interaction/Draw";
 import Feature from "ol/Feature";
-import { InteractionSupportedTypes as INTERACTION_TYPE } from "../nessMapping/types/interaction";
+import { InteractionSupportedTypes as INTERACTION_TYPE } from "../core/types/interaction";
 
 export class InteractionUtil {
   private _widget: string;
@@ -257,14 +257,6 @@ export const getEmptyVectorLayer = (inStyle) => {
   source.set("__NessUUID__", uuid);
   vector.set("__NessUUID__", uuid);
   return { source, vector };
-};
-
-export const getDrawObject = (source, type) => {
-  return new Draw({
-    source: source,
-    type: type,
-    style: mapStyle.DRAW_START,
-  });
 };
 
 /**

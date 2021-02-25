@@ -6,7 +6,7 @@ import {
   getInteractionVectorSource,
   getInteraction,
   getOverlay,
-} from "../nessMapping/api";
+} from "../core/api";
 import {
   unsetOverlay,
   unsetOverlays,
