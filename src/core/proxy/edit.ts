@@ -52,7 +52,7 @@ export default class EditLayerProxy {
     feature: Feature,
     newProperties: { [key: string]: any }
   ) => {
-    this._originalProperties = API.feature.getFeatureProperties(feature);
+    this._originalProperties = API.features.getFeatureProperties(feature);
     Object.keys(this._originalProperties).map((prop) => {
       if (
         this._originalProperties &&

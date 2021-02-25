@@ -14,7 +14,7 @@ export enum InteractionSupportedTypes {
 
 export interface InteractionOptions {
   Type: InteractionSupportedTypes;
-  interactionConfig:
+  interactionConfig?:
     | SelectOptions
     | DragBoxOptions
     | ModifyOptions

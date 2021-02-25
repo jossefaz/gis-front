@@ -22,3 +22,9 @@ interface InteractionWidgetItem {
 export interface InteractionState {
   [widgetName: string]: InteractionWidgetItem;
 }
+
+export interface InteractionConfigStore {
+  Type: InteractionSupportedTypes;
+  uuid?: string;
+  status: number;
+}

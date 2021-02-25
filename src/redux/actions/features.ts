@@ -1,5 +1,5 @@
 import types from "./types";
-import { getFocusedMapProxy } from "../../core/api";
+import API from "../../core/api";
 import OLFeature from "ol/Feature";
 import { Feature } from "../types/feature";
 import { Dispatch } from "redux";
@@ -18,7 +18,7 @@ export const setSelectedFeatures = (features: OLFeature[]) => (
   dispatch: Dispatch
 ) => {
   if (features) {
-    const focusedmap = getFocusedMapProxy().uuid.value;
+    const focusedmap = API.map.getFocusedMapProxy().uuid.value;
     const featuresByLayers: { [layerid: string]: Feature[] } = {};
     features.map((f) => {
       let layer;
@@ -51,7 +51,7 @@ export const setCurrentFeature = (featureId: string) => (
   dispatch: Dispatch,
   getState: () => GisState
 ) => {
-  const focusedmap = getFocusedMapProxy().uuid.value;
+  const focusedmap = API.map.getFocusedMapProxy().uuid.value;
   if (focusedmap in getState().Features) {
     const { selectedFeatures, currentLayer } = getState().Features[focusedmap];
     if (currentLayer) {
@@ -70,7 +70,7 @@ export const updateFeature = (featureId: string, newFeature: Feature) => (
   dispatch: Dispatch,
   getState: () => GisState
 ) => {
-  const focusedmap = getFocusedMapProxy().uuid.value;
+  const focusedmap = API.map.getFocusedMapProxy().uuid.value;
   if (focusedmap in getState().Features) {
     dispatch<UpdateFeatureAction>({
       type: types.UPDATE_FEATURE,
@@ -83,7 +83,7 @@ export const removeFeature = (featureId: string) => (
   dispatch: Dispatch,
   getState: () => GisState
 ) => {
-  const focusedmap = getFocusedMapProxy().uuid.value;
+  const focusedmap = API.map.getFocusedMapProxy().uuid.value;
   if (focusedmap in getState().Features) {
     dispatch<RemoveFeatureAction>({
       type: types.REMOVE_FEATURE,
@@ -95,7 +95,7 @@ export const removeFeature = (featureId: string) => (
 export const setCurrentFeatureLayer = (currentFeatureLayer: string) => (
   dispatch: Dispatch
 ) => {
-  const focusedmap = getFocusedMapProxy().uuid.value;
+  const focusedmap = API.map.getFocusedMapProxy().uuid.value;
   dispatch<SetCurrentFeatureLayerAction>({
     type: types.SET_CURRENT_FEATURE_LAYER,
     payload: { currentFeatureLayer, focusedmap },
@@ -106,7 +106,7 @@ export const setContextMenu = (
   featureID: string,
   menu: any
 ) => (dispatch: Dispatch) => {
-  const focusedmap = getFocusedMapProxy().uuid.value;
+  const focusedmap = API.map.getFocusedMapProxy().uuid.value;
   dispatch<SetContextMenuAction>({
     type: types.SET_CONTEXT_MENU,
     payload: { source, featureID, menu, focusedmap },
@@ -116,7 +116,7 @@ export const setContextMenu = (
 export const setSelectionForLayers = (arrayOfLayerId: string[]) => (
   dispatch: Dispatch
 ) => {
-  const focusedmap = getFocusedMapProxy().uuid.value;
+  const focusedmap = API.map.getFocusedMapProxy().uuid.value;
   dispatch<SetSelectionForLayersAction>({
     type: types.SET_SPATIAL_LAYER_SELECTION,
     payload: { arrayOfLayerId, focusedmap },
