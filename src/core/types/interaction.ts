@@ -25,16 +25,3 @@ export interface InteractionOptions {
   Layer?: VectorLayer;
   widgetName?: string;
 }
-export interface InteractionConfigStore {
-  Type: InteractionSupportedTypes;
-  interactionConfig?:
-    | SelectOptions
-    | DragBoxOptions
-    | ModifyOptions
-    | DrawOptions;
-  uuid?: string;
-  status: number;
-  sourceLayer?: VectorSource;
-  Layer?: VectorLayer;
-  widgetName?: string;
-}

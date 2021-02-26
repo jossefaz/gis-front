@@ -6,14 +6,8 @@ import {
 import { Actions } from "../actions/types";
 import { GisState } from "../types/state";
 import produce from "immer";
-import _ from "lodash";
+import _, { Dictionary } from "lodash";
 import { WritableDraft } from "immer/dist/internal";
-
-const getinitialInteractionState = () => {
-  return {
-    focused: "",
-  };
-};
 
 const interactionsReducer = (
   state: InteractionState = {},
@@ -29,7 +23,7 @@ const interactionsReducer = (
             draftState[widgetName] = {};
           }
           if (!(focusedmap in draftState[widgetName])) {
-            draftState[widgetName][focusedmap] = getinitialInteractionState();
+            draftState[widgetName][focusedmap] = {};
           }
           draftState[widgetName][focusedmap][config.Type] = config;
           const interactionConfig = <WritableDraft<InteractionConfigStore>>(
@@ -49,7 +43,7 @@ const interactionsReducer = (
               draftState[widgetName] = {};
             }
             if (!(focusedmap in draftState[widgetName])) {
-              draftState[widgetName][focusedmap] = getinitialInteractionState();
+              draftState[widgetName][focusedmap] = {};
             }
             draftState[widgetName][focusedmap][config.Type] = config;
             const interactionConfig = <WritableDraft<InteractionConfigStore>>(
@@ -98,7 +92,9 @@ export default interactionsReducer;
 
 export const selectCurrentInteractions = (state: GisState) => {
   const { Interactions, map } = state;
-  const result = {};
+  let result: {
+    [widgetOwner: string]: Dictionary<InteractionConfigStore>;
+  } = {};
   if (Interactions) {
     Object.keys(Interactions).map((Widget_Owner) => {
       Object.keys(Interactions[Widget_Owner]).map((map_id) => {
@@ -106,13 +102,11 @@ export const selectCurrentInteractions = (state: GisState) => {
           const filtered = _.pickBy(Interactions[Widget_Owner], (value, key) =>
             key.startsWith(map_id)
           );
-          debugger;
           const filtered_active = _.pickBy(
             filtered[map_id],
             (value, key) => value.status == 1
           );
 
-          console.log("filtered active", filtered_active);
           if (Object.keys(filtered_active).length > 0) {
             result[Widget_Owner] = filtered_active;
           }

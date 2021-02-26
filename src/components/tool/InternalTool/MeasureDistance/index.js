@@ -2,11 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import { getOverlay, getFocusedMap } from "../../../../core/api";
-import {
-  setOverlay,
-  unsetOverlays,
-  unsetOverlay,
-} from "../../../../redux/actions/overlay";
 import IconButton from "../../../UI/Buttons/IconButton";
 import { generateOutput, generateNewStyle } from "./func";
 import { DragPan } from "ol/interaction";
@@ -289,13 +284,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = {
-  setOverlay,
-  unsetOverlays,
-  unsetOverlay,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withWidgetLifeCycle(MeasureDistance));
+export default connect(mapStateToProps)(withWidgetLifeCycle(MeasureDistance));

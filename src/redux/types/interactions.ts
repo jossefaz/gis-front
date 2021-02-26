@@ -21,9 +21,8 @@ export interface InteractionConfigStore {
 
 interface InteractionWidgetItem {
   [mapUUID: string]: {
-    [interactionName: string]: InteractionConfigStore | string;
-    focused: string;
-  };
+    [interactionName: string]: InteractionConfigStore;
+  } & { focused?: string };
 }
 
 export interface InteractionState {

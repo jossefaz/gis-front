@@ -1,7 +1,13 @@
 import types from "../actions/types";
 import produce, { finishDraft } from "immer";
-import { OverlayState } from "../types/overlays";
-const overlayReducer = (state: OverlayState = {}, action): OverlayState => {
+import { OverlayMetadata, OverlayState } from "../types/overlays";
+import { Actions } from "../actions/types";
+import { WritableDraft } from "immer/dist/internal";
+
+const overlayReducer = (
+  state: OverlayState = {},
+  action: Actions
+): OverlayState => {
   switch (action.type) {
     case types.SET_OVERLAY:
       return produce(state, (draftState) => {
@@ -11,18 +17,22 @@ const overlayReducer = (state: OverlayState = {}, action): OverlayState => {
         }
         if (!(focusedmap in draftState[config.widgetName])) {
           draftState[config.widgetName][focusedmap] = {};
-          draftState[config.widgetName][focusedmap] = {};
         }
-        draftState[config.widgetName][focusedmap][config.uuid] = config;
-        draftState[config.widgetName][focusedmap].focused = config.uuid;
+        const s = draftState[config.widgetName][focusedmap];
+        s[config.uuid] = <WritableDraft<OverlayMetadata>>config;
+        s.focused = config.uuid;
       });
 
     case types.SET_OVERLAY_PROPERTY:
       return produce(state, (draftState) => {
         const { config, focusedmap } = action.payload;
-        draftState[config.widgetName][focusedmap][config.uuid][
-          config.property
-        ] = config.value;
+        if (config.property && config.value) {
+          const focusedState =
+            draftState[config.widgetName][focusedmap][config.uuid];
+          if (config.property in focusedState) {
+            focusedState[config.property] = config.value;
+          }
+        }
       });
 
     case types.UNSET_OVERLAY:
