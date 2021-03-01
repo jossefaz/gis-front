@@ -135,30 +135,3 @@ const _getLifeCycleFunc = (toolState) => {
     ? LifeCycleRegistry[toolState.OnDestroy]
     : LifeCycleRegistry[toolState.OnCreate];
 };
-
-// const _InitLayers = (layersConfig) => (dispatch) => {
-//   var allLayersForMap = {};
-//   const mapId = getFocusedMapProxy().uuid.value;
-//   if (layersConfig) {
-//     layersConfig.map((lyrConfig) => {
-//       var nessLyr = addLayerToMapProxy(null, null, null, lyrConfig);
-//       if (nessLyr !== -1)
-//         allLayersForMap[nessLyr.uuid.value] = nessLayerToReduxLayer(nessLyr);
-//     });
-
-//     dispatch({
-//       type: types.INIT_LAYERS,
-//       payload: {
-//         mapId,
-//         allLayersForMap
-//       },
-//     });
-//   }
-// }
-
-// const _fetchDataFromServer = async () => {
-//   const [layersResult] = await Promise.all([getMetaData("layers")]);
-//   if (layersResult) {
-//     _InitLayers(layersResult);
-//   }
-// };

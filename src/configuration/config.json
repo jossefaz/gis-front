@@ -2,111 +2,34 @@
   "MapConfig": {
     "target": "map",
     "proj": "EPSG:2039",
-    "center": [
-      221102,
-      631882
-    ],
+    "center": [221102, 631882],
     "zoom": 6
   },
-  "Search" : {
-    "Geocode" : {
-      "url" : "http://127.0.0.1:4000"
+  "Search": {
+    "Geocode": {
+      "url": "http://127.0.0.1:4000"
     }
-
-    
   },
-  "ContextMenus" : {
-    "Manti" : {
-      "url" : "http://meitarimds:5002/api/BankPkudot/groupBy?filter={\"AdaptorId\": \"MTCS\", \"category\": \"Tsirkel\"}&MENU_TYPE=BY_LAYERID",
-      "path" : "Manti",
-      "status" : 1,
-      "configuration" : {
+  "ContextMenus": {
+    "Manti": {
+      "url": "http://meitarimds:5002/api/BankPkudot/groupBy?filter={\"AdaptorId\": \"MTCS\", \"category\": \"Tsirkel\"}&MENU_TYPE=BY_LAYERID",
+      "path": "Manti",
+      "status": 1,
+      "configuration": {
         "commandApiAddress": "http://meitarimds:2210/api/commands",
         "mockUpApiAddress": "http://meitarimds:5002/api/MockupData/byName?name="
       }
     },
-    "Junctions" : {
-      "url" : "",
-      "path" : "Junctions",
-      "status" : 1,
-      "configuration" : {}
+    "Junctions": {
+      "url": "",
+      "path": "Junctions",
+      "status": 1,
+      "configuration": {}
     }
   },
-  "SearchConfigs": [{
-      "name": "חיפוש לדוגמא",
-      "type": "OBJ_ARRAY",
-      "field": "field1",
-      "itemTitlePrefix": "לפני_",
-      "itemTitleField": "field3",
-      "itemTitlePostfix": "_אחרי",
-      "data": [{
-          "field1": "שלום כיתה א",
-          "field2": 12,
-          "field3": "ערך 1",
-          "X": 222000,
-          "Y": 630000
-        },
-        {
-          "field1": "וגם כיתה ב",
-          "field2": 15,
-          "field3": "ערך 2",
-          "X": 222010,
-          "Y": 630050
-        },
-        {
-          "field1": "ואולי גם ג",
-          "field2": 17,
-          "field3": "ערך 3",
-          "X": 222020,
-          "Y": 630070
-        }
-      ]
-    },
-    {
-      "name": "חיפוש אחר",
-      "type": "OBJ_ARRAY",
-      "field": "field1",
-      "itemTitlePrefix": "לפני_",
-      "itemTitleField": "field3",
-      "itemTitlePostfix": "_אחרי",
-      "data": [{
-          "field1": "מה נשמע בכיתה",
-          "field2": 12,
-          "field3": "ערך 4",
-          "X": 222000,
-          "Y": 630000
-        },
-        {
-          "field1": "ימי קורונה",
-          "field2": 15,
-          "field3": "ערך 5",
-          "X": 222010,
-          "Y": 630050
-        },
-        {
-          "field1": "וימי אביב",
-          "field2": 17,
-          "field3": "ערך 6",
-          "X": 222020,
-          "Y": 630070
-        }
-      ]
-    }
-  ],
-  "layers": [{
-    "id": 1,
-    "name": "dimigcompile",
-    "alias": "שכבה לדוגמא",
-    "url": "http://localhost:8080/geoserver/Jeru/wms",
-    "params": {
-      "LAYERS": "Jeru:dimigcompile"
-    },
-    "serverType": "geoserver",
-    "visible": 1,
-    "selectable": 1
-  }],
   "Widgets": {
-    "tools": [{
+    "tools": [
+      {
         "Id": 1,
         "ToolName": "BaseMapGallery",
         "ToolTip": "מפות רקע",
@@ -342,13 +265,15 @@
         "IsOpen": 0
       }
     ],
-    "groups": [{
-      "Id": 1,
-      "GroupContainer": "TopNav",
-      "GroupName": "General",
-      "GroupImage": "toolsGroup.png",
-      "IsOpen": 0
-    }]
+    "groups": [
+      {
+        "Id": 1,
+        "GroupContainer": "TopNav",
+        "GroupName": "General",
+        "GroupImage": "toolsGroup.png",
+        "IsOpen": 0
+      }
+    ]
   },
   "channels": {
     "name": "MTCS.Units PubSub Channel",

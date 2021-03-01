@@ -1,6 +1,6 @@
 import types from "./types";
 import API from "../../core/api";
-import { OverlayMetadata, OverlaysMetadata } from "../types/overlays";
+import { OverlayMetadata, OverlaysMetadata } from "../../core/types";
 import {
   SetOverlayAction,
   SetOverlayPropertyAction,

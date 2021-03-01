@@ -1,5 +1,5 @@
-import layersActionsTypes from "./layers";
-import { ActionTypes as FeatureTypeActions, FeatureActions } from "./features";
+import { ActionTypes as layersActionsTypes, LayersActions } from "./layers";
+import { ActionTypes as featureActionsTypes, FeatureActions } from "./features";
 import {
   ActionTypes as interactionsActionsTypes,
   InteractionActions,
@@ -12,7 +12,7 @@ import uiActionsTypes from "./ui";
 
 const actionTypes = {
   ...layersActionsTypes,
-  ...FeatureTypeActions,
+  ...featureActionsTypes,
   ...interactionsActionsTypes,
   ...mapActionsTypes,
   ...overlaysActionsTypes,
@@ -25,6 +25,7 @@ export type Actions =
   | FeatureActions
   | InteractionActions
   | MapActions
-  | OverlayActions;
+  | OverlayActions
+  | LayersActions;
 
 export default actionTypes;

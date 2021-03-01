@@ -8,8 +8,7 @@ import map from "./map";
 import Tools from "./tools";
 import mantiSystems from "./mantiSystems";
 import ui from "./ui";
-import { GisState } from "../types/state";
-
+import { GisState } from "../stateTypes";
 
 export default combineReducers<GisState>({
   Layers,

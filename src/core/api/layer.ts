@@ -72,7 +72,7 @@ export const getNessLayers = () => {
 
 export const addLayerToMapProxy = (lyrConfig: IJsonMDLayer) => {
   const proxy = new LayerProxy(lyrConfig);
-  if (proxy.AddSelfToMap(getFocusedMapProxy())) return proxy;
+  if (proxy.addSelfToMap(getFocusedMapProxy())) return proxy;
   return -1;
 };
 
@@ -80,7 +80,7 @@ export const addOlLayerToMap = (uuid: string, visible = true) => {
   const nessLyr = getNessLayer(uuid);
   if (nessLyr instanceof LayerProxy) {
     const MapProxy = getFocusedMapProxy();
-    if (nessLyr.AddSelfToMap(MapProxy)) {
+    if (nessLyr.addSelfToMap(MapProxy)) {
       var olLyr = getOlLayer(uuid);
       if (olLyr instanceof BaseLayer) olLyr.setVisible(visible);
       return true;

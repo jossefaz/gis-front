@@ -1,7 +1,7 @@
 import types from "./types";
 import API from "../../core/api";
 import OLFeature from "ol/Feature";
-import { Feature } from "../types/feature";
+import { Feature } from "../../core/types";
 import { Dispatch } from "redux";
 import {
   SetCurrentFeatureAction,
@@ -12,7 +12,7 @@ import {
   SetContextMenuAction,
   SetSelectionForLayersAction,
 } from "./types/features/actions";
-import { GisState } from "../types/state";
+import { GisState } from "../stateTypes";
 
 export const setSelectedFeatures = (features: OLFeature[]) => (
   dispatch: Dispatch

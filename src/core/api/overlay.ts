@@ -26,7 +26,7 @@ export const addOverlay = (config: OverlayOptions) => {
   const OverlayProxy = OverlayProxyManager.getInstance().addOverlayProxy(
     config
   );
-  return OverlayProxy.AddSelfToMap(getFocusedMapProxy());
+  return OverlayProxy.addSelfToMap(getFocusedMapProxy());
 };
 
 export const removeOverlay = (uuid: string) => {

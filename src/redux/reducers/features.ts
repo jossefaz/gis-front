@@ -1,8 +1,8 @@
 import types from "../actions/types";
-import { FeatureState } from "../types/feature";
+import { FeatureState } from "../stateTypes";
 import produce from "immer";
 import { Actions } from "../actions/types";
-import { GisState } from "../types/state";
+import { GisState } from "../stateTypes";
 
 const getinitialFeatureState = () => {
   return {

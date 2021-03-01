@@ -1,5 +1,5 @@
 import { ActionTypes } from "./actionsTypes";
-import { Feature } from "../../../types/feature";
+import { Feature } from "../../../../core/types";
 
 // PAYLOADS
 

@@ -54,7 +54,7 @@ export const addInteraction = (config: InteractionOptions): string | false => {
   );
   const InteractionProxy = getInteractionProxy(InteractionProxyUUID);
   if (InteractionProxy) {
-    return InteractionProxy.AddSelfToMap(getFocusedMapProxy());
+    return InteractionProxy.addSelfToMap(getFocusedMapProxy());
   }
   return false;
 };

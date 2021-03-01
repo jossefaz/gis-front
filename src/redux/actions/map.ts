@@ -4,7 +4,7 @@ import MapProxyManager from "../../core/proxymanagers/map";
 import API from "../../core/api";
 import { projIsrael } from "../../utils/projections";
 import { Dispatch } from "redux";
-import { GisState } from "../types/state";
+import { GisState } from "../stateTypes";
 import { InitMapAction, SetMapFocusAction } from "../actions/types/map/actions";
 import types from "./types";
 

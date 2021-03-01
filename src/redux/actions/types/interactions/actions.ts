@@ -1,5 +1,5 @@
 import { ActionTypes } from "./actionsTypes";
-import { InteractionConfigStore } from "../../../types/interactions";
+import { InteractionConfigStore } from "../../../../core/types";
 
 interface SetInteractionActionPayload {
   config: InteractionConfigStore;

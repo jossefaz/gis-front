@@ -12,6 +12,7 @@ import {
   IMDLayer,
   ELayerTypes,
   ILayerConfig,
+  ReduxLayer,
 } from "../types/layers";
 import NessKeys from "../keys";
 
@@ -80,11 +81,23 @@ export default class LayerProxy {
     };
   }
 
+  public toReduxLayer = (): ReduxLayer => {
+    return {
+      name: this._alias,
+      semanticId: this._semanticId,
+      visible: false,
+      opacity: 0.5,
+      uuid: this.uuid.value,
+      restid: this.restid,
+      workspace: this.workspace,
+    };
+  };
+
   private _toOLLayer = () => {
     // TODO: init a propper OpenLayers Layer object and return it
 
-    var newLyr = null;
-    var newSrc = null;
+    let newLyr = null;
+    let newSrc = null;
 
     const notImplemented = () =>
       console.log(
@@ -135,7 +148,7 @@ export default class LayerProxy {
     return newLyr;
   };
 
-  RefreshMapIndex() {
+  private _refreshMapIndex() {
     this._mapIndex = -1;
     if (this._parentMap && this._parentMap.OLMap && this.uuid) {
       this._mapIndex = this._getMapIndex();
@@ -143,11 +156,11 @@ export default class LayerProxy {
     return this._mapIndex;
   }
 
-  AddSelfToMap(parent: MapProxy) {
+  public addSelfToMap(parent: MapProxy) {
     let okToAdd = false;
     if (this._parentMap && this._parentMap.OLMap) {
       // we already have an existing parent. check sanity
-      this.RefreshMapIndex();
+      this._refreshMapIndex();
       if (this._mapIndex < 0) {
         okToAdd = true;
       } else {
@@ -169,7 +182,7 @@ export default class LayerProxy {
         olLayer.set(NessKeys.NESS_LAYER_UUID_KEY, this.uuid.value, true);
 
         // and now refresh mapIndex
-        this.RefreshMapIndex();
+        this._refreshMapIndex();
 
         // TODO: register to removeLayer event on map (just in case...)
 

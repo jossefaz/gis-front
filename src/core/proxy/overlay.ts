@@ -38,7 +38,7 @@ export default class NessOverlay {
     return newOverlay;
   };
 
-  public AddSelfToMap(parent: MapProxy) {
+  public addSelfToMap(parent: MapProxy) {
     if (!this.parentMap) {
       this._parentMap = parent;
     }

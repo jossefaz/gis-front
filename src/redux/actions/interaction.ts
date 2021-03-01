@@ -7,7 +7,7 @@ import {
   UnsetInteractionAction,
   UnsetInteractionsAction,
 } from "../actions/types/interactions/actions";
-import { InteractionConfigStore } from "../types/interactions";
+import { InteractionConfigStore } from "../../core/types";
 import { Dispatch } from "redux";
 
 export const setInteraction = (config: InteractionOptions) => (

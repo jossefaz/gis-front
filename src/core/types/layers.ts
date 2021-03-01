@@ -38,8 +38,37 @@ export interface IMDLayer {
   config: ILayerConfig;
 }
 
+export interface ReduxLayer {
+  name: string;
+  semanticId: string;
+  visible: boolean;
+  opacity: number;
+  uuid: string;
+  restid: string;
+  workspace: string;
+}
+export interface LayerStateObject {
+  layers: { [layerUUID: string]: ReduxLayer };
+  layerAdded: boolean;
+}
+
 export interface ILayerConfig {
   layerType: ELayerTypes;
   sourceType?: ESourceTypes;
   sourceOptions: SourceOptions;
+}
+
+export interface LayerItem {
+  name: string;
+  semanticId: number;
+  visible: boolean;
+  opacity: number;
+  uuid: { value: string };
+  restid: string;
+  workspace: string;
+}
+
+export interface LayerStateItem {
+  layers: { [uuid: string]: LayerItem };
+  layerAdded: boolean;
 }

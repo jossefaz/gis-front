@@ -81,7 +81,7 @@ export default class InteractionProxy {
     return { olInteraction, sourceLayer, vLayer };
   };
 
-  public AddSelfToMap(parent: MapProxy) {
+  public addSelfToMap(parent: MapProxy) {
     if (!this.parentMap) {
       this._parentMap = parent;
     }

@@ -89,7 +89,7 @@ export default class MapProxy implements IMapProxy {
 
   AddLayer(lyrOrId: LayerProxy, addToMap: boolean = false): LayerProxy {
     this._layers.push(lyrOrId);
-    addToMap && lyrOrId.AddSelfToMap(this);
+    addToMap && lyrOrId.addSelfToMap(this);
     return lyrOrId;
   }
 }

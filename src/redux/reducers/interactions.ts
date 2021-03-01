@@ -1,10 +1,8 @@
 import types from "../actions/types";
-import {
-  InteractionState,
-  InteractionConfigStore,
-} from "../types/interactions";
+import { InteractionState } from "../stateTypes";
+import { InteractionConfigStore } from "../../core/types";
 import { Actions } from "../actions/types";
-import { GisState } from "../types/state";
+import { GisState } from "../stateTypes";
 import produce from "immer";
 import _, { Dictionary } from "lodash";
 import { WritableDraft } from "immer/dist/internal";

@@ -1,5 +1,5 @@
 import { ActionTypes } from "./actionsTypes";
-import { OverlayMetadata, OverlaysMetadata } from "../../../types/overlays";
+import { OverlayMetadata, OverlaysMetadata } from "../../../../core/types";
 interface SetOverlayActionPayload {
   config: OverlayMetadata;
   focusedmap: string;

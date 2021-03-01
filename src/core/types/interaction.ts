@@ -5,6 +5,26 @@ import { Options as DragBoxOptions } from "ol/interaction/DragBox";
 import { Options as ModifyOptions } from "ol/interaction/Modify";
 import { Options as DrawOptions } from "ol/interaction/Draw";
 
+export interface InteractionConfigStore {
+  Type: InteractionSupportedTypes;
+  interactionConfig?:
+    | SelectOptions
+    | DragBoxOptions
+    | ModifyOptions
+    | DrawOptions;
+  uuid?: string;
+  status: number;
+  sourceLayer?: VectorSource;
+  Layer?: VectorLayer;
+  widgetName?: string;
+}
+
+export interface InteractionWidgetItem {
+  [mapUUID: string]: {
+    [interactionName: string]: InteractionConfigStore;
+  } & { focused?: string };
+}
+
 export enum InteractionSupportedTypes {
   DRAW = "Draw",
   SELECT = "Select",

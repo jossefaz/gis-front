@@ -16,3 +16,8 @@ export interface IMapProxy {
   setHighLight(): void;
   AddLayer(lyrOrId: LayerProxy | number, addToMap: boolean): LayerProxy;
 }
+
+export interface MapState {
+  uuids: string[];
+  focused: string;
+}
