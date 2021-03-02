@@ -1,8 +1,8 @@
 import API from "../api";
 import { GeoserverUtil, TransactionMode } from "../../utils/Geoserver";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
-import store from "../../redux/store";
-import { ActionTypes } from "../../redux/actions/types/features";
+import store from "../../state/store";
+import { ActionTypes } from "../../state/actions/types/features";
 import _ from "lodash";
 import convert from "xml-js";
 import VectorLayerRegistry from "../proxymanagers/vectorlayer";

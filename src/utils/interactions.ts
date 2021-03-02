@@ -1,30 +1,19 @@
-import { Vector as VectorLayer } from "ol/layer";
-import { Vector as VectorSource } from "ol/source";
-import {
-  getFocusedMap,
-  getFocusedMapProxy,
-  getInteractionGraphicLayer,
-  getInteractionVectorSource,
-  getInteraction,
-} from "../core/api";
-import mapStyle from "../core/mapStyle";
-import { Draw, DragBox, Select, Modify } from "ol/interaction";
-import store from "../redux/store.ts";
+import API from "../core/api";
+
+import store from "../state/store";
 import {
   setInteraction,
   unsetInteraction,
   unsetInteractions,
   setInteractions,
-} from "../redux/actions/interaction";
-import Collection from "ol/Collection";
-import GenerateUUID from "./uuid";
-import styles from "../core/mapStyle";
+} from "../state/actions/interaction";
 import { Options as SelectOptions } from "ol/interaction/Select";
-import { Options as DragBoxOptions } from "ol/interaction/DragBox";
 import { Options as ModifyOptions } from "ol/interaction/Modify";
 import { Options as DrawOptions } from "ol/interaction/Draw";
-import Feature from "ol/Feature";
-import { InteractionSupportedTypes as INTERACTION_TYPE } from "../core/types/interaction";
+import {
+  InteractionOptions,
+  InteractionSupportedTypes as INTERACTION_TYPE,
+} from "../core/types/interaction";
 
 export class InteractionUtil {
   private _widget: string;
@@ -41,12 +30,13 @@ export class InteractionUtil {
     ) {
       return currentInteractionStore[this._widget][this.currentMapUUID];
     }
-    return false;
+    return {};
   }
 
   getinteractionUUID = (interaction: INTERACTION_TYPE): string | boolean => {
     if (this.store && interaction in this.store) {
-      return this.store[interaction].uuid;
+      const uuid = this.store[interaction].uuid;
+      return uuid ? uuid : false;
     }
     return false;
   };
@@ -68,49 +58,60 @@ export class InteractionUtil {
   }
 
   get currentMapUUID() {
-    return getFocusedMapProxy().uuid.value;
+    return API.map.getFocusedMapUUID();
   }
 
   get currentDraw() {
-    if (this.currentDrawUUID) {
-      return getInteraction(this.currentDrawUUID);
+    if (this.currentDrawUUID && typeof this.currentDrawUUID === "string") {
+      return API.interactions.getInteraction(this.currentDrawUUID);
     }
     return false;
   }
 
   get currentSelect() {
-    if (this.currentSelectUUID) {
-      return getInteraction(this.currentSelectUUID);
+    if (this.currentSelectUUID && typeof this.currentSelectUUID === "string") {
+      return API.interactions.getInteraction(this.currentSelectUUID);
     }
     return false;
   }
 
   get currentModify() {
-    if (this.currentModifyUUID) {
-      return getInteraction(this.currentModifyUUID);
+    if (this.currentModifyUUID && typeof this.currentModifyUUID === "string") {
+      return API.interactions.getInteraction(this.currentModifyUUID);
     }
     return false;
   }
 
   get currentDragBox() {
-    if (this.currentDragBoxUUID) {
-      return getInteraction(this.currentDragBoxUUID);
+    if (
+      this.currentDragBoxUUID &&
+      typeof this.currentDragBoxUUID === "string"
+    ) {
+      return API.interactions.getInteraction(this.currentDragBoxUUID);
     }
     return false;
   }
 
   getVectorLayer = (interaction: INTERACTION_TYPE) => {
     const currentInteractionUUID = this.getinteractionUUID(interaction);
-    return currentInteractionUUID
-      ? getInteractionGraphicLayer(currentInteractionUUID)
-      : null;
+    if (currentInteractionUUID && typeof currentInteractionUUID === "string") {
+      const vl = API.interactions.getInteractionGraphicLayer(
+        currentInteractionUUID
+      );
+      return vl ? vl : undefined;
+    }
+    return undefined;
   };
 
   getVectorSource = (interaction: INTERACTION_TYPE) => {
     const currentInteractionUUID = this.getinteractionUUID(interaction);
-    return currentInteractionUUID
-      ? getInteractionVectorSource(currentInteractionUUID)
-      : null;
+    if (currentInteractionUUID && typeof currentInteractionUUID === "string") {
+      const vs = API.interactions.getInteractionVectorSource(
+        currentInteractionUUID
+      );
+      return vs ? vs : undefined;
+    }
+    return undefined;
   };
 
   newDraw = async (drawConfig: DrawOptions) => {
@@ -122,22 +123,24 @@ export class InteractionUtil {
         sourceLayer: this.getVectorSource(INTERACTION_TYPE.DRAW),
         Layer: this.getVectorLayer(INTERACTION_TYPE.DRAW),
         widgetName: this._widget,
-      })
+      }) as any
     );
   };
 
   unDraw = async (removePreviousLayer?: boolean) => {
     if (this.currentDrawUUID) {
-      this.getVectorLayer(INTERACTION_TYPE.DRAW) &&
-        removePreviousLayer &&
-        getFocusedMap().removeLayer(this.getVectorLayer(INTERACTION_TYPE.DRAW));
-      await store.dispatch(
-        unsetInteraction({
-          uuid: this.currentDrawUUID,
-          widgetName: this._widget,
-          Type: INTERACTION_TYPE.DRAW,
-        })
-      );
+      const vl = this.getVectorLayer(INTERACTION_TYPE.DRAW);
+      vl && removePreviousLayer && API.map.getFocusedMap().removeLayer(vl);
+      const uuid = this.currentDrawUUID;
+      if (typeof uuid === "string") {
+        await store.dispatch(
+          unsetInteraction({
+            uuid,
+            widgetName: this._widget,
+            Type: INTERACTION_TYPE.DRAW,
+          }) as any
+        );
+      }
     }
   };
 
@@ -148,18 +151,19 @@ export class InteractionUtil {
         Type: INTERACTION_TYPE.SELECT,
         interactionConfig: selectOptions,
         widgetName: this._widget,
-      })
+      }) as any
     );
   };
 
   unSelect = async () => {
-    if (this.currentSelectUUID) {
+    const uuid = this.currentSelectUUID;
+    if (uuid && typeof uuid === "string") {
       await store.dispatch(
         unsetInteraction({
-          uuid: this.currentSelectUUID,
+          uuid,
           widgetName: this._widget,
           Type: INTERACTION_TYPE.SELECT,
-        })
+        }) as any
       );
     }
   };
@@ -171,44 +175,46 @@ export class InteractionUtil {
         Type: INTERACTION_TYPE.MODIFY,
         interactionConfig: modifyOptions,
         widgetName: this._widget,
-      })
+      }) as any
     );
   };
 
   unModify = async () => {
-    if (this.currentModifyUUID) {
+    const uuid = this.currentModifyUUID;
+    if (uuid && typeof uuid === "string") {
       await store.dispatch(
         unsetInteraction({
-          uuid: this.currentModifyUUID,
+          uuid,
           widgetName: this._widget,
           Type: INTERACTION_TYPE.MODIFY,
-        })
+        }) as any
       );
     }
   };
 
   unsetAll = async () => {
-    if (this.store) {
-      const InteractionArray = [];
+    if (Object.keys(this.store).length > 0) {
+      const InteractionArray: InteractionOptions[] = [];
       Object.keys(this.store).map((InteractionName) => {
         const { uuid, Type } = this.store[InteractionName];
         InteractionArray.push({ uuid, widgetName: this._widget, Type });
       });
       if (InteractionArray.length > 0) {
-        await store.dispatch(unsetInteractions(InteractionArray));
+        await store.dispatch(unsetInteractions(InteractionArray) as any);
       }
     }
   };
 
-  clearVectorSource = (type) => {
-    if (this.getVectorSource(type)) {
-      this.getVectorSource(type).clear();
+  clearVectorSource = (type: INTERACTION_TYPE) => {
+    const vs = this.getVectorSource(type);
+    if (vs) {
+      vs.clear();
     }
   };
 
   setAll = async () => {
     if (this.store) {
-      const InteractionArray = [];
+      const InteractionArray: InteractionOptions[] = [];
       Object.keys(this.store).map((InteractionName) => {
         const { Type, status, interactionConfig } = this.store[InteractionName];
         if (!status) {
@@ -220,71 +226,31 @@ export class InteractionUtil {
         }
       });
       if (InteractionArray.length > 0) {
-        await store.dispatch(setInteractions(InteractionArray));
+        await store.dispatch(setInteractions(InteractionArray) as any);
       }
     }
   };
 
   newDragBox = async () => {
     this.unDragBox();
-
     await store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.DRAGBOX,
         widgetName: this._widget,
-      })
+      }) as any
     );
   };
 
   unDragBox = async () => {
-    if (this.currentDragBox) {
+    const uuid = this.currentDragBoxUUID;
+    if (this.currentDragBox && uuid && typeof uuid === "string") {
       await store.dispatch(
         unsetInteraction({
-          uuid: this.currentDragBoxUUID,
+          uuid,
           widgetName: this._widget,
           Type: INTERACTION_TYPE.DRAGBOX,
-        })
+        }) as any
       );
     }
   };
 }
-
-export const getEmptyVectorLayer = (inStyle) => {
-  const style = inStyle || mapStyle.draw;
-  const source = new VectorSource();
-  const vector = new VectorLayer({ source, style });
-  const uuid = GenerateUUID();
-  source.set("__NessUUID__", uuid);
-  vector.set("__NessUUID__", uuid);
-  return { source, vector };
-};
-
-/**
- * Get all interactions that belongs to this widget and this current map.
- * If there is no interactions in the current map with the current widget,
- * This function return false
- */
-
-export const getWidgetInteractions = (
-  widgetname,
-  interactionstore,
-  mapuuid
-) => {
-  if (
-    widgetname in interactionstore &&
-    mapuuid in interactionstore[widgetname]
-  ) {
-    return interactionstore[widgetname][mapuuid];
-  }
-  return false;
-};
-
-/**
- *  Return an object of interaction that will be consume by the Redux store
- * @param {string} uuid uuid of this interaction given by the InteractionProxy of NessMapping
- * @param {*} widgetName the widgetName that own this interation
- * @param {*} Type the interaction type
- */
-export const getInteractionConfig = (uuid, widgetName, Type) => {
-  return { uuid, widgetName, Type };
-};

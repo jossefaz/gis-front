@@ -22,7 +22,7 @@ export const getInteractionProxy = (uuid: string) => {
 
 export const getInteractionVectorSource = (
   uuid: string
-): VectorSource | boolean => {
+): VectorSource | false => {
   const proxy = getInteractionProxy(uuid);
   if (proxy && proxy.OLInteraction) {
     const vsuid = proxy.OLInteraction.get(NessKeys.VECTOR_SOURCE);
@@ -36,7 +36,7 @@ export const getInteractionVectorSource = (
 
 export const getInteractionGraphicLayer = (
   uuid: string
-): VectorLayer | boolean => {
+): VectorLayer | false => {
   const proxy = getInteractionProxy(uuid);
   if (proxy && proxy.OLInteraction) {
     const gluid = proxy.OLInteraction.get(NessKeys.GRAPHIC_LAYER);

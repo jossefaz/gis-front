@@ -13,17 +13,17 @@ export interface InteractionConfigStore {
     | ModifyOptions
     | DrawOptions;
   uuid?: string;
-  status: number;
+  status?: number;
   sourceLayer?: VectorSource;
   Layer?: VectorLayer;
   widgetName?: string;
 }
 
-export interface InteractionWidgetItem {
+export type InteractionWidgetItem = {
   [mapUUID: string]: {
     [interactionName: string]: InteractionConfigStore;
-  } & { focused?: string };
-}
+  };
+} & { focused?: string };
 
 export enum InteractionSupportedTypes {
   DRAW = "Draw",
@@ -40,7 +40,7 @@ export interface InteractionOptions {
     | ModifyOptions
     | DrawOptions;
   uuid?: string;
-  status: number;
+  status?: number;
   sourceLayer?: VectorSource;
   Layer?: VectorLayer;
   widgetName?: string;
