@@ -23,6 +23,12 @@ class HTTPFactory {
     if (!HTTPFactory.instance) {
       HTTPFactory.instance = new HTTPFactory(endpoint);
     }
+    if (!(endpoint in HTTPFactory.instance._clients)) {
+      HTTPFactory.instance._clients[endpoint] = axios.create({
+        baseURL: endpoint,
+      });
+      HTTPFactory.instance._current = endpoint;
+    }
     return HTTPFactory.instance;
   }
 

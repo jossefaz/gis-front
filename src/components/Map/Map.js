@@ -49,6 +49,7 @@ class MapComponent extends React.Component {
       this.props.VisibleLayers
     );
     if (!areEquals) {
+      debugger;
       this.vectorLayerRegistry.initVectorLayers(this.props.VisibleLayers);
       this.setState({
         currentLayers: this.props.VisibleLayers,

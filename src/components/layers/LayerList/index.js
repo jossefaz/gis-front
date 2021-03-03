@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import LayerListItem from "../LayerListItem/index.js";
-import { getMetaData } from "../../../communication/mdFetcher";
+import { getMetaData } from "../../../core/HTTP/metadata";
 import { selectLayers } from "../../../state/selectors/layersSelector";
 import _ from "lodash";
 import "../style.css";

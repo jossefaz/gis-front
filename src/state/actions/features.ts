@@ -31,7 +31,7 @@ export const setSelectedFeatures = (features: OLFeature[]) => (
         if (!(layer in featuresByLayers)) {
           featuresByLayers[layer] = [];
         }
-        const properties = f.getProperties();
+        const properties = API.features.getFeatureProperties(f);
         featuresByLayers[layer].push({
           properties,
           id: featureId,

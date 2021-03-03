@@ -110,6 +110,8 @@ class FeatureDetail extends React.Component {
       : this.currentFeature
       ? this.currentFeature.properties
       : null;
+    console.log("properties", properties);
+    debugger;
     return (
       this.currentFeature && (
         <React.Fragment>

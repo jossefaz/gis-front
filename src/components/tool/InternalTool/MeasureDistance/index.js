@@ -10,7 +10,7 @@ import { random_rgba } from "../../../../utils/func";
 import { InteractionUtil } from "../../../../utils/interactions";
 import { OverlayUtil } from "../../../../utils/overlay";
 import "./style.css";
-
+import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
 const { getFocusedMap } = API.map;
 const { getOverlay } = API.overlays;
 
@@ -68,11 +68,11 @@ class MeasureDistance extends React.Component {
   }
 
   get DrawLayer() {
-    return this.interactions.getVectorLayer(this.interactions.TYPES.DRAW);
+    return this.interactions.getVectorLayer(TYPES.DRAW);
   }
 
   get DrawSource() {
-    return this.interactions.getVectorSource(this.interactions.TYPES.DRAW);
+    return this.interactions.getVectorSource(TYPES.DRAW);
   }
 
   createMeasureTooltip = () => {

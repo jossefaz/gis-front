@@ -46,10 +46,7 @@ export const selectVisibleLayers = (state: GisState): string[] | boolean => {
     visibles = Object.keys(Layers[map.focused].layers).filter(
       (id) => Layers[map.focused].layers[id].visible === true
     );
-  if (visibles.length > 0) {
-    return visibles;
-  }
-  return false;
+  return visibles;
 };
 
 export const selectCurrentMapLayers = (state: GisState) => {

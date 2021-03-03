@@ -7,6 +7,8 @@ export async function getMetaData<T>(
   metaDataType: MetaDataType,
   params?: { [key: string]: any }
 ) {
+  console.log("config()", config());
+  debugger;
   const client = HTTPFactory.getInstance(config().MD_server);
   const request: ApiCall = {
     url: metaDataType,

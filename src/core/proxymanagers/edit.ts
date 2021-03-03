@@ -8,8 +8,8 @@ class EditProxyManager {
   private _registry: { [uuid: string]: EditProxy };
 
   private constructor(layernames?: string[]) {
-    layernames && this._refresh(layernames);
     this._registry = {};
+    layernames && this._refresh(layernames);
   }
 
   public get registry(): { [uuid: string]: EditProxy } {
@@ -61,6 +61,8 @@ class EditProxyManager {
               }
             }
             if (lyr instanceof ImageLayer) {
+              debugger;
+              console.log("this", this);
               if (!this._registry[lyrid]) {
                 this._registry[lyrid] = new EditProxy();
               }
