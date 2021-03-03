@@ -2,13 +2,15 @@ import { jsPDF } from "jspdf";
 import { NewCanvas } from "./html";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
-import { getFocusedMap } from "../nessMapping/api";
+import API from "../core/api";
 import { GeoJSON } from "ol/format";
 import shpwrite from "shp-write";
 export const ORIENTATION = {
   portrait: "portrait",
   landscape: "landscape",
 };
+
+const { getFocusedMap } = API.map;
 
 export const exportImageToPdf = (
   canvas,

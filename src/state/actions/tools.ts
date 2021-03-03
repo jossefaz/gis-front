@@ -14,6 +14,7 @@ import {
   ToolResetedAction,
   InitToolsAction,
 } from "./types/tools/actions";
+import { Widgets } from "../../configuration/types";
 
 export const toggleTool = (
   ToolId: string,
@@ -111,7 +112,7 @@ export const toolsReseted = () => async (dispatch: Dispatch) => {
   });
 };
 
-export const InitTools = (ToolConfig: ToolConfig) => (dispatch: Dispatch) => {
+export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
   const gTools: MapsToolState = {
     tools: {},
     Groups: {},
@@ -126,16 +127,22 @@ export const InitTools = (ToolConfig: ToolConfig) => (dispatch: Dispatch) => {
   });
 
   ToolConfig.tools.map((tool) => {
+    const toolcpy = { ...tool };
     const { Id, ToolGroupId } = tool;
-    const RandomId = (
+    let RandomId = (
       Id + Math.floor(Math.random() * Math.floor(999999))
     ).toString();
-    tool.Id = RandomId;
-    gTools.tools[RandomId] = tool;
+    toolcpy.Id = RandomId;
+    gTools.tools[RandomId] = toolcpy;
+
     if (ToolGroupId) {
-      "tools" in gTools.Groups[ToolGroupId]
-        ? gTools.Groups[ToolGroupId].tools.push(RandomId)
-        : (gTools.Groups[ToolGroupId]["tools"] = [RandomId]);
+      debugger;
+      let tools = gTools.Groups[ToolGroupId].tools;
+      if (tools) {
+        tools.push(RandomId);
+      } else {
+        tools = [RandomId];
+      }
     }
   });
 

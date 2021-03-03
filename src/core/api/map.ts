@@ -1,4 +1,4 @@
-import store from "../../state/store";
+import { mainStore as store } from "../../state/store";
 import MapProxyManager from "../proxymanagers/map";
 import Map from "ol/Map";
 
@@ -9,7 +9,9 @@ export const getFocusedMapProxy = () => {
   return MapProxyManager.getInstance().getProxy(state.map.focused);
 };
 
-export const getFocusedMapUUID = () => getFocusedMapProxy().uuid.value;
+export const getFocusedMapUUID = () => {
+  return getFocusedMapProxy().uuid.value;
+};
 
 export const getCurrentResolution = () => {
   return getFocusedMap().getView().getResolution();

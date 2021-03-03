@@ -1,8 +1,9 @@
 import types from "../actions/types";
 import produce, { finishDraft } from "immer";
-import { OverlayMetadata, OverlayState } from "../types/overlays";
+import { OverlayState } from "../stateTypes";
 import { Actions } from "../actions/types";
 import { WritableDraft } from "immer/dist/internal";
+import { OverlayMetadata } from "../../core/types";
 
 const overlayReducer = (
   state: OverlayState = {},

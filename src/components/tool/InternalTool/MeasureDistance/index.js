@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import { getOverlay, getFocusedMap } from "../../../../core/api";
+import API from "../../../../core/api";
 import IconButton from "../../../UI/Buttons/IconButton";
 import { generateOutput, generateNewStyle } from "./func";
 import { DragPan } from "ol/interaction";
@@ -10,6 +10,10 @@ import { random_rgba } from "../../../../utils/func";
 import { InteractionUtil } from "../../../../utils/interactions";
 import { OverlayUtil } from "../../../../utils/overlay";
 import "./style.css";
+
+const { getFocusedMap } = API.map;
+const { getOverlay } = API.overlays;
+
 class MeasureDistance extends React.Component {
   WIDGET_NAME = "Measure";
   CLASSNAMES = {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { unsetUnfocused } from "../../../redux/actions/tools";
+import { unsetUnfocused } from "../../../state/actions";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../core/api";
+import API from "../../../core/api";
 import _ from "lodash";
 export default (WrappedComponent) => {
   class withWidgetLifeCycle extends React.Component {
@@ -15,9 +15,7 @@ export default (WrappedComponent) => {
     };
 
     get Tools() {
-      const currentMapId = getFocusedMapProxy()
-        ? getFocusedMapProxy().uuid.value
-        : null;
+      const currentMapId = API.map.getFocusedMapUUID();
       return currentMapId ? this.props.Tools[currentMapId] : null;
     }
 

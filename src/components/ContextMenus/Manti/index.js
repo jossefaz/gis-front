@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Tofes from "./ParametersTofes";
-import { getFocusedMapProxy } from "../../../nessMapping/api";
+import API from "../../../core/api";
+const { getFocusedMapUUID } = API.map;
 export default ({ menu_config, local_config, feature }) => {
   const [open, setopen] = useState(false);
   const [item, setItem] = useState(null);
@@ -16,7 +17,7 @@ export default ({ menu_config, local_config, feature }) => {
       feature,
       toggleModal: open,
       data: item.Parameters,
-      mapId: getFocusedMapProxy().uuid.value,
+      mapId: getFocusedMapUUID(),
       bankPkudotRow: item,
       identifyResult: feature.properties,
     });
@@ -29,7 +30,7 @@ export default ({ menu_config, local_config, feature }) => {
           value: item.Parameters,
         }}
         bankPkudotRow={item}
-        mapId={getFocusedMapProxy().uuid.value}
+        mapId={getFocusedMapUUID()}
         identifyResult={feature.properties}
       />
     );
@@ -51,7 +52,7 @@ export default ({ menu_config, local_config, feature }) => {
             value: item.Parameters,
           }}
           bankPkudotRow={item}
-          mapId={getFocusedMapProxy().uuid.value}
+          mapId={getFocusedMapUUID()}
           identifyResult={feature.properties}
         />
       )}

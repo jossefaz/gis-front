@@ -14,8 +14,8 @@ export const setInteraction = (config: InteractionOptions) => (
   dispatch: Dispatch
 ) => {
   const uuid = API.interactions.addInteraction(config);
+  if (uuid) config.uuid = uuid;
   if ("sourceLayer" in config && uuid) {
-    config.uuid = uuid;
     if (config.sourceLayer) {
       config.sourceLayer = config.sourceLayer.get("ol_uid");
     } else {

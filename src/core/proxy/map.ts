@@ -56,10 +56,11 @@ export default class MapProxy implements IMapProxy {
 
   setHighLight() {
     const { source, vector } = getEmptyVectorLayer(mapStyle.HIGHLIGHT);
-    this.setGraphicLayer(vector, source.get("ol_uid"));
+
+    this.setGraphicLayer(vector, (source as any).ol_uid);
     this.setVectorSource(source);
-    this._highlight.source = source.get("ol_uid");
-    this._highlight.vector = vector.get("ol_uid");
+    this._highlight.source = (source as any).ol_uid;
+    this._highlight.vector = (vector as any).ol_uid;
     this.OLMap.addLayer(vector);
   }
 
@@ -70,7 +71,7 @@ export default class MapProxy implements IMapProxy {
     if (source_uid) {
       ol_layer.set(NessKeys.VECTOR_SOURCE, source_uid);
     }
-    let ol_uid = String(ol_layer.get("ol_uid"));
+    let ol_uid = String((ol_layer as any).ol_uid);
     if (ol_uid) {
       this._graphicLayers[ol_uid] = ol_layer;
       return ol_uid;
@@ -79,7 +80,7 @@ export default class MapProxy implements IMapProxy {
   }
 
   setVectorSource(ol_vectorSource: VectorSource): string | null {
-    const ol_uid = String(ol_vectorSource.get("ol_uid"));
+    const ol_uid = String((ol_vectorSource as any).ol_uid);
     if (ol_uid) {
       this._vectorSource[ol_uid] = ol_vectorSource;
       return ol_uid;

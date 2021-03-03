@@ -12,6 +12,17 @@ class EditProxyManager {
     this._registry = {};
   }
 
+  public get registry(): { [uuid: string]: EditProxy } {
+    return this._registry;
+  }
+
+  public removeItem = (__NessUUID__: string) => {
+    if (__NessUUID__ in this._registry) {
+      this._registry[__NessUUID__].unedit();
+      delete this._registry[__NessUUID__];
+    }
+  };
+
   public static getInstance(layernames?: string[]): EditProxyManager {
     if (!EditProxyManager.instance) {
       EditProxyManager.instance = layernames

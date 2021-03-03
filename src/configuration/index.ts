@@ -3,6 +3,7 @@ import { get_env } from "./env";
 import { ConfigObject } from "./types";
 
 export const fetchConfig = async () => {
+  console.log("process.cwd()", process.cwd());
   const env = await get_env();
   if (typeof env !== "boolean" && env.CONFIG) {
     const conf = Object.assign(

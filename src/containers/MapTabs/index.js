@@ -1,10 +1,14 @@
 import React from "react";
 import { Tab } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { InitMap, setMapFocus } from "../../redux/actions/map";
-import { getFocusedMap } from "../../nessMapping/api";
-import { resetTools, toolsReseted } from "../../redux/actions/tools";
-import { InitLayers } from "../../redux/actions/layers";
+import {
+  InitMap,
+  setMapFocus,
+  resetTools,
+  toolsReseted,
+  InitLayers,
+} from "../../state/actions";
+import API from "../../core/api";
 import "./style.css";
 
 class MapTabs extends React.Component {
@@ -16,12 +20,12 @@ class MapTabs extends React.Component {
     if (uuid != this.state.focused) {
       await this.props.resetTools();
       if (uuid == "+") {
-        await this.props.InitMap();     
+        await this.props.InitMap();
         await this.props.InitLayers();
       } else {
         await this.props.setMapFocus(uuid);
-     
-        getFocusedMap().setTarget("map");
+
+        API.map.getFocusedMap().setTarget("map");
       }
       await this.props.toolsReseted();
     }
@@ -41,7 +45,7 @@ class MapTabs extends React.Component {
       });
     }
     if (this.props.maps.focused) {
-      getFocusedMap().setTarget("map");
+      API.map.getFocusedMap().setTarget("map");
     }
     this.setState({ panes, focused: this.props.maps.focused });
   };

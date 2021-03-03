@@ -1,21 +1,15 @@
 import { generateNewDiv } from "./html";
-import {
-  getFocusedMap,
-  getFocusedMapProxy,
-  getInteractionGraphicLayer,
-  getInteractionVectorSource,
-  getInteraction,
-  getOverlay,
-} from "../core/api";
+import API from "../core/api";
 import {
   unsetOverlay,
   unsetOverlays,
   setOverlayProperty,
   setOverlay,
-} from "../redux/actions/overlay";
-import store from "../redux/store";
+} from "../state/actions";
+import { mainStore as store } from "../state/store";
 import _ from "lodash";
-import ReactDOM from "react-dom";
+const { getFocusedMap, getFocusedMapProxy } = API.map;
+const { getOverlay } = API.overlays;
 export class OverlayUtil {
   constructor(widgetName) {
     this.widget = widgetName;

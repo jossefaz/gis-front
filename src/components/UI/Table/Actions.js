@@ -1,7 +1,7 @@
-import { zoomTo } from "../../../nessMapping/api";
+import API from "../../../core/api";
 export default {
   zoomTo: {
-    fn: (row) => zoomTo(row.original.geometry),
+    fn: (row) => API.features.zoomTo(row.original.geometry),
     icon: "zoomTo",
   },
   Edit: {

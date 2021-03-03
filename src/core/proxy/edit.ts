@@ -1,7 +1,7 @@
 import API from "../api";
 import { GeoserverUtil, TransactionMode } from "../../utils/Geoserver";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
-import store from "../../state/store";
+import { mainStore as store } from "../../state/store";
 import { ActionTypes } from "../../state/actions/types/features";
 import _ from "lodash";
 import convert from "xml-js";

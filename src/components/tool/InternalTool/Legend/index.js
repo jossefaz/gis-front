@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../../nessMapping/api";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import { selectVisibleLayers } from "../../../../redux/reducers";
+import { selectVisibleLayers } from "../../../../state/reducers";
 import LegendItem from "./LegendItem";
 import "./style.css";
 

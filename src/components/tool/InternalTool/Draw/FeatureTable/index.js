@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import FeatureItem from "./FeatureItem/FeatureItem";
 import { Table } from "semantic-ui-react";
-import {
-  highlightFeature,
-  unhighlightFeature,
-} from "../../../../../nessMapping/api";
+import API from "../../../../../core/api";
 import { Accordion, Icon } from "semantic-ui-react";
 import "./style.css";
-
+const { highlightFeature, unhighlightFeature } = API.features;
 export default (props) => {
   const { Header, Body, Row, HeaderCell } = Table;
   const [OveredFeature, serOveredFeature] = useState(null);

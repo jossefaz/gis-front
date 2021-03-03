@@ -18,7 +18,7 @@ class InteractionProxyManager {
   }
 
   public getProxy(uuid: string): InteractionProxy | null {
-    return uuid in this._interactionsProxies[uuid]
+    return uuid in this._interactionsProxies
       ? this._interactionsProxies[uuid]
       : null;
   }

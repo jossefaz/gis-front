@@ -1,15 +1,16 @@
 import React from "react";
 import "./style.css";
 import PropTypes from "prop-types";
-import { getFocusedMap, getFocusedMapProxy } from "../../nessMapping/api";
-import VectorLayerRegistry from "../../utils/vectorlayers";
-
+import API from "../../core/api";
+import VectorLayerRegistry from "../../core/proxymanagers/vectorlayer";
 import _ from "lodash";
+
+const { getFocusedMap, getFocusedMapUUID } = API.map;
 class MapComponent extends React.Component {
   state = {};
 
   defaultClickTool = async (e) => {
-    const opennedTools = this.props.Tools[getFocusedMapProxy().uuid.value];
+    const opennedTools = this.props.Tools[getFocusedMapUUID()];
     console.log("CurrentInteractions", this.props.CurrentInteractions);
     if (
       opennedTools.order.length === 0 &&
@@ -33,7 +34,7 @@ class MapComponent extends React.Component {
       this.props.setRaster("osm");
     }
     getFocusedMap().on("pointerdown", this.defaultClickTool);
-    if (getFocusedMapProxy().uuid.value in this.props.Layers) {
+    if (getFocusedMapUUID() in this.props.Layers) {
       this.setState({
         currentLayers: [],
       });

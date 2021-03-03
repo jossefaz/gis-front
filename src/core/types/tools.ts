@@ -27,7 +27,7 @@ export interface GroupMetadata {
   GroupName: string;
   GroupImage: string;
   IsOpen: boolean;
-  tools: string[];
+  tools?: string[];
 }
 
 export interface ToolConfig {

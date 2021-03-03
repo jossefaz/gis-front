@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { toggleTool } from "../../../redux/actions/tools";
+import { toggleTool } from "../../../state/actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getFocusedMapProxy } from '../../../nessMapping/api'
+import API from "../../../core/api";
 
 class Loader extends React.Component {
   get Tools() {
-    const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
-    return currentMapId ? this.props.Tools[currentMapId] : null
+    const currentMapId = API.map.getFocusedMapUUID();
+    return currentMapId ? this.props.Tools[currentMapId] : null;
   }
   render() {
     const { ToolName, ToolImage, ToolIcon } = this.Tools.tools[
@@ -21,8 +21,8 @@ class Loader extends React.Component {
         ) : ToolImage ? (
           <img src={`/img/${ToolImage}`} />
         ) : (
-              ToolName
-            )}
+          ToolName
+        )}
       </a>
     );
   }

@@ -5,7 +5,7 @@ import { Dropdown } from "semantic-ui-react";
 import {
   selectVisibleLayers,
   selectCurrentMapLayers,
-} from "../../../../../redux/reducers";
+} from "../../../../../state/reducers";
 import SpatialSelect from "..";
 
 import _ from "lodash";

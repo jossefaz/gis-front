@@ -1,6 +1,6 @@
 import React from "react";
 import Form from "../../../../UI/Form";
-import GenerateUUID from "../../../../../utils/uuid";
+import { GenerateUUID } from "../../../../../utils/uuid";
 import "./style.css";
 import withNotifications from "../../../../HOC/withNotifications";
 import AppendBodyComponent from "../../../../HOC/appendBodyElement";
@@ -72,13 +72,13 @@ class EditForm extends AppendBodyComponent {
                   />
                 </React.Fragment>
               ) : (
-                  <IconButton
-                    className={`ui icon button pointer negative`}
-                    onClick={this.props.onCancel}
-                    icon="window-close"
-                    size="lg"
-                  />
-                )
+                <IconButton
+                  className={`ui icon button pointer negative`}
+                  onClick={this.props.onCancel}
+                  icon="window-close"
+                  size="lg"
+                />
+              )
             }
           />
         </div>

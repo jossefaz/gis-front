@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
 import { generateNewPolygonStyle } from "../../../../../../utils/func";
 import IconButton from "../../../../../UI/Buttons/IconButton";
-import { unhighlightFeature } from "../../../../../../nessMapping/api";
+import API from "../../../../../../core/api";
 import { Table, Form, Input } from "semantic-ui-react";
 import { deleteGeometry } from "../../../../../../services/persistentGeometry/api";
 import "./style.css";
+const { unhighlightFeature } = API.features;
 export default (props) => {
   const [fillColor, setFillColor] = useState({
     r: "154",

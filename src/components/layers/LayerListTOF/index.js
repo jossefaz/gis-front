@@ -1,5 +1,5 @@
 import React from "react";
-import GenerateUUID from "../../../utils/uuid";
+import { GenerateUUID } from "../../../utils/uuid";
 import AppendBodyComponent from "../../HOC/appendBodyElement";
 import TableOfFeatures from "../../tool/InternalTool/TableOfFeatures";
 import { connect } from "react-redux";

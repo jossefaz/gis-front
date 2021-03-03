@@ -77,7 +77,7 @@ export const highlightFeature = (geometry: SupportedGeometry) => {
     getFocusedMapProxy().setHighLight();
     Highlight = getFocusedMapProxy().Highlight;
   }
-  if (Highlight?.source) {
+  if (Highlight && Highlight.source) {
     const source = getFocusedMapProxy().getVectorSource(Highlight.source);
     source.clear();
     if (InstanceOfGeometryClass(geometry)) {
@@ -88,7 +88,7 @@ export const highlightFeature = (geometry: SupportedGeometry) => {
 
 export const unhighlightFeature = () => {
   let Highlight = getFocusedMapProxy().Highlight;
-  if (Highlight?.source) {
+  if (Highlight && Highlight.source) {
     const source = getFocusedMapProxy().getVectorSource(Highlight.source);
     source.clear();
   }

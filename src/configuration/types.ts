@@ -29,7 +29,7 @@ export interface Params {
 }
 
 export interface Tool {
-  Id: number;
+  Id: string;
   ToolName: string;
   ToolTip: string;
   ToolImage: any;
@@ -45,15 +45,15 @@ export interface Tool {
   IsAGroup: number;
   ToolGroupId: number;
   ToolContainer: string;
-  IsOpen: number;
+  IsOpen: boolean;
 }
 
 export interface Group {
-  Id: number;
+  Id: string;
   GroupContainer: string;
   GroupName: string;
   GroupImage: string;
-  IsOpen: number;
+  IsOpen: boolean;
 }
 
 export interface Widgets {

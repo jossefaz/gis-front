@@ -1,6 +1,6 @@
 import API from "../core/api";
 
-import store from "../state/store";
+import { mainStore as store } from "../state/store";
 import {
   setInteraction,
   unsetInteraction,
@@ -14,6 +14,11 @@ import {
   InteractionOptions,
   InteractionSupportedTypes as INTERACTION_TYPE,
 } from "../core/types/interaction";
+import { Collection, Feature } from "ol";
+import BaseLayer from "ol/layer/Base";
+import { Condition } from "ol/events/condition";
+import styles from "../core/mapStyle";
+import VectorSource from "ol/source/Vector";
 
 export class InteractionUtil {
   private _widget: string;
@@ -144,12 +149,25 @@ export class InteractionUtil {
     }
   };
 
-  newSelect = async (selectOptions: SelectOptions) => {
+  newSelect = async (
+    feature: Feature,
+    layers: BaseLayer[],
+    multi: boolean,
+    condition: Condition
+  ) => {
+    const config = {
+      ...(layers && { layers }),
+      ...(multi && { multi }),
+      ...(feature && { features: new Collection([feature]) }),
+      ...(condition && { condition }),
+      style: styles.EDIT,
+    };
+
     await this.unSelect();
     await store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.SELECT,
-        interactionConfig: selectOptions,
+        interactionConfig: config,
         widgetName: this._widget,
       }) as any
     );
@@ -168,12 +186,17 @@ export class InteractionUtil {
     }
   };
 
-  newModify = async (modifyOptions: ModifyOptions) => {
+  newModify = async (features: Collection<Feature>) => {
+    debugger;
+    const config = {
+      ...(features && { features }),
+    };
+    debugger;
     await this.unModify();
     await store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.MODIFY,
-        interactionConfig: modifyOptions,
+        interactionConfig: config,
         widgetName: this._widget,
       }) as any
     );

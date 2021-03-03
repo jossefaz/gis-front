@@ -5,17 +5,15 @@ import {
   updateFeatureAttributes,
   setFilterIds,
   udpatedInfo,
-} from "../redux/actions/actions";
+} from "../state/actions";
 // import {ADD_LAYER,UPDATE_FEATURE_ATTRIBUTES} from '../actions/actionsTypes';
 // import {
 //   WSkubeMQ
 // } from "../comm/WSkubeMQ.js";
 // import NATS from "../communication/WSnatsMQ"
-import {
-  Base64
-} from "../utils/convertors/base64";
+import { Base64 } from "../utils/convertors/base64";
 import store from "../redux/store.js";
-import wsNats from 'websocket-nats';
+import wsNats from "websocket-nats";
 import config from "react-global-configuration";
 
 export const loadChannels = () => {
@@ -34,13 +32,12 @@ export const loadChannels = () => {
   //   );
   // });
 
-  var nats = wsNats.connect('ws://192.168.2.100:4223');
+  var nats = wsNats.connect("ws://192.168.2.100:4223");
   nats.subscribe("MTCS.Units.*", (msg) => {
     var channelItem = channels;
     var data = [];
 
     if (channelItem) {
-
       msg = JSON.parse(msg);
 
       data.push(msg);
