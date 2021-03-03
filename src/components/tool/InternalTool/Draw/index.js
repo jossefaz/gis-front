@@ -132,8 +132,7 @@ class Draw extends React.Component {
       this.interactions.getVectorLayer(TYPES.DRAW),
     ]);
     await this.interactions.newModify(
-      this.interactions.currentSelect.getFeatures(),
-      this.interactions.getVectorLayer(TYPES.DRAW)
+      this.interactions.currentSelect.getFeatures()
     );
     this.setState({ editSession: { status: true, current: featureID } });
     this.onModifyEnd();

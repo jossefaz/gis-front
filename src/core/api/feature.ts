@@ -20,7 +20,9 @@ export const getFeatureProperties = (
   return _.omit(props, ["bbox", "geometry", "vector_source"]);
 };
 
-export const geoserverFeatureToOLGeom = (config: IFeatureConfigInterface) => {
+export const geoserverFeatureToOLGeom = (
+  config: IFeatureConfigInterface
+): SupportedGeometry | false => {
   const { type, coordinates } = config;
   switch (type) {
     case "MultiPolygon":
@@ -40,10 +42,12 @@ export const geoserverFeatureToOLGeom = (config: IFeatureConfigInterface) => {
     default:
       break;
   }
-  return null;
+  return false;
 };
 
-export const InstanceOfGeometryClass = (geometry: any): boolean => {
+export const InstanceOfGeometryClass = (
+  geometry: any
+): SupportedGeometry | false => {
   if (
     geometry instanceof MultiPolygon ||
     geometry instanceof Point ||
@@ -53,16 +57,22 @@ export const InstanceOfGeometryClass = (geometry: any): boolean => {
     geometry instanceof MultiPoint ||
     geometry instanceof Circle
   )
-    return true;
+    return geometry;
 
   return false;
 };
 
-export const zoomTo = (geometry: SupportedGeometry) => {
-  if (InstanceOfGeometryClass(geometry)) {
+export const zoomTo = (
+  geometry: SupportedGeometry | IFeatureConfigInterface
+) => {
+  let geom = InstanceOfGeometryClass(geometry);
+  if (!geom) {
+    geom = geoserverFeatureToOLGeom(geometry as IFeatureConfigInterface);
+  }
+  if (geom) {
     const view = getFocusedMap().getView();
-    highlightFeature(geometry);
-    view.fit(geometry, {
+    highlightFeature(geom);
+    view.fit(geom, {
       padding: [850, 850, 850, 850],
       maxZoom: 12,
     });
