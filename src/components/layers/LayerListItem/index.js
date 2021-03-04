@@ -7,8 +7,10 @@ import {
   setMapLayerVisible,
   setMapLayerOpacity,
 } from "../../../state/actions";
+import { selectCurrentMapLayers } from "../../../state/reducers";
 import API from "../../../core/api";
 import LayerListMenuItem from "../LayerListMenuItem";
+
 class LayerListItem extends Component {
   state = {
     isLayerItemClicked: false,
@@ -18,6 +20,11 @@ class LayerListItem extends Component {
     showMenu: false,
     onlyShowMe: false,
   };
+
+  get currentLayer() {
+    const { layers, layerId } = this.props;
+    return layers && layerId in layers ? layers[layerId] : null;
+  }
 
   componentDidUpdate = (prevProps) => {
     if (this.props.closeItem !== prevProps.closeItem) {
@@ -62,28 +69,34 @@ class LayerListItem extends Component {
   };
 
   renderLayerMenu = () => {
-    const layer = this.props.layer;
     return (
-      <div>
-        <div>
-          <input
-            type="checkbox"
-            name="public"
-            onChange={(event) =>
-              this.setLayerVisibilty(event.target.checked, layer)
-            }
-            checked={layer.visible}
-          />
-          <label>{layer.name}</label>
-          <Icon
-            link
-            size="large"
-            name={this.state.showMenu ? "angle down" : "angle right"}
-            onClick={() => this.execShowMenu()}
-          />
-        </div>
-        <div>{this.createMenu()}</div>
-      </div>
+      <React.Fragment>
+        {this.currentLayer && (
+          <div>
+            <div>
+              <input
+                type="checkbox"
+                name="public"
+                onChange={(event) =>
+                  this.setLayerVisibilty(
+                    event.target.checked,
+                    this.currentLayer
+                  )
+                }
+                checked={this.currentLayer.visible}
+              />
+              <label>{this.currentLayer.name}</label>
+              <Icon
+                link
+                size="large"
+                name={this.state.showMenu ? "angle down" : "angle right"}
+                onClick={() => this.execShowMenu()}
+              />
+            </div>
+            <div>{this.createMenu()}</div>
+          </div>
+        )}
+      </React.Fragment>
     );
   };
 
@@ -94,7 +107,7 @@ class LayerListItem extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     mapId: state.map.focused,
-    layer: state.Layers[state.map.focused]["layers"][ownProps.layerId],
+    layers: selectCurrentMapLayers(state),
     closeLayerListItem: ownProps.closeLayerListItem,
   };
 };
