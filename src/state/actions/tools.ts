@@ -136,7 +136,6 @@ export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
     gTools.tools[RandomId] = toolcpy;
 
     if (ToolGroupId) {
-      debugger;
       let tools = gTools.Groups[ToolGroupId].tools;
       if (tools) {
         tools.push(RandomId);
