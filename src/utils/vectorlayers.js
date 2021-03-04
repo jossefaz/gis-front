@@ -1,4 +1,4 @@
-import { getFocusedMap } from "../nessMapping/api";
+import { getFocusedMap } from "../core/api";
 import { Vector as VectorLayer, Image as ImageLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import styles from "../nessMapping/mapStyle";

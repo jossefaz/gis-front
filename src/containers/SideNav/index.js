@@ -5,27 +5,27 @@ import LayerListMain from "../../components/layers/LayerListMain";
 import { connect } from "react-redux";
 import "./style.css";
 import { renderTools } from "../../components/tool/func";
-import { getFocusedMapProxy } from "../../nessMapping/api"
+import API from "../../core/api";
 const SideMenu = (props) => {
-  const currentMapId = getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : null
+  const currentMapId = API.map.getFocusedMapProxy()
+    ? API.map.getFocusedMapProxy().uuid.value
+    : null;
 
-  return currentMapId ?
-    (
-
-      <Sidebar.Pushable styleName="sidebar-container" className="cSideNav">
-        <Sidebar
-          as={Menu}
-          vertical
-          visible={props.ui.sideNavOpen}
-          animation={"push"}
-        >
-          {renderTools(props.Tools[currentMapId], "SideNav")}
-          <LayerListMain />
-        </Sidebar>
-        <Sidebar.Pusher>{props.children}</Sidebar.Pusher>
-      </Sidebar.Pushable>
-    ) : null
-}
+  return currentMapId ? (
+    <Sidebar.Pushable styleName="sidebar-container" className="cSideNav">
+      <Sidebar
+        as={Menu}
+        vertical
+        visible={props.ui.sideNavOpen}
+        animation={"push"}
+      >
+        {renderTools(props.Tools[currentMapId], "SideNav")}
+        <LayerListMain />
+      </Sidebar>
+      <Sidebar.Pusher>{props.children}</Sidebar.Pusher>
+    </Sidebar.Pushable>
+  ) : null;
+};
 
 SideMenu.propTypes = {
   visible: PropTypes.bool,

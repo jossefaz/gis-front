@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import {
-  getFocusedMapProxy,
-  getFocusedMap,
-  getCurrentProjection,
-  zoomTo,
-} from "../../../../nessMapping/api";
+import API from "../../../../core/api";
 import IconButton from "../../../UI/Buttons/IconButton";
 import MousePosition from "ol/control/MousePosition";
 import { createStringXY } from "ol/coordinate";
@@ -15,6 +9,9 @@ import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import Point from "ol/geom/Point";
 import "./style.css";
 import { Select } from "semantic-ui-react";
+
+const { getFocusedMapProxy, getFocusedMap, getCurrentProjection } = API.map;
+const { zoomTo } = API.features;
 
 const projectionsOptions = [
   { key: "2039", value: "EPSG:2039", text: "רשת ישראל" },

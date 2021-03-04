@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import { getFocusedMap } from "../../../../nessMapping/api";
+import API from "../../../../core/api";
 import IconButton from "../../../UI/Buttons/IconButton";
 import { generateNewStyle } from "../MeasureDistance/func";
 import {
@@ -9,7 +9,7 @@ import {
   updateGeometry,
 } from "../../../../services/persistentGeometry/api";
 import { escapeHandler } from "../../../../utils/eventHandlers";
-import generateID from "../../../../utils/uuid";
+import { GenerateUUID } from "../../../../utils/uuid";
 import { InteractionUtil } from "../../../../utils/interactions";
 import { OverlayUtil } from "../../../../utils/overlay";
 import getOlFeatureFromJson from "../../../../utils/olFeatureFromGeoJson";
@@ -22,7 +22,10 @@ import { DragPan } from "ol/interaction";
 import { Grid } from "semantic-ui-react";
 import Point from "ol/geom/Point";
 import axios from "axios";
+import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
 import "./style.css";
+
+const { getFocusedMap } = API.map;
 class Draw extends React.Component {
   WIDGET_NAME = "Draw";
 
@@ -94,11 +97,11 @@ class Draw extends React.Component {
     return this.interactions.currentModifyUUID;
   }
   get DrawLayer() {
-    return this.interactions.getVectorLayer(this.interactions.TYPES.DRAW);
+    return this.interactions.getVectorLayer(TYPES.DRAW);
   }
 
   get DrawSource() {
-    return this.interactions.getVectorSource(this.interactions.TYPES.DRAW);
+    return this.interactions.getVectorSource(TYPES.DRAW);
   }
 
   toggleView = () => {
@@ -123,10 +126,10 @@ class Draw extends React.Component {
 
   onOpenEditSession = async (featureID) => {
     const feature = this.interactions
-      .getVectorSource(this.interactions.TYPES.DRAW)
+      .getVectorSource(TYPES.DRAW)
       .getFeatureById(featureID);
     await this.interactions.newSelect(feature, [
-      this.interactions.getVectorLayer(this.interactions.TYPES.DRAW),
+      this.interactions.getVectorLayer(TYPES.DRAW),
     ]);
     await this.interactions.newModify(
       this.interactions.currentSelect.getFeatures()
@@ -204,7 +207,7 @@ class Draw extends React.Component {
     if (this.interactions.currentDraw) {
       this.interactions.currentDraw.on("drawend", async (e) => {
         const newFeatureId =
-          (await createNewGeometry(e.feature)) || generateID();
+          (await createNewGeometry(e.feature)) || GenerateUUID();
         e.feature.setId(newFeatureId);
         const { r, g, b, a } = this.state.defaultColor;
         e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`));

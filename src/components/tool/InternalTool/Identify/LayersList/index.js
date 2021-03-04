@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { setCurrentLayer } from "../../../../../redux/actions/features";
-import { getFocusedMapProxy } from "../../../../../nessMapping/api";
+import { setCurrentFeatureLayer } from "../../../../../state/actions";
+import API from "../../../../../core/api";
 import {
   selectCurrentLayer,
   selectSelectedFeatureInCurrentLayer,
   selectCurrentFeature,
   selectSelectedFeatures,
-} from "../../../../../redux/reducers";
+} from "../../../../../state/reducers";
 import "./style.css";
 class FeatureList extends Component {
   get focusedmap() {
-    return getFocusedMapProxy().uuid.value;
+    return API.map.getFocusedMapProxy().uuid.value;
   }
 
   renderSelectedFeature = () => {
@@ -26,7 +26,7 @@ class FeatureList extends Component {
                     : "pointerCur"
                   : "pointerCur"
               }
-              onClick={() => this.props.setCurrentLayer(layer)}
+              onClick={() => this.props.setCurrentFeatureLayer(layer)}
             >
               {layer}
             </td>
@@ -64,4 +64,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setCurrentLayer })(FeatureList);
+export default connect(mapStateToProps, { setCurrentFeatureLayer })(
+  FeatureList
+);

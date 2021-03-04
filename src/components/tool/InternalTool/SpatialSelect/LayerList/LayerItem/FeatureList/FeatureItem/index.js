@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Checkbox } from "semantic-ui-react";
-import VectorLayerRegistry from "../../../../../../../../utils/vectorlayers";
 import IconButton from "../../../../../../../UI/Buttons/IconButton";
 import { Confirm } from "semantic-ui-react";
-import styles from "../../../../../../../../nessMapping/mapStyle";
-import {
-  zoomTo,
-  highlightFeature,
-  unhighlightFeature,
-} from "../../../../../../../../nessMapping/api";
+import styles from "../../../../../../../../core/mapStyle";
+import API from "../../../../../../../../core/api";
+
+const { zoomTo, highlightFeature, unhighlightFeature } = API.features;
 
 const FeatureItem = ({ feature, style, removeFeature }) => {
   const [Checked, setChecked] = useState(true);

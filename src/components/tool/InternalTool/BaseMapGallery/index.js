@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setRaster } from "../../../../redux/actions/raster";
+import { setRaster } from "../../../../state/actions";
 import "./style.css";
 const BaseMapGallery = (props) => {
   return (

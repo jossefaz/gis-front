@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-  getOlLayer,
+import API from "../../../../../core/api";
+import { selectCurrentMapLayers } from "../../../../../state/reducers";
+import { Accordion, Icon } from "semantic-ui-react";
+import { getHeight, getWidth } from "ol/extent";
+import { Checkbox } from "semantic-ui-react";
+import config from "../../../../../configuration";
+const {
   getFocusedMap,
   getFocusedMapProxy,
   getCurrentResolution,
   getCurrentExtent,
   getCurrentProjection,
-} from "../../../../../nessMapping/api";
-import { selectCurrentMapLayers } from "../../../../../redux/reducers";
-import { Accordion, Icon } from "semantic-ui-react";
-import { getHeight, getWidth } from "ol/extent";
-import { Checkbox } from "semantic-ui-react";
-import config from "react-global-configuration";
+} = API.map;
+const { getOlLayer } = API.layers;
+
 const LegendItem = (props) => {
   const [active, toggle] = useState(true);
   const [resolution, setResolution] = useState();
@@ -45,9 +47,9 @@ const LegendItem = (props) => {
       if (props.uuid in props.Layers) {
         const { restid } = props.Layers[props.uuid];
         // TODO : change baseurl from config
-        url = `${config.get(
-          "Geoserver"
-        )}/Jeru/wms?&LAYERS=${restid}&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=${restid}&legend_options=countMatched:false;fontAntiAliasing:true;hideEmptyRules:false;forceLabels:on`;
+        url = `${
+          config().Geoserver
+        }/Jeru/wms?&LAYERS=${restid}&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=${restid}&legend_options=countMatched:false;fontAntiAliasing:true;hideEmptyRules:false;forceLabels:on`;
       }
     }
     console.log("props.Layers", props.Layers);

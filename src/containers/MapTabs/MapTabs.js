@@ -1,8 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { InitMap, setMapFocus } from "../../redux/actions/map";
-import { InitLayers } from "../../redux/actions/layers";
-import { resetTools, toolsReseted } from "../../redux/actions/tools";
+import {
+  InitMap,
+  setMapFocus,
+  InitLayers,
+  resetTools,
+  toolsReseted,
+} from "../../state/actions";
 import MapTabs from "../../components/MapTabs/MapTabs";
 
 class MapTabsContainer extends React.Component {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Tab } from "semantic-ui-react";
-import { getFocusedMap } from "../../nessMapping/api";
+import API from "../../core/api";
 import "./style.css";
 
 class MapTabs extends React.Component {
@@ -16,7 +16,7 @@ class MapTabs extends React.Component {
         await this.props.InitLayers();
       } else {
         await this.props.setMapFocus(uuid);
-        getFocusedMap().setTarget("map");
+        API.map.getFocusedMap().setTarget("map");
       }
       await this.props.toolsReseted();
     }
@@ -38,7 +38,7 @@ class MapTabs extends React.Component {
       });
     }
     if (this.props.maps.focused) {
-      getFocusedMap().setTarget("map");
+      API.map.getFocusedMap().setTarget("map");
     }
     this.setState({ panes, focused: this.props.maps.focused });
   };

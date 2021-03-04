@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../../nessMapping/api";
+import { getFocusedMapProxy } from "../../../../core/api";
 import { setSelectedFeatures } from "../../redux/actions/features";
 import { InteractionUtil } from "../interactions";
 import { OverlayUtil } from "../overlay";

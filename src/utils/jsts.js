@@ -8,7 +8,7 @@ import {
   Point,
   Polygon,
 } from "ol/geom";
-import { getCurrentProjection } from "../nessMapping/api";
+import { getCurrentProjection } from "../core/api";
 import { transformExtent } from "ol/proj";
 export const getBufferedFeature = (olFeature, bufferSize) => {
   const geom = olFeature.getGeometry();

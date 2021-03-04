@@ -1,15 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
-import { toogleSideNav } from "../../redux/actions/ui";
+import { toogleSideNav } from "../../state/actions/ui";
 import { renderTools } from "../../components/tool/func";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getFocusedMapProxy } from "../../nessMapping/api";
+import API from "../../core/api";
 import SeachComp from "../../components/Search";
 class TopNav extends React.Component {
   get Tools() {
-    return getFocusedMapProxy()
-      ? this.props.Tools[getFocusedMapProxy().uuid.value]
-      : null;
+    const currentMapUUID = API.map.getFocusedMapUUID();
+    return currentMapUUID ? this.props.Tools[currentMapUUID] : null;
   }
 
   render() {
