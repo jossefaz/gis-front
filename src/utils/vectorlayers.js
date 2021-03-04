@@ -190,7 +190,7 @@ export class VectorLayerUtils {
       feature.set("editable", true); // TODO : change true value by real editable value
       feature.set("__NessUUID__", this.source.get("__NessUUID__"));
     });
-    debugger;
+
     return features;
   };
 

@@ -43,7 +43,6 @@ export default class CurrRowComboType extends React.Component {
   };
 
   fetchData = async () => {
-    debugger;
     var mockUpapiAddress = this.props.local_config["mockUpApiAddress"];
     var cmbSourceArray = JSON.parse(this.props.comboSource);
     var reqUrlCombo =

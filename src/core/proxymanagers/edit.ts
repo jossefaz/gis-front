@@ -61,7 +61,6 @@ class EditProxyManager {
               }
             }
             if (lyr instanceof ImageLayer) {
-              debugger;
               console.log("this", this);
               if (!this._registry[lyrid]) {
                 this._registry[lyrid] = new EditProxy();

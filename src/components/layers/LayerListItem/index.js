@@ -63,7 +63,7 @@ class LayerListItem extends Component {
   createMenu = () => {
     if (this.state.showMenu) {
       return (
-        <LayerListMenuItem layerId={this.props.layer.uuid}></LayerListMenuItem>
+        <LayerListMenuItem layerId={this.currentLayer.uuid}></LayerListMenuItem>
       );
     } else return null;
   };

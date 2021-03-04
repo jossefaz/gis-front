@@ -20,6 +20,7 @@ import {
   setCurrentFeatureLayer,
 } from "../../../../state/actions";
 import { connect } from "react-redux";
+import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
 const { getFocusedMap } = API.map;
 
 const initialState = {
@@ -113,8 +114,8 @@ class EditTool extends Component {
       addingIcon: false,
       editIcon: true,
     });
-    if (this.interactions.getVectorSource(this.interactions.TYPES.DRAW)) {
-      this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
+    if (this.interactions.getVectorSource(TYPES.DRAW)) {
+      this.interactions.getVectorSource(TYPES.DRAW).clear();
     }
     this.onSelectEnd();
   };
@@ -208,14 +209,14 @@ class EditTool extends Component {
       addingIcon: false,
       editIcon: false,
     });
-    if (this.interactions.getVectorSource(this.interactions.TYPES.DRAW)) {
-      this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
+    if (this.interactions.getVectorSource(TYPES.DRAW)) {
+      this.interactions.getVectorSource(TYPES.DRAW).clear();
     }
     this.registry.getVectorLayer(this.props.uuid).hideAllFeatures();
   };
 
   onSubmit = async (data) => {
-    this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
+    this.interactions.clearVectorSource(TYPES.DRAW);
     this.interactions.unsetAll();
     this.setState({ newFeature: null, openForm: false });
   };
@@ -231,7 +232,7 @@ class EditTool extends Component {
     }
   }
   componentWillUnmount() {
-    this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
+    this.interactions.clearVectorSource(TYPES.DRAW);
     this.interactions.unsetAll();
     if (this._editProxy) this._editProxy.removeItem(this.props.uuid);
   }

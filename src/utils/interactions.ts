@@ -187,11 +187,10 @@ export class InteractionUtil {
   };
 
   newModify = async (features: Collection<Feature>) => {
-    debugger;
     const config = {
       ...(features && { features }),
     };
-    debugger;
+
     await this.unModify();
     await store.dispatch(
       setInteraction({

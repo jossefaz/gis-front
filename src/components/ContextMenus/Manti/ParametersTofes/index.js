@@ -259,7 +259,6 @@ class ParametersTofesComponent extends Component {
   }
 
   render() {
-    debugger;
     const paramsData = JSON.parse(this.props.data.value);
 
     return (

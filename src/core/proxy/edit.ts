@@ -10,6 +10,7 @@ import VLProxy from "../proxy/vectorlayers";
 import { EditKeyWords } from "../types/edit";
 import Feature from "ol/Feature";
 import { ImageWMS } from "ol/source";
+import { AxiosResponse } from "axios";
 
 export default class EditLayerProxy {
   private _vectorLayerProxy: VLProxy | undefined;
@@ -99,7 +100,7 @@ export default class EditLayerProxy {
       Object.keys(properties).map((prop) => {
         feature.set(prop, properties[prop]);
       });
-      if (!(await this.transaction(feature, TransactionMode.INSERT))) {
+      if (!(await this._WFSTransaction(feature, TransactionMode.INSERT))) {
         return false;
       }
       feature.set(EditKeyWords.EDIT, true);
@@ -122,35 +123,42 @@ export default class EditLayerProxy {
         this._updatePropertiesOnFeature(this._currentFeature, newProperties);
       }
       this._currentFeature.unset(EditKeyWords.EDIT);
-
-      if (
-        !(await this.transaction(
-          this._currentFeature,
-          TransactionMode.UPDATE,
-          true
-        ))
-      ) {
+      const xmlResponse = await this._WFSTransaction(
+        this._currentFeature,
+        TransactionMode.UPDATE
+      );
+      if (!xmlResponse) {
         if (newProperties) {
           this._rollBackUpdateProperties(this._currentFeature);
         }
         this._currentFeature.set(EditKeyWords.EDIT, true);
         return false;
       }
-      this._currentFeature.set(EditKeyWords.EDIT, true);
-      return true;
+      if (this._handleWFSResponse(xmlResponse)) {
+        this._currentFeature.set(EditKeyWords.EDIT, true);
+        return true;
+      }
+      return false;
     }
-
     return false;
   };
 
   public remove = async (fid?: string) => {
     const feature = fid ? this.getFeatureById(fid) : this._currentFeature;
     if (feature) {
-      if (!(await this.transaction(feature, TransactionMode.DELETE))) {
+      const xmlResponse = await this._WFSTransaction(
+        feature,
+        TransactionMode.DELETE
+      );
+      if (!xmlResponse) {
         return false;
       }
+      if (!this._handleWFSResponse(xmlResponse)) {
+        return false;
+      }
+      API.features.unhighlightFeature();
       const featureId = fid || feature.getId();
-      const focusedmap = API.map.getFocusedMap();
+      const focusedmap = API.map.getFocusedMapUUID();
       store.dispatch({
         type: ActionTypes.REMOVE_FEATURE,
         payload: { focusedmap, featureId },
@@ -169,42 +177,35 @@ export default class EditLayerProxy {
     }
   };
 
-  public transaction = async (
+  private _WFSTransaction = async (
     feature: Feature,
-    transactionType: TransactionMode,
-    onlyAlphanum?: boolean | undefined
+    transactionType: TransactionMode
   ) => {
-    let success;
     if (this._geoserverUtil) {
-      const transaction = this._geoserverUtil.WFSTransaction(transactionType, [
-        feature,
-      ]);
-      if (transaction) {
-        transaction
-          .then((res) => {
-            this.refreshLayers();
-            success = true;
-            var xml = convert.xml2js(res.data);
-            if (xml.elements[0].name.includes("Exception")) {
-              let message = "Error from WFT-T transaction ";
-              try {
-                let error =
-                  xml.elements[0].elements[0].elements[0].elements[0].text;
-                message = `${message}${error}`;
-              } catch (error) {
-                // nothing to do here
-              }
-              console.error(message);
-              success = false;
-            }
-          })
-          .catch((err) => {
-            console.error(err);
-            success = false;
-          });
-      }
+      const response = await this._geoserverUtil.WFSTransaction(
+        transactionType,
+        [feature]
+      );
+      console.log("WFS response", response);
+      return response;
     }
-
-    return success;
   };
+
+  private _handleWFSResponse(xmlResponse: AxiosResponse) {
+    this.refreshLayers();
+    let success = true;
+    const xml = convert.xml2js(xmlResponse.data);
+    if (xml.elements[0].name.includes("Exception")) {
+      let message = "Error from WFT-T transaction ";
+      try {
+        let error = xml.elements[0].elements[0].elements[0].elements[0].text;
+        message = `${message}${error}`;
+      } catch (error) {
+        // nothing to do here
+      }
+      console.error(message);
+      success = false;
+    }
+    return success;
+  }
 }
