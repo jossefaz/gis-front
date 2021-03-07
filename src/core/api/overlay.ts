@@ -1,7 +1,7 @@
 import Map from "ol/Map";
 import NessKeys from "../keys";
 import Overlay from "ol/Overlay";
-import OverlayProxyManager from "../proxymanagers/overlay";
+import OverlayProxy from "../proxy/overlay";
 import { Options as OverlayOptions } from "ol/Overlay";
 import { getFocusedMapProxy } from "./map";
 export const getOverlayObject = (uuid: string, OLMap: Map) => {
@@ -14,24 +14,22 @@ export const getOverlayObject = (uuid: string, OLMap: Map) => {
   return -1;
 };
 export const getOverlay = (uuid: string) => {
-  const olp = OverlayProxyManager.getInstance().getOverlayProxy(uuid);
+  const olp = getFocusedMapProxy().getOverlayProxy(uuid);
   return olp.OLOverlay;
 };
 
-export const getOverlayProxy = (uuid: string) => {
-  return OverlayProxyManager.getInstance().getOverlayProxy(uuid);
-};
-
 export const addOverlay = (config: OverlayOptions) => {
-  const OverlayProxy = OverlayProxyManager.getInstance().addOverlayProxy(
-    config
-  );
-  return OverlayProxy.addSelfToMap(getFocusedMapProxy());
+  const proxy = new OverlayProxy(config);
+  getFocusedMapProxy().addOverlayProxy(proxy);
+  if (proxy.addSelfToMap(getFocusedMapProxy())) return proxy.uuid.value;
+  return false;
 };
 
 export const removeOverlay = (uuid: string) => {
-  const OverlayProxy = OverlayProxyManager.getInstance().getOverlayProxy(uuid);
+  const OverlayProxy = getFocusedMapProxy().getOverlayProxy(uuid);
   OverlayProxy.RemoveSelfFromMap();
-  OverlayProxyManager.getInstance().killOverlayProxy(uuid);
+  if (!getFocusedMapProxy().removeOverlayProxy(uuid)) {
+    console.warn(`Overlay ${uuid} was not removed from the map proxy`);
+  }
   return true;
 };

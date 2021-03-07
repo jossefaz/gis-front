@@ -168,7 +168,7 @@ export default class LayerProxy {
       }
     } else if (parent instanceof MapProxy && parent.OLMap) {
       this._parentMap = parent;
-      this._parentMap.AddLayer(this);
+      this._parentMap.addLayer(this);
       okToAdd = true;
     }
     if (okToAdd) {

@@ -1,4 +1,4 @@
-import InteractionProxyManager from "../proxymanagers/interaction";
+import InteractionProxy from "../proxy/interaction";
 import { getFocusedMapProxy } from "./map";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
@@ -7,7 +7,6 @@ import { Style } from "ol/style";
 import mapStyle from "../mapStyle";
 import { GenerateUUID } from "../../utils/uuid";
 import { InteractionOptions } from "../types/interaction";
-import GeometryType from "ol/geom/GeometryType";
 
 export function getInteraction<T>(uuid: string): T | false {
   const proxy = getInteractionProxy(uuid);
@@ -17,7 +16,7 @@ export function getInteraction<T>(uuid: string): T | false {
   return false;
 }
 export const getInteractionProxy = (uuid: string) => {
-  return InteractionProxyManager.getInstance().getProxy(uuid);
+  return getFocusedMapProxy().getInteractionProxy(uuid);
 };
 
 export const getInteractionVectorSource = (
@@ -49,13 +48,13 @@ export const getInteractionGraphicLayer = (
 };
 
 export const addInteraction = (config: InteractionOptions): string | false => {
-  const InteractionProxyUUID = InteractionProxyManager.getInstance().addProxy(
-    config
-  );
-  const InteractionProxy = getInteractionProxy(InteractionProxyUUID);
-  if (InteractionProxy) {
-    return InteractionProxy.addSelfToMap(getFocusedMapProxy());
+  const proxy = new InteractionProxy(config);
+  getFocusedMapProxy().addInteractionProxy(proxy);
+  if (proxy.addSelfToMap(getFocusedMapProxy())) {
+    console.log("getFocusedMapProxy", getFocusedMapProxy());
+    return proxy.uuid.value;
   }
+
   return false;
 };
 
@@ -63,9 +62,8 @@ export const removeInteraction = (uuid: string) => {
   const InteractionProxy = getInteractionProxy(uuid);
   if (InteractionProxy) {
     InteractionProxy.RemoveSelfFromMap();
-    return true;
   }
-  return false;
+  return true;
 };
 
 export const getEmptyVectorLayer = (inStyle?: Style) => {
