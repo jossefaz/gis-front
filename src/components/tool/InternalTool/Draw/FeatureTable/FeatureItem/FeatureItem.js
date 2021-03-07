@@ -15,7 +15,6 @@ export default (props) => {
     a: "0.2",
   });
   const [outlineWidth, setOutlineWidth] = useState(2);
-  const [TextLabel, setTextLabel] = useState("");
 
   const editStyle = {
     stroke: `rgba(19,187,254,.87)`,

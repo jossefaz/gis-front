@@ -2,6 +2,8 @@ import Map from "ol/Map";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import LayerProxy from "../proxy/layer";
+import InteractionProxy from "../proxy/interaction";
+import OverlayProxy from "../proxy/overlay";
 
 export interface IMapProxy {
   uuid: { value: string };
@@ -14,7 +16,11 @@ export interface IMapProxy {
   getVectorSource(ol_id: string | number): VectorSource;
   setVectorSource(ol_vectorSource: VectorSource): string | null;
   setHighLight(): void;
-  AddLayer(lyrOrId: LayerProxy | number, addToMap: boolean): LayerProxy;
+  addLayer(lyrOrId: LayerProxy | number, addToMap: boolean): LayerProxy | false;
+  addInteractionProxy(
+    interactionProxy: InteractionProxy
+  ): InteractionProxy | false;
+  addOverlayProxy(overlayProxy: OverlayProxy): OverlayProxy | false;
 }
 
 export interface MapState {

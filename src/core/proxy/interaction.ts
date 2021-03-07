@@ -170,6 +170,7 @@ export default class InteractionProxy {
 
   RemoveSelfFromMap() {
     if (this.parentMap && this._olInteraction) {
+      console.log("current map", this.parentMap.OLMap);
       this.parentMap.OLMap.removeInteraction(this._olInteraction);
     }
   }

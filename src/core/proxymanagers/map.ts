@@ -32,7 +32,6 @@ class MapProxyManager {
       delete this._mapProxies[uuid];
       return true;
     }
-
     return false;
   }
 }

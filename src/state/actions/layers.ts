@@ -27,7 +27,7 @@ export const addLayers = (arrayOfNessLayers: IJsonMDLayer[]) => (
   arrayOfNessLayers.forEach((lyr) => {
     var nessLyr = new LayerProxy(lyr);
     if (nessLyr) {
-      if (map.AddLayer(nessLyr, false)) {
+      if (map.addLayer(nessLyr, false)) {
         addedLayers.push(nessLyr.toReduxLayer());
       }
     }
