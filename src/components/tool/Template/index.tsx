@@ -16,14 +16,20 @@ const ToolTemplate: React.FC<Props> = (props) => {
     <PopUp>
       <div
         className={`window ${props.focused ? "focusedWindow" : ""}`}
-        onClick={() => setToolFocused(props.ToolID)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setToolFocused(props.ToolID);
+        }}
       >
         <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
           <div className="buttons">
             <div className="close">
               <a
                 className="closebutton"
-                onClick={() => toggleTool(props.ToolID, false, false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleTool(props.ToolID, false, false);
+                }}
               >
                 <span>
                   <strong>x</strong>
