@@ -20,17 +20,8 @@ export const toggleTool = (
   ToolId: string,
   forceOpen: boolean,
   forceClose: boolean
-) => async (dispatch: Dispatch, getState: () => GisState) => {
+) => async (dispatch: Dispatch) => {
   const mapId = API.map.getFocusedMapUUID();
-  const toolConfig = getState().Tools[mapId].tools[ToolId];
-
-  await _getLifeCycleFunc(toolConfig)(
-    dispatch,
-    getState,
-    toolConfig.ToolName,
-    Boolean(toolConfig.IsOpen)
-  );
-
   dispatch<ToogleToolAction>({
     type: types.TOGGLE_TOOLS,
     payload: { ToolId, mapId, forceOpen, forceClose },
@@ -48,21 +39,10 @@ export const toggleToolByName = (
     (Id) => ToolState[Id].ToolName == ToolName
   );
   if (ToolId) {
-    const toolConfig = ToolState[ToolId];
-    if (toolConfig) {
-      await _getLifeCycleFunc(toolConfig)(
-        dispatch,
-        getState,
-        toolConfig.ToolName,
-        Boolean(toolConfig.IsOpen)
-      );
-      dispatch<ToogleToolByNameAction>({
-        type: types.TOGGLE_TOOLS,
-        payload: { ToolId, mapId, forceOpen, forceClose },
-      });
-    }
-  } else {
-    console.error(`The tool ${ToolName} does not exists in the state`);
+    dispatch<ToogleToolByNameAction>({
+      type: types.TOGGLE_TOOLS,
+      payload: { ToolId, mapId, forceOpen, forceClose },
+    });
   }
 };
 
@@ -118,6 +98,7 @@ export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
     Groups: {},
     order: [],
     reset: [],
+    focused: "",
   };
   const blueprint = { tools: {}, Groups: {} };
   const mapId = API.map.getFocusedMapUUID();

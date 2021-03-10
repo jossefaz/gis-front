@@ -37,6 +37,7 @@ export interface MapsToolState {
   order: string[];
   reset: string[];
   unfocus?: string;
+  focused: string;
 }
 
 export type ToolState = {

@@ -1,3 +1,5 @@
+import { IconName } from "@fortawesome/fontawesome-svg-core";
+
 export interface MapConfig {
   target: string;
   proj: string;
@@ -33,7 +35,7 @@ export interface Tool {
   ToolName: string;
   ToolTip: string;
   ToolImage: any;
-  ToolIcon: string;
+  ToolIcon: IconName;
   ToolActionInvoker: string;
   ToolInvokerType: number;
   ToolTypeID: number;

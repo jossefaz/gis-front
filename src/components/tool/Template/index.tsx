@@ -1,20 +1,30 @@
-import React from "react";
+import React, { Dispatch } from "react";
+import { useActions } from "../../../hooks/useActions";
 import PopUp from "../../popup";
 import "./style.css";
-const ToolTemplate = (props) => {
 
-  
+interface Props {
+  ToolID: string;
+  focused: boolean;
+  toolName: string;
+}
+
+const ToolTemplate: React.FC<Props> = (props) => {
+  const { toggleTool, setToolFocused } = useActions();
 
   return (
     <PopUp>
       <div
         className={`window ${props.focused ? "focusedWindow" : ""}`}
-        onClick={() => props.FocusMe()}
+        onClick={() => setToolFocused(props.ToolID)}
       >
         <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
           <div className="buttons">
             <div className="close">
-              <a className="closebutton" onClick={() => props.CloseTool()}>
+              <a
+                className="closebutton"
+                onClick={() => toggleTool(props.ToolID, false, false)}
+              >
                 <span>
                   <strong>x</strong>
                 </span>

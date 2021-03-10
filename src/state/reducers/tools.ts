@@ -1,6 +1,6 @@
 import types from "../actions/types";
 import produce from "immer";
-import { ToolState } from "../stateTypes";
+import { GisState, ToolState } from "../stateTypes";
 import { Actions } from "../actions/types";
 
 const reducer = (state: ToolState = {}, action: Actions): ToolState => {
@@ -21,10 +21,11 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
 
         const currentMapTools = draftState[mapId];
         const IsOpen = currentMapTools.tools[ToolId].IsOpen;
-        const unfocus = currentMapTools.order[0];
+        const unfocus = currentMapTools.focused;
 
         if (unfocus && unfocus !== ToolId) {
           currentMapTools.unfocus = unfocus;
+          currentMapTools.tools[unfocus].IsOpen = false;
         }
 
         const futureToolStatus = forceOpen
@@ -35,13 +36,15 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
 
         currentMapTools.tools[ToolId].IsOpen = futureToolStatus;
         if (futureToolStatus) {
-          currentMapTools.order.unshift(ToolId); // This tool is now Focused
+          // currentMapTools.order.unshift(ToolId); // This tool is now Focused
+          currentMapTools.focused = ToolId;
         } else {
-          const index = currentMapTools.order.indexOf(ToolId);
-          if (index > -1) {
-            currentMapTools.order = currentMapTools.order.filter(
-              (id) => id != ToolId
-            ); // remove this tool from open tool list
+          // const index = currentMapTools.order.indexOf(ToolId);
+          if (currentMapTools.focused) {
+            currentMapTools.focused = "";
+            // currentMapTools.order = currentMapTools.order.filter(
+            //   (id) => id != ToolId
+            // ); // remove this tool from open tool list
           }
         }
       });
@@ -65,6 +68,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
           order: [],
           reset: [],
           unfocus: undefined,
+          focused: "",
         };
         if (draftState.blueprint && draftState.blueprint.tools) {
           draftState[action.payload].tools = JSON.parse(
@@ -79,20 +83,23 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
     case types.SET_TOOL_FOCUSED:
       // First check if this tool is open
       const { ToolId, mapId } = action.payload;
-      const index = state[mapId].order.indexOf(ToolId);
-      if (index == -1) {
-        return state; //if the tool was removed no need to focus it
-      }
+      // const index = state[mapId].order.indexOf(ToolId);
+      // if (index == -1) {
+      //   return state; //if the tool was removed no need to focus it
+      // }
       return produce(state, (draftState) => {
         const currentMapTools = draftState[mapId];
-        const unfocus = currentMapTools.order[0];
+        // const unfocus = currentMapTools.order[0];
+        const unfocus = currentMapTools.focused;
         if (unfocus && unfocus !== ToolId) {
           currentMapTools.unfocus = unfocus;
+          currentMapTools.tools[unfocus].IsOpen = false;
         }
-        currentMapTools.order = currentMapTools.order.filter(
-          (id) => id != ToolId
-        );
-        currentMapTools.order.unshift(ToolId);
+        currentMapTools.focused = ToolId;
+        // currentMapTools.order = currentMapTools.order.filter(
+        //   (id) => id != ToolId
+        // );
+        // currentMapTools.order.unshift(ToolId);
       });
 
     case types.TOGGLE_GROUP_TOOLS:
@@ -116,3 +123,31 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
 };
 
 export default reducer;
+
+export const selectTopStackedTool = (state: GisState) => {
+  const { Tools, map } = state;
+  if (Tools && map.focused in Tools && Tools[map.focused].order[0]) {
+    return Tools[map.focused].order[0];
+  }
+  return false;
+};
+
+export const selectCurrentTool = (state: GisState) => {
+  const { Tools, map } = state;
+  if (
+    Tools &&
+    map.focused in Tools &&
+    Tools[map.focused].focused in Tools[map.focused].tools
+  ) {
+    return Tools[map.focused].focused;
+  }
+  return false;
+};
+
+export const selectFocusedMapTools = (state: GisState) => {
+  const { Tools, map } = state;
+  if (Tools && map.focused in Tools && Tools[map.focused]) {
+    return Tools[map.focused];
+  }
+  return false;
+};

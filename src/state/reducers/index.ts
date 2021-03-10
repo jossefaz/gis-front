@@ -5,7 +5,7 @@ import Overlays from "./overlay";
 import Features, * as fromFeatures from "./features";
 import Rasters from "./rasters";
 import map from "./map";
-import Tools from "./tools";
+import Tools, * as fromTool from "./tools";
 import mantiSystems from "./mantiSystems";
 import ui from "./ui";
 import { GisState } from "../stateTypes";
@@ -52,3 +52,9 @@ export const selectContextMenus = (state: GisState) =>
 
 export const selectCurrentInteractions = (state: GisState) =>
   fromInteractions.selectCurrentInteractions(state);
+
+export const selectCurrentTool = (state: GisState) =>
+  fromTool.selectCurrentTool(state);
+
+export const selectFocusedMapTools = (state: GisState) =>
+  fromTool.selectFocusedMapTools(state);
