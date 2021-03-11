@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import MapTabs from "../MapTabs/MapTabs";
+import MapTabs from "../../components/MapTabs/MapTabs";
 import Map from "../Map/Map";
 import TopNav from "../TopNav";
 import SideNav from "../SideNav";
 import config from "../../configuration";
 import { InitIcons } from "../../utils/faicons";
-import WidgetFixContainer from "../Widget/FixContainer";
-import WidgetMapContainer from "../Widget/MapContainer";
+import WidgetFixContainer from "../Widget/StickyToolContainer";
+import WidgetMapContainer from "../Widget/DynamicToolContainer";
 import { ToastProvider } from "react-toast-notifications";
 import "../../style.css";
 import Props from "./props";
