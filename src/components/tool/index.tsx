@@ -8,7 +8,7 @@ const Loader: React.FC<{ ToolID: string }> = (props) => {
   const currentTools = useTypedSelector(selectFocusedMapTools);
   if (currentTools) {
     const { ToolName } = currentTools.tools[props.ToolID];
-    const focused = currentTools.order[0] === props.ToolID;
+    const focused = currentTools.dynamicTools[0] === props.ToolID;
     return (
       <React.Fragment>
         <ToolTemplate

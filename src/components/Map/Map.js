@@ -13,7 +13,7 @@ class MapComponent extends React.Component {
     const opennedTools = this.props.Tools[getFocusedMapUUID()];
     console.log("CurrentInteractions", this.props.CurrentInteractions);
     if (
-      opennedTools.order.length === 0 &&
+      opennedTools.dynamicTools.length === 0 &&
       Object.keys(this.props.CurrentInteractions).length === 0
     ) {
       const features = this.vectorLayerRegistry.getFeaturesAtCoordinate(

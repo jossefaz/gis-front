@@ -1,7 +1,11 @@
 import React from "react";
 import ToolItem from "./ToolItem";
 import ToolGroup from "./ToolGroup";
-export const renderTools = (toolState, containerName) => {
+import { MapsToolState } from "../../state/stateTypes";
+export const renderTools = (
+  toolState: MapsToolState,
+  containerName: string
+) => {
   return toolState && containerName ? (
     <React.Fragment>
       {Object.keys(toolState.Groups).map((groupId) => {

@@ -53,8 +53,10 @@ export const selectContextMenus = (state: GisState) =>
 export const selectCurrentInteractions = (state: GisState) =>
   fromInteractions.selectCurrentInteractions(state);
 
-export const selectCurrentTool = (state: GisState) =>
-  fromTool.selectCurrentTool(state);
+export const selectStickyTool = (state: GisState) =>
+  fromTool.selectStickyTool(state);
+export const selectDynamicTool = (state: GisState) =>
+  fromTool.selectDynamicTool(state);
 
 export const selectFocusedMapTools = (state: GisState) =>
   fromTool.selectFocusedMapTools(state);

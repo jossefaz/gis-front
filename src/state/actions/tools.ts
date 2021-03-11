@@ -13,6 +13,8 @@ import {
   ResetToolAction,
   ToolResetedAction,
   InitToolsAction,
+  DragToolAction,
+  CloseDragToolAction,
 } from "./types/tools/actions";
 import { Widgets } from "../../configuration/types";
 
@@ -23,8 +25,28 @@ export const toggleTool = (
 ) => async (dispatch: Dispatch) => {
   const mapId = API.map.getFocusedMapUUID();
   dispatch<ToogleToolAction>({
-    type: types.TOGGLE_TOOLS,
+    type: types.TOGGLE_STICKY_TOOLS,
     payload: { ToolId, mapId, forceOpen, forceClose },
+  });
+};
+
+export const closeDragTool = (
+  ToolId: string,
+  forceOpen: boolean,
+  forceClose: boolean
+) => async (dispatch: Dispatch) => {
+  const mapId = API.map.getFocusedMapUUID();
+  dispatch<CloseDragToolAction>({
+    type: types.CLOSE_DRAG_TOOLS,
+    payload: { ToolId, mapId, forceOpen, forceClose },
+  });
+};
+
+export const dragTool = (ToolId: string) => async (dispatch: Dispatch) => {
+  const mapId = API.map.getFocusedMapUUID();
+  dispatch<DragToolAction>({
+    type: types.DRAG_TOOL,
+    payload: { ToolId, mapId },
   });
 };
 
@@ -40,7 +62,7 @@ export const toggleToolByName = (
   );
   if (ToolId) {
     dispatch<ToogleToolByNameAction>({
-      type: types.TOGGLE_TOOLS,
+      type: types.TOGGLE_STICKY_TOOLS,
       payload: { ToolId, mapId, forceOpen, forceClose },
     });
   }
@@ -77,7 +99,7 @@ export const resetTools = () => (
   getState: () => GisState
 ) => {
   const mapId = API.map.getFocusedMapUUID();
-  const tools = getState().Tools[mapId].order;
+  const tools = getState().Tools[mapId].dynamicTools;
   dispatch<ResetToolAction>({
     type: types.RESET_TOOLS,
     payload: { tools, mapId },
@@ -96,9 +118,10 @@ export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
   const gTools: MapsToolState = {
     tools: {},
     Groups: {},
-    order: [],
+    dynamicTools: [],
     reset: [],
     focused: "",
+    stickyTool: "",
   };
   const blueprint = { tools: {}, Groups: {} };
   const mapId = API.map.getFocusedMapUUID();

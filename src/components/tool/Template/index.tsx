@@ -1,5 +1,7 @@
-import React, { Dispatch } from "react";
+import React from "react";
 import { useActions } from "../../../hooks/useActions";
+import { useTypedSelector } from "../../../hooks/useTypedSelectors";
+import { selectStickyTool } from "../../../state/reducers";
 import PopUp from "../../popup";
 import "./style.css";
 
@@ -10,7 +12,8 @@ interface Props {
 }
 
 const ToolTemplate: React.FC<Props> = (props) => {
-  const { toggleTool, setToolFocused } = useActions();
+  const { toggleTool, setToolFocused, closeDragTool } = useActions();
+  const issticky = useTypedSelector(selectStickyTool) === props.ToolID;
 
   return (
     <PopUp>
@@ -28,7 +31,9 @@ const ToolTemplate: React.FC<Props> = (props) => {
                 className="closebutton"
                 onClick={(e) => {
                   e.stopPropagation();
-                  toggleTool(props.ToolID, false, false);
+                  issticky
+                    ? toggleTool(props.ToolID, false, false)
+                    : closeDragTool(props.ToolID, false, false);
                 }}
               >
                 <span>

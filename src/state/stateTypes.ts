@@ -34,10 +34,11 @@ export interface OverlayState {
 export interface MapsToolState {
   tools: { [toolId: string]: ToolMetadata };
   Groups: { [groupId: string]: GroupMetadata };
-  order: string[];
+  dynamicTools: string[];
   reset: string[];
   unfocus?: string;
   focused: string;
+  stickyTool: string;
 }
 
 export type ToolState = {
