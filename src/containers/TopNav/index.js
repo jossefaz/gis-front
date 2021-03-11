@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { toogleSideNav } from "../../state/actions/ui";
-import { renderTools } from "../../components/tool/func";
+import { renderTools } from "../../components/tool/RenderTool";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import API from "../../core/api";
 import SeachComp from "../../components/Search";

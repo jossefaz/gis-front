@@ -1,3 +1,4 @@
+import { IconName } from "@fortawesome/fontawesome-svg-core";
 import { Dispatch } from "redux";
 import { GisState } from "../../state/stateTypes";
 
@@ -6,7 +7,7 @@ export interface ToolMetadata {
   ToolName: string;
   ToolTip: string;
   ToolImage: string;
-  ToolIcon: string;
+  ToolIcon: IconName;
   ToolActionInvoker: string;
   ToolInvokerType: number;
   ToolTypeID: number;

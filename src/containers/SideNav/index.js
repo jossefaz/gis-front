@@ -4,7 +4,7 @@ import { Menu, Sidebar } from "semantic-ui-react";
 import LayerListMain from "../../components/layers/LayerListMain";
 import { connect } from "react-redux";
 import "./style.css";
-import { renderTools } from "../../components/tool/func";
+import { renderTools } from "../../components/tool/RenderTool";
 import API from "../../core/api";
 const SideMenu = (props) => {
   const currentMapId = API.map.getFocusedMapProxy()
