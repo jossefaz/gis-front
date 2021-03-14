@@ -23,6 +23,11 @@ interface UnsetUnfocusedPayload {
   mapId: string;
 }
 
+interface DragToolPayload {
+  ToolId: string;
+  mapId: string;
+}
+
 interface ResetToolPayload {
   tools: string[];
   mapId: string;
@@ -38,12 +43,17 @@ interface InitToolsActionPayload {
 }
 
 export interface ToogleToolAction {
-  type: ActionTypes.TOGGLE_TOOLS;
+  type: ActionTypes.TOGGLE_STICKY_TOOLS;
+  payload: ToogleToolActionPayload;
+}
+
+export interface CloseDragToolAction {
+  type: ActionTypes.CLOSE_DRAG_TOOLS;
   payload: ToogleToolActionPayload;
 }
 
 export interface ToogleToolByNameAction {
-  type: ActionTypes.TOGGLE_TOOLS;
+  type: ActionTypes.TOGGLE_STICKY_TOOLS;
   payload: ToogleToolActionPayload;
 }
 
@@ -70,6 +80,11 @@ export interface ResetToolAction {
 export interface ToolResetedAction {
   type: ActionTypes.TOOL_RESETED;
   payload: string;
+}
+
+export interface DragToolAction {
+  type: ActionTypes.DRAG_TOOL;
+  payload: DragToolPayload;
 }
 
 export interface InitToolsAction {

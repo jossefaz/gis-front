@@ -13,6 +13,8 @@ import {
   ResetToolAction,
   ToolResetedAction,
   InitToolsAction,
+  DragToolAction,
+  CloseDragToolAction,
 } from "./types/tools/actions";
 import { Widgets } from "../../configuration/types";
 
@@ -20,20 +22,31 @@ export const toggleTool = (
   ToolId: string,
   forceOpen: boolean,
   forceClose: boolean
-) => async (dispatch: Dispatch, getState: () => GisState) => {
+) => async (dispatch: Dispatch) => {
   const mapId = API.map.getFocusedMapUUID();
-  const toolConfig = getState().Tools[mapId].tools[ToolId];
-
-  await _getLifeCycleFunc(toolConfig)(
-    dispatch,
-    getState,
-    toolConfig.ToolName,
-    Boolean(toolConfig.IsOpen)
-  );
-
   dispatch<ToogleToolAction>({
-    type: types.TOGGLE_TOOLS,
+    type: types.TOGGLE_STICKY_TOOLS,
     payload: { ToolId, mapId, forceOpen, forceClose },
+  });
+};
+
+export const closeDragTool = (
+  ToolId: string,
+  forceOpen: boolean,
+  forceClose: boolean
+) => async (dispatch: Dispatch) => {
+  const mapId = API.map.getFocusedMapUUID();
+  dispatch<CloseDragToolAction>({
+    type: types.CLOSE_DRAG_TOOLS,
+    payload: { ToolId, mapId, forceOpen, forceClose },
+  });
+};
+
+export const dragTool = (ToolId: string) => async (dispatch: Dispatch) => {
+  const mapId = API.map.getFocusedMapUUID();
+  dispatch<DragToolAction>({
+    type: types.DRAG_TOOL,
+    payload: { ToolId, mapId },
   });
 };
 
@@ -48,21 +61,10 @@ export const toggleToolByName = (
     (Id) => ToolState[Id].ToolName == ToolName
   );
   if (ToolId) {
-    const toolConfig = ToolState[ToolId];
-    if (toolConfig) {
-      await _getLifeCycleFunc(toolConfig)(
-        dispatch,
-        getState,
-        toolConfig.ToolName,
-        Boolean(toolConfig.IsOpen)
-      );
-      dispatch<ToogleToolByNameAction>({
-        type: types.TOGGLE_TOOLS,
-        payload: { ToolId, mapId, forceOpen, forceClose },
-      });
-    }
-  } else {
-    console.error(`The tool ${ToolName} does not exists in the state`);
+    dispatch<ToogleToolByNameAction>({
+      type: types.TOGGLE_STICKY_TOOLS,
+      payload: { ToolId, mapId, forceOpen, forceClose },
+    });
   }
 };
 
@@ -97,7 +99,7 @@ export const resetTools = () => (
   getState: () => GisState
 ) => {
   const mapId = API.map.getFocusedMapUUID();
-  const tools = getState().Tools[mapId].order;
+  const tools = getState().Tools[mapId].dynamicTools;
   dispatch<ResetToolAction>({
     type: types.RESET_TOOLS,
     payload: { tools, mapId },
@@ -116,8 +118,10 @@ export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
   const gTools: MapsToolState = {
     tools: {},
     Groups: {},
-    order: [],
+    dynamicTools: [],
     reset: [],
+    focused: "",
+    stickyTool: "",
   };
   const blueprint = { tools: {}, Groups: {} };
   const mapId = API.map.getFocusedMapUUID();

@@ -9,18 +9,13 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "downlevelIteration": true,
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

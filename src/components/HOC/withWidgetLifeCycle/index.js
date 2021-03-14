@@ -11,7 +11,7 @@ export default (WrappedComponent) => {
     }
 
     state = {
-      toolorder: null,
+      focused: null,
     };
 
     get Tools() {
@@ -28,15 +28,15 @@ export default (WrappedComponent) => {
         ) {
           onUnfocus();
           this.props.unsetUnfocused(this.props.toolID);
-          this.setState({ toolorder: this.Tools.order });
+          this.setState({ toolorder: this.Tools.dynamicTools });
         }
         if (
-          this.Tools.order[0] == this.props.toolID &&
+          this.Tools.focused == this.props.toolID &&
           typeof onFocus == "function" &&
-          !_.isEqual(this.state.toolorder, this.Tools.order)
+          this.state.focused !== this.Tools.focused
         ) {
           onFocus();
-          this.setState({ toolorder: this.Tools.order });
+          this.setState({ focused: this.Tools.focused });
         }
         if (this.Tools.reset.length > 0 && typeof onReset === "function") {
           this.Tools.reset.map((toolid) => {

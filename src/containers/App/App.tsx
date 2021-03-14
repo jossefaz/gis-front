@@ -6,10 +6,13 @@ import TopNav from "../TopNav";
 import SideNav from "../SideNav";
 import config from "../../configuration";
 import { InitIcons } from "../../utils/faicons";
-import Widget from "../Widget";
+import WidgetFixContainer from "../Widget/StickyToolContainer";
+import WidgetMapContainer from "../Widget/DynamicToolContainer";
 import { ToastProvider } from "react-toast-notifications";
 // import "../../style.css";
 import Props from "./props";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const App: React.FC<Props> = (props) => {
   const { InitLayers, InitMap, InitRasters, InitTools, mapState } = props;
@@ -32,16 +35,19 @@ const App: React.FC<Props> = (props) => {
     mapState && (
       <React.Fragment>
         <ToastProvider placement="bottom-left">
-          <div className="app">
-            <div className="app__side">
-              {mapId && <TopNav/>}
-              <Widget />
-              <div id="app-side-content-container" className="app-side-content-container"></div>
+          <DndProvider backend={HTML5Backend}>
+            <div className="app">
+              <div className="app__side">
+                {mapId && <TopNav/>}
+                <WidgetFixContainer />
+                <div id="app-side-content-container" className="app-side-content-container"></div>
+              </div>
+              <div className="app__main">
+                {mapId ? <React.Fragment><MapTabs /><Map /></React.Fragment> : null }
+              </div>
             </div>
-            <div className="app__main">
-              {mapId ? <React.Fragment><MapTabs /><Map /></React.Fragment> : null }
-            </div>
-          </div>
+            <WidgetMapContainer />
+          </DndProvider>
         </ToastProvider>
       </React.Fragment>
     )
@@ -52,26 +58,29 @@ const App: React.FC<Props> = (props) => {
     mapState && (
       <React.Fragment>
         <ToastProvider placement="bottom-left">
-          <SideNav>
-            <div className="ui grid">
-              <div className="row">
-                <TopNav />
+          <DndProvider backend={HTML5Backend}>
+            <SideNav>
+              <div className="ui grid">
+                <div className="row">
+                  <TopNav />
+                </div>
+                <div className="row">
+                  <MapTabs />
+                  <Map />
+                </div>
               </div>
-              <div className="row">
-                <MapTabs />
-                <Map />
-              </div>
-            </div>
-          </SideNav>
-          <div
-            id="append-element-sideNav"
-            className="append-element-sideNav"
-          ></div>
-          <div
-            id="append-element-container"
-            className="append-element-container"
-          ></div>
-          <Widget />
+            </SideNav>
+            <div
+              id="append-element-sideNav"
+              className="append-element-sideNav"
+            ></div>
+            <div
+              id="append-element-container"
+              className="append-element-container"
+            ></div>
+            <WidgetFixContainer />
+            <WidgetMapContainer />
+          </DndProvider>
         </ToastProvider>
       </React.Fragment>
     )
