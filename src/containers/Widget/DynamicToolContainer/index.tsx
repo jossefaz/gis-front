@@ -15,7 +15,7 @@ const DynamicToolContainer: React.FC = () => {
   }));
   const currentTools = useTypedSelector(selectDynamicTool);
   return (
-    <div ref={drop} role={"MapContainer"}>
+    <div ref={drop} role={"MapContainer"} id="DynamicToolContainer">
       {currentTools &&
         currentTools.map((toolId) => <Tool key={toolId} ToolID={toolId} />)}
     </div>
