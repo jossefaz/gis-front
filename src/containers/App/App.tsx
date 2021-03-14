@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import API from "../../core/api";
 import MapTabs from "../MapTabs/MapTabs";
 import Map from "../Map/Map";
 import TopNav from "../TopNav";
@@ -7,7 +8,7 @@ import config from "../../configuration";
 import { InitIcons } from "../../utils/faicons";
 import Widget from "../Widget";
 import { ToastProvider } from "react-toast-notifications";
-import "../../style.css";
+// import "../../style.css";
 import Props from "./props";
 
 const App: React.FC<Props> = (props) => {
@@ -24,6 +25,28 @@ const App: React.FC<Props> = (props) => {
     bootstrap();
     InitIcons();
   }, []);
+
+  const mapId = API.map.getFocusedMapProxy() ? API.map.getFocusedMapProxy().uuid.value : null;  
+  
+  return (
+    mapState && (
+      <React.Fragment>
+        <ToastProvider placement="bottom-left">
+          <div className="app">
+            <div className="app__side">
+              {mapId && <TopNav/>}
+              <Widget />
+              <div id="app-side-content-container" className="app-side-content-container"></div>
+            </div>
+            <div className="app__main">
+              {mapId ? <React.Fragment><MapTabs /><Map /></React.Fragment> : null }
+            </div>
+          </div>
+        </ToastProvider>
+      </React.Fragment>
+    )
+  );
+
 
   return (
     mapState && (
