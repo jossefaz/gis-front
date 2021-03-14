@@ -1,20 +1,21 @@
 import React, { useState, useRef } from "react";
 import { Checkbox } from "semantic-ui-react";
-import VectorLayerRegistry from "../../../../../../utils/vectorlayers";
+import VectorLayerRegistry from "../../../../../../core/proxymanagers/vectorlayer";
 import IconButton from "../../../../../UI/Buttons/IconButton";
 import { Confirm } from "semantic-ui-react";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
 import { generateNewPolygonStyle } from "../../../../../../utils/func";
 import FeatureList from "./FeatureList";
-import styles from "../../../../../../nessMapping/mapStyle";
+import styles from "../../../../../../core/mapStyle";
 import "./style.css";
 import ContentEditable from "react-contenteditable";
-import { unhighlightFeature } from "../../../../../../nessMapping/api";
+import API from "../../../../../../core/api";
 import {
   exportGeoJSonToShp,
   featuresToGeoJson,
 } from "../../../../../../utils/export";
+const { unhighlightFeature } = API.features;
 const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
   const registry = VectorLayerRegistry.getInstance();
   const currentlayerSource = registry.getVectorLayer(uuid)

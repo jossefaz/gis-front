@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
-import { getFocusedMap } from "../../../../nessMapping/api";
-import { addLayers } from "../../../../redux/actions/layers";
+import API from "../../../../core/api";
+import { addLayers } from "../../../../state/actions";
 import config from "react-global-configuration";
 const LayerSample = {
   id: 1,
@@ -19,6 +19,8 @@ const LayerSample = {
   selectable: 1,
   editable: 1,
 };
+
+const { getFocusedMap } = API.map;
 class SingleLayerTest extends React.Component {
   state = {
     added: false,

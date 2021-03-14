@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import config from "react-global-configuration";
+import config from "../../../configuration";
 import { Menu, Icon } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
 import { parseString } from "xml2js";
-import { setMapLayerOpacity } from "../../../redux/actions/layers";
-import { selectLayers } from "../../../redux/selectors/layersSelector";
+import { setMapLayerOpacity } from "../../../state/actions";
+import { selectLayers } from "../../../state/selectors/layersSelector";
 import { getXMLResponse } from "../../../communication/apiManager";
-import { getFocusedMap } from "../../../nessMapping/api";
+import API from "../../../core/api";
 import LegendItem from "../../tool/InternalTool/Legend/LegendItem";
 import EditTool from "../../tool/InternalTool/EditTool";
 import LayerListTOF from "../LayerListTOF";
@@ -65,7 +65,7 @@ class LayerListMenuItem extends Component {
   };
 
   zoomToLayer = (lyr) => {
-    let map = getFocusedMap();
+    let map = API.map.getFocusedMap();
     if (lyr.restid) {
       this.setState({
         map: map,
@@ -73,7 +73,7 @@ class LayerListMenuItem extends Component {
 
       if (this.state.boundingBox) this.fitExtent();
       else {
-        let url = config.get("geoserverUrl");
+        let url = config().geoserverUrl;
         if (url) {
           getXMLResponse(
             url + "wms?&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities"

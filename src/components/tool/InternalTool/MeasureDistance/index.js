@@ -1,16 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
-import { getOverlay, getFocusedMap } from "../../../../nessMapping/api";
-import {
-  setInteraction,
-  unsetInteraction,
-} from "../../../../redux/actions/interaction";
-import {
-  setOverlay,
-  unsetOverlays,
-  unsetOverlay,
-} from "../../../../redux/actions/overlay";
+import API from "../../../../core/api";
 import IconButton from "../../../UI/Buttons/IconButton";
 import { generateOutput, generateNewStyle } from "./func";
 import { DragPan } from "ol/interaction";
@@ -19,6 +10,10 @@ import { random_rgba } from "../../../../utils/func";
 import { InteractionUtil } from "../../../../utils/interactions";
 import { OverlayUtil } from "../../../../utils/overlay";
 import "./style.css";
+import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
+const { getFocusedMap } = API.map;
+const { getOverlay } = API.overlays;
+
 class MeasureDistance extends React.Component {
   WIDGET_NAME = "Measure";
   CLASSNAMES = {
@@ -73,11 +68,11 @@ class MeasureDistance extends React.Component {
   }
 
   get DrawLayer() {
-    return this.interactions.getVectorLayer(this.interactions.TYPES.DRAW);
+    return this.interactions.getVectorLayer(TYPES.DRAW);
   }
 
   get DrawSource() {
-    return this.interactions.getVectorSource(this.interactions.TYPES.DRAW);
+    return this.interactions.getVectorSource(TYPES.DRAW);
   }
 
   createMeasureTooltip = () => {
@@ -293,15 +288,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = {
-  setInteraction,
-  unsetInteraction,
-  setOverlay,
-  unsetOverlays,
-  unsetOverlay,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withWidgetLifeCycle(MeasureDistance));
+export default connect(mapStateToProps)(withWidgetLifeCycle(MeasureDistance));

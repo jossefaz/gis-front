@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Table from "../../../UI/Table";
 import { GeoserverUtil } from "../../../../utils/Geoserver";
 import { connect } from "react-redux";
-import { selectCurrentMapLayers } from "../../../../redux/reducers";
+import { selectCurrentMapLayers } from "../../../../state/reducers";
 class TableOfFeature extends Component {
   WIDGET_NAME = "EditTool";
 

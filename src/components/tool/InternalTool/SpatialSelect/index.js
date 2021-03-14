@@ -1,20 +1,21 @@
 import React, { Component } from "react";
 import { InteractionUtil } from "../../../../utils/interactions";
 import { connect } from "react-redux";
-import { selectCurrentMapLayers } from "../../../../redux/reducers";
-import VectorLayerRegistry from "../../../../utils/vectorlayers";
+import {
+  selectCurrentMapLayers,
+  selectSelectionLayers,
+} from "../../../../state/reducers";
+import VectorLayerRegistry from "../../../../core/proxymanagers/vectorlayer";
 import IconButton from "../../../UI/Buttons/IconButton";
-import { getEmptyVectorLayer } from "../../../../utils/interactions";
-import styles from "../../../../nessMapping/mapStyle";
-import { getFocusedMap } from "../../../../nessMapping/api";
+import styles from "../../../../core/mapStyle";
+import API from "../../../../core/api";
 import LayerList from "./LayerList";
-import { setSelectionForLayers } from "../../../../redux/actions/features";
-import { selectSelectionLayers } from "../../../../redux/reducers";
+import { setSelectionForLayers } from "../../../../state/actions";
 import { escapeHandler } from "../../../../utils/eventHandlers";
 import { getBufferedFeature } from "../../../../utils/jsts";
 
 import _ from "lodash";
-import { BlockMapBuilder } from "draft-js";
+const { getEmptyVectorLayer } = API.interactions;
 class SpatialSelect extends Component {
   WIDGET_NAME = "SpatialSelect";
   DRAW_TYPES = {

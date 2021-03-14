@@ -1,25 +1,28 @@
 import React, { Component } from "react";
-import EditProxy from "../../../../nessMapping/EditProxy";
+import EditProxyManager from "../../../../core/proxymanagers/edit";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditForm from "./EditForm";
-import { getFocusedMap } from "../../../../nessMapping/api";
+import API from "../../../../core/api";
 import { click } from "ol/events/condition";
-import styles from "../../../../nessMapping/mapStyle";
+import styles from "../../../../core/mapStyle";
 import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
-import VectorLayerRegistry from "../../../../utils/vectorlayers";
+import VectorLayerRegistry from "../../../../core/proxymanagers/vectorlayer";
 import {
   selectVisibleLayers,
   selectSelectedFeatures,
-} from "../../../../redux/reducers";
-import { toggleToolByName } from "../../../../redux/actions/tools";
+} from "../../../../state/reducers";
 import {
+  toggleToolByName,
   setSelectedFeatures,
   setCurrentFeature,
-  setCurrentLayer,
-} from "../../../../redux/actions/features";
+  setCurrentFeatureLayer,
+} from "../../../../state/actions";
 import { connect } from "react-redux";
+import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
+const { getFocusedMap } = API.map;
+
 const initialState = {
   geomType: null,
   openForm: false,
@@ -55,7 +58,7 @@ class EditTool extends Component {
   }
 
   get editProxy() {
-    return this._editProxy ? this._editProxy[this.props.uuid] : false;
+    return this._editProxy ? this._editProxy.registry[this.props.uuid] : false;
   }
   get registry() {
     return VectorLayerRegistry.getInstance();
@@ -111,8 +114,8 @@ class EditTool extends Component {
       addingIcon: false,
       editIcon: true,
     });
-    if (this.interactions.getVectorSource(this.interactions.TYPES.DRAW)) {
-      this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
+    if (this.interactions.getVectorSource(TYPES.DRAW)) {
+      this.interactions.getVectorSource(TYPES.DRAW).clear();
     }
     this.onSelectEnd();
   };
@@ -206,14 +209,14 @@ class EditTool extends Component {
       addingIcon: false,
       editIcon: false,
     });
-    if (this.interactions.getVectorSource(this.interactions.TYPES.DRAW)) {
-      this.interactions.getVectorSource(this.interactions.TYPES.DRAW).clear();
+    if (this.interactions.getVectorSource(TYPES.DRAW)) {
+      this.interactions.getVectorSource(TYPES.DRAW).clear();
     }
     this.registry.getVectorLayer(this.props.uuid).hideAllFeatures();
   };
 
   onSubmit = async (data) => {
-    this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
+    this.interactions.clearVectorSource(TYPES.DRAW);
     this.interactions.unsetAll();
     this.setState({ newFeature: null, openForm: false });
   };
@@ -224,14 +227,14 @@ class EditTool extends Component {
       this.currentLayer = this.registry.getVectorLayersByRefName(
         this.props.uuid
       );
-      this._editProxy = EditProxy.getInstance([this.props.uuid]);
-      this.getMetadata();
+      this._editProxy = EditProxyManager.getInstance([this.props.uuid]);
+      if (this._editProxy) this.getMetadata();
     }
   }
   componentWillUnmount() {
-    this.interactions.clearVectorSource(this.interactions.TYPES.DRAW);
+    this.interactions.clearVectorSource(TYPES.DRAW);
     this.interactions.unsetAll();
-    EditProxy.getInstance().removeItem(this.props.uuid);
+    if (this._editProxy) this._editProxy.removeItem(this.props.uuid);
   }
   render() {
     return (
@@ -306,5 +309,5 @@ export default connect(mapStateToProps, {
   toggleToolByName,
   setSelectedFeatures,
   setCurrentFeature,
-  setCurrentLayer,
+  setCurrentFeatureLayer,
 })(withNotifications(EditTool));

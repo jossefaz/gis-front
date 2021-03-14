@@ -1,8 +1,8 @@
-import config from "react-global-configuration";
+import config from "../../configuration";
 import loadable from "@loadable/component";
-const conf = config.get("ContextMenus");
 
 const buildRegistry = () => {
+  const conf = config().ContextMenus;
   const registry = {};
   Object.keys(conf).map((provider) => {
     const { path, url, status, configuration } = conf[provider];

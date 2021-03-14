@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { unsetUnfocused } from "../../../redux/actions/tools";
+import { unsetUnfocused } from "../../../state/actions";
 import { connect } from "react-redux";
-import { getFocusedMapProxy } from "../../../nessMapping/api";
+import API from "../../../core/api";
 import _ from "lodash";
 export default (WrappedComponent) => {
   class withWidgetLifeCycle extends React.Component {
@@ -11,13 +11,11 @@ export default (WrappedComponent) => {
     }
 
     state = {
-      toolorder: null,
+      focused: null,
     };
 
     get Tools() {
-      const currentMapId = getFocusedMapProxy()
-        ? getFocusedMapProxy().uuid.value
-        : null;
+      const currentMapId = API.map.getFocusedMapUUID();
       return currentMapId ? this.props.Tools[currentMapId] : null;
     }
 
@@ -30,15 +28,15 @@ export default (WrappedComponent) => {
         ) {
           onUnfocus();
           this.props.unsetUnfocused(this.props.toolID);
-          this.setState({ toolorder: this.Tools.order });
+          this.setState({ toolorder: this.Tools.dynamicTools });
         }
         if (
-          this.Tools.order[0] == this.props.toolID &&
+          this.Tools.focused == this.props.toolID &&
           typeof onFocus == "function" &&
-          !_.isEqual(this.state.toolorder, this.Tools.order)
+          this.state.focused !== this.Tools.focused
         ) {
           onFocus();
-          this.setState({ toolorder: this.Tools.order });
+          this.setState({ focused: this.Tools.focused });
         }
         if (this.Tools.reset.length > 0 && typeof onReset === "function") {
           this.Tools.reset.map((toolid) => {

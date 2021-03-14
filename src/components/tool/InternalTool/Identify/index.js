@@ -4,25 +4,23 @@ import FeatureDetail from "./FeatureDetail";
 import ContextMenu from "../../../ContextMenus";
 import LayersList from "./LayersList";
 import { connect } from "react-redux";
-import {
-  getFocusedMapProxy,
-  getFocusedMap,
-  zoomTo,
-} from "../../../../nessMapping/api";
-import { setSelectedFeatures } from "../../../../redux/actions/features";
+import API from "../../../../core/api";
+import { setSelectedFeatures } from "../../../../state/actions";
 import {
   selectVisibleLayers,
   selectSelectedFeatures,
   selectCurrentFeature,
-} from "../../../../redux/reducers";
+} from "../../../../state/reducers";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import "./style.css";
-import VectorLayerRegistry from "../../../../utils/vectorlayers";
+import VectorLayerRegistry from "../../../../core/proxymanagers/vectorlayer";
 import { InteractionUtil } from "../../../../utils/interactions";
-import EditProxy from "../../../../nessMapping/EditProxy";
+import EditProxy from "../../../../core/proxymanagers/edit";
 import _ from "lodash";
 import Collection from "ol/Collection";
 import withNotifications from "../../../HOC/withNotifications";
+const { getFocusedMapProxy, getFocusedMap } = API.map;
+const { zoomTo } = API.features;
 class Identify extends Component {
   WIDGET_NAME = "Identify";
 
@@ -50,9 +48,9 @@ class Identify extends Component {
     const layer = feature.__Parent_NessUUID__;
     this.modifyGeom = feature;
 
-    const f = this.editProxy[layer].getFeatureById(feature.id);
+    const f = this.editProxy.registry[layer].getFeatureById(feature.id);
     zoomTo(f.getGeometry());
-    this.editProxy[layer].edit(f);
+    this.editProxy.registry[layer].edit(f);
     await this.interactions.newModify(new Collection([f]));
     getFocusedMap().on("dblclick", (e) =>
       this.autoClosingEditSession(e, layer)
@@ -61,7 +59,7 @@ class Identify extends Component {
 
   autoClosingEditSession = async (e, layer) => {
     if (Boolean(this.modifyGeom)) {
-      const updated = await this.editProxy[layer].save();
+      const updated = await this.editProxy.registry[layer].save();
       if (updated) {
         this.props.successNotification("Successfully saved feature !");
         await this.interactions.unModify();

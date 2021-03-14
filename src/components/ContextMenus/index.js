@@ -3,7 +3,7 @@ import _ from "lodash";
 import "./style.css";
 import { connect } from "react-redux";
 import UpdateMenu from "./feed";
-import { selectContextMenus } from "../../redux/reducers";
+import { selectContextMenus } from "../../state/reducers";
 import REGISTRY from "./registry";
 class ContextMenuContainer extends React.Component {
   state = {

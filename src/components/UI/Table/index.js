@@ -2,7 +2,7 @@ import React from "react";
 import { Segment, Dropdown, Checkbox } from "semantic-ui-react";
 import { useTable, useSortBy, useFilters, useGlobalFilter } from "react-table";
 import "./style.css";
-import { zoomTo } from "../../../nessMapping/api";
+import API from "../../../core/api";
 import ActionRegistry from "./Actions";
 import Search from "./Filters/Global";
 import DirectionProvider, {
@@ -89,7 +89,9 @@ export default (props) => {
                 return (
                   <tr
                     {...row.getRowProps()}
-                    onDoubleClick={() => zoomTo(row.original.geometry)}
+                    onDoubleClick={() =>
+                      API.features.zoomTo(row.original.geometry)
+                    }
                     style={{ cursor: "pointer" }}
                     className="ctr"
                   >

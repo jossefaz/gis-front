@@ -1,27 +1,26 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getFocusedMapProxy, zoomTo } from "../../../../../nessMapping/api";
-
+import API from "../../../../../core/api";
 import withNotifications from "../../../../HOC/withNotifications";
-
-import EditProxy from "../../../../../nessMapping/EditProxy";
+import EditProxy from "../../../../../core/proxymanagers/edit";
 import {
   setSelectedFeatures,
   updateFeature,
   removeFeature,
-} from "../../../../../redux/actions/features";
-
+} from "../../../../../state/actions";
 import {
   selectCurrentLayerUUID,
   selectCurrentFeature,
   selectSelectedFeatures,
-} from "../../../../../redux/reducers";
+} from "../../../../../state/reducers";
 import _ from "lodash";
-import EditTool from "../../EditTool";
 import { Confirm } from "semantic-ui-react";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import EditButton from "../../../../UI/Buttons/EditButton";
 import "./style.css";
+
+const { getFocusedMapProxy } = API.map;
+const { zoomTo } = API.features;
 class FeatureDetail extends React.Component {
   state = {
     editing: false,
@@ -36,7 +35,7 @@ class FeatureDetail extends React.Component {
   };
 
   get editProxy() {
-    return this._editProxy[this.currentFeature.__Parent_NessUUID__];
+    return this._editProxy.registry[this.currentFeature.__Parent_NessUUID__];
   }
 
   onStartEdit = () => {
@@ -111,6 +110,8 @@ class FeatureDetail extends React.Component {
       : this.currentFeature
       ? this.currentFeature.properties
       : null;
+    console.log("properties", properties);
+
     return (
       this.currentFeature && (
         <React.Fragment>

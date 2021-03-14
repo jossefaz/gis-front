@@ -1,7 +1,7 @@
 import React from "react";
 import Providers from "../index";
 import axios from "axios";
-import { zoomTo } from "../../../../nessMapping/api";
+import API from "../../../../core/api";
 import { convertCoordToIsraelTM } from "../../../../utils/projections";
 import config from "react-global-configuration";
 export default (subscriber_func) => {
@@ -18,7 +18,7 @@ export default (subscriber_func) => {
       "EPSG:4326",
       item.geometry.coordinates
     );
-    zoomTo(item.geometry);
+    API.features.zoomTo(item.geometry);
   };
   const search = async (what, cb) => {
     axios

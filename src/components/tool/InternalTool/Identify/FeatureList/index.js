@@ -1,21 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
-import { setCurrentFeature } from "../../../../../redux/actions/features";
-import VectorLayerRegistry from "../../../../../utils/vectorlayers";
+import { setCurrentFeature } from "../../../../../state/actions";
+import VectorLayerRegistry from "../../../../../core/proxymanagers/vectorlayer";
 import {
   selectCurrentLayer,
   selectSelectedFeatureInCurrentLayer,
   selectCurrentFeature,
   selectSelectedFeatures,
-} from "../../../../../redux/reducers";
-import {
-  zoomTo,
-  highlightFeature,
-  getFocusedMapProxy,
-} from "../../../../../nessMapping/api";
+} from "../../../../../state/reducers";
+import API from "../../../../../core/api";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import "./style.css";
+
+const { zoomTo, highlightFeature } = API.features;
+const { getFocusedMapProxy } = API.map;
 class FeatureList extends Component {
   state = {
     current_field: null,
