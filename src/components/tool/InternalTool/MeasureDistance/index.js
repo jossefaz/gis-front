@@ -110,7 +110,7 @@ class MeasureDistance extends React.Component {
       isEscape = evt.keyCode === 27;
     }
     if (isEscape) {
-      this.abortDrawing();
+      this.interactions.unDraw();
       this.toogleToolTip(false);
     }
   };

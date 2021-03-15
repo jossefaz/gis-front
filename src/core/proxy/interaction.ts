@@ -91,28 +91,18 @@ export default class InteractionProxy {
         // add the layer to the map
         this.parentMap.OLMap.addInteraction(olInteraction);
 
-        olInteraction.set(
-          NessKeys.NESS_INTERACTION_UUID_KEY,
-          this.uuid.value,
-          true
-        );
-        olInteraction.set(
-          NessKeys.PARENT_UUID,
-          this.parentMap.uuid.value,
-          true
-        );
+        olInteraction.set(NessKeys.NESS_INTERACTION_UUID_KEY, this.uuid.value);
+        olInteraction.set(NessKeys.PARENT_UUID, this.parentMap.uuid.value);
         if (sourceLayer) {
           olInteraction.set(
             NessKeys.VECTOR_SOURCE,
-            this.parentMap.setVectorSource(sourceLayer),
-            true
+            this.parentMap.setVectorSource(sourceLayer)
           );
         }
         if (vLayer) {
           olInteraction.set(
             NessKeys.GRAPHIC_LAYER,
-            this.parentMap.setGraphicLayer(vLayer),
-            true
+            this.parentMap.setGraphicLayer(vLayer)
           );
         }
 
@@ -170,7 +160,6 @@ export default class InteractionProxy {
 
   RemoveSelfFromMap() {
     if (this.parentMap && this._olInteraction) {
-      console.log("current map", this.parentMap.OLMap);
       this.parentMap.OLMap.removeInteraction(this._olInteraction);
     }
   }

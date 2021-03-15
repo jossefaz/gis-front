@@ -9,6 +9,7 @@ import {
 } from "./types/interactions/actions";
 import { InteractionConfigStore } from "../../core/types";
 import { Dispatch } from "redux";
+import NessKeys from "../../core/keys";
 
 export const setInteraction = (config: InteractionOptions) => (
   dispatch: Dispatch
@@ -21,7 +22,7 @@ export const setInteraction = (config: InteractionOptions) => (
     } else {
       const proxy = API.interactions.getInteractionProxy(uuid);
       if (proxy && proxy.OLInteraction) {
-        const sourceLayer = proxy.OLInteraction.get("__VECTOR_SOURCE__");
+        const sourceLayer = proxy.OLInteraction.get(NessKeys.VECTOR_SOURCE);
         config.sourceLayer = sourceLayer;
       }
     }
@@ -55,7 +56,7 @@ export const setInteractions = (interactionsArray: InteractionOptions[]) => (
       } else {
         const proxy = API.interactions.getInteractionProxy(uuid);
         if (proxy && proxy.OLInteraction) {
-          const sourceLayer = proxy.OLInteraction.get("__VECTOR_SOURCE__");
+          const sourceLayer = proxy.OLInteraction.get(NessKeys.VECTOR_SOURCE);
           config.sourceLayer = sourceLayer;
         }
       }

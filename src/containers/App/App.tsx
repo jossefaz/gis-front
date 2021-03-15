@@ -12,10 +12,12 @@ import "../../style.css";
 import Props from "./props";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { selectFocusedMapTools } from "../../state/reducers";
+import { useTypedSelector } from "../../hooks/useTypedSelectors";
 
 const App: React.FC<Props> = (props) => {
   const { InitLayers, InitMap, InitRasters, InitTools, mapState } = props;
-
+  const Tools = useTypedSelector(selectFocusedMapTools)
   const bootstrap = () => {
     InitRasters();
     InitMap();
@@ -36,7 +38,7 @@ const App: React.FC<Props> = (props) => {
             <SideNav>
               <div className="ui grid">
                 <div className="row">
-                  <TopNav />
+                  <TopNav Tools={Tools}/>
                 </div>
                 <div className="row">
                   <MapTabs />
