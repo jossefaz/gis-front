@@ -17,15 +17,15 @@ const ToolTemplate: React.FC<Props> = (props) => {
 
   function getStickyTemplate() {
     return (
-      <div>
-        <div className="d-flex">
-          <div className="flex-grow-1 p-2">{props.toolName}</div>
-          <div className="p-2"
+      <div className="tool tool--sticky">
+        <div className="tool__header">
+          <div className="tool__name">{props.toolName}</div>
+          <div className="tool__close"
             onClick={(e) => {
               e.stopPropagation();
               toggleTool(props.ToolID, false, false);
             }}
-          >x</div>
+          ><i className="gis-icon gis-icon--minus"></i></div>
         </div>
         
         <div>{props.children}</div>

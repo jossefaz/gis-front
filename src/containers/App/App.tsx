@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import API from "../../core/api";
 import MapTabs from "../MapTabs/MapTabs";
 import Map from "../Map/Map";
+import MapMenu from "../../components/MapMenu";
 import TopNav from "../TopNav";
 import SideNav from "../SideNav";
 import config from "../../configuration";
@@ -43,7 +44,11 @@ const App: React.FC<Props> = (props) => {
                 <div id="app-side-content-container" className="app-side-content-container"></div>
               </div>
               <div className="app__main">
-                {mapId ? <React.Fragment><MapTabs /><Map /></React.Fragment> : null }
+                {mapId ? <React.Fragment>
+                  <MapTabs />
+                  <Map />
+                  <MapMenu />
+                </React.Fragment> : null }
               </div>
             </div>
             <WidgetMapContainer />
