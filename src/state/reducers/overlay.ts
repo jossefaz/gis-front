@@ -66,7 +66,10 @@ const overlayReducer = (
           });
         });
 
-        if (Object.keys(draftState[widgetName]).length == 0) {
+        if (
+          typeof draftState[widgetName] == "object" &&
+          Object.keys(draftState[widgetName]).length == 0
+        ) {
           delete draftState[widgetName];
         }
       });

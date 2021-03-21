@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
 import { generateNewPolygonStyle } from "../../../../../../utils/func";
+import { printCoreState } from "../../../../../../core/monitor";
 import IconButton from "../../../../../UI/Buttons/IconButton";
 import API from "../../../../../../core/api";
 import { Table, Form, Input } from "semantic-ui-react";
@@ -24,8 +25,8 @@ export default (props) => {
   const [strokeColor, setStrokeColor] = useState(props.defaultColor);
   const removeFeature = () => {
     const feature = getFeature();
-    deleteGeometry(feature);
-    props.source.removeFeature(getFeature());
+    // deleteGeometry(feature);
+    props.source.removeFeature(feature);
     unhighlightFeature();
     props.deleteLastFeature(props.fid);
   };
@@ -53,7 +54,7 @@ export default (props) => {
       updateStyle();
     }
   }
-
+  printCoreState();
   return (
     <React.Fragment>
       <Table.Cell>

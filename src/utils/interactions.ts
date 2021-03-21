@@ -119,9 +119,9 @@ export class InteractionUtil {
     return undefined;
   };
 
-  newDraw = async (drawConfig: DrawOptions) => {
-    await this.unDraw();
-    await store.dispatch(
+  newDraw = (drawConfig: DrawOptions) => {
+    this.unDraw();
+    store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.DRAW,
         interactionConfig: drawConfig,
@@ -132,13 +132,13 @@ export class InteractionUtil {
     );
   };
 
-  unDraw = async (removePreviousLayer?: boolean) => {
+  unDraw = (removePreviousLayer?: boolean) => {
     if (this.currentDrawUUID) {
       const vl = this.getVectorLayer(INTERACTION_TYPE.DRAW);
       vl && removePreviousLayer && API.map.getFocusedMap().removeLayer(vl);
       const uuid = this.currentDrawUUID;
       if (typeof uuid === "string") {
-        await store.dispatch(
+        store.dispatch(
           unsetInteraction({
             uuid,
             widgetName: this._widget,
@@ -149,11 +149,11 @@ export class InteractionUtil {
     }
   };
 
-  newSelect = async (
+  newSelect = (
     feature: Feature,
     layers: BaseLayer[],
     multi: boolean,
-    condition: Condition
+    condition: Condition | undefined
   ) => {
     const config = {
       ...(layers && { layers }),
@@ -163,8 +163,8 @@ export class InteractionUtil {
       style: styles.EDIT,
     };
 
-    await this.unSelect();
-    await store.dispatch(
+    this.unSelect();
+    store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.SELECT,
         interactionConfig: config,
@@ -173,10 +173,10 @@ export class InteractionUtil {
     );
   };
 
-  unSelect = async () => {
+  unSelect = () => {
     const uuid = this.currentSelectUUID;
     if (uuid && typeof uuid === "string") {
-      await store.dispatch(
+      store.dispatch(
         unsetInteraction({
           uuid,
           widgetName: this._widget,
@@ -186,13 +186,13 @@ export class InteractionUtil {
     }
   };
 
-  newModify = async (features: Collection<Feature>) => {
+  newModify = (features: Collection<Feature>) => {
     const config = {
       ...(features && { features }),
     };
 
-    await this.unModify();
-    await store.dispatch(
+    this.unModify();
+    store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.MODIFY,
         interactionConfig: config,
@@ -201,10 +201,10 @@ export class InteractionUtil {
     );
   };
 
-  unModify = async () => {
+  unModify = () => {
     const uuid = this.currentModifyUUID;
     if (uuid && typeof uuid === "string") {
-      await store.dispatch(
+      store.dispatch(
         unsetInteraction({
           uuid,
           widgetName: this._widget,
@@ -214,7 +214,7 @@ export class InteractionUtil {
     }
   };
 
-  unsetAll = async () => {
+  unsetAll = () => {
     if (Object.keys(this.store).length > 0) {
       const InteractionArray: InteractionOptions[] = [];
       Object.keys(this.store).map((InteractionName) => {
@@ -222,7 +222,7 @@ export class InteractionUtil {
         InteractionArray.push({ uuid, widgetName: this._widget, Type });
       });
       if (InteractionArray.length > 0) {
-        await store.dispatch(unsetInteractions(InteractionArray) as any);
+        store.dispatch(unsetInteractions(InteractionArray) as any);
       }
     }
   };
@@ -234,7 +234,7 @@ export class InteractionUtil {
     }
   };
 
-  setAll = async () => {
+  setAll = () => {
     if (this.store) {
       const InteractionArray: InteractionOptions[] = [];
       Object.keys(this.store).map((InteractionName) => {
@@ -248,14 +248,14 @@ export class InteractionUtil {
         }
       });
       if (InteractionArray.length > 0) {
-        await store.dispatch(setInteractions(InteractionArray) as any);
+        store.dispatch(setInteractions(InteractionArray) as any);
       }
     }
   };
 
-  newDragBox = async () => {
+  newDragBox = () => {
     this.unDragBox();
-    await store.dispatch(
+    store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.DRAGBOX,
         widgetName: this._widget,
@@ -263,10 +263,10 @@ export class InteractionUtil {
     );
   };
 
-  unDragBox = async () => {
+  unDragBox = () => {
     const uuid = this.currentDragBoxUUID;
     if (this.currentDragBox && uuid && typeof uuid === "string") {
-      await store.dispatch(
+      store.dispatch(
         unsetInteraction({
           uuid,
           widgetName: this._widget,

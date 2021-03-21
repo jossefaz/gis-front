@@ -114,26 +114,24 @@ class Draw extends React.Component {
     });
   };
 
-  addInteraction = async (drawtype) => {
-    await this.interactions.newDraw({ type: drawtype });
+  addInteraction = (drawtype) => {
+    this.interactions.newDraw({ type: drawtype });
   };
 
-  onOpenDrawSession = async (drawtype) => {
-    await this.addInteraction(drawtype);
+  onOpenDrawSession = (drawtype) => {
+    this.addInteraction(drawtype);
     this.setState({ sessionType: "Geometry", drawtype });
     this.onDrawEnd();
   };
 
-  onOpenEditSession = async (featureID) => {
+  onOpenEditSession = (featureID) => {
     const feature = this.interactions
       .getVectorSource(TYPES.DRAW)
       .getFeatureById(featureID);
-    await this.interactions.newSelect(feature, [
+    this.interactions.newSelect(feature, [
       this.interactions.getVectorLayer(TYPES.DRAW),
     ]);
-    await this.interactions.newModify(
-      this.interactions.currentSelect.getFeatures()
-    );
+    this.interactions.newModify(this.interactions.currentSelect.getFeatures());
     this.setState({ editSession: { status: true, current: featureID } });
     this.onModifyEnd();
   };
@@ -170,10 +168,10 @@ class Draw extends React.Component {
     this.overlays.unsetAll();
   };
 
-  removeSelectAndEdit = async () => {
+  removeSelectAndEdit = () => {
     if (this.select && this.modify) {
-      await this.interactions.unSelect();
-      await this.interactions.unModify();
+      this.interactions.unSelect();
+      this.interactions.unModify();
     }
   };
 
@@ -248,29 +246,32 @@ class Draw extends React.Component {
           this.dragPan = interaction;
         }
       });
-    this.retrieveExistingDrawing();
+    // this.retrieveExistingDrawing();
   }
   componentDidUpdate() {
+    document.removeEventListener("keydown", (e) =>
+      escapeHandler(e, this.interactions.unDraw)
+    );
     document.addEventListener("keydown", (e) =>
-      escapeHandler(e, this.abortDrawing)
+      escapeHandler(e, this.interactions.unDraw)
     );
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", (e) =>
-      escapeHandler(e, this.abortDrawing)
+      escapeHandler(e, this.interactions.unDraw)
     );
     getFocusedMap().un("pointerdown", this.autoClosingEditSession);
     getFocusedMap().un("pointermove", this.dragOverlay);
     getFocusedMap().un("pointerup", this.unDragOverlay);
     this.onReset();
   }
-  onReset = async () => {
+  onReset = () => {
     this.abortDrawing();
-    await this.interactions.unsetAll();
+    this.interactions.unsetAll();
   };
 
-  createNewText = async (text) => {
-    const uuid = await this.overlays.newText(text);
+  createNewText = (text) => {
+    const uuid = this.overlays.newText(text);
     this.overlays.addToMap(uuid);
     this.overlays.addDraggable(uuid);
     this.setState({
@@ -282,7 +283,7 @@ class Draw extends React.Component {
     });
   };
 
-  createOrEditText = async (text, textID) => {
+  createOrEditText = (text, textID) => {
     if (textID) {
       this.overlays.edit(textID, text);
       this.setState({
@@ -293,7 +294,7 @@ class Draw extends React.Component {
         },
       });
     } else {
-      await this.createNewText(text);
+      this.createNewText(text);
     }
   };
 
@@ -329,16 +330,10 @@ class Draw extends React.Component {
         lastFeature: { ...this.state.lastFeature, [this.map]: null },
       });
     }
+    this.setState({ ...this.state });
   };
 
   getDrawnFeatures = () => {
-    if (this.lastFeature) {
-      const lastFeatureId = this.lastFeature.getId();
-      const filteredFeatures = this.DrawSource.getFeatures().filter(
-        (f) => f.getId() !== lastFeatureId
-      );
-      return [...filteredFeatures, this.lastFeature];
-    }
     return this.DrawSource ? this.DrawSource.getFeatures() : [];
   };
 
