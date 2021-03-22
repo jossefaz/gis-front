@@ -261,8 +261,8 @@ class Draw extends React.Component {
       escapeHandler(e, this.interactions.unDraw)
     );
     getFocusedMap().un("pointerdown", this.autoClosingEditSession);
-    getFocusedMap().un("pointermove", this.dragOverlay);
-    getFocusedMap().un("pointerup", this.unDragOverlay);
+    getFocusedMap().un("pointermove", this.overlays.dragOverlay);
+    getFocusedMap().un("pointerup", this.overlays.unDragOverlay);
     this.onReset();
   }
   onReset = () => {
