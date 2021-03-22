@@ -27,8 +27,8 @@ class HTTPFactory {
       HTTPFactory.instance._clients[endpoint] = axios.create({
         baseURL: endpoint,
       });
-      HTTPFactory.instance._current = endpoint;
     }
+    HTTPFactory.instance._current = endpoint;
     return HTTPFactory.instance;
   }
 
