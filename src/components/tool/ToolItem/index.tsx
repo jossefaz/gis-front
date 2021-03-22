@@ -43,14 +43,14 @@ const ToolItem: React.FC<{ ToolID: string }> = (props) => {
       <ListGroup.Item className="tool-item" role="TOOL">
          
         <div className="tool-item__main" onClick={() => toggleTool(props.ToolID, false, false)}>
-          <div className="tool-item__icon">
-            {ToolIcon ? <i className={'gis-icon gis-icon-' + ToolIcon}></i> : <i>i</i>}
+          <div className="tool-item__icon mx-1">
+            {ToolIcon ? <i className={'gis-icon gis-icon--' + ToolIcon}></i> : <i>i</i>}
           </div>
           <div className="tool-item__title flex-grow-1 mx-2">{ToolTip}</div>
         </div>
 
         <div className="tool-item__drag" ref={drag} data-testid={`box-${props.ToolID}`}>
-          <i className="gis-icon gis-icon-drag-thin"></i>
+          <i className="gis-icon gis-icon--drag-thin"></i>
         </div>
         
       </ListGroup.Item>

@@ -1,3 +1,6 @@
+// font
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
+
 @import "variables";
 
 /* import bootstrap to set changes */
@@ -5,5 +8,7 @@
 @import "icons/style";
 
 @import "general";
-@import "main-nav";
+@import "map-menu";
+@import "app-side";
+@import "tools";
 

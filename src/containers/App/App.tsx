@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import API from "../../core/api";
-import MapTabs from "../MapTabs/MapTabs";
+import MapTabs from "../../components/MapTabs/MapTabs";
 import Map from "../Map/Map";
+import MapMenu from "../../components/MapMenu";
 import TopNav from "../TopNav";
 import SideNav from "../SideNav";
 import config from "../../configuration";
@@ -13,10 +13,15 @@ import { ToastProvider } from "react-toast-notifications";
 import Props from "./props";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import LayerListMain from "../../components/layers/LayerListMain";
+import SeachComp from "../../components/Search";
+import { selectFocusedMapTools } from "../../state/reducers";
+import { useTypedSelector } from "../../hooks/useTypedSelectors";
+import API from "../../core/api";
 
 const App: React.FC<Props> = (props) => {
   const { InitLayers, InitMap, InitRasters, InitTools, mapState } = props;
-
+  const Tools = useTypedSelector(selectFocusedMapTools)
   const bootstrap = () => {
     InitRasters();
     InitMap();
@@ -38,12 +43,21 @@ const App: React.FC<Props> = (props) => {
           <DndProvider backend={HTML5Backend}>
             <div className="app">
               <div className="app__side">
-                {mapId && <TopNav/>}
+                <div className="layers-container">
+                  <SeachComp />
+                  <LayerListMain />
+                </div>
+                
                 <WidgetFixContainer />
+                {mapId && <TopNav Tools={Tools}/>}
                 <div id="app-side-content-container" className="app-side-content-container"></div>
               </div>
               <div className="app__main">
-                {mapId ? <React.Fragment><MapTabs /><Map /></React.Fragment> : null }
+                {mapId ? <React.Fragment>
+                  <MapTabs />
+                  <Map />
+                  <MapMenu />
+                </React.Fragment> : null }
               </div>
             </div>
             <WidgetMapContainer />
@@ -62,7 +76,7 @@ const App: React.FC<Props> = (props) => {
             <SideNav>
               <div className="ui grid">
                 <div className="row">
-                  <TopNav />
+                  <TopNav Tools={Tools}/>
                 </div>
                 <div className="row">
                   <MapTabs />

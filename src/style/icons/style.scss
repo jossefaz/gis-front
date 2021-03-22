@@ -1,14 +1,13 @@
 @font-face {
   font-family: '#{$icomoon-font-family}';
   src:
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?dsajzb') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?dsajzb') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?dsajzb##{$icomoon-font-family}') format('svg');
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?90rtec') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?90rtec') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?90rtec##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
-
 
 .gis-icon {
   /* use !important to prevent issues with browser extensions that change fonts */
@@ -25,165 +24,194 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-.gis-icon-legend-thin {
+.gis-icon--circle-arrows {
   &:before {
-    content: $gis-icon-legend-thin; 
+    content: $gis-icon--circle-arrows; 
   }
 }
-.gis-icon-layers {
+.gis-icon--artist-palette {
   &:before {
-    content: $gis-icon-layers; 
+    content: $gis-icon--artist-palette; 
   }
 }
-.gis-icon-minus {
+.gis-icon--dashed-square-arrow {
   &:before {
-    content: $gis-icon-minus; 
+    content: $gis-icon--dashed-square-arrow; 
   }
 }
-.gis-icon-plus {
+.gis-icon--camera {
   &:before {
-    content: $gis-icon-plus; 
+    content: $gis-icon--camera; 
   }
 }
-.gis-icon-eraser {
+.gis-icon--table {
   &:before {
-    content: $gis-icon-eraser; 
+    content: $gis-icon--table; 
   }
 }
-.gis-icon-eye-plus {
+.gis-icon--world-arrow {
   &:before {
-    content: $gis-icon-eye-plus; 
+    content: $gis-icon--world-arrow; 
   }
 }
-.gis-icon-cube {
+.gis-icon--minus {
   &:before {
-    content: $gis-icon-cube; 
+    content: $gis-icon--minus; 
   }
 }
-.gis-icon-ruler-l {
+.gis-icon--plus {
   &:before {
-    content: $gis-icon-ruler-l; 
+    content: $gis-icon--plus; 
   }
 }
-.gis-icon-distance {
+.gis-icon--eraser {
   &:before {
-    content: $gis-icon-distance; 
+    content: $gis-icon--eraser; 
   }
 }
-.gis-icon-radar {
+.gis-icon--eye-plus {
   &:before {
-    content: $gis-icon-radar; 
+    content: $gis-icon--eye-plus; 
   }
 }
-.gis-icon-flag {
+.gis-icon--cube {
   &:before {
-    content: $gis-icon-flag; 
+    content: $gis-icon--cube; 
   }
 }
-.gis-icon-paperclip {
+.gis-icon--ruler-l {
   &:before {
-    content: $gis-icon-paperclip; 
+    content: $gis-icon--ruler-l; 
   }
 }
-.gis-icon-street-signs {
+.gis-icon--distance {
   &:before {
-    content: $gis-icon-street-signs; 
+    content: $gis-icon--distance; 
   }
 }
-.gis-icon-chart-search {
+.gis-icon--radar {
   &:before {
-    content: $gis-icon-chart-search; 
+    content: $gis-icon--radar; 
   }
 }
-.gis-icon-lines-dots {
+.gis-icon--flag {
   &:before {
-    content: $gis-icon-lines-dots; 
+    content: $gis-icon--flag; 
   }
 }
-.gis-icon-map-rolled {
+.gis-icon--paperclip {
   &:before {
-    content: $gis-icon-map-rolled; 
+    content: $gis-icon--paperclip; 
   }
 }
-.gis-icon-disk {
+.gis-icon--street-signs {
   &:before {
-    content: $gis-icon-disk; 
+    content: $gis-icon--street-signs; 
   }
 }
-.gis-icon-emergency-lights {
+.gis-icon--chart-search {
   &:before {
-    content: $gis-icon-emergency-lights; 
+    content: $gis-icon--chart-search; 
   }
 }
-.gis-icon-printer {
+.gis-icon--lines-dots {
   &:before {
-    content: $gis-icon-printer; 
+    content: $gis-icon--lines-dots; 
   }
 }
-.gis-icon-drag-thin {
+.gis-icon--map-rolled {
   &:before {
-    content: $gis-icon-drag-thin; 
+    content: $gis-icon--map-rolled; 
   }
 }
-.gis-icon-layers-remove-thin {
+.gis-icon--disk {
   &:before {
-    content: $gis-icon-layers-remove-thin; 
+    content: $gis-icon--disk; 
   }
 }
-.gis-icon-search-eye-thin {
+.gis-icon--emergency-lights {
   &:before {
-    content: $gis-icon-search-eye-thin; 
+    content: $gis-icon--emergency-lights; 
   }
 }
-.gis-icon-graphic-pen-thin {
+.gis-icon--printer {
   &:before {
-    content: $gis-icon-graphic-pen-thin; 
+    content: $gis-icon--printer; 
   }
 }
-.gis-icon-grid-thin {
+.gis-icon--drag-thin {
   &:before {
-    content: $gis-icon-grid-thin; 
+    content: $gis-icon--drag-thin; 
   }
 }
-.gis-icon-picture {
+.gis-icon--layers {
   &:before {
-    content: $gis-icon-picture; 
+    content: $gis-icon--layers; 
   }
 }
-.gis-icon-location-on-pic {
+.gis-icon--layers-remove-thin {
   &:before {
-    content: $gis-icon-location-on-pic; 
+    content: $gis-icon--layers-remove-thin; 
   }
 }
-.gis-icon-location {
+.gis-icon--search-eye-thin {
   &:before {
-    content: $gis-icon-location; 
+    content: $gis-icon--search-eye-thin; 
   }
 }
-.gis-icon-opacity-circles {
+.gis-icon--graphic-pen-thin {
   &:before {
-    content: $gis-icon-opacity-circles; 
+    content: $gis-icon--graphic-pen-thin; 
   }
 }
-.gis-icon-search {
+.gis-icon--grid-thin {
   &:before {
-    content: $gis-icon-search; 
+    content: $gis-icon--grid-thin; 
   }
 }
-.gis-icon-location-on-map {
+.gis-icon--location {
   &:before {
-    content: $gis-icon-location-on-map; 
+    content: $gis-icon--location; 
   }
 }
-.gis-icon-eraser-thin {
+.gis-icon--picture {
   &:before {
-    content: $gis-icon-eraser-thin; 
+    content: $gis-icon--picture; 
   }
 }
-.gis-icon-legend {
+.gis-icon--location-on-pic {
   &:before {
-    content: $gis-icon-legend; 
+    content: $gis-icon--location-on-pic; 
+  }
+}
+.gis-icon--location-on-map {
+  &:before {
+    content: $gis-icon--location-on-map; 
+  }
+}
+.gis-icon--opacity-circles {
+  &:before {
+    content: $gis-icon--opacity-circles; 
+  }
+}
+.gis-icon--search {
+  &:before {
+    content: $gis-icon--search; 
+  }
+}
+.gis-icon--eraser-thin {
+  &:before {
+    content: $gis-icon--eraser-thin; 
+  }
+}
+.gis-icon--legend-thin {
+  &:before {
+    content: $gis-icon--legend-thin; 
+  }
+}
+.gis-icon--legend {
+  &:before {
+    content: $gis-icon--legend; 
   }
 }
 

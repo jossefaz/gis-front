@@ -27,7 +27,9 @@ const interactionsReducer = (
           const interactionConfig = <WritableDraft<InteractionConfigStore>>(
             draftState[widgetName][focusedmap][config.Type]
           );
-          interactionConfig.status = 1;
+          if (interactionConfig) {
+            interactionConfig.status = 1;
+          }
         }
       });
 
@@ -47,7 +49,9 @@ const interactionsReducer = (
             const interactionConfig = <WritableDraft<InteractionConfigStore>>(
               draftState[widgetName][focusedmap][config.Type]
             );
-            interactionConfig.status = 1;
+            if (interactionConfig) {
+              interactionConfig.status = 1;
+            }
           }
         });
       });
@@ -59,7 +63,7 @@ const interactionsReducer = (
             const interactionConfig = <WritableDraft<InteractionConfigStore>>(
               draftState[widgetName][mapId][Type]
             );
-            if (interactionConfig.uuid == uuid) {
+            if (interactionConfig && interactionConfig.uuid == uuid) {
               interactionConfig.status = 0;
             }
           });
@@ -73,7 +77,7 @@ const interactionsReducer = (
               const interactionConfig = <WritableDraft<InteractionConfigStore>>(
                 draftState[widgetName][mapId][Type]
               );
-              if (interactionConfig.uuid == uuid) {
+              if (interactionConfig && interactionConfig.uuid == uuid) {
                 interactionConfig.status = 0;
               }
             });

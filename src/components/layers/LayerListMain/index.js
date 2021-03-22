@@ -38,7 +38,7 @@ class LayerListMain extends React.Component {
 
     render() {
         return (
-            <div>{this.switchLayerListComponents()}</div>
+            <div className="layers-block">{this.switchLayerListComponents()}</div>
         );
     }
 }
