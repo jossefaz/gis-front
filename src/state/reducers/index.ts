@@ -8,6 +8,7 @@ import map from "./map";
 import Tools, * as fromTool from "./tools";
 import mantiSystems from "./mantiSystems";
 import ui from "./ui";
+import auth from "./auth";
 import { GisState } from "../stateTypes";
 
 export default combineReducers<GisState>({
@@ -20,6 +21,7 @@ export default combineReducers<GisState>({
   Interactions,
   Overlays,
   ui,
+  auth
   // filter
 });
 
