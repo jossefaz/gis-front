@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import API from "../../core/api";
-import MapTabs from "../MapTabs/MapTabs";
+import MapTabs from "../../components/MapTabs/MapTabs";
 import Map from "../Map/Map";
 import MapMenu from "../../components/MapMenu";
 import TopNav from "../TopNav";
@@ -16,10 +15,13 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import LayerListMain from "../../components/layers/LayerListMain";
 import SeachComp from "../../components/Search";
+import { selectFocusedMapTools } from "../../state/reducers";
+import { useTypedSelector } from "../../hooks/useTypedSelectors";
+import API from "../../core/api";
 
 const App: React.FC<Props> = (props) => {
   const { InitLayers, InitMap, InitRasters, InitTools, mapState } = props;
-
+  const Tools = useTypedSelector(selectFocusedMapTools)
   const bootstrap = () => {
     InitRasters();
     InitMap();
@@ -47,7 +49,7 @@ const App: React.FC<Props> = (props) => {
                 </div>
                 
                 <WidgetFixContainer />
-                {mapId && <TopNav/>}
+                {mapId && <TopNav Tools={Tools}/>}
                 <div id="app-side-content-container" className="app-side-content-container"></div>
               </div>
               <div className="app__main">
@@ -74,7 +76,7 @@ const App: React.FC<Props> = (props) => {
             <SideNav>
               <div className="ui grid">
                 <div className="row">
-                  <TopNav />
+                  <TopNav Tools={Tools}/>
                 </div>
                 <div className="row">
                   <MapTabs />
