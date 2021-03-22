@@ -14,6 +14,8 @@ import { ToastProvider } from "react-toast-notifications";
 import Props from "./props";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import LayerListMain from "../../components/layers/LayerListMain";
+import SeachComp from "../../components/Search";
 
 const App: React.FC<Props> = (props) => {
   const { InitLayers, InitMap, InitRasters, InitTools, mapState } = props;
@@ -39,8 +41,13 @@ const App: React.FC<Props> = (props) => {
           <DndProvider backend={HTML5Backend}>
             <div className="app">
               <div className="app__side">
-                {mapId && <TopNav/>}
+                <div className="layers-container">
+                  <SeachComp />
+                  <LayerListMain />
+                </div>
+                
                 <WidgetFixContainer />
+                {mapId && <TopNav/>}
                 <div id="app-side-content-container" className="app-side-content-container"></div>
               </div>
               <div className="app__main">

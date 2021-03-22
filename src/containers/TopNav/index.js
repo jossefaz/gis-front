@@ -9,8 +9,7 @@ import { ListGroup } from "react-bootstrap";
 
 class TopNav extends React.Component {
   state = {
-    itemSelected: false,
-    opened: true
+    opened: false
   }
 
   open = () => {
@@ -31,7 +30,7 @@ class TopNav extends React.Component {
       <div
         onMouseEnter={this.open}
         onMouseLeave={this.close}
-        className={`main-nav ${(!this.state.opened && this.state.itemSelected) ? "main-nav--closed" : ""}`}>
+        className={`main-nav ${(!this.state.opened) ? "main-nav--closed" : ""}`}>
         <ListGroup>
           {/* <ListGroup.Item><SeachComp /></ListGroup.Item> */}
           {renderTools(this.Tools, "TopNav")}

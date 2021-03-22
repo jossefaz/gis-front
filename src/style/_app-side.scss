@@ -1,17 +1,65 @@
+// Sticky container
+// ==========================
+.sticky-tool-container {
+    position: absolute;
+    z-index: 998;
+    top: $searchbar-height;
+    height: calc(100% - #{$searchbar-height});
+    right: $side-icon-width;
+    width: calc(100% - #{$side-icon-width});
+    background: #fff; // rgba($color: red, $alpha: 0.2);
+
+    &--closed {
+        display: none;
+    }
+}
+
+// Layers container
+// ==========================
+.layers-container {
+    position: relative;
+    z-index: 991;
+    height: 100%;
+    width: 100%;
+    background: $gray-400; // rgba($color: green, $alpha: 0.2);
+
+    .searchbar {
+        height: $searchbar-height;
+        display: flex;
+        align-items: center;
+
+        &__icon {
+            width: $side-icon-width;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    .layers-block {
+        padding: 0.5rem ($side-icon-width + 0.5rem) 0.5rem 0.5rem;
+        height: calc(100% - #{$searchbar-height});
+        background: #fff; // rgba(purple, 0.2);
+    }
+}
+
+// Main nav
+// ==========================
 .main-nav {
     position: absolute;
-    top: 0;
+    z-index: 999;
+    top: $searchbar-height;
     right: 0;
-    width: $min-side-width;
+    width: 100%;
+    height: calc(100% - #{$searchbar-height});
     background: $primary;
     color: #fff;
-    height: 100%;
     overflow: hidden;
     transition: all 0.35s ease-out;
 
     .list-group {
         height: 100%;
-        width: $min-side-width;
+        width: 100%;
 
         .tool-item {
             display: flex;
@@ -22,6 +70,7 @@
             padding-right: 0.5rem;
             padding-left: 0.5rem;
             font-size: 1.25rem;
+            width: $side-width;
 
             // svg,
             // img {
@@ -74,7 +123,7 @@
     }
 
     &--closed {
-        width: $side-width-closed;
+        width: $side-icon-width;
         transition: all 0.25s ease-in;
 
         .tool-item__title {
@@ -82,9 +131,4 @@
             transition: all 0.25s ease-in;
         }
     }
-}
-
-// ==========================
-.sticky-tool-container {
-    padding-right: $side-width-closed;
 }
