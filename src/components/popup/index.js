@@ -3,14 +3,8 @@ import Draggable from "react-draggable";
 import "./style.css";
 const PopUp = (props) => {
   const position = props.position || null;
-  return position ? (
+  return (
     <Draggable positionOffset={position}>
-      <div className="box" className="popup">
-        {props.children}
-      </div>
-    </Draggable>
-  ) : (
-    <Draggable>
       <div className="box" className="popup">
         {props.children}
       </div>

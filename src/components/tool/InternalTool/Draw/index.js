@@ -192,7 +192,7 @@ class Draw extends React.Component {
   };
 
   removeOverlay = (uuid) => {
-    if (uuid == this.state.editText.overlayID) {
+    if (uuid === this.state.editText.overlayID) {
       this.setState({
         editText: { ...this.state.editText, overlayID: null },
         sessionType: "",

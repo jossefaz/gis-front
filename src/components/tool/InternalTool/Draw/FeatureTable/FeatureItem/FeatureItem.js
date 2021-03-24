@@ -6,7 +6,7 @@ import API from "../../../../../../core/api";
 import { Table } from "semantic-ui-react";
 import "./style.css";
 const { unhighlightFeature } = API.features;
-export default (props) => {
+const FeatureItem = (props) => {
   const [fillColor, setFillColor] = useState({
     r: "154",
     g: "111",
@@ -44,7 +44,7 @@ export default (props) => {
   if (!props.editSession.status) {
     updateStyle();
   } else {
-    if (props.editSession.current == props.fid) {
+    if (props.editSession.current === props.fid) {
       getFeature().setStyle(
         generateNewPolygonStyle(editStyle.fill, editStyle.stroke, 3)
       );
@@ -93,3 +93,4 @@ export default (props) => {
     </React.Fragment>
   );
 };
+export default FeatureItem;
