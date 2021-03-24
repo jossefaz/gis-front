@@ -19,7 +19,7 @@ export const convertCoordToIsraelTM = (
   coord: Coordinate
 ) => {
   let point = { x: coord[0], y: coord[1] };
-  if (sourceSR != SupportedProjections.ISRAEL) {
+  if (sourceSR !== SupportedProjections.ISRAEL) {
     var source = proj4.Proj(sourceSR);
     var dest = proj4.Proj(SupportedProjections.ISRAEL);
     point = proj4.transform(source, dest, point);

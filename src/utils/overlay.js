@@ -143,7 +143,7 @@ export class OverlayUtil {
 
   dragOverlay = (evt, cb) => {
     if (this.store) {
-      Object.keys(this.store).map((ol) => {
+      Object.keys(this.store).forEach((ol) => {
         const overlay = getOverlay(ol);
         if (overlay.get("dragging")) {
           cb();
@@ -154,7 +154,7 @@ export class OverlayUtil {
   };
 
   toggleAll = () => {
-    Object.keys(this.store).map((uuid) => {
+    Object.keys(this.store).forEach((uuid) => {
       const overlaydiv = document.querySelector(
         `#${this.store[uuid].selector}`
       );
@@ -184,7 +184,7 @@ export class OverlayUtil {
 
   unDragOverlay = (cb) => {
     if (this.store) {
-      Object.keys(this.store).map((ol) => {
+      Object.keys(this.store).forEach((ol) => {
         if (getOverlay(ol).get("dragging")) {
           cb();
           getOverlay(ol).set("dragging", false);

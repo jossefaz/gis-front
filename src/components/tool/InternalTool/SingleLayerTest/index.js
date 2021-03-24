@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
+import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import API from "../../../../core/api";
 import { addLayers } from "../../../../state/actions";

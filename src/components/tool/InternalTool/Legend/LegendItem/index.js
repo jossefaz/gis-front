@@ -8,7 +8,6 @@ import { Checkbox } from "semantic-ui-react";
 import config from "../../../../../configuration";
 const {
   getFocusedMap,
-  getFocusedMapProxy,
   getCurrentResolution,
   getCurrentExtent,
   getCurrentProjection,
@@ -18,10 +17,6 @@ const { getOlLayer } = API.layers;
 const LegendItem = (props) => {
   const [active, toggle] = useState(true);
   const [resolution, setResolution] = useState();
-
-  const focusedMapUUID = () =>
-    getFocusedMapProxy() ? getFocusedMapProxy().uuid.value : false;
-
   getFocusedMap()
     .getView()
     .on("change:resolution", function (event) {
@@ -62,12 +57,12 @@ const LegendItem = (props) => {
             </Accordion.Title>
             <Accordion.Content active={active}>
               <Checkbox toggle />
-              <img src={url} />
+              <img src={url} alt="legend not available" />
             </Accordion.Content>
           </Accordion>
         </React.Fragment>
       ) : (
-        <img src={url} />
+        <img src={url} alt="legend not available" />
       )
     ) : (
       <p>

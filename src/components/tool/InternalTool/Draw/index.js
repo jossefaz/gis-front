@@ -143,7 +143,7 @@ class Draw extends React.Component {
       this.interactions.currentSelect
         .getFeatures()
         .getArray()
-        .map((feature) => {
+        .forEach((feature) => {
           if (
             pointPosition.intersectsExtent(feature.getGeometry().getExtent())
           ) {
@@ -179,7 +179,7 @@ class Draw extends React.Component {
     const existing = await axios.get(
       "http://localhost:9090/persistentGeometry"
     );
-    existing.data.map((polygon, index) => {
+    existing.data.forEach((polygon, index) => {
       const feature = getOlFeatureFromJson(polygon["geometry"]);
       feature.setId(polygon["id"]);
       this.DrawSource.addFeature(feature);
@@ -325,7 +325,7 @@ class Draw extends React.Component {
   };
 
   deleteLastFeature = (id) => {
-    if (this.lastFeature && id == this.lastFeature.getId()) {
+    if (this.lastFeature && id === this.lastFeature.getId()) {
       this.setState({
         lastFeature: { ...this.state.lastFeature, [this.map]: null },
       });
@@ -345,7 +345,7 @@ class Draw extends React.Component {
 
   render() {
     const features = this.getDrawnFeatures();
-    const disable = features.length == 0;
+    const disable = features.length === 0;
     const overlays = this.selfOverlay;
     return (
       <React.Fragment>
@@ -360,7 +360,7 @@ class Draw extends React.Component {
 
             <IconButton
               className={`ui icon button pointer ${
-                this.state.drawtype == this.DRAW_TYPES.Polygon
+                this.state.drawtype === this.DRAW_TYPES.Polygon
                   ? "secondary"
                   : "primary"
               }`}
@@ -370,7 +370,7 @@ class Draw extends React.Component {
             />
             <IconButton
               className={`ui icon button pointer ${
-                this.state.drawtype == this.DRAW_TYPES.Line
+                this.state.drawtype === this.DRAW_TYPES.Line
                   ? "secondary"
                   : "primary"
               }`}
@@ -381,7 +381,7 @@ class Draw extends React.Component {
 
             <IconButton
               className={`ui icon button pointer ${
-                this.state.drawtype == this.DRAW_TYPES.Circle
+                this.state.drawtype === this.DRAW_TYPES.Circle
                   ? "secondary"
                   : "primary"
               }`}
@@ -392,7 +392,7 @@ class Draw extends React.Component {
 
             <IconButton
               className={`ui icon button pointer ${
-                this.state.drawtype == this.DRAW_TYPES.Text
+                this.state.drawtype === this.DRAW_TYPES.Text
                   ? "secondary"
                   : "primary"
               }`}
@@ -410,7 +410,7 @@ class Draw extends React.Component {
               size="lg"
             />
           </Grid.Row>
-          {this.state.sessionType == "Text" && (
+          {this.state.sessionType === "Text" && (
             <Grid.Row>
               <TextForm
                 cancelEdit={this.cancelEditText}
@@ -421,7 +421,7 @@ class Draw extends React.Component {
               />
             </Grid.Row>
           )}
-          {this.state.sessionType == "Geometry" && (
+          {this.state.sessionType === "Geometry" && (
             <Grid.Row>
               <label className="labels">בחר צבע : </label>
               <ColorPicker

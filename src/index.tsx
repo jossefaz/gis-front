@@ -1,6 +1,5 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import App from "./containers/App/container";
+import App from "./containers/App/App";
 import { fetchConfig } from "./configuration";
 import { Provider } from "react-redux";
 import { mainStore as store } from "./state";

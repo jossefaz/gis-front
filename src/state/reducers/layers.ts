@@ -9,7 +9,7 @@ const reducer = (state: LayerState = {}, action: Actions): LayerState => {
     case types.ADD_LAYER:
       return produce(state, (draftState) => {
         const { addedLayers, mapId } = action.payload;
-        addedLayers.map((lyr) => {
+        addedLayers.forEach((lyr) => {
           draftState[mapId].layers[lyr.uuid] = lyr;
         });
       });

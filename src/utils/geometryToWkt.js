@@ -1,6 +1,5 @@
 import WKT from "ol/format/WKT";
 import { Circle } from "ol/geom";
-import { circular } from "ol/geom/Polygon";
 export const getWKTFromOlGeom = (olgeom) => {
   const format = new WKT();
 

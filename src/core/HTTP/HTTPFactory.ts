@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { ApiCall } from "../types";
-import config from "../../configuration";
 
 class HTTPFactory {
   private static instance: HTTPFactory;

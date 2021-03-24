@@ -44,7 +44,7 @@ export default class InteractionProxy {
   }
 
   private _castConfig<T>() {
-    return <T>(<unknown>this._config.interactionConfig);
+    return this._config.interactionConfig as T;
   }
 
   private _toOLInteraction = () => {

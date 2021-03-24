@@ -42,7 +42,7 @@ class EditProxyManager {
         .getFocusedMap()
         .getLayers()
         .getArray()
-        .map((lyr) => {
+        .forEach((lyr) => {
           const lyrid = lyr.get("__NessUUID__");
           lyr.set("editable", true); //TODO : REMOVE AND REPLACE BY REAL LOGIC
           if (lyr.get("editable") && layernames.includes(lyrid)) {

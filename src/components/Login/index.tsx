@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useActions } from '../../hooks/useActions';
-import { useForm } from 'react-hook-form';
-import { useTypedSelector } from '../../hooks/useTypedSelectors';
-import { getCredentials } from '../../core/HTTP/auth';
-import { UserCredentials } from '../../core/types';
+import { useState } from "react";
+import { useActions } from "../../hooks/useActions";
+import { useForm } from "react-hook-form";
+import { useTypedSelector } from "../../hooks/useTypedSelectors";
+import { getCredentials } from "../../core/HTTP/auth";
+import { UserCredentials } from "../../core/types";
 
 type Inputs = {
   email: string;

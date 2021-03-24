@@ -3,14 +3,11 @@ import MapTabs from "../../components/MapTabs/MapTabs";
 import Map from "../Map/Map";
 import MapMenu from "../../components/MapMenu";
 import TopNav from "../TopNav";
-import SideNav from "../SideNav";
 import config from "../../configuration";
 import { InitIcons } from "../../utils/faicons";
 import WidgetFixContainer from "../Widget/StickyToolContainer";
 import WidgetMapContainer from "../Widget/DynamicToolContainer";
 import { ToastProvider } from "react-toast-notifications";
-// import "../../style.css";
-import Props from "./props";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import LayerListMain from "../../components/layers/LayerListMain";
@@ -27,7 +24,7 @@ interface StoredJWT {
   expiry: number;
 }
 
-const App: React.FC<Props> = (props) => {
+const App: React.FC = () => {
   const { jwt } = useTypedSelector((state) => state.auth);
   window.addEventListener("unload", function (event) {
     localStorage.setItem(
@@ -38,13 +35,13 @@ const App: React.FC<Props> = (props) => {
       })
     );
   });
-  const { InitLayers, InitMap, InitRasters, InitTools, mapState } = props;
+  const { InitLayers, InitMap, InitRasters, InitTools } = useActions();
+  const mapState = useTypedSelector((state) => state.map);
   const Tools = useTypedSelector(selectFocusedMapTools);
   const { setToken } = useActions();
 
   const setTokenIfExists = () => {
     let stored_jwt = localStorage.getItem("jwt");
-    console.log(`stored_jwt`, stored_jwt);
     if (stored_jwt) {
       const sjwt = JSON.parse(stored_jwt) as StoredJWT;
       const now = new Date();
@@ -54,17 +51,15 @@ const App: React.FC<Props> = (props) => {
   };
 
   const bootstrap = () => {
+    setTokenIfExists();
+    InitIcons();
     InitRasters();
     InitMap();
     InitTools(config().Widgets);
     InitLayers();
   };
 
-  useEffect(() => {
-    bootstrap();
-    InitIcons();
-    setTokenIfExists();
-  }, []);
+  useEffect(bootstrap, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const mapId = API.map.getFocusedMapProxy()
     ? API.map.getFocusedMapProxy().uuid.value

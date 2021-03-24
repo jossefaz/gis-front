@@ -49,7 +49,7 @@ const ToolTemplate: React.FC<Props> = (props) => {
           <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
             <div className="buttons">
               <div className="close">
-                <a
+                <button
                   className="closebutton"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -59,7 +59,7 @@ const ToolTemplate: React.FC<Props> = (props) => {
                   <span>
                     <strong>x</strong>
                   </span>
-                </a>
+                </button>
               </div>
             </div>
             {props.toolName}

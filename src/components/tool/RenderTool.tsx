@@ -10,13 +10,13 @@ export const renderTools = (
     <React.Fragment>
       {Object.keys(toolState.Groups).map((groupId) => {
         const { Id: GroupToolID, GroupContainer } = toolState.Groups[groupId];
-        return GroupToolID && GroupContainer == containerName ? (
+        return GroupToolID && GroupContainer === containerName ? (
           <ToolGroup key={groupId} GroupID={groupId} />
         ) : null;
       })}
       {Object.keys(toolState.tools).map((toolId) => {
         const { ToolGroupId, ToolContainer } = toolState.tools[toolId];
-        return !ToolGroupId && ToolContainer == containerName ? (
+        return !ToolGroupId && ToolContainer === containerName ? (
           <ToolItem key={toolId} ToolID={toolId} />
         ) : null;
       })}

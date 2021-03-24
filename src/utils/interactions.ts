@@ -7,8 +7,6 @@ import {
   unsetInteractions,
   setInteractions,
 } from "../state/actions/interaction";
-import { Options as SelectOptions } from "ol/interaction/Select";
-import { Options as ModifyOptions } from "ol/interaction/Modify";
 import { Options as DrawOptions } from "ol/interaction/Draw";
 import {
   InteractionOptions,
@@ -18,7 +16,6 @@ import { Collection, Feature } from "ol";
 import BaseLayer from "ol/layer/Base";
 import { Condition } from "ol/events/condition";
 import styles from "../core/mapStyle";
-import VectorSource from "ol/source/Vector";
 
 export class InteractionUtil {
   private _widget: string;
@@ -217,7 +214,7 @@ export class InteractionUtil {
   unsetAll = () => {
     if (Object.keys(this.store).length > 0) {
       const InteractionArray: InteractionOptions[] = [];
-      Object.keys(this.store).map((InteractionName) => {
+      Object.keys(this.store).forEach((InteractionName) => {
         const { uuid, Type } = this.store[InteractionName];
         InteractionArray.push({ uuid, widgetName: this._widget, Type });
       });
@@ -237,7 +234,7 @@ export class InteractionUtil {
   setAll = () => {
     if (this.store) {
       const InteractionArray: InteractionOptions[] = [];
-      Object.keys(this.store).map((InteractionName) => {
+      Object.keys(this.store).forEach((InteractionName) => {
         const { Type, status, interactionConfig } = this.store[InteractionName];
         if (!status) {
           InteractionArray.push({

@@ -13,17 +13,13 @@ export interface BoxProps {
   name: string;
 }
 
-interface DropResult {
-  name: string;
-}
-
 const ToolItem: React.FC<{ ToolID: string }> = (props) => {
   const currentTools = useTypedSelector(selectFocusedMapTools);
   const { toggleTool, dragTool } = useActions();
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const drag = useDrag(() => ({
     type: ItemTypes.TOOL,
     item: { name: props.ToolID },
-    end: (item, monitor) => {
+    end: (item) => {
       if (item) {
         dragTool(item.name);
         // alert(`You dropped ${item.name} into ${dropResult.name}!`);
@@ -33,7 +29,7 @@ const ToolItem: React.FC<{ ToolID: string }> = (props) => {
       isDragging: monitor.isDragging(),
       handlerId: monitor.getHandlerId(),
     }),
-  }));
+  }))[1];
 
   if (currentTools) {
     const { ToolIcon, ToolTip } = currentTools.tools[props.ToolID];

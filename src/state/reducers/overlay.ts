@@ -1,5 +1,5 @@
 import types from "../actions/types";
-import produce, { finishDraft } from "immer";
+import produce from "immer";
 import { OverlayState } from "../stateTypes";
 import { Actions } from "../actions/types";
 import { WritableDraft } from "immer/dist/internal";
@@ -20,7 +20,7 @@ const overlayReducer = (
           draftState[config.widgetName][focusedmap] = {};
         }
         const s = draftState[config.widgetName][focusedmap];
-        s[config.uuid] = <WritableDraft<OverlayMetadata>>config;
+        s[config.uuid] = config as WritableDraft<OverlayMetadata>;
         s.focused = config.uuid;
       });
 
@@ -39,15 +39,15 @@ const overlayReducer = (
     case types.UNSET_OVERLAY:
       return produce(state, (draftState) => {
         const { uuid, widgetName } = action.payload;
-        Object.keys(draftState[widgetName]).map((mapId) => {
+        Object.keys(draftState[widgetName]).forEach((mapId) => {
           if (uuid in draftState[widgetName][mapId]) {
             delete draftState[widgetName][mapId][uuid];
           }
-          if (Object.keys(draftState[widgetName][mapId]).length == 0) {
+          if (Object.keys(draftState[widgetName][mapId]).length === 0) {
             delete draftState[widgetName][mapId];
           }
         });
-        if (Object.keys(draftState[widgetName]).length == 0) {
+        if (Object.keys(draftState[widgetName]).length === 0) {
           delete draftState[widgetName];
         }
       });
@@ -55,12 +55,12 @@ const overlayReducer = (
       return produce(state, (draftState) => {
         const { overlays, widgetName } = action.payload;
 
-        overlays.map((overlay) => {
-          Object.keys(draftState[widgetName]).map((mapId) => {
+        overlays.forEach((overlay) => {
+          Object.keys(draftState[widgetName]).forEach((mapId) => {
             if (overlay in draftState[widgetName][mapId]) {
               delete draftState[widgetName][mapId][overlay];
             }
-            if (Object.keys(draftState[widgetName][mapId]).length == 0) {
+            if (Object.keys(draftState[widgetName][mapId]).length === 0) {
               delete draftState[widgetName][mapId];
             }
           });
@@ -68,7 +68,7 @@ const overlayReducer = (
 
         if (
           typeof draftState[widgetName] == "object" &&
-          Object.keys(draftState[widgetName]).length == 0
+          Object.keys(draftState[widgetName]).length === 0
         ) {
           delete draftState[widgetName];
         }

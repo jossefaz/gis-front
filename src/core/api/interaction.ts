@@ -11,7 +11,7 @@ import { InteractionOptions } from "../types/interaction";
 export function getInteraction<T>(uuid: string): T | false {
   const proxy = getInteractionProxy(uuid);
   if (proxy && proxy.OLInteraction) {
-    return <T>(<unknown>proxy.OLInteraction);
+    return (proxy.OLInteraction as unknown) as T;
   }
   return false;
 }
