@@ -52,7 +52,6 @@ export default (props) => {
       updateStyle();
     }
   }
-
   return (
     <React.Fragment>
       <Table.Cell>

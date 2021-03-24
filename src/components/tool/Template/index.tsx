@@ -20,14 +20,17 @@ const ToolTemplate: React.FC<Props> = (props) => {
       <div className="tool tool--sticky">
         <div className="tool__header">
           <div className="tool__name">{props.toolName}</div>
-          <div className="tool__close"
+          <div
+            className="tool__close"
             onClick={(e) => {
               e.stopPropagation();
               toggleTool(props.ToolID, false, false);
             }}
-          ><i className="gis-icon gis-icon--minus"></i></div>
+          >
+            <i className="gis-icon gis-icon--minus"></i>
+          </div>
         </div>
-        
+
         <div>{props.children}</div>
       </div>
     );
@@ -66,7 +69,7 @@ const ToolTemplate: React.FC<Props> = (props) => {
       </PopUp>
     );
   }
-  
+
   return issticky ? getStickyTemplate() : getDynamicTemplate();
 };
 

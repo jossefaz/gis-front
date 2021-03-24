@@ -55,26 +55,29 @@ export default class Example extends React.Component {
     };
 
     const theme = {
-      container: 'flex-grow-1 p-2 react-autosuggest__container',
-      containerOpen: 'flex-grow-1 p-2 react-autosuggest__container--open',
-      input: 'form-control react-autosuggest__input',
-      inputOpen: 'form-control react-autosuggest__input--open',
-      inputFocused: 'form-control react-autosuggest__input--focused',
-      suggestionsContainer: 'react-autosuggest__suggestions-container',
-      suggestionsContainerOpen: 'react-autosuggest__suggestions-container--open',
-      suggestionsList: 'react-autosuggest__suggestions-list',
-      suggestion: 'react-autosuggest__suggestion',
-      suggestionFirst: 'react-autosuggest__suggestion--first',
-      suggestionHighlighted: 'react-autosuggest__suggestion--highlighted',
-      sectionContainer: 'react-autosuggest__section-container',
-      sectionContainerFirst: 'react-autosuggest__section-container--first',
-      sectionTitle: 'react-autosuggest__section-title',
+      container: "flex-grow-1 p-2 react-autosuggest__container",
+      containerOpen: "flex-grow-1 p-2 react-autosuggest__container--open",
+      input: "form-control react-autosuggest__input",
+      inputOpen: "form-control react-autosuggest__input--open",
+      inputFocused: "form-control react-autosuggest__input--focused",
+      suggestionsContainer: "react-autosuggest__suggestions-container",
+      suggestionsContainerOpen:
+        "react-autosuggest__suggestions-container--open",
+      suggestionsList: "react-autosuggest__suggestions-list",
+      suggestion: "react-autosuggest__suggestion",
+      suggestionFirst: "react-autosuggest__suggestion--first",
+      suggestionHighlighted: "react-autosuggest__suggestion--highlighted",
+      sectionContainer: "react-autosuggest__section-container",
+      sectionContainerFirst: "react-autosuggest__section-container--first",
+      sectionTitle: "react-autosuggest__section-title",
     };
 
     // Finally, render it!
     return (
       <div className="searchbar">
-        <div className="searchbar__icon"><i className="gis-icon gis-icon--layers"></i></div>
+        <div className="searchbar__icon">
+          <i className="gis-icon gis-icon--layers"></i>
+        </div>
         <Autosuggest
           suggestions={suggestions}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}

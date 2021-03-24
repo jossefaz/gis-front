@@ -38,7 +38,6 @@ const App: React.FC<Props> = (props) => {
       })
     );
   });
-
   const { InitLayers, InitMap, InitRasters, InitTools, mapState } = props;
   const Tools = useTypedSelector(selectFocusedMapTools);
   const { setToken } = useActions();
