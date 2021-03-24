@@ -1,0 +1,13 @@
+.grouptool {
+  display: flex;
+}
+.imageitem {
+  display: inline-block;
+  vertical-align: middle;
+  margin: -0.3em 0;
+  width: 2.5em;
+}
+
+.test {
+  position: absolute !important;
+}

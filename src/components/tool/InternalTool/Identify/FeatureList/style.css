@@ -1,0 +1,18 @@
+.pointerCur {
+  cursor: pointer;
+}
+
+.currentFeature {
+  font-weight: bold;
+  color: red;
+}
+
+.margin05em {
+  margin: 0.5em;
+}
+
+.scrollContent {
+  display: block;
+  height: 25em;
+  overflow: auto;
+}

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+    xmlns="http://www.opengis.net/sld" 
+    xmlns:ogc="http://www.opengis.net/ogc" 
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <!-- a named layer is the basic building block of an sld document -->
+
+    <NamedLayer>
+        <Name>Junctions Polygon</Name>
+        <UserStyle>
+
+            <Title>Junctions</Title>
+            <Abstract>A sample style for junctions</Abstract>
+
+
+            <FeatureTypeStyle>
+                <Rule>
+                    <Title>710</Title>
+                    <Abstract>junctions 710</Abstract>
+                    <Name>710</Name>
+                    <ogc:Filter>
+                        <ogc:PropertyIsEqualTo>
+                            <ogc:PropertyName>junctions</ogc:PropertyName>
+                            <ogc:Literal>710</ogc:Literal>
+                        </ogc:PropertyIsEqualTo>
+                    </ogc:Filter>
+                    <MinScaleDenominator>1700</MinScaleDenominator>
+                    <MaxScaleDenominator>6771</MaxScaleDenominator>
+
+
+                    <!-- like a linesymbolizer but with a fill too -->
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#FFFF33</CssParameter>
+                            <CssParameter name="fill-opacity">1</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Title>7730</Title>
+                    <Abstract>junctions730</Abstract>
+                    <Name>7730</Name>
+                    <ogc:Filter>
+                        <ogc:PropertyIsEqualTo>
+                            <ogc:PropertyName>junctions</ogc:PropertyName>
+                            <ogc:Literal>7730</ogc:Literal>
+                        </ogc:PropertyIsEqualTo>
+                    </ogc:Filter>
+
+                    <!-- like a linesymbolizer but with a fill too -->
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#78D232</CssParameter>
+                            <CssParameter name="fill-opacity">1</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+                <Rule>
+                    <Name>Rule 1</Name>
+                    <Title>GreyFill BlackOutline</Title>
+                    <Abstract>Grey fill with a black outline 1 pixel in width</Abstract>
+
+                    <!-- like a linesymbolizer but with a fill too -->
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#AAAAAA</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#000000</CssParameter>
+                            <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+
+            </FeatureTypeStyle>
+        </UserStyle>
+    </NamedLayer>
+</StyledLayerDescriptor>

@@ -1,0 +1,29 @@
+body {
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: hidden;
+}
+
+/* tbody {
+  display: block;
+  height: 50px;
+  overflow: auto;
+} */
+.ui.modal > .content {
+  width: auto !important;
+}
+
+.append-element-container {
+  position: absolute;
+  top: 38em;
+  left: 15em;
+}
+
+.append-element-sideNav {
+  position: absolute;
+  top: 6.4rem;
+  left: 70.7rem;
+  direction: rtl;
+  text-align: right;
+}

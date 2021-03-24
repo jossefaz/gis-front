@@ -1,0 +1,4 @@
+.gridDisplay {
+  display: grid;
+  row-gap: 0.3em;
+}
