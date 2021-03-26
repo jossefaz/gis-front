@@ -10,7 +10,15 @@ export default async (layerId, featureId, properties) => {
   Object.keys(REGISTRY).map((source) => {
     const config = REGISTRY[source];
     if (config.status) {
-      import(`./${config.path}/feeder.js`).then((fn) => {
+      let importComp;
+      try {
+        importComp = import(`./${config.path}/feeder.js`);
+      } catch (error) {
+        console.error(`Context menu loader failed for menu ${config.path}`);
+        return;
+      }
+      //TODO : handle not existing path
+      importComp.then((fn) => {
         fn.default(config.url, layerId, featureId, properties, (menu) =>
           callback(source, featureId, menu)
         );
