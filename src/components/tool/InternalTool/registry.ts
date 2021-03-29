@@ -10,5 +10,6 @@ const REGISTRY = {
   Screenshooter: lazy(() => import("./Screenshooter")),
   TestTableOfFeature: lazy(() => import("./TableOfFeatures/Container")),
   TestSpatialSelect: lazy(() => import("./SpatialSelect/Container")),
+  Tool404: lazy(() => import("./404")),
 };
 export default REGISTRY;

@@ -39,6 +39,18 @@ const ToolTemplate: React.FC<Props> = (props) => {
   function getDynamicTemplate() {
     return (
       <PopUp>
+        <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
+          <div className="buttons">
+            <div
+              className="close"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeDragTool(props.ToolID, false, false);
+              }}
+            ></div>
+          </div>
+          {props.toolName}
+        </div>
         <div
           className={`window ${props.focused ? "focusedWindow" : ""}`}
           onClick={(e) => {
@@ -46,24 +58,6 @@ const ToolTemplate: React.FC<Props> = (props) => {
             setToolFocused(props.ToolID);
           }}
         >
-          <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
-            <div className="buttons">
-              <div className="close">
-                <button
-                  className="closebutton"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    closeDragTool(props.ToolID, false, false);
-                  }}
-                >
-                  <span>
-                    <strong>x</strong>
-                  </span>
-                </button>
-              </div>
-            </div>
-            {props.toolName}
-          </div>
           <div className="content uirtl">{props.children}</div>
         </div>
       </PopUp>
