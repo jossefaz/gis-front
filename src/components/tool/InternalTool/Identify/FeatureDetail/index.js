@@ -14,7 +14,7 @@ import {
   selectSelectedFeatures,
 } from "../../../../../state/reducers";
 import _ from "lodash";
-import { Confirm } from "semantic-ui-react";
+import Confirm from "../../../../UI/Modal/Confirm";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import EditButton from "../../../../UI/Buttons/EditButton";
 import "./style.css";
@@ -190,15 +190,11 @@ class FeatureDetail extends React.Component {
               </tbody>
             </table>
           </div>
-          {/* {this.props.CurrentLayerUUID && (
-            <EditTool uuid={this.props.CurrentLayerUUID} />
-          )} */}
           <Confirm
-            open={this.state.openConfirm}
-            size="mini"
-            content={this.state.eraseFeature.content}
-            cancelButton={this.state.eraseFeature.cancelBtn}
-            confirmButton={this.state.eraseFeature.confirmBtn}
+            isOpen={this.state.openConfirm}
+            confirmTxt={this.state.eraseFeature.content}
+            cancelBtnTxt={this.state.eraseFeature.cancelBtn}
+            confirmBtnTxt={this.state.eraseFeature.confirmBtn}
             onCancel={() => this.setState({ openConfirm: false })}
             onConfirm={this.onFeatureDelete}
           />

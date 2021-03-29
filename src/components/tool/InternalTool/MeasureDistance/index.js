@@ -5,7 +5,7 @@ import API from "../../../../core/api";
 import IconButton from "../../../UI/Buttons/IconButton";
 import { generateOutput, generateNewStyle } from "./func";
 import { DragPan } from "ol/interaction";
-import { Confirm } from "semantic-ui-react";
+import Confirm from "../../../UI/Modal/Confirm";
 import { random_rgba } from "../../../../utils/func";
 import { InteractionUtil } from "../../../../utils/interactions";
 import { OverlayUtil } from "../../../../utils/overlay";
@@ -263,11 +263,11 @@ class MeasureDistance extends React.Component {
             size="lg"
           />
           <Confirm
-            open={this.state.open}
+            isOpen={this.state.open}
             size="mini"
-            content={this.state.eraseDraw.content}
-            cancelButton={this.state.eraseDraw.cancelBtn}
-            confirmButton={this.state.eraseDraw.confirmBtn}
+            confirmTxt={this.state.eraseDraw.content}
+            cancelBtnTxt={this.state.eraseDraw.cancelBtn}
+            confirmBtnTxt={this.state.eraseDraw.confirmBtn}
             onCancel={() =>
               this.setState({ ...this.state.eraseDraw, open: false })
             }

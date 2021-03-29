@@ -14,7 +14,7 @@ import { InteractionUtil } from "../../../../utils/interactions";
 import { OverlayUtil } from "../../../../utils/overlay";
 import getOlFeatureFromJson from "../../../../utils/olFeatureFromGeoJson";
 import TextForm from "./Texts/TextForm";
-import { Confirm } from "semantic-ui-react";
+import Confirm from "../../../UI/Modal/Confirm";
 import FeatureTable from "./FeatureTable";
 import TextTable from "./Texts";
 import ColorPicker from "../../../UI/ColorPicker/ColorPicker";
@@ -479,11 +479,10 @@ class Draw extends React.Component {
           )}
         </Grid>
         <Confirm
-          open={this.state.open}
-          size="mini"
-          content={this.state.eraseDraw.content}
-          cancelButton={this.state.eraseDraw.cancelBtn}
-          confirmButton={this.state.eraseDraw.confirmBtn}
+          isOpen={this.state.open}
+          confirmTxt={this.state.eraseDraw.content}
+          cancelBtnTxt={this.state.eraseDraw.cancelBtn}
+          confirmBtnTxt={this.state.eraseDraw.confirmBtn}
           onCancel={() =>
             this.setState({ ...this.state.eraseDraw, open: false })
           }
