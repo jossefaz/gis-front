@@ -20,6 +20,7 @@ import { Feature } from "../../../../core/types";
 import { DragBox } from "ol/interaction";
 import { useActions } from "../../../../hooks/useActions";
 import { useTypedSelector } from "../../../../hooks/useTypedSelectors";
+import useNotifications from "../../../../hooks/useNotifications";
 const { getFocusedMap } = API.map;
 const { zoomTo } = API.features;
 
@@ -35,6 +36,7 @@ const Identify: React.FC = () => {
   const currentFeature = useTypedSelector(selectCurrentFeature);
   const VisibleLayers = useTypedSelector(selectVisibleLayers);
   const SelectedFeatures = useTypedSelector(selectSelectedFeatures);
+  const { errorNotification, successNotification } = useNotifications();
 
   const onBoxEnd = () => {
     if (interactions.currentDragBoxUUID) {
@@ -64,11 +66,11 @@ const Identify: React.FC = () => {
     if (feature) {
       const updated = await editProxy.registry[layer].save();
       if (updated) {
-        // this.props.successNotification("Successfully saved feature !");
+        successNotification("Successfully saved feature !");
         interactions.unModify();
         addInteraction();
       } else {
-        // this.props.errorNotification("Failed to save feature !");
+        errorNotification("Failed to save feature !");
       }
     }
   };

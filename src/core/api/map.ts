@@ -24,3 +24,19 @@ export const getCurrentExtent = () => {
 export const getCurrentProjection = () => {
   return getFocusedMap().getView().getProjection();
 };
+
+export const zoomIn = () => {
+  const currentZoom = getFocusedMap().getView().getZoom();
+  currentZoom &&
+    getFocusedMap()
+      .getView()
+      .setZoom(currentZoom + 0.3);
+};
+
+export const zoomOut = () => {
+  const currentZoom = getFocusedMap().getView().getZoom();
+  currentZoom &&
+    getFocusedMap()
+      .getView()
+      .setZoom(currentZoom - 0.3);
+};
