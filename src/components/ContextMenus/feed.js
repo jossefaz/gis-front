@@ -18,11 +18,18 @@ export default async (layerId, featureId, properties) => {
         return;
       }
       //TODO : handle not existing path
-      importComp.then((fn) => {
-        fn.default(config.url, layerId, featureId, properties, (menu) =>
-          callback(source, featureId, menu)
-        );
-      });
+      importComp
+        .then((fn) => {
+          fn.default(config.url, layerId, featureId, properties, (menu) =>
+            callback(source, featureId, menu)
+          );
+        })
+        .catch((err) => {
+          console.log(
+            "One of the context Menus component did not mount as expected, check its configuration and/or its source code error :",
+            err
+          );
+        });
     }
   });
 };
