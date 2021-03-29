@@ -9,6 +9,7 @@ import {
   LineString,
   MultiPolygon,
   Circle,
+  Geometry,
 } from "ol/geom";
 
 import { getFocusedMap, getFocusedMapProxy } from "./map";
@@ -63,7 +64,7 @@ export const InstanceOfGeometryClass = (
 };
 
 export const zoomTo = (
-  geometry: SupportedGeometry | IFeatureConfigInterface
+  geometry: Geometry | SupportedGeometry | IFeatureConfigInterface
 ) => {
   let geom = InstanceOfGeometryClass(geometry);
   if (!geom) {

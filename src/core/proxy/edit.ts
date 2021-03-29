@@ -114,7 +114,7 @@ export default class EditLayerProxy {
       registry.removeLayer(this._vectorLayerProxy.uuid);
   };
 
-  public save = async (newProperties: { [key: string]: any }) => {
+  public save = async (newProperties?: { [key: string]: any }) => {
     if (this._currentFeature) {
       if (newProperties) {
         this._updatePropertiesOnFeature(this._currentFeature, newProperties);

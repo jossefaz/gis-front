@@ -16,6 +16,7 @@ import { Collection, Feature } from "ol";
 import BaseLayer from "ol/layer/Base";
 import { Condition } from "ol/events/condition";
 import styles from "../core/mapStyle";
+import { DragBox } from "ol/interaction";
 
 export class InteractionUtil {
   private _widget: string;
@@ -84,12 +85,14 @@ export class InteractionUtil {
     return false;
   }
 
-  get currentDragBox() {
+  get currentDragBox(): DragBox | false {
     if (
       this.currentDragBoxUUID &&
       typeof this.currentDragBoxUUID === "string"
     ) {
-      return API.interactions.getInteraction(this.currentDragBoxUUID);
+      return API.interactions.getInteraction(
+        this.currentDragBoxUUID
+      ) as DragBox;
     }
     return false;
   }

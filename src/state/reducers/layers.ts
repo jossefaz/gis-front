@@ -39,7 +39,7 @@ const reducer = (state: LayerState = {}, action: Actions): LayerState => {
   }
 };
 
-export const selectVisibleLayers = (state: GisState): string[] | boolean => {
+export const selectVisibleLayers = (state: GisState): string[] => {
   const { Layers, map } = state;
   let visibles: string[] = [];
   if (map.focused in Layers && Layers[map.focused].layers)
