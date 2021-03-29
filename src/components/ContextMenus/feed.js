@@ -17,7 +17,6 @@ export default async (layerId, featureId, properties) => {
         console.error(`Context menu loader failed for menu ${config.path}`);
         return;
       }
-      //TODO : handle not existing path
       importComp
         .then((fn) => {
           fn.default(config.url, layerId, featureId, properties, (menu) =>
