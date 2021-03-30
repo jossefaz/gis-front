@@ -13,7 +13,12 @@ export interface BoxProps {
   name: string;
 }
 
-const ToolItem: React.FC<{ ToolID: string }> = (props) => {
+interface Props {
+  ToolID: string;
+  sideEffectOnToolOpen?: () => void;
+}
+
+const ToolItem: React.FC<Props> = (props) => {
   const currentTools = useTypedSelector(selectFocusedMapTools);
   const { toggleTool, dragTool } = useActions();
   const drag = useDrag(() => ({
@@ -38,7 +43,10 @@ const ToolItem: React.FC<{ ToolID: string }> = (props) => {
       <ListGroup.Item className="tool-item" role="TOOL">
         <div
           className="tool-item__main"
-          onClick={() => toggleTool(props.ToolID, false, false)}
+          onClick={() => {
+            toggleTool(props.ToolID, false, false);
+            props.sideEffectOnToolOpen && props.sideEffectOnToolOpen();
+          }}
         >
           <div className="tool-item__icon mx-1">
             {ToolIcon ? (

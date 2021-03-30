@@ -7,7 +7,7 @@ import {
   unsetInteractions,
   setInteractions,
 } from "../state/actions/interaction";
-import { Options as DrawOptions } from "ol/interaction/Draw";
+import Draw, { Options as DrawOptions } from "ol/interaction/Draw";
 import {
   InteractionOptions,
   InteractionSupportedTypes as INTERACTION_TYPE,
@@ -64,7 +64,7 @@ export class InteractionUtil {
     return API.map.getFocusedMapUUID();
   }
 
-  get currentDraw() {
+  get currentDraw(): Draw | false {
     if (this.currentDrawUUID && typeof this.currentDrawUUID === "string") {
       return API.interactions.getInteraction(this.currentDrawUUID);
     }

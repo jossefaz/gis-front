@@ -6,8 +6,9 @@ import {
 import { LineString, Polygon, Circle } from "ol/geom";
 import { Fill, Stroke, Style } from "ol/style";
 
-export const generateOutput = (evt, tooltipCoord) => {
+export const generateOutput = (evt) => {
   const geom = evt.target;
+  let tooltipCoord;
   let output;
   if (geom instanceof Polygon) {
     output = formatArea(geom);

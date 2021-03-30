@@ -12,7 +12,10 @@ const TopNav: React.FC<{ Tools: MapsToolState | false }> = (props) => {
       onMouseLeave={() => setOpened(false)}
       className={"main-nav" + (opened ? "" : " main-nav--closed")}
     >
-      <ListGroup>{props.Tools && renderTools(props.Tools, "TopNav")}</ListGroup>
+      <ListGroup>
+        {props.Tools &&
+          renderTools(props.Tools, "TopNav", () => setOpened(false))}
+      </ListGroup>
     </div>
   );
 };

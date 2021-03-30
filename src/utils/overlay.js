@@ -33,7 +33,7 @@ export class OverlayUtil {
       overlay: {
         element: generateNewDiv(selector, classes, content),
         offset: [0, -15],
-        positioning: "bottom-center",
+        positioning: "top-center",
         stopEvent: false,
         dragging: false,
       },
@@ -48,7 +48,7 @@ export class OverlayUtil {
       overlay: {
         element: document.getElementById(IDselector),
         offset: [0, -15],
-        positioning: "bottom-center",
+        positioning: "top-center",
         stopEvent: false,
         dragging: false,
       },
@@ -86,10 +86,10 @@ export class OverlayUtil {
     return getFocusedMapProxy().uuid.value;
   }
 
-  newText = async (text, classes) => {
+  newText = (text, classes) => {
     const selector = `${this.widget}${this.currentMapUUID}`;
     const style = classes ? classes : this.CLASSNAMES.TEXT;
-    await store.dispatch(
+    store.dispatch(
       setOverlay(
         OverlayUtil.generateTextOverlay(selector, style, this.widget, text)
       )
@@ -98,10 +98,10 @@ export class OverlayUtil {
     return lastID;
   };
 
-  newReact = async (reactComponentId, classes) => {
+  newReact = (reactComponentId, classes) => {
     const selector = reactComponentId;
     const style = classes ? classes : this.CLASSNAMES.TEXT;
-    await store.dispatch(
+    store.dispatch(
       setOverlay(OverlayUtil.generateReadyOverlay(selector, style, this.widget))
     );
     const lastID = this.focused;
@@ -126,14 +126,14 @@ export class OverlayUtil {
     });
   };
 
-  unset = async (uuid) => {
+  unset = (uuid) => {
     if (this.store && uuid in this.store) {
-      await store.dispatch(unsetOverlay({ uuid, widgetName: this.widget }));
+      store.dispatch(unsetOverlay({ uuid, widgetName: this.widget }));
     }
   };
 
-  unsetAll = async () => {
-    await store.dispatch(
+  unsetAll = () => {
+    store.dispatch(
       unsetOverlays({
         overlays: Object.keys(this.store),
         widgetName: this.widget,
@@ -163,20 +163,21 @@ export class OverlayUtil {
     });
   };
 
-  edit = async (uuid, content, styleclasses) => {
+  edit = (uuid, content, styleclasses, save) => {
     const overlay = this.store[uuid];
     const overlayDiv = overlay
       ? document.querySelector(`#${overlay.selector}`)
       : document.querySelector(`#${this.WIDGET_NAME}${uuid}`);
     if (overlayDiv) {
-      await store.dispatch(
-        setOverlayProperty({
-          widgetName: this.widget,
-          uuid,
-          property: "content",
-          value: content,
-        })
-      );
+      save &&
+        store.dispatch(
+          setOverlayProperty({
+            widgetName: this.widget,
+            uuid,
+            property: "content",
+            value: content,
+          })
+        );
       overlayDiv.innerHTML = content;
       if (styleclasses) overlayDiv.className = styleclasses;
     }

@@ -6,8 +6,7 @@ const RenderInternalToolLazy = (props) => {
     const InternalTool = toolRegistry[props.toolName];
     return <InternalTool toolID={props.toolID} />;
   }
-  const Tool404 = toolRegistry["Tool404"];
-  return <Tool404 />;
+  return null;
 };
 
 export default RenderInternalToolLazy;

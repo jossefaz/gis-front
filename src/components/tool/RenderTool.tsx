@@ -4,7 +4,8 @@ import ToolGroup from "./ToolGroup";
 import { MapsToolState } from "../../state/stateTypes";
 export const renderTools = (
   toolState: MapsToolState,
-  containerName: string
+  containerName: string,
+  sideEffectOnToolOpen?: () => void
 ) => {
   return toolState && containerName ? (
     <React.Fragment>
@@ -17,7 +18,11 @@ export const renderTools = (
       {Object.keys(toolState.tools).map((toolId) => {
         const { ToolGroupId, ToolContainer } = toolState.tools[toolId];
         return !ToolGroupId && ToolContainer === containerName ? (
-          <ToolItem key={toolId} ToolID={toolId} />
+          <ToolItem
+            key={toolId}
+            ToolID={toolId}
+            sideEffectOnToolOpen={sideEffectOnToolOpen}
+          />
         ) : null;
       })}
     </React.Fragment>
