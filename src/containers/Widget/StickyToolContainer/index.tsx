@@ -6,7 +6,10 @@ import { selectStickyTool } from "../../../state/reducers";
 const StickyToolContainer: React.FC = () => {
   const currentToolId = useTypedSelector(selectStickyTool);
   return (
-    <div id="stickyTool">
+    <div
+      id="stickyTool"
+      className={'sticky-tool-container' + (currentToolId ? '' : ' sticky-tool-container--closed')}
+    >
       {currentToolId && <Tool key={currentToolId} ToolID={currentToolId} />}
     </div>
   );

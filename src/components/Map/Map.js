@@ -1,5 +1,4 @@
 import React from "react";
-import "./style.css";
 import PropTypes from "prop-types";
 import API from "../../core/api";
 import VectorLayerRegistry from "../../core/proxymanagers/vectorlayer";
@@ -11,7 +10,6 @@ class MapComponent extends React.Component {
 
   defaultClickTool = async (e) => {
     const opennedTools = this.props.Tools[getFocusedMapUUID()];
-    console.log("CurrentInteractions", this.props.CurrentInteractions);
     if (
       opennedTools.dynamicTools.length === 0 &&
       Object.keys(this.props.CurrentInteractions).length === 0

@@ -80,7 +80,7 @@ class FeatureList extends Component {
             <td
               className={
                 this.currentFeature
-                  ? this.currentFeature.id == feature.id
+                  ? this.currentFeature.id === feature.id
                     ? "currentFeature pointerCur flexDisplay"
                     : "pointerCur flexDisplay"
                   : "pointerCur flexDisplay"

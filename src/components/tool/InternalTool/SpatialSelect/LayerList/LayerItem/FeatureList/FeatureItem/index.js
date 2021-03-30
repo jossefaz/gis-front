@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Checkbox } from "semantic-ui-react";
 import IconButton from "../../../../../../../UI/Buttons/IconButton";
-import { Confirm } from "semantic-ui-react";
+import Confirm from "../../../../../../../UI/Modal/Confirm";
 import styles from "../../../../../../../../core/mapStyle";
 import API from "../../../../../../../../core/api";
 
@@ -57,11 +57,10 @@ const FeatureItem = ({ feature, style, removeFeature }) => {
       </div>
 
       <Confirm
-        open={Modal}
-        size="mini"
-        content={erasefeature.content}
-        cancelButton={erasefeature.cancelBtn}
-        confirmButton={erasefeature.confirmBtn}
+        isOpen={Modal}
+        confirmTxt={erasefeature.content}
+        cancelBtnTxt={erasefeature.cancelBtn}
+        confirmBtnTxt={erasefeature.confirmBtn}
         onCancel={() => setModal(false)}
         onConfirm={removeLocalFeature}
       />

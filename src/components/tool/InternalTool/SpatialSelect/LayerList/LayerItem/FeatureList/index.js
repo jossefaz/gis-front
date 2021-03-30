@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { List } from "semantic-ui-react";
 import FeatureItem from "./FeatureItem";
 const CheckboxExampleCheckbox = ({

@@ -1,0 +1,21 @@
+.tool {
+    &__header {
+        background: $gray-400;
+        // color: $gray-600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__name {
+        padding: $tool-padding;
+        font-size: 1.25rem;
+        font-weight: $font-weight-bold;
+        flex-grow: 1;
+    }
+
+    &__close {
+        cursor: pointer;
+        padding: $tool-padding (2 * $tool-padding);
+    }
+}

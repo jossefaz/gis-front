@@ -69,10 +69,12 @@ const _hiddenStyle = new Style({
   }),
 });
 
-export default {
+const styleObject = {
   DRAW_START: _drawStartStyle,
   DRAW_END: _drawEndstyle,
   HIGHLIGHT: _highlight,
   HIDDEN: _hiddenStyle,
   EDIT: _editStyle,
 };
+
+export default styleObject;

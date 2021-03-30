@@ -7,6 +7,7 @@ import {
   ToolMetadata,
   GroupMetadata,
   LayerStateObject,
+  TokenData
 } from "../core/types";
 
 export interface FeatureState {
@@ -62,6 +63,10 @@ export interface UiState {
   sideNavOpen: boolean;
 }
 
+export interface AuthState{
+  jwt : TokenData
+}
+
 export interface GisState {
   Layers: LayerState;
   Features: FeatureState;
@@ -72,4 +77,5 @@ export interface GisState {
   Interactions: InteractionState;
   Overlays: OverlayState;
   ui: UiState;
+  auth:AuthState
 }

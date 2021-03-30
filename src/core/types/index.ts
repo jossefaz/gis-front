@@ -8,3 +8,4 @@ export * from "./raster";
 export * from "./tools";
 export * from "./metadata";
 export * from "./http";
+export * from "./auth";

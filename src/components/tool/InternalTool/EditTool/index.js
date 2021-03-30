@@ -5,7 +5,7 @@ import EditForm from "./EditForm";
 import API from "../../../../core/api";
 import { click } from "ol/events/condition";
 import styles from "../../../../core/mapStyle";
-import { Confirm } from "semantic-ui-react";
+import Confirm from "../../../UI/Modal/Confirm";
 import IconButton from "../../../UI/Buttons/IconButton";
 import withNotifications from "../../../HOC/withNotifications";
 import VectorLayerRegistry from "../../../../core/proxymanagers/vectorlayer";
@@ -275,23 +275,21 @@ class EditTool extends Component {
               size="lg"
             />
             <Confirm
-              open={this.state.openConfirm}
-              size="mini"
-              content={this.state.eraseFeature.content}
-              cancelButton={this.state.eraseFeature.cancelBtn}
-              confirmButton={this.state.eraseFeature.confirmBtn}
+              isOpen={this.state.openConfirm}
+              confirmTxt={this.state.eraseFeature.content}
+              cancelBtnTxt={this.state.eraseFeature.cancelBtn}
+              confirmBtnTxt={this.state.eraseFeature.confirmBtn}
               onCancel={() => this.setState({ openConfirm: false })}
               onConfirm={this.onDeleteConfirm}
             />
             <Confirm
-              open={this.state.openCancelConfirm}
-              size="mini"
-              content={this.state.cancelFeature.content}
-              cancelButton={this.state.cancelFeature.cancelBtn}
-              confirmButton={this.state.cancelFeature.confirmBtn}
+              isOpen={this.state.openCancelConfirm}
+              confirmTxt={this.state.cancelFeature.content}
+              cancelBtnTxt={this.state.cancelFeature.cancelBtn}
+              confirmBtnTxt={this.state.cancelFeature.confirmBtn}
               onCancel={() => this.setState({ openCancelConfirm: false })}
               onConfirm={this.onEditCancelConfirm}
-            />{" "}
+            />
           </React.Fragment>
         )}
       </React.Fragment>

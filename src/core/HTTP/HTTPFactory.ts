@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { ApiCall } from "../types";
-import config from "../../configuration";
 
 class HTTPFactory {
   private static instance: HTTPFactory;
@@ -27,8 +26,8 @@ class HTTPFactory {
       HTTPFactory.instance._clients[endpoint] = axios.create({
         baseURL: endpoint,
       });
-      HTTPFactory.instance._current = endpoint;
     }
+    HTTPFactory.instance._current = endpoint;
     return HTTPFactory.instance;
   }
 

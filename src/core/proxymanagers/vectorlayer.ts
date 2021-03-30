@@ -58,7 +58,7 @@ class VectorLayerProxyManager {
 
   public getFeaturesByExtent = (extent: Extent) => {
     const features: Feature[] = [];
-    Object.values(this._registry).map((vl) => {
+    Object.values(this._registry).forEach((vl) => {
       features.push(...vl.getFeaturesByExtent(extent));
     });
     return features;
@@ -66,7 +66,7 @@ class VectorLayerProxyManager {
 
   public getFeaturesAtCoordinate = (coordinates: Coordinate) => {
     const features: Feature[] = [];
-    Object.values(this._registry).map((vl) => {
+    Object.values(this._registry).forEach((vl) => {
       features.push(...vl.getFeaturesAtCoordinate(coordinates));
     });
     return features;
@@ -88,7 +88,7 @@ class VectorLayerProxyManager {
       .getFocusedMap()
       .getLayers()
       .getArray()
-      .map((lyr) => {
+      .forEach((lyr) => {
         const exists = Boolean(this.getVectorLayer(lyr.get("__NessUUID__")));
         if (
           lyr instanceof ImageLayer &&

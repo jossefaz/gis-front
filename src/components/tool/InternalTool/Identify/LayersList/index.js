@@ -21,7 +21,7 @@ class FeatureList extends Component {
             <td
               className={
                 this.props.currentLayer
-                  ? this.props.currentLayer == layer
+                  ? this.props.currentLayer === layer
                     ? "currentLayer pointerCur"
                     : "pointerCur"
                   : "pointerCur"

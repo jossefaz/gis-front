@@ -1,8 +1,7 @@
 import API from "../core/api";
 import axios from "axios";
-import { WFS, GeoJSON } from "ol/format";
+import { WFS } from "ol/format";
 import { FeatureCollection } from "geojson";
-import GML from "ol/format/GML3";
 import config from "react-global-configuration";
 import { SupportedProjections } from "../core/types/projections";
 import { WriteTransactionOptions } from "ol/format/WFS";

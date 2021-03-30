@@ -35,7 +35,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
         if (currentMapTools.dynamicTools.includes(ToolId)) {
           // Remove the tool from dynamic tools array
           currentMapTools.dynamicTools = currentMapTools.dynamicTools.filter(
-            (id) => id != ToolId
+            (id) => id !== ToolId
           );
           // Open it as Sticky tool
           currentMapTools.tools[ToolId].IsOpen = true;
@@ -50,7 +50,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
 
     case types.CLOSE_DRAG_TOOLS:
       return produce(state, (draftState) => {
-        const { ToolId, mapId, forceOpen, forceClose } = action.payload;
+        const { ToolId, mapId } = action.payload;
         if (!(mapId in draftState)) {
           return state;
         }
@@ -59,7 +59,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
         currentMapTools.unfocus = ToolId;
         currentMapTools.tools[ToolId].IsOpen = false;
         currentMapTools.dynamicTools = currentMapTools.dynamicTools.filter(
-          (id) => id != ToolId
+          (id) => id !== ToolId
         );
         currentMapTools.focused = "";
       });
@@ -123,7 +123,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
     case types.SET_TOOL_FOCUSED:
       // First check if this tool is open
       const { ToolId, mapId } = action.payload;
-      const isDynamicTool = state[mapId].dynamicTools.indexOf(ToolId) != -1;
+      const isDynamicTool = state[mapId].dynamicTools.indexOf(ToolId) !== -1;
       const isFixedTool = state[mapId].stickyTool !== "";
       if (!isDynamicTool && !isFixedTool) {
         console.warn(`unknown toolid tried to be focused ${ToolId}`);
@@ -139,7 +139,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
             currentMapTools.tools[unfocus].IsOpen = false;
           }
           currentMapTools.dynamicTools = currentMapTools.dynamicTools.filter(
-            (id) => id != ToolId
+            (id) => id !== ToolId
           );
           currentMapTools.dynamicTools.unshift(ToolId);
           currentMapTools.focused = ToolId;
@@ -169,7 +169,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
     case types.UNSET_UNFOCUSED_TOOL:
       return produce(state, (draftState) => {
         const { ToolId, mapId } = action.payload;
-        if (ToolId == draftState[mapId].unfocus) {
+        if (ToolId === draftState[mapId].unfocus) {
           draftState[mapId].unfocus = "";
         }
       });

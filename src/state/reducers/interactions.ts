@@ -5,7 +5,6 @@ import { Actions } from "../actions/types";
 import { GisState } from "../stateTypes";
 import produce from "immer";
 import _, { Dictionary } from "lodash";
-import { WritableDraft } from "immer/dist/internal";
 
 const interactionsReducer = (
   state: InteractionState = {},
@@ -24,9 +23,8 @@ const interactionsReducer = (
             draftState[widgetName][focusedmap] = {};
           }
           draftState[widgetName][focusedmap][config.Type] = config;
-          const interactionConfig = <WritableDraft<InteractionConfigStore>>(
-            draftState[widgetName][focusedmap][config.Type]
-          );
+          const interactionConfig =
+            draftState[widgetName][focusedmap][config.Type];
           if (interactionConfig) {
             interactionConfig.status = 1;
           }
@@ -36,7 +34,7 @@ const interactionsReducer = (
     case types.SET_INTERACTIONS:
       return produce(state, (draftState) => {
         const { interactionsPayloadArray, focusedmap } = action.payload;
-        interactionsPayloadArray.map((config) => {
+        interactionsPayloadArray.forEach((config) => {
           const widgetName = config.widgetName;
           if (widgetName) {
             if (!(widgetName in draftState)) {
@@ -46,9 +44,8 @@ const interactionsReducer = (
               draftState[widgetName][focusedmap] = {};
             }
             draftState[widgetName][focusedmap][config.Type] = config;
-            const interactionConfig = <WritableDraft<InteractionConfigStore>>(
-              draftState[widgetName][focusedmap][config.Type]
-            );
+            const interactionConfig =
+              draftState[widgetName][focusedmap][config.Type];
             if (interactionConfig) {
               interactionConfig.status = 1;
             }
@@ -59,11 +56,9 @@ const interactionsReducer = (
       return produce(state, (draftState) => {
         const { uuid, widgetName, Type } = action.payload;
         if (widgetName) {
-          Object.keys(draftState[widgetName]).map((mapId) => {
-            const interactionConfig = <WritableDraft<InteractionConfigStore>>(
-              draftState[widgetName][mapId][Type]
-            );
-            if (interactionConfig && interactionConfig.uuid == uuid) {
+          Object.keys(draftState[widgetName]).forEach((mapId) => {
+            const interactionConfig = draftState[widgetName][mapId][Type];
+            if (interactionConfig && interactionConfig.uuid === uuid) {
               interactionConfig.status = 0;
             }
           });
@@ -71,13 +66,11 @@ const interactionsReducer = (
       });
     case types.UNSET_INTERACTIONS:
       return produce(state, (draftState) => {
-        action.payload.map(({ uuid, widgetName, Type }) => {
+        action.payload.forEach(({ uuid, widgetName, Type }) => {
           if (widgetName) {
-            Object.keys(draftState[widgetName]).map((mapId) => {
-              const interactionConfig = <WritableDraft<InteractionConfigStore>>(
-                draftState[widgetName][mapId][Type]
-              );
-              if (interactionConfig && interactionConfig.uuid == uuid) {
+            Object.keys(draftState[widgetName]).forEach((mapId) => {
+              const interactionConfig = draftState[widgetName][mapId][Type];
+              if (interactionConfig && interactionConfig.uuid === uuid) {
                 interactionConfig.status = 0;
               }
             });
@@ -98,15 +91,15 @@ export const selectCurrentInteractions = (state: GisState) => {
     [widgetOwner: string]: Dictionary<InteractionConfigStore>;
   } = {};
   if (Interactions) {
-    Object.keys(Interactions).map((Widget_Owner) => {
-      Object.keys(Interactions[Widget_Owner]).map((map_id) => {
-        if (map_id == map.focused) {
+    Object.keys(Interactions).forEach((Widget_Owner) => {
+      Object.keys(Interactions[Widget_Owner]).forEach((map_id) => {
+        if (map_id === map.focused) {
           const filtered = _.pickBy(Interactions[Widget_Owner], (value, key) =>
             key.startsWith(map_id)
           );
           const filtered_active = _.pickBy(
             filtered[map_id],
-            (value, key) => value.status == 1
+            (value, key) => value.status === 1
           );
 
           if (Object.keys(filtered_active).length > 0) {
