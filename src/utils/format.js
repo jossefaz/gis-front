@@ -13,9 +13,9 @@ export const formatLength = (line) => {
   });
   var output;
   if (length > 1000) {
-    output = Math.round((length / 1000) * 100) / 100 + " " + "km";
+    output = `${Math.round((length / 1000) * 100) / 100} km `;
   } else {
-    output = Math.round(length * 100) / 100 + " " + "m";
+    output = `${Math.round(length * 100) / 100} m`;
   }
   return output;
 };
@@ -23,9 +23,9 @@ export const formatLength = (line) => {
 export const formatRadius = (circle) => {
   var output;
   if (circle > 1000) {
-    output = Math.round((circle / 1000) * 100) / 100 + " " + "km";
+    output = `${Math.round((circle / 1000) * 100) / 100}km`;
   } else {
-    output = Math.round(circle * 100) / 100 + " " + "m";
+    output = `${Math.round(circle * 100) / 100}m`;
   }
   return `Radius : ${output}`;
 };
@@ -42,9 +42,9 @@ export const formatArea = (polygon) => {
   });
   var output;
   if (area > 100000) {
-    output = Math.round((area / 1000) * 100) / 100 + " " + "km2";
+    output = `${Math.round((area / 1000) * 100) / 100}km2`;
   } else {
-    output = Math.round(area * 100) / 100 + " " + "m2";
+    output = `${Math.round(area * 100) / 100}m2`;
   }
   return output;
 };

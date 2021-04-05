@@ -10,7 +10,6 @@ class MapComponent extends React.Component {
 
   defaultClickTool = async (e) => {
     const opennedTools = this.props.Tools[getFocusedMapUUID()];
-    console.log("CurrentInteractions", this.props.CurrentInteractions);
     if (
       opennedTools.dynamicTools.length === 0 &&
       Object.keys(this.props.CurrentInteractions).length === 0

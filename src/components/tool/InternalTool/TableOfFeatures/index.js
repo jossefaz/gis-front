@@ -10,7 +10,7 @@ class TableOfFeature extends Component {
 
   generateColumns = () => {
     this.columns = this.metadata.featureTypes[0].properties
-      .map((prop) => {
+      .forEach((prop) => {
         if (!prop.type.includes("gml")) {
           return {
             Header: prop.name,
@@ -18,11 +18,7 @@ class TableOfFeature extends Component {
           };
         }
       })
-      .filter((f) => f != undefined);
-    // this.columns = [
-    //   ...this.columns,
-    //   { Header: "Actions", accessor: "actions", id: "actions" },
-    // ];
+      .filter((f) => f !== undefined);
   };
 
   getdata = async () => {
@@ -49,7 +45,7 @@ class TableOfFeature extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.uuid != this.props.uuid) {
+    if (prevProps.uuid !== this.props.uuid) {
       this.initTable();
     }
   }

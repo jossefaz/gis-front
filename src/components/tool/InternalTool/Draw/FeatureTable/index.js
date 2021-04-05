@@ -5,7 +5,7 @@ import API from "../../../../../core/api";
 import { Accordion, Icon } from "semantic-ui-react";
 import "./style.css";
 const { highlightFeature, unhighlightFeature } = API.features;
-export default (props) => {
+const FeatureTable = (props) => {
   const { Header, Body, Row, HeaderCell } = Table;
   const [OveredFeature, serOveredFeature] = useState(null);
   const [active, toggle] = useState(true);
@@ -61,3 +61,4 @@ export default (props) => {
     </React.Fragment>
   );
 };
+export default FeatureTable;

@@ -7,7 +7,7 @@ import {
   saveCanvasAsImage,
   dims,
   MapImage,
-  copyCanvasToClipBoard
+  copyCanvasToClipBoard,
 } from "../../../../utils/export";
 import "./style.css";
 import { isChrome, isEdge, isOpera } from "../../../../utils/browserDetector";
@@ -36,11 +36,11 @@ class Exporter extends React.Component {
   state = {
     format: "a4",
     fileFormat: "pdf",
-    resolution : "150"
+    resolution: "150",
   };
 
   handleResolutionChange = (newResolution) => {
-    this.mapimpage.resolution = newResolution
+    this.mapimpage.resolution = newResolution;
     this.setState({ resolution: newResolution });
   };
 
@@ -49,24 +49,24 @@ class Exporter extends React.Component {
   };
 
   handleFormatChange = (newFormat) => {
-    this.mapimpage.dim = dims[newFormat]
-    this.setState({ format: newFormat});
+    this.mapimpage.dim = dims[newFormat];
+    this.setState({ format: newFormat });
   };
 
   componentDidMount() {
-    this.mapimpage= new MapImage()
-    this.mapimpage.resolution = this.state.resolution
+    this.mapimpage = new MapImage();
+    this.mapimpage.resolution = this.state.resolution;
   }
 
   save = (copy) => {
-    this.mapimpage.createMapCanvas((canvas)=> {
+    this.mapimpage.createMapCanvas((canvas) => {
       if (copy) {
         copyCanvasToClipBoard(canvas);
         this.props.addToast("Copied to clipboard !", {
           appearance: "success",
           autoDismiss: true,
         });
-      } else if (this.state.fileFormat == "pdf") {
+      } else if (this.state.fileFormat === "pdf") {
         exportImageToPdf(
           canvas,
           "map",
@@ -78,12 +78,8 @@ class Exporter extends React.Component {
       } else {
         saveCanvasAsImage(canvas, "map", this.state.fileFormat);
       }
-    })
-
-            
-  }
-
-
+    });
+  };
 
   render() {
     return (

@@ -47,6 +47,7 @@
 //   }
 // }
 
-export default function (state = {}, action) {
+const fake = function (state = {}, action) {
   return {};
-}
+};
+export default fake;

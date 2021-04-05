@@ -30,7 +30,7 @@ class GeneralSpatialSelect extends Component {
   generateOptions = () => {
     if (this.props.Layers) {
       const layersOptions = Object.keys(this.props.Layers)
-        .map((layer) => {
+        .forEach((layer) => {
           if (this.props.VisibleLayers.includes(layer)) {
             const l = this.props.Layers[layer];
             return {
@@ -40,7 +40,7 @@ class GeneralSpatialSelect extends Component {
             };
           }
         })
-        .filter((f) => f != undefined);
+        .filter((f) => f !== undefined);
       this.setState({ layersOptions });
     }
   };

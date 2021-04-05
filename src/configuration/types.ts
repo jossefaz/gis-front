@@ -91,4 +91,5 @@ export interface ConfigObject {
   geoserverUrl: string;
   Geoserver: string;
   MD_server: string;
+  authUrl: string;
 }

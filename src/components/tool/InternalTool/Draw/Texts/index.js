@@ -4,7 +4,7 @@ import { Table } from "semantic-ui-react";
 import { Accordion, Icon } from "semantic-ui-react";
 import "./style.css";
 
-export default (props) => {
+const TextComponent = (props) => {
   const { Header, Body, Row, HeaderCell } = Table;
   const [active, toggle] = useState(true);
 
@@ -60,3 +60,5 @@ export default (props) => {
     </React.Fragment>
   );
 };
+
+export default TextComponent;

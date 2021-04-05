@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Checkbox } from "semantic-ui-react";
+import { useState } from "react";
 import LayerItem from "./LayerItem";
 
 const CheckboxExampleCheckbox = ({ layersUUID, removeLayer }) => {

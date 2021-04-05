@@ -47,9 +47,9 @@ class SpatialSelect extends Component {
     const { buffer } = this.state;
     const { Point, Line, Polygon, Circle } = this.DRAW_TYPES;
     if (
-      ((drawtype == Point || drawtype == Line) && Boolean(buffer)) ||
-      drawtype == Polygon ||
-      drawtype == Circle
+      ((drawtype === Point || drawtype === Line) && Boolean(buffer)) ||
+      drawtype === Polygon ||
+      drawtype === Circle
     ) {
       await this.interactions.newDraw({
         type: drawtype,
@@ -77,7 +77,7 @@ class SpatialSelect extends Component {
           const { source, vector } = getEmptyVectorLayer(styles.DRAW_END);
           vector.setSource(source);
           this.registry.setNewVectorLayer(vector);
-          features.map((f) => {
+          features.forEach((f) => {
             f.setStyle(styles.DRAW_END);
             source.addFeature(f);
           });
@@ -100,7 +100,7 @@ class SpatialSelect extends Component {
   removeLayer = (uuid) => {
     this.registry.removeLayer(uuid);
     const newVectorLayers = this.props.spatialSelection.filter(
-      (id) => id != uuid
+      (id) => id !== uuid
     );
     this.props.setSelectionForLayers(newVectorLayers);
   };
@@ -111,7 +111,7 @@ class SpatialSelect extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps.uuid != this.props.uuid) {
+    if (prevProps.uuid !== this.props.uuid) {
       this.registry.initVectorLayers([this.props.uuid]);
     }
     if (!_.isEqual(prevProps.spatialSelection, this.props.spatialSelection)) {
@@ -146,7 +146,7 @@ class SpatialSelect extends Component {
             placeholder="buffer"
             onChange={this.handleBufferChange}
           />
-          {(drawtype == Point || drawtype == Line) && !Boolean(buffer) && (
+          {(drawtype === Point || drawtype === Line) && !Boolean(buffer) && (
             <div style={{ color: "red" }}>
               לבחירה קווית או נקודתי חייבים להכניס ערך חיץ
             </div>
@@ -155,7 +155,7 @@ class SpatialSelect extends Component {
 
         <IconButton
           className={`ui icon button pointer ${
-            drawtype == Polygon ? "secondary" : "primary"
+            drawtype === Polygon ? "secondary" : "primary"
           }`}
           onClick={() => this.onOpenDrawSession(Polygon)}
           icon="draw-polygon"
@@ -164,7 +164,7 @@ class SpatialSelect extends Component {
 
         <IconButton
           className={`ui icon button pointer ${
-            drawtype == Circle ? "secondary" : "primary"
+            drawtype === Circle ? "secondary" : "primary"
           }`}
           onClick={() => this.onOpenDrawSession(Circle)}
           icon="circle"
@@ -172,7 +172,7 @@ class SpatialSelect extends Component {
         />
         <IconButton
           className={`ui icon button pointer ${
-            drawtype == Line && Boolean(buffer) ? "secondary" : "primary"
+            drawtype === Line && Boolean(buffer) ? "secondary" : "primary"
           }`}
           onClick={() => this.onOpenDrawSession(Line)}
           icon="grip-lines"
@@ -180,7 +180,7 @@ class SpatialSelect extends Component {
         />
         <IconButton
           className={`ui icon button pointer ${
-            drawtype == Point && Boolean(buffer) ? "secondary" : "primary"
+            drawtype === Point && Boolean(buffer) ? "secondary" : "primary"
           }`}
           onClick={() => this.onOpenDrawSession(Point)}
           icon="map-marker-alt"

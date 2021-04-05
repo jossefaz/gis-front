@@ -6,6 +6,7 @@ import { Map } from "ol";
 import mapStyle from "../mapStyle";
 import { MapOptions } from "ol/PluggableMap";
 import { Vector as VectorLayer } from "ol/layer";
+import * as controls from "ol/control";
 import { Vector as VectorSource } from "ol/source";
 import { IMapProxy } from "../types/map";
 import LayerProxy from "./layer";
@@ -36,6 +37,10 @@ export default class MapProxy implements IMapProxy {
       vector: null,
     };
     mapConfig.layers = []; // ensure we begin with an empty layers array
+    mapConfig.controls = controls.defaults({
+      attribution: false,
+      zoom: false,
+    });
     this._olmap = new Map(mapConfig);
   }
 
