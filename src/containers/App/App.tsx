@@ -65,11 +65,11 @@ const App: React.FC = () => {
     ? API.map.getFocusedMapProxy().uuid.value
     : null;
 
-  return jwt.access_token && mapState ? (
+  return (jwt.access_token && mapState) || true ? (
     <React.Fragment>
       <ToastProvider placement="bottom-left">
         <DndProvider backend={HTML5Backend}>
-          <div className="app">
+          <div className="app rtl">
             <div className="app__side">
               <div className="layers-container">
                 <SeachComp />
