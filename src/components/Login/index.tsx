@@ -6,7 +6,7 @@ import { getCredentials } from "../../core/HTTP/auth";
 import { UserCredentials } from "../../core/types";
 
 type Inputs = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -35,11 +35,11 @@ const LoginForm = () => {
                 <i className="user icon"></i>
                 <input
                   type="text"
-                  name="email"
+                  name="username"
                   placeholder="E-mail address"
                   ref={register({ required: true })}
                 />
-                {errors.email && <span>You must enter user email</span>}
+                {errors.username && <span>You must enter user username</span>}
               </div>
             </div>
             <div className="field">
