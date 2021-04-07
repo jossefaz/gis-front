@@ -40,11 +40,11 @@ export default class VectorLayerProxy {
   }
 
   public fromImageLayer = (il: ImageLayer) => {
-    const source = <ImageWMS>il.getSource();
+    const source = il.getSource() as ImageWMS;
     this.uuid = il.get("__NessUUID__");
     this._sourceUrl = source.getUrl();
     this._layername = source.getParams().LAYERS;
-    this._editable = <boolean>il.get("editable");
+    this._editable = il.get("editable") as boolean;
     if (this._layername) {
       this._geoserverUtil = new GeoserverUtil(
         this._layername.split(":")[0],
@@ -211,7 +211,7 @@ export default class VectorLayerProxy {
             if (this._source) {
               const format = this._source.getFormat();
               if (format) {
-                const featurelike = <Feature[]>format.readFeatures(res.data);
+                const featurelike = format.readFeatures(res.data) as Feature[];
                 this._source.addFeatures(featurelike);
               }
             }

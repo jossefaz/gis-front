@@ -1,12 +1,11 @@
 import API from "../api";
 import { GeoserverUtil, TransactionMode } from "../../utils/Geoserver";
-import { Image as ImageLayer, Vector as VectorLayer } from "ol/layer";
+import { Image as ImageLayer } from "ol/layer";
 import { mainStore as store } from "../../state/store";
 import { ActionTypes } from "../../state/actions/types/features";
-import _ from "lodash";
 import convert from "xml-js";
 import VectorLayerRegistry from "../proxymanagers/vectorlayer";
-import VLProxy from "../proxy/vectorlayers";
+import VLProxy from "./vectorlayers";
 import { EditKeyWords } from "../types/edit";
 import Feature from "ol/Feature";
 import { ImageWMS } from "ol/source";
@@ -18,8 +17,6 @@ export default class EditLayerProxy {
   private _imagelayer: ImageLayer | undefined;
   private _geoserverUtil: GeoserverUtil | undefined;
   private _originalProperties: { [key: string]: any } | undefined | null;
-
-  constructor() {}
 
   get vectorLayerProxy() {
     return this._vectorLayerProxy;
@@ -35,7 +32,7 @@ export default class EditLayerProxy {
 
   set imagelayer(il) {
     if (il instanceof ImageLayer) {
-      const source = <ImageWMS>il.getSource();
+      const source = il.getSource() as ImageWMS;
       const url = source.getUrl();
       if (url) {
         const featureType = url.split("LAYERS=")[1];
@@ -54,7 +51,7 @@ export default class EditLayerProxy {
     newProperties: { [key: string]: any }
   ) => {
     this._originalProperties = API.features.getFeatureProperties(feature);
-    Object.keys(this._originalProperties).map((prop) => {
+    Object.keys(this._originalProperties).forEach((prop) => {
       if (
         this._originalProperties &&
         this._originalProperties[prop] !== newProperties[prop]
@@ -66,7 +63,7 @@ export default class EditLayerProxy {
 
   private _rollBackUpdateProperties = (feature: Feature) => {
     this._originalProperties &&
-      Object.keys(this._originalProperties).map((prop) => {
+      Object.keys(this._originalProperties).forEach((prop) => {
         this._originalProperties &&
           feature.set(prop, this._originalProperties[prop]);
       });
@@ -97,7 +94,7 @@ export default class EditLayerProxy {
     properties: { [key: string]: any }
   ) => {
     if (feature) {
-      Object.keys(properties).map((prop) => {
+      Object.keys(properties).forEach((prop) => {
         feature.set(prop, properties[prop]);
       });
       if (!(await this._WFSTransaction(feature, TransactionMode.INSERT))) {
@@ -117,7 +114,7 @@ export default class EditLayerProxy {
       registry.removeLayer(this._vectorLayerProxy.uuid);
   };
 
-  public save = async (newProperties: { [key: string]: any }) => {
+  public save = async (newProperties?: { [key: string]: any }) => {
     if (this._currentFeature) {
       if (newProperties) {
         this._updatePropertiesOnFeature(this._currentFeature, newProperties);
@@ -171,7 +168,7 @@ export default class EditLayerProxy {
 
   public refreshLayers = () => {
     if (this._imagelayer && this._vectorLayerProxy) {
-      const source = <ImageWMS>this._imagelayer.getSource();
+      const source = this._imagelayer.getSource() as ImageWMS;
       source.updateParams({ TIMESTAMP: Date.now() });
       this._vectorLayerProxy.refresh();
     }
@@ -186,7 +183,6 @@ export default class EditLayerProxy {
         transactionType,
         [feature]
       );
-      console.log("WFS response", response);
       return response;
     }
   };

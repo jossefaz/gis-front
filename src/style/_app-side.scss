@@ -37,7 +37,7 @@
     }
 
     .layers-block {
-        padding: 0.5rem ($side-icon-width + 0.5rem) 0.5rem 0.5rem;
+        padding: 1rem ($side-icon-width + 1rem) 1rem 1rem;
         height: calc(100% - #{$searchbar-height});
         background: #fff; // rgba(purple, 0.2);
     }

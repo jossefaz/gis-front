@@ -42,8 +42,8 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
         if (currentLayer) {
           const index = draftState[focusedmap].selectedFeatures[
             currentLayer
-          ].findIndex((el) => el.id == featureId);
-          if (index != -1) {
+          ].findIndex((el) => el.id === featureId);
+          if (index !== -1) {
             draftState[focusedmap].selectedFeatures[currentLayer].splice(
               index,
               1,
@@ -51,7 +51,7 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
             );
             const currentFeature =
               draftState[action.payload.focusedmap].currentFeature;
-            if (currentFeature && currentFeature.id == featureId) {
+            if (currentFeature && currentFeature.id === featureId) {
               draftState[action.payload.focusedmap].currentFeature = newFeature;
             }
           }
@@ -65,8 +65,8 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
         if (currentLayer) {
           const index = draftState[focusedmap].selectedFeatures[
             currentLayer
-          ].findIndex((el) => el.id == featureId);
-          if (index != -1) {
+          ].findIndex((el) => el.id === featureId);
+          if (index !== -1) {
             draftState[focusedmap].selectedFeatures[currentLayer].splice(
               index,
               1
@@ -78,7 +78,7 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
               draftState[focusedmap].currentLayer = null;
             }
             const currentFeature = draftState[focusedmap].currentFeature;
-            if (currentFeature && currentFeature.id == featureId) {
+            if (currentFeature && currentFeature.id === featureId) {
               draftState[focusedmap].currentFeature = null;
             }
           }

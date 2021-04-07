@@ -4,7 +4,7 @@ import IconButton from "../../../UI/Buttons/IconButton";
 import MousePosition from "ol/control/MousePosition";
 import { createStringXY } from "ol/coordinate";
 import { convertCoordToIsraelTM } from "../../../../utils/projections";
-import { Table, Label, Input, Button, Form } from "semantic-ui-react";
+import { Table, Input, Form } from "semantic-ui-react";
 import withWidgetLifeCycle from "../../../HOC/withWidgetLifeCycle";
 import Point from "ol/geom/Point";
 import "./style.css";
@@ -125,21 +125,6 @@ class MyCustomWidget extends Component {
     }
   };
 
-  onReset = () => {
-    // Put here the logic when the user switched map : you could alert the user before switching map to save aany data
-  };
-
-  onUnfocus = () => {
-    // Put here the logic when the user click on another widget an this one will be unfocused :
-    // For example, if you add Interaction to the map, this is the place to remove those interaction in order to let the others
-    // widget to add their own interactions
-  };
-
-  onFocus = async () => {
-    // Put here the logic when the user click on this widget window :
-    // For example, this is the place to add interactions, layers, overlays to the map
-  };
-
   componentWillUnmount() {
     getFocusedMap().removeControl(this.mousePositionControl);
   }
@@ -158,7 +143,7 @@ class MyCustomWidget extends Component {
                 <Select
                   value={
                     projectionsOptions.filter(
-                      (pr) => pr.value == this.state.projection
+                      (pr) => pr.value === this.state.projection
                     )[0].value
                   }
                   placeholder="Choose a projection"

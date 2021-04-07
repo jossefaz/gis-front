@@ -1,6 +1,6 @@
 import API from "../api";
 import EditProxy from "../proxy/edit";
-import VectorLayerRegistry from "../proxymanagers/vectorlayer";
+import VectorLayerRegistry from "./vectorlayer";
 import { Vector as VectorLayer, Image as ImageLayer } from "ol/layer";
 
 class EditProxyManager {
@@ -42,7 +42,7 @@ class EditProxyManager {
         .getFocusedMap()
         .getLayers()
         .getArray()
-        .map((lyr) => {
+        .forEach((lyr) => {
           const lyrid = lyr.get("__NessUUID__");
           lyr.set("editable", true); //TODO : REMOVE AND REPLACE BY REAL LOGIC
           if (lyr.get("editable") && layernames.includes(lyrid)) {
@@ -61,7 +61,6 @@ class EditProxyManager {
               }
             }
             if (lyr instanceof ImageLayer) {
-              console.log("this", this);
               if (!this._registry[lyrid]) {
                 this._registry[lyrid] = new EditProxy();
               }

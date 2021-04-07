@@ -20,7 +20,7 @@ export const setSelectedFeatures = (features: OLFeature[]) => (
   if (features) {
     const focusedmap = API.map.getFocusedMapUUID();
     const featuresByLayers: { [layerid: string]: Feature[] } = {};
-    features.map((f) => {
+    features.forEach((f) => {
       let layer;
       const parentuuid = f.get("__NessUUID__");
       f.unset("__NessUUID__");
@@ -56,7 +56,7 @@ export const setCurrentFeature = (featureId: string) => (
     const { selectedFeatures, currentLayer } = getState().Features[focusedmap];
     if (currentLayer) {
       const currentFeature = selectedFeatures[currentLayer].filter(
-        (feature: Feature) => feature.id == featureId
+        (feature: Feature) => feature.id === featureId
       );
       dispatch<SetCurrentFeatureAction>({
         type: types.SET_CURRENT_FEATURE,

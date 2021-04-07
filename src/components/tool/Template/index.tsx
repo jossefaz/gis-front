@@ -20,14 +20,17 @@ const ToolTemplate: React.FC<Props> = (props) => {
       <div className="tool tool--sticky">
         <div className="tool__header">
           <div className="tool__name">{props.toolName}</div>
-          <div className="tool__close"
+          <div
+            className="tool__close"
             onClick={(e) => {
               e.stopPropagation();
               toggleTool(props.ToolID, false, false);
             }}
-          ><i className="gis-icon gis-icon--minus"></i></div>
+          >
+            <i className="gis-icon gis-icon--minus"></i>
+          </div>
         </div>
-        
+
         <div>{props.children}</div>
       </div>
     );
@@ -36,6 +39,18 @@ const ToolTemplate: React.FC<Props> = (props) => {
   function getDynamicTemplate() {
     return (
       <PopUp>
+        <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
+          <div className="buttons">
+            <div
+              className="close"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeDragTool(props.ToolID, false, false);
+              }}
+            ></div>
+          </div>
+          <div className="content uirtl">{props.children}</div>
+        </div>
         <div
           className={`window ${props.focused ? "focusedWindow" : ""}`}
           onClick={(e) => {
@@ -43,30 +58,12 @@ const ToolTemplate: React.FC<Props> = (props) => {
             setToolFocused(props.ToolID);
           }}
         >
-          <div className={`titlebar ${props.focused ? "focusedTool" : ""}`}>
-            <div className="buttons">
-              <div className="close">
-                <a
-                  className="closebutton"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    closeDragTool(props.ToolID, false, false);
-                  }}
-                >
-                  <span>
-                    <strong>x</strong>
-                  </span>
-                </a>
-              </div>
-            </div>
-            {props.toolName}
-          </div>
           <div className="content uirtl">{props.children}</div>
         </div>
       </PopUp>
     );
   }
-  
+
   return issticky ? getStickyTemplate() : getDynamicTemplate();
 };
 

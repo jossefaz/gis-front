@@ -47,7 +47,7 @@ export const setInteractions = (interactionsArray: InteractionOptions[]) => (
   dispatch: Dispatch
 ) => {
   const interactionsPayloadArray: InteractionConfigStore[] = [];
-  interactionsArray.map((config) => {
+  interactionsArray.forEach((config) => {
     const uuid = API.interactions.addInteraction(config);
     if ("sourceLayer" in config && uuid) {
       if (config.sourceLayer) {
@@ -93,7 +93,7 @@ export const unsetInteractions = (interactionsArray: InteractionOptions[]) => (
   dispatch: Dispatch
 ) => {
   const interactionsPayloadArray: InteractionConfigStore[] = [];
-  interactionsArray.map((config) => {
+  interactionsArray.forEach((config) => {
     if (config.uuid) {
       API.interactions.removeInteraction(config.uuid);
       interactionsPayloadArray.push(config);

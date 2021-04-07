@@ -1,9 +1,7 @@
 import types from "./types";
-import LifeCycleRegistry from "./LifeCycle";
 import API from "../../core/api";
 import { GisState, MapsToolState } from "../stateTypes";
 import { Dispatch } from "redux";
-import { ToolMetadata, ToolConfig } from "../../core/types";
 import {
   ToogleToolAction,
   ToogleToolByNameAction,
@@ -58,7 +56,7 @@ export const toggleToolByName = (
   const mapId = API.map.getFocusedMapUUID();
   const ToolState = getState().Tools[mapId].tools;
   const ToolId = Object.keys(ToolState).find(
-    (Id) => ToolState[Id].ToolName == ToolName
+    (Id) => ToolState[Id].ToolName === ToolName
   );
   if (ToolId) {
     dispatch<ToogleToolByNameAction>({
@@ -126,11 +124,11 @@ export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
   const blueprint = { tools: {}, Groups: {} };
   const mapId = API.map.getFocusedMapUUID();
 
-  ToolConfig.groups.map((group) => {
+  ToolConfig.groups.forEach((group) => {
     gTools.Groups[group.Id] = group;
   });
 
-  ToolConfig.tools.map((tool) => {
+  ToolConfig.tools.forEach((tool) => {
     const toolcpy = { ...tool };
     const { Id, ToolGroupId } = tool;
     let RandomId = (
@@ -158,8 +156,8 @@ export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
   });
 };
 
-const _getLifeCycleFunc = (toolState: ToolMetadata) => {
-  return toolState.IsOpen
-    ? LifeCycleRegistry[toolState.OnDestroy]
-    : LifeCycleRegistry[toolState.OnCreate];
-};
+// const _getLifeCycleFunc = (toolState: ToolMetadata) => {
+//   return toolState.IsOpen
+//     ? LifeCycleRegistry[toolState.OnDestroy]
+//     : LifeCycleRegistry[toolState.OnCreate];
+// };

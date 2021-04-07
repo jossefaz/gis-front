@@ -11,7 +11,7 @@ import { InteractionOptions } from "../types/interaction";
 export function getInteraction<T>(uuid: string): T | false {
   const proxy = getInteractionProxy(uuid);
   if (proxy && proxy.OLInteraction) {
-    return <T>(<unknown>proxy.OLInteraction);
+    return (proxy.OLInteraction as unknown) as T;
   }
   return false;
 }
@@ -51,7 +51,6 @@ export const addInteraction = (config: InteractionOptions): string | false => {
   const proxy = new InteractionProxy(config);
   getFocusedMapProxy().addInteractionProxy(proxy);
   if (proxy.addSelfToMap(getFocusedMapProxy())) {
-    console.log("getFocusedMapProxy", getFocusedMapProxy());
     return proxy.uuid.value;
   }
 

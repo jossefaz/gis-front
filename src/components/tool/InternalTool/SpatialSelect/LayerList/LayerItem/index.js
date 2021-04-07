@@ -2,8 +2,8 @@ import React, { useState, useRef } from "react";
 import { Checkbox } from "semantic-ui-react";
 import VectorLayerRegistry from "../../../../../../core/proxymanagers/vectorlayer";
 import IconButton from "../../../../../UI/Buttons/IconButton";
-import { Confirm } from "semantic-ui-react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import Confirm from "../../../../../UI/Modal/Confirm";
+import { Accordion } from "semantic-ui-react";
 import ColorPicker from "../../../../../UI/ColorPicker/ColorPicker";
 import { generateNewPolygonStyle } from "../../../../../../utils/func";
 import FeatureList from "./FeatureList";
@@ -73,7 +73,7 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
 
   const removeFeature = (feature) => {
     currentlayerSource.removeFeature(feature);
-    if (currentlayerSource.getFeatures().length == 0) {
+    if (currentlayerSource.getFeatures().length === 0) {
       removeLocalLayer();
     }
     setUpdate(!update);
@@ -199,11 +199,10 @@ const LayerItem = ({ uuid, index, removeLayer, activeIndex, openItem }) => {
       </div>
 
       <Confirm
-        open={Modal}
-        size="mini"
-        content={eraselayer.content}
-        cancelButton={eraselayer.cancelBtn}
-        confirmButton={eraselayer.confirmBtn}
+        isOpen={Modal}
+        confirmTxt={eraselayer.content}
+        cancelBtnTxt={eraselayer.cancelBtn}
+        confirmBtnTxt={eraselayer.confirmBtn}
         onCancel={() => setModal(false)}
         onConfirm={removeLocalLayer}
       />

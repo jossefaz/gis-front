@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { selectLayers } from "../../../state/selectors/layersSelector";
-import { Icon, Button } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
+import { Button } from "react-bootstrap";
 import API from "../../../core/api";
 import { addLayerToOLMap, setMapLayerVisible } from "../../../state/actions";
 import "../style.css";

@@ -1,17 +1,16 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import config from "../../../configuration";
 import { Menu, Icon } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
 import { parseString } from "xml2js";
-import { setMapLayerOpacity } from "../../../state/actions";
 import { selectLayers } from "../../../state/selectors/layersSelector";
-import { getXMLResponse } from "../../../communication/apiManager";
 import API from "../../../core/api";
 import LegendItem from "../../tool/InternalTool/Legend/LegendItem";
 import EditTool from "../../tool/InternalTool/EditTool";
 import LayerListTOF from "../LayerListTOF";
 import SpatialSelect from "../../tool/InternalTool/SpatialSelect";
+import { setMapLayerOpacity } from "../../../state/actions";
 
 class LayerListMenuItem extends Component {
   state = {
@@ -63,6 +62,15 @@ class LayerListMenuItem extends Component {
         break;
     }
   };
+  getXMLResponse = async (url) => {
+    try {
+      const response = await fetch(url);
+      let data = await response.text();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   zoomToLayer = (lyr) => {
     let map = API.map.getFocusedMap();
@@ -75,7 +83,7 @@ class LayerListMenuItem extends Component {
       else {
         let url = config().geoserverUrl;
         if (url) {
-          getXMLResponse(
+          this.getXMLResponse(
             url + "wms?&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities"
           ).then((response) => {
             let boundingBox;

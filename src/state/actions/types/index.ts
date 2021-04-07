@@ -8,7 +8,7 @@ import { ActionTypes as mapActionsTypes, MapActions } from "./map";
 import { ActionTypes as overlaysActionsTypes, OverlayActions } from "./overlay";
 import { ActionTypes as rasterActionsTypes, RasterActions } from "./raster";
 import { ActionTypes as toolsActionsTypes, ToolsActions } from "./tools";
-
+import { ActionTypes as authActionsTypes, AuthActions } from "./auth";
 import { ActionTypes as uiActionsTypes, UiActions } from "./ui";
 
 const actionTypes = {
@@ -20,6 +20,7 @@ const actionTypes = {
   ...rasterActionsTypes,
   ...toolsActionsTypes,
   ...uiActionsTypes,
+  ...authActionsTypes
 };
 
 export type Actions =
@@ -30,6 +31,7 @@ export type Actions =
   | LayersActions
   | ToolsActions
   | RasterActions
-  | UiActions;
+  | UiActions
+  | AuthActions
 
 export default actionTypes;

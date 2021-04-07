@@ -7,9 +7,7 @@ import {
   unsetInteractions,
   setInteractions,
 } from "../state/actions/interaction";
-import { Options as SelectOptions } from "ol/interaction/Select";
-import { Options as ModifyOptions } from "ol/interaction/Modify";
-import { Options as DrawOptions } from "ol/interaction/Draw";
+import Draw, { Options as DrawOptions } from "ol/interaction/Draw";
 import {
   InteractionOptions,
   InteractionSupportedTypes as INTERACTION_TYPE,
@@ -18,7 +16,7 @@ import { Collection, Feature } from "ol";
 import BaseLayer from "ol/layer/Base";
 import { Condition } from "ol/events/condition";
 import styles from "../core/mapStyle";
-import VectorSource from "ol/source/Vector";
+import { DragBox } from "ol/interaction";
 
 export class InteractionUtil {
   private _widget: string;
@@ -66,7 +64,7 @@ export class InteractionUtil {
     return API.map.getFocusedMapUUID();
   }
 
-  get currentDraw() {
+  get currentDraw(): Draw | false {
     if (this.currentDrawUUID && typeof this.currentDrawUUID === "string") {
       return API.interactions.getInteraction(this.currentDrawUUID);
     }
@@ -87,12 +85,14 @@ export class InteractionUtil {
     return false;
   }
 
-  get currentDragBox() {
+  get currentDragBox(): DragBox | false {
     if (
       this.currentDragBoxUUID &&
       typeof this.currentDragBoxUUID === "string"
     ) {
-      return API.interactions.getInteraction(this.currentDragBoxUUID);
+      return API.interactions.getInteraction(
+        this.currentDragBoxUUID
+      ) as DragBox;
     }
     return false;
   }
@@ -217,7 +217,7 @@ export class InteractionUtil {
   unsetAll = () => {
     if (Object.keys(this.store).length > 0) {
       const InteractionArray: InteractionOptions[] = [];
-      Object.keys(this.store).map((InteractionName) => {
+      Object.keys(this.store).forEach((InteractionName) => {
         const { uuid, Type } = this.store[InteractionName];
         InteractionArray.push({ uuid, widgetName: this._widget, Type });
       });
@@ -237,7 +237,7 @@ export class InteractionUtil {
   setAll = () => {
     if (this.store) {
       const InteractionArray: InteractionOptions[] = [];
-      Object.keys(this.store).map((InteractionName) => {
+      Object.keys(this.store).forEach((InteractionName) => {
         const { Type, status, interactionConfig } = this.store[InteractionName];
         if (!status) {
           InteractionArray.push({

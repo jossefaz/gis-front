@@ -21,10 +21,10 @@ a {
   text-decoration: none;
 }
 
-span {
+/* span {
   line-height: 9px;
   vertical-align: 50%;
-}
+} */
 
 .uirtl {
   direction: rtl;

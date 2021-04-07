@@ -30,13 +30,17 @@ class GroupTool extends React.Component {
           open={Boolean(IsOpen)}
           item
           icon={
-            <a onClick={CloseCB}>
+            <button onClick={CloseCB}>
               {GroupImage ? (
-                <img className="imageitem" src={`/img/${GroupImage}`} />
+                <img
+                  className="imageitem"
+                  src={`/img/${GroupImage}`}
+                  alt="the group icon"
+                />
               ) : (
                 GroupName
               )}
-            </a>
+            </button>
           }
         >
           <Dropdown.Menu id={"Group" + GroupID}>

@@ -1,0 +1,74 @@
+// main list
+// 
+// ======================
+.layers-list {
+    
+    &__toggle {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 0.5rem 0;
+        
+        .gis-icon {
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            opacity: 0.5;
+            transition: color 0.2s linear, transform 0.35s ease;
+        }
+        
+        &:hover {
+            color: $primary;
+            
+            .gis-icon {
+                opacity: 1;
+            }
+        }
+        
+        &--active {
+            .gis-icon {
+                transform: rotate(-90deg);
+            }
+        }
+    }
+    
+    &__toggle-text {
+        flex-grow: 1;
+        display: block;
+    }
+    
+    &__collapse {
+        padding-right: 1.25rem;
+    }
+}
+
+// list item
+// 
+// ======================
+.layer-list-item {
+    font-size: 0.875rem;
+
+    &:last-child {
+        padding-bottom: 1.5rem;
+    }
+
+    &__title {
+        display: flex;
+        align-items: center;
+
+        .custom-checkbox {
+            flex-grow: 1;
+        }
+
+        .custom-control-label {
+            display: block;
+            cursor: pointer;
+        }
+
+        .gis-icon {
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+    }
+}

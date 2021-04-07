@@ -6,3 +6,4 @@ export * from "./overlay";
 export * from "./raster";
 export * from "./tools";
 export * from "./ui";
+export * from "./auth";
