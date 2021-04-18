@@ -4,7 +4,7 @@ import config from "./../../configuration";
 import { ApiCall } from "../types/http";
 
 export async function getCredentials(credentials: UserCredentials) {
-  const client = HTTPFactory.getInstance(config().geoserverUrl);
+  const client = HTTPFactory.getInstance(config().API["geoserver"]);
   const request: ApiCall = {
     url: "/",
     method: "POST",

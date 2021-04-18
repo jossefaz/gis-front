@@ -9,7 +9,7 @@ export async function getMetaData(metaDataType: MetaDataType) {
   var url;
   var functionName;
 
-  var metaDataApi = config().metaDataApi;
+  var metaDataApi = config().API["metaData"];
 
   if (metaDataApi != null) functionName = metaDataType;
 

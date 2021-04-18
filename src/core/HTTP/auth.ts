@@ -4,7 +4,7 @@ import config from "./../../configuration";
 import { ApiCall } from "../types/http";
 
 export async function getCredentials(credentials: UserCredentials) {
-  const client = HTTPFactory.getInstance(config().authUrl);
+  const client = HTTPFactory.getInstance(config().API["auth"]);
   const request: ApiCall = {
     url: "/",
     method: "POST",

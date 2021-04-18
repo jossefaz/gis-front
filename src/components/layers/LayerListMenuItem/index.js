@@ -81,7 +81,7 @@ class LayerListMenuItem extends Component {
 
       if (this.state.boundingBox) this.fitExtent();
       else {
-        let url = config().geoserverUrl;
+        let url = config().API["geoserver"];
         if (url) {
           this.getXMLResponse(
             url + "wms?&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities"
