@@ -32,7 +32,7 @@
     "lodash": "^4.17.21",
     "node-sass": "^5.0.0",
     "npm": "^7.7.5",
-    "ol": "^6.2.1",
+    "ol": "^6.4.2",
     "proj4": "^2.7.2",
     "react": "^17.0.2",
     "react-autosuggest": "^10.1.0",
@@ -68,7 +68,7 @@
     "xml2js": "^0.4.23"
   },
   "scripts": {
-    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://localhost:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:8001/MetaData/getMetaData/ REACT_APP_APP_CONFIG=http://localhost:8001 react-scripts start",
+    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://localhost:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:8020/MetaData/getMetaData/ REACT_APP_APP_CONFIG=http://localhost:8020 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
