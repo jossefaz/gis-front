@@ -1,5 +1,6 @@
 import { ActionTypes } from "./actionsTypes";
 import { ReduxLayer, LayerStateObject } from "../../../../core/types";
+import { GeoJSONFeatureCollection } from "ol/format/GeoJSON";
 
 interface AddLayersActionPayload {
   mapId: string;
@@ -26,6 +27,11 @@ interface InitLayersActionPayload {
 interface InitLayersInternalActionPayload {
   mapId: string;
   layersObject: LayerStateObject;
+}
+
+export interface CreateCustomLayerAction {
+  type: ActionTypes.CREATE_CUSTOM_LAYER;
+  payload: number;
 }
 
 export interface AddLayersAction {

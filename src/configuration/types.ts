@@ -91,4 +91,9 @@ export interface ConfigObject {
   Widgets: Widgets;
   channels: Channels;
   API: APIS;
+  Auth: {
+    headerName: string;
+    headerType: string;
+    headerRequestId: string;
+  };
 }

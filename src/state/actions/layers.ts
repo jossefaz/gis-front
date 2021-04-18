@@ -15,8 +15,11 @@ import {
   SetMapLayerVisibleAction,
   InitLayersAction,
   InitLayersInternalAction,
+  CreateCustomLayerAction,
 } from "./types/layers/actions";
 import { Dispatch } from "redux";
+import { GeoJSONFeatureCollection } from "ol/format/GeoJSON";
+import { createLayers } from "../../core/HTTP/usersLayers";
 
 export const addLayers = (arrayOfNessLayers: IJsonMDLayer[]) => (
   dispatch: Dispatch
@@ -57,6 +60,24 @@ export const addLayerToOLMap = (layerId: string, visible: boolean) => (
         },
       });
     }
+  }
+};
+
+export const createCustomLayer = (
+  layerName: string,
+  isPublic: boolean,
+  featureCollection: GeoJSONFeatureCollection
+) => async (dispatch: Dispatch) => {
+  const layerResponse = await createLayers(
+    layerName,
+    isPublic,
+    featureCollection
+  );
+  if (layerResponse) {
+    dispatch<CreateCustomLayerAction>({
+      type: types.CREATE_CUSTOM_LAYER,
+      payload: layerResponse,
+    });
   }
 };
 
