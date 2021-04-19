@@ -63,22 +63,11 @@ export const addLayerToOLMap = (layerId: string, visible: boolean) => (
   }
 };
 
-export const createCustomLayer = (
-  layerName: string,
-  isPublic: boolean,
-  featureCollection: GeoJSONFeatureCollection
-) => async (dispatch: Dispatch) => {
-  const layerResponse = await createLayers(
-    layerName,
-    isPublic,
-    featureCollection
-  );
-  if (layerResponse) {
-    dispatch<CreateCustomLayerAction>({
-      type: types.CREATE_CUSTOM_LAYER,
-      payload: layerResponse,
-    });
-  }
+export const createCustomLayer = (layer_id: number) => (dispatch: Dispatch) => {
+  dispatch<CreateCustomLayerAction>({
+    type: types.CREATE_CUSTOM_LAYER,
+    payload: layer_id,
+  });
 };
 
 export const setMapLayerVisible = (layerId: string, visible: boolean) => (

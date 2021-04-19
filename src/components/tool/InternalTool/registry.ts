@@ -11,5 +11,6 @@ const REGISTRY = {
   TestTableOfFeature: lazy(() => import("./TableOfFeatures/Container")),
   TestSpatialSelect: lazy(() => import("./SpatialSelect/Container")),
   Tool404: lazy(() => import("./404")),
+  Geofiles: lazy(() => import("./Geofiles")),
 };
 export default REGISTRY;

@@ -25,6 +25,7 @@ import Point from "ol/geom/Point";
 import axios from "axios";
 import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
 import { createCustomLayer } from "../../../../state/actions";
+import { createLayers } from "../../../../core/HTTP/usersLayers";
 import { fromCircle } from "ol/geom/Polygon";
 import "./style.css";
 
@@ -340,7 +341,7 @@ class Draw extends React.Component {
     return this.DrawSource ? this.DrawSource.getFeatures() : [];
   };
 
-  onSaveFeatures = () => {
+  onSaveFeatures = async () => {
     const Features = this.getDrawnFeatures();
     if (Features.length > 0) {
       const FeatureCollection = [];
@@ -353,10 +354,13 @@ class Draw extends React.Component {
         const geojson = writer.writeFeatureObject(feature);
         FeatureCollection.push(geojson);
       });
-      this.props.createCustomLayer("testfromclient", true, {
+      const layer_id = await createLayers("testfromclient", true, {
         type: "FeatureCollection",
         features: FeatureCollection,
       });
+      if (layer_id) {
+        this.props.createCustomLayer(layer_id);
+      }
     }
   };
 
