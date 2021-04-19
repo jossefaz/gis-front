@@ -94,7 +94,6 @@ const Identify: React.FC = () => {
   };
   const areVisibleLayersEquals = _.isEqual(currentLayers, VisibleLayers);
   useEffect(() => {
-    debugger;
     if (SelectedFeatures) {
       editProxy = EditProxy.getInstance(VisibleLayers);
     }
