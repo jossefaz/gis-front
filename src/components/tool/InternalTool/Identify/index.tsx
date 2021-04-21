@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import FeatureList from "./FeatureList";
 import FeatureDetail from "./FeatureDetail";
 import ContextMenu from "../../../ContextMenus";
 import LayersList from "./LayersList";
@@ -9,7 +8,7 @@ import {
   selectSelectedFeatures,
   selectCurrentFeature,
 } from "../../../../state/reducers";
-import "./style.css";
+import "./identify.scss";
 import VectorLayerRegistry from "../../../../core/proxymanagers/vectorlayer";
 import { InteractionUtil } from "../../../../utils/interactions";
 import EditProxy from "../../../../core/proxymanagers/edit";
@@ -94,7 +93,6 @@ const Identify: React.FC = () => {
   };
   const areVisibleLayersEquals = _.isEqual(currentLayers, VisibleLayers);
   useEffect(() => {
-    debugger;
     if (SelectedFeatures) {
       editProxy = EditProxy.getInstance(VisibleLayers);
     }
@@ -116,18 +114,20 @@ const Identify: React.FC = () => {
   return (
     <React.Fragment>
       {SelectedFeatures && Object.keys(SelectedFeatures).length > 0 ? (
-        <div className="flexDisplay">
+        <div className="identify">
           <LayersList />
-          <FeatureList />
           {currentFeature && (
-            <React.Fragment>
+            <div className="side-extra-container">
               <FeatureDetail onEditGeometry={onEditGeometry} />
               <ContextMenu Feature={currentFeature} />
-            </React.Fragment>
+            </div>
           )}
         </div>
       ) : (
-        <p>Select on the map</p>
+        <div className="px-tool py-3">
+          <p>אנא בחרו יישויות ע"י סימון וגרירה על גבי המפה.</p>
+          <p>במידה ואינכם רואים כלל שכבות, יש לבחור שכבות פעילות.</p>
+        </div>
       )}
     </React.Fragment>
   );

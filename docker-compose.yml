@@ -2,13 +2,13 @@ version: "3"
 
 services:
   gis_front:
-    image: yossefaz/gis_front:latest
+    stdin_open: true
     build:
       context: .
-      args:
-        - GEOSERVER_ENDPOINT=http://meitarimdb:8080/geoserver/
-        - MD_SERVER_ENDPOINT=http://meitarimdb:5001/MetaData/getMetaData/
-        - CONFIG=./config.json
+      dockerfile: Dockerfile.dev
     ports:
-      - "3002:3000"
+      - "3000:3000"
     restart: on-failure
+    volumes:
+      - "/app/node_modules"
+      - "./:/app"

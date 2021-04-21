@@ -9,7 +9,6 @@ const Loader: React.FC<{ ToolID: string }> = (props) => {
   if (currentTools) {
     const { ToolName } = currentTools.tools[props.ToolID];
     const focused = currentTools.dynamicTools[0] === props.ToolID;
-    debugger;
     return (
       <React.Fragment>
         <ToolTemplate

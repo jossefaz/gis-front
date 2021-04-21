@@ -4,8 +4,8 @@ import { fetchConfig } from "./configuration";
 import { Provider } from "react-redux";
 import { mainStore as store } from "./state";
 // import "./style.css";
+// import "semantic-ui-css/semantic.min.css";
 import "./style/style.scss";
-import "semantic-ui-css/semantic.min.css";
 
 fetchConfig().then((config) => {
   if (config) {
@@ -17,3 +17,4 @@ fetchConfig().then((config) => {
     );
   }
 });
+

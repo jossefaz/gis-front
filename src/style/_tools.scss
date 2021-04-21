@@ -8,7 +8,7 @@
     }
 
     &__name {
-        padding: $tool-padding;
+        padding: 0.5rem $tool-padding-start 0.5rem $tool-padding-end;
         font-size: 1.25rem;
         font-weight: $font-weight-bold;
         flex-grow: 1;
@@ -16,6 +16,13 @@
 
     &__close {
         cursor: pointer;
-        padding: $tool-padding (2 * $tool-padding);
+        padding: 0.5rem $tool-padding-start 0.5rem $tool-padding-end;
     }
+
+    &__side-padded, .px-tool {
+        padding-right: $tool-padding-start;
+        padding-left: $tool-padding-end;
+    }
+
+
 }

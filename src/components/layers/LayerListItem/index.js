@@ -10,6 +10,7 @@ import {
 import { selectCurrentMapLayers } from "../../../state/reducers";
 import API from "../../../core/api";
 import LayerListMenuItem from "../LayerListMenuItem";
+import { Form } from "react-bootstrap";
 
 class LayerListItem extends Component {
   state = {
@@ -72,26 +73,23 @@ class LayerListItem extends Component {
     return (
       <React.Fragment>
         {this.currentLayer && (
-          <div>
-            <div>
-              <input
+          <div className="layer-list-item">
+            <div className="layer-list-item__title">
+              <Form.Check
+                custom
                 type="checkbox"
                 name="public"
-                onChange={(event) =>
-                  this.setLayerVisibilty(
-                    event.target.checked,
-                    this.currentLayer
-                  )
-                }
+                id={`layer-list-item-${this.props.layerId}-checkbox`}
+                label={this.currentLayer.name}
                 checked={this.currentLayer.visible}
+                onChange={(event) => this.setLayerVisibilty(
+                  event.target.checked,
+                  this.currentLayer
+                )}
               />
-              <label>{this.currentLayer.name}</label>
-              <Icon
-                link
-                size="large"
-                name={this.state.showMenu ? "angle down" : "angle right"}
-                onClick={() => this.execShowMenu()}
-              />
+              <i
+                className={"gis-icon gis-icon--" + (this.state.showMenu ? "minus" : "plus")}
+                onClick={() => this.execShowMenu()}></i>
             </div>
             <div>{this.createMenu()}</div>
           </div>
