@@ -5,8 +5,10 @@ import { connect } from "react-redux";
 import UpdateMenu from "./feed";
 import { selectContextMenus } from "../../state/reducers";
 import REGISTRY from "./registry";
+import { Collapse, Table } from "react-bootstrap";
 class ContextMenuContainer extends React.Component {
   state = {
+    isOpened: false,
     menus: null,
   };
 
@@ -53,24 +55,23 @@ class ContextMenuContainer extends React.Component {
       this.props.Feature &&
       this.props.menus && (
         <React.Fragment>
-          <div onMouseDownCapture={(e) => e.stopPropagation()}>
-            <table className="ui celled table">
-              <thead>
-                <tr>
-                  <th className="details-header">
-                    <div>Menu</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="scrollContent">
-                {Object.keys(this.props.menus).map((source) => {
-                  return this.renderMenu(
-                    source,
-                    this.props.menus[source][this.props.Feature.id]
-                  );
-                })}
-              </tbody>
-            </table>
+          <div class="context-menu" onMouseDownCapture={(e) => e.stopPropagation()}>
+            <div className="context-menu__header" onClick={() => this.setState({ isOpened: !this.state.isOpened })}>Menu</div>
+            <Collapse in={this.state.isOpened} >
+              <div className="context-menu__content">
+              <Table borderless>
+                  <tbody>
+                    {Object.keys(this.props.menus).map((source) => {
+                      return this.renderMenu(
+                        source,
+                        this.props.menus[source][this.props.Feature.id]
+                      );
+                    })}
+                </tbody>
+                </Table>
+              </div>
+            </Collapse>
+            
           </div>
         </React.Fragment>
       )

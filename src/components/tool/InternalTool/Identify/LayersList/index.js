@@ -8,46 +8,45 @@ import {
   selectCurrentFeature,
   selectSelectedFeatures,
 } from "../../../../../state/reducers";
-import "./style.css";
-class FeatureList extends Component {
+import FeatureList from "../FeatureList";
+import { Accordion } from "react-bootstrap";
+
+class LayersList extends Component {
   get focusedmap() {
     return API.map.getFocusedMapProxy().uuid.value;
   }
 
+  handleSelect = (layer) => {
+    this.props.setCurrentFeatureLayer(layer)
+  };
+
+
   renderSelectedFeature = () => {
     return this.props.selectedFeatures
       ? Object.keys(this.props.selectedFeatures).map((layer) => (
-          <tr key={layer}>
-            <td
-              className={
-                this.props.currentLayer
-                  ? this.props.currentLayer === layer
-                    ? "currentLayer pointerCur"
-                    : "pointerCur"
-                  : "pointerCur"
-              }
-              onClick={() => this.props.setCurrentFeatureLayer(layer)}
-            >
-              {layer}
-            </td>
-          </tr>
-        ))
+        <React.Fragment key={layer}>
+          <Accordion.Toggle as="div" eventKey={layer} className="py-2 border-bottom px-tool">
+            + {layer}
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey={layer} >
+            <div className="py-3" >
+               <FeatureList selectedLayer={layer} />
+            </div>
+          </Accordion.Collapse>
+        </React.Fragment>
+      ))
       : null;
   };
 
   render() {
     return (
       <React.Fragment>
-        <table className="ui table">
-          <thead>
-            <tr>
-              <th>Layers</th>
-            </tr>
-          </thead>
-          <tbody className="scrollContent">
-            {this.renderSelectedFeature()}
-          </tbody>
-        </table>
+        <div className="text-primary font-weight-bold px-tool py-3 border-bottom">זיהוי יישויות</div>
+        <Accordion onSelect={this.handleSelect} className="layers-groups">
+          {this.renderSelectedFeature()}
+        </Accordion>
+
+
       </React.Fragment>
     );
   }
@@ -65,5 +64,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, { setCurrentFeatureLayer })(
-  FeatureList
+  LayersList
 );

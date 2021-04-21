@@ -4,6 +4,7 @@ $blue-200: #334e67;
 //
 // bootstrap override
 // ====================
+$gray-100: #f7f7f7;
 $gray-400: #d9d9d9;
 $gray-600: #767676;
 $primary: $blue-100;
@@ -16,6 +17,8 @@ $headings-font-weight: 600;
 
 $body-color: $gray-600;
 
+$input-btn-padding-y:         0.175rem;
+
 $list-group-item-padding-x: 0.75rem;
 $list-group-item-padding-y: 0.5rem;
 
@@ -26,8 +29,16 @@ $enable-prefers-reduced-motion-media-query:   false;
 // ====================
 $side-width: 350px;
 $side-icon-width: 2.6rem;
+$side-content-start: 2rem;
+$side-content-end: 1rem;
+
 $searchbar-height: 3rem;
 
-$tool-padding: 0.5rem;
+$tool-padding-start: $side-content-start;
+$tool-padding-end: $side-content-end;
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
 
 @import "icons/variables";
+
