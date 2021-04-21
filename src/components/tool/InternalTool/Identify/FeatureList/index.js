@@ -4,15 +4,15 @@ import { setCurrentFeature } from "../../../../../state/actions";
 import VectorLayerRegistry from "../../../../../core/proxymanagers/vectorlayer";
 import {
   selectCurrentLayer,
-  selectSelectedFeatureInCurrentLayer,
   selectCurrentFeature,
   selectSelectedFeatures,
 } from "../../../../../state/reducers";
 import API from "../../../../../core/api";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import "./style.css";
+import { Form, ListGroup } from "react-bootstrap";
 
-const { zoomTo, highlightFeature } = API.features;
+const { highlightFeature } = API.features;
 const { getFocusedMapProxy } = API.map;
 class FeatureList extends Component {
   state = {
@@ -45,76 +45,53 @@ class FeatureList extends Component {
   renderFieldsSelect = () => {
     return (
       this.selectedFeatures &&
-      this.currentLayer && (
-        <tr>
-          <td>
-            <select
-              className="ui fluid dropdown"
-              onChange={(event) =>
-                this.setState({ current_field: event.target.value })
-              }
-            >
-              {Object.keys(this.currentSelectedFeatures[0].properties).map(
-                (field) =>
-                  typeof this.currentSelectedFeatures[0].properties[field] ==
-                    "string" ||
-                  typeof this.currentSelectedFeatures[0].properties[field] ==
-                    "number" ? (
-                    <option key={field} value={field}>
-                      {" "}
-                      {field}
-                    </option>
-                  ) : null
-              )}
-            </select>
-          </td>
-        </tr>
+      this.currentLayer && this.props.selectedLayer in this.selectedFeatures && (
+        <Form.Group className="px-tool">
+          <Form.Control as="select" custom onChange={(event) =>
+            this.setState({ current_field: event.target.value })
+          } >
+
+            {Object.keys(this.selectedFeatures[this.props.selectedLayer][0].properties).map(
+              (field) =>
+                typeof this.selectedFeatures[this.props.selectedLayer][0].properties[field] ==
+                  "string" ||
+                  typeof this.selectedFeatures[this.props.selectedLayer][0].properties[field] ==
+                  "number" ? (
+                  <option key={field} value={field}>
+                    {field}
+                  </option>
+                ) : null
+            )}
+          </Form.Control>
+        </Form.Group>
       )
     );
   };
   renderSelectedFeature = () => {
-    return this.currentSelectedFeatures ? (
-      this.currentSelectedFeatures.length > 0 ? (
-        this.currentSelectedFeatures.map((feature) => (
-          <tr key={feature.id}>
-            <td
-              className={
-                this.currentFeature
-                  ? this.currentFeature.id === feature.id
-                    ? "currentFeature pointerCur flexDisplay"
-                    : "pointerCur flexDisplay"
-                  : "pointerCur flexDisplay"
-              }
+    return this.props.selectedLayer in this.selectedFeatures ? (
+      this.selectedFeatures[this.props.selectedLayer].length > 0 ? (
+        <ListGroup variant="flush">
+          {this.selectedFeatures[this.props.selectedLayer].map((feature) => (
+            <ListGroup.Item action key={feature.id}
+              className="px-tool"
+              active={this.currentFeature && this.currentFeature.id === feature.id}
               onClick={() => {
                 this.props.setCurrentFeature(feature.id);
+              }}
+              onMouseOver={async () => {
+                const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
+                  feature.__Parent_NessUUID__,
+                  feature.id
+                );
+                f && highlightFeature(f.getGeometry());
               }}
             >
               {this.state.current_field
                 ? feature.properties[this.state.current_field]
                 : feature.id}
-              <IconButton
-                className="ui icon button primary pointer margin05em"
-                onClick={async () => {
-                  const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
-                    feature.__Parent_NessUUID__,
-                    feature.id
-                  );
-                  f && zoomTo(f.getGeometry());
-                  // getFocusedMap().getView().fit(new MultiPolygon(feature.geometry.coordinates))
-                }}
-                onHover={async () => {
-                  const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
-                    feature.__Parent_NessUUID__,
-                    feature.id
-                  );
-                  f && highlightFeature(f.getGeometry());
-                }}
-                icon="crosshairs"
-                size="1x"
-              />
-            </td>
-          </tr>
-        ))
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
       ) : (
         <div>SELECT FIRST ON MAP</div>
       )
@@ -122,22 +99,11 @@ class FeatureList extends Component {
   };
 
   render() {
-    return this.currentLayer ? (
+    return this.currentLayer &&
       <React.Fragment>
-        <table className="ui table ">
-          <thead>
-            <tr>
-              <th>Features</th>
-            </tr>
-          </thead>
-
-          <tbody className="scrollContent">
-            {this.renderFieldsSelect()}
-            {this.renderSelectedFeature()}
-          </tbody>
-        </table>
-      </React.Fragment>
-    ) : null;
+        {this.renderFieldsSelect()}
+        {this.renderSelectedFeature()}
+      </React.Fragment>;
   }
 }
 
@@ -148,7 +114,6 @@ const mapStateToProps = (state) => {
     selectedFeatures: selectSelectedFeatures(state),
     currentLayer: selectCurrentLayer(state),
     currentFeature: selectCurrentFeature(state),
-    currentSelectedFeatures: selectSelectedFeatureInCurrentLayer(state),
   };
 };
 

@@ -125,7 +125,6 @@ class MeasureDistance extends React.Component {
           () => {
             this.renderOverlayDiv(false);
             const current = getOverlay(this.overlays.focused);
-            debugger;
             current.setPosition(tooltipCoord);
           }
         );

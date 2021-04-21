@@ -37,10 +37,23 @@
     }
 
     .layers-block {
-        padding: 1rem ($side-icon-width + 1rem) 1rem 1rem;
+        padding: 1rem ($side-icon-width + $side-content-start) 1rem $side-content-end;
         height: calc(100% - #{$searchbar-height});
         background: #fff; // rgba(purple, 0.2);
     }
+}
+
+// extra data container
+// ==========================
+.side-extra-container {
+    position: fixed;
+    z-index: 998;
+    top: 0;
+    right: $side-width;
+    height: 100%;
+    width: 350px;
+    background: #fff;
+    border-left: solid 1px $gray-400;
 }
 
 // Main nav

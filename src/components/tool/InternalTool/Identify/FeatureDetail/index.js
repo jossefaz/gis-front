@@ -18,11 +18,13 @@ import Confirm from "../../../../UI/Modal/Confirm";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import EditButton from "../../../../UI/Buttons/EditButton";
 import "./style.css";
+import { Button, Col, Collapse, Form, Row, Table } from "react-bootstrap";
 
 const { getFocusedMapProxy } = API.map;
 const { zoomTo } = API.features;
 class FeatureDetail extends React.Component {
   state = {
+    isOpened: true,
     editing: false,
     properties: null,
     openConfirm: false,
@@ -38,7 +40,13 @@ class FeatureDetail extends React.Component {
     return this._editProxy.registry[this.currentFeature.__Parent_NessUUID__];
   }
 
-  onStartEdit = () => {
+  onZoom = () => {
+    const feature = this.editProxy.getFeatureById(this.currentFeature.id);
+    zoomTo(feature.getGeometry());
+  }
+
+  onStartEdit = (event) => {
+    event.stopPropagation()
     const feature = this.editProxy.getFeatureById(this.currentFeature.id);
     zoomTo(feature.getGeometry());
     this.editProxy.edit(feature);
@@ -108,13 +116,90 @@ class FeatureDetail extends React.Component {
     const properties = this.state.properties
       ? this.state.properties
       : this.currentFeature
-      ? this.currentFeature.properties
-      : null;
+        ? this.currentFeature.properties
+        : null;
 
     return (
       this.currentFeature && (
         <React.Fragment>
-          <div onMouseDownCapture={(e) => e.stopPropagation()}>
+          <div className="feature-details" onMouseDownCapture={(e) => e.stopPropagation()}>
+
+            <div className="feature-details__actions">
+              <Button variant="link" onClick={this.onZoom}>
+                <span>תקריב</span>
+                <i className="gis-icon gis-icon--search-eye-thin"></i>
+              </Button>
+              {properties.editable && (<React.Fragment>
+                <Button variant="link" onClick={this.onStartEditGeom}>
+                  <span>ערוך</span>
+                  <i className="gis-icon gis-icon--graphic-pen-thin"></i>
+                </Button>
+                <Button variant="link" onClick={() => this.setState({ openConfirm: true })}>
+                  <span>מחק/י</span>
+                  <i className="gis-icon gis-icon--trash"></i>
+                </Button>
+              </React.Fragment>)}
+            </div>
+
+            <div className="feature-details__header"
+              onClick={() => this.setState({ isOpened: !this.state.isOpened })}
+            >
+              <div className="flex-grow-1 text-left py-1">נתונים נוספים</div>
+              <Button onClick={this.onStartEdit} disabled={this.state.editing}><i className="gis-icon gis-icon--pencil-square"></i> ערוך</Button>
+            </div>
+
+            <Collapse in={this.state.isOpened} >
+              <div className="feature-details__content">
+                <Table borderless>
+                  <tbody>
+                    {Object.keys(properties).map(
+                      (property) =>
+                        property !== "bbox" &&
+                        property !== "editable" && (
+                          <tr key={property}>
+                            <td>{property}</td>
+                            <td>
+                              {this.state.editing ? (
+                                <Form.Control
+                                  value={this.state.properties[property]}
+                                  onChange={(e) =>
+                                    this.handleValueChange(property, e.target.value)
+                                  } />
+                              ) : (
+                                properties[property]
+                              )}
+                            </td>
+                          </tr>
+                        )
+                    )}
+                  </tbody>
+                </Table>
+
+                {properties.editable && this.state.editing &&
+                  <div className="m-3">
+                    <Row className="feature-details__properties-actions">
+                      <Col>
+                        <Button block onClick={this.onEditCancel}>בטל</Button>
+                      </Col>
+                      <Col>
+                        <Button block onClick={this.onSave}>שמור</Button>
+                      </Col>
+                    </Row>
+                  </div>
+                }
+              </div>
+
+            </Collapse>
+
+          </div>
+
+
+
+
+
+
+
+          {/* <div onMouseDownCapture={(e) => e.stopPropagation()}>
             <table className="ui celled table">
               <thead>
                 <tr>
@@ -189,7 +274,8 @@ class FeatureDetail extends React.Component {
                 )}
               </tbody>
             </table>
-          </div>
+          </div> */}
+
           <Confirm
             isOpen={this.state.openConfirm}
             confirmTxt={this.state.eraseFeature.content}
