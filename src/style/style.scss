@@ -7,8 +7,11 @@
 @import "~bootstrap/scss/bootstrap";
 @import "icons/style";
 
+@import "bootstrap-v4-rtl";
+
 @import "general";
 @import "map-menu";
 @import "app-side";
 @import "tools";
+@import "layers";
 
