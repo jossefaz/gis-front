@@ -44,6 +44,7 @@
     "react-dnd-html5-backend": "^14.0.0",
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.3",
+    "react-dropzone": "^11.3.2",
     "react-fontawesome": "^1.7.1",
     "react-global-configuration": "^1.4.1",
     "react-hook-form": "^6.15.5",
@@ -69,7 +70,7 @@
     "xml2js": "^0.4.23"
   },
   "scripts": {
-    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://localhost:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:8020/MetaData/getMetaData/ REACT_APP_APP_CONFIG=http://localhost:8020 react-scripts start",
+    "start": "REACT_APP_GEOSERVER_ENDPOINT=http://meitarimdb:8080/geoserver/ REACT_APP_MD_SERVER_ENDPOINT=http://localhost:8020/MetaData/getMetaData/ REACT_APP_APP_CONFIG=http://localhost:8020 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
