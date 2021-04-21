@@ -25,7 +25,7 @@ export async function createLayers(
   const request: TypedApiCall<CustomLayerPayload> = {
     url: "/",
     method: "POST",
-    headers: { [config().Auth.headerName]: auth.jwt.access_token },
+    headers: { [config().Auth.headerName]: auth.jwt.token },
     data: {
       is_public,
       layer_name,

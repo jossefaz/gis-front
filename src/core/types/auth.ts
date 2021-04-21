@@ -1,5 +1,5 @@
 export interface TokenData {
-  access_token: string | null;
+  token: string | null;
   token_type: string;
   notValid?: boolean;
 }
