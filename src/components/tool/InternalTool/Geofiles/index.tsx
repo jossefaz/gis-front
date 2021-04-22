@@ -3,11 +3,13 @@ import {
   retrieveAllFiles,
   GeofileItem,
   uploadFile,
+  getGeojsonStream,
 } from "../../../../core/HTTP/geofiles";
 import { useDropzone, DropEvent } from "react-dropzone";
 import { acceptStyle, activeStyle, baseStyle, rejectStyle } from "./style";
 import _ from "lodash";
 import FileList from "./FileList";
+import API from "../../../../core/api";
 
 const Geofiles: FC = () => {
   const [filesMetadata, setFilesMetadata] = useState<GeofileItem[]>([]);
@@ -15,7 +17,13 @@ const Geofiles: FC = () => {
     acceptedFiles.forEach((file) => {
       const fd = new FormData();
       fd.append("file", file);
-      uploadFile(fd).then((fileUUID) => refreshFilesList());
+      uploadFile(fd).then(async (fileUUID) => {
+        if (fileUUID) {
+          const geojson = await getGeojsonStream(fileUUID);
+          geojson && API.features.zoomToGeojson(geojson);
+          refreshFilesList();
+        }
+      });
     });
   };
 
@@ -27,13 +35,6 @@ const Geofiles: FC = () => {
     isDragReject,
   } = useDropzone({
     onDrop,
-    accept: [
-      "application/zip",
-      "image/x-dwg",
-      "image/x-dxf",
-      "drawing/x-dwf",
-      "application/json",
-    ],
   });
 
   const refreshFilesList = async () => {

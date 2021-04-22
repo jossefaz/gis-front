@@ -4,7 +4,9 @@ import {
   retrieveFormat,
   downloadFormat,
   downloadFile,
+  getGeojsonStream,
 } from "../../../../../../core/HTTP/geofiles";
+import API from "../../../../../../core/api";
 
 const FileItem: React.FC<GeofileItem> = (props) => {
   const { file_name, id, eol, type } = props;
@@ -15,9 +17,19 @@ const FileItem: React.FC<GeofileItem> = (props) => {
     formats && setAvailableFormats(formats);
   };
 
+  const zoomTo = async () => {
+    const geojson = await getGeojsonStream(id);
+    geojson && API.features.zoomToGeojson(geojson);
+  };
+
   const renderButtonList = () =>
     availableFormats.map((url) => (
-      <button key={url} onClick={() => downloadFormat(url)}>
+      <button
+        className="ui labeled icon button"
+        key={url}
+        onClick={() => downloadFormat(url)}
+      >
+        <i className="download icon"></i>
         {url.split("/")[url.split("/").length - 1]}
       </button>
     ));
@@ -30,9 +42,21 @@ const FileItem: React.FC<GeofileItem> = (props) => {
     <div>
       <div>{file_name}</div>
       <div>{renderButtonList()}</div>
-
-      <button key={id} onClick={() => downloadFile(id)}>
+      <button
+        key={id}
+        className="ui labeled icon button"
+        onClick={() => downloadFile(id)}
+      >
+        <i className="download icon"></i>
         download
+      </button>
+      <button
+        key={id}
+        className="ui labeled icon button"
+        onClick={() => zoomTo()}
+      >
+        <i className="focus icon"></i>
+        Zoom
       </button>
     </div>
   );
