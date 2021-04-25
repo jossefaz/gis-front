@@ -1,7 +1,7 @@
 import types from "./types";
 import API from "../../core/api";
 import OLFeature from "ol/Feature";
-import { Feature } from "../../core/types";
+import { Feature, ReduxLayer } from "../../core/types";
 import { Dispatch } from "redux";
 import {
   SetCurrentFeatureAction,
@@ -15,11 +15,20 @@ import {
 import { GisState } from "../stateTypes";
 
 export const setSelectedFeatures = (features: OLFeature[]) => (
-  dispatch: Dispatch
+  dispatch: Dispatch,
+  getState: () => GisState
 ) => {
   if (features) {
     const focusedmap = API.map.getFocusedMapUUID();
+    const getLayerMd = (layername: string): ReduxLayer => {
+      const { Layers } = getState();
+      return Object.values(Layers[focusedmap].layers).filter(
+        (lyr) => lyr.restid == layername
+      )[0];
+    };
+
     const featuresByLayers: { [layerid: string]: Feature[] } = {};
+
     features.forEach((f) => {
       let layer;
       const parentuuid = f.get("__NessUUID__");
@@ -32,10 +41,13 @@ export const setSelectedFeatures = (features: OLFeature[]) => (
           featuresByLayers[layer] = [];
         }
         const properties = API.features.getFeatureProperties(f);
+        const metadata = getLayerMd(layer);
         featuresByLayers[layer].push({
           properties,
           id: featureId,
           type: layer,
+          layerId: metadata.restid,
+          layerAlias: metadata.name,
           __Parent_NessUUID__: parentuuid,
         });
       }
