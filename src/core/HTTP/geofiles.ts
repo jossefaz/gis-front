@@ -138,13 +138,14 @@ const _downloadFile = (data: any, headers: { [key: string]: string }) => {
 
 const blobOtherFormat = (data: string) => new Blob([data]);
 const blobJsonFile = (data: any) => new Blob([JSON.stringify(data)]);
-const blobZipFile = async (content: any) => {
-  const zip = new JSZip();
+const blobZipFile = async (data: any) => new Blob([data]);
+// const blobZipFile = async (content: any) => {
+//   const zip = new JSZip();
 
-  await zip.loadAsync(content, { base64: true });
-  const blob = await zip.generateAsync({ type: "blob" });
-  return blob;
-};
+//   await zip.loadAsync(content, { base64: true });
+//   const blob = await zip.generateAsync({ type: "blob" });
+//   return blob;
+// };
 
 const downloadIt = (fileName: string, blob: Blob) => {
   const url = window.URL.createObjectURL(blob);

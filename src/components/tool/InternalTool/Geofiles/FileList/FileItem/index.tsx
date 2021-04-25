@@ -43,18 +43,13 @@ const FileItem: React.FC<GeofileItem> = (props) => {
       <div>{file_name}</div>
       <div>{renderButtonList()}</div>
       <button
-        key={id}
         className="ui labeled icon button"
         onClick={() => downloadFile(id)}
       >
         <i className="download icon"></i>
         download
       </button>
-      <button
-        key={id}
-        className="ui labeled icon button"
-        onClick={() => zoomTo()}
-      >
+      <button className="ui labeled icon button" onClick={() => zoomTo()}>
         <i className="focus icon"></i>
         Zoom
       </button>
