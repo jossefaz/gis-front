@@ -3,7 +3,7 @@ import { mainStore as store } from "../../state/store";
 import { setContextMenu } from "../../state/actions";
 
 const callback = async (source, featureID, menu) => {
-  await store.dispatch(setContextMenu(source, featureID, menu));
+  store.dispatch(setContextMenu(source, featureID, menu));
 };
 
 export default async (layerId, featureId, properties) => {

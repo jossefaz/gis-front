@@ -12,11 +12,12 @@ class ContextMenuContainer extends React.Component {
     menus: null,
   };
 
-  updateMenu = ({ type, id, properties }) => {
-    UpdateMenu(type, id, properties);
+  updateMenu = ({ layerId, id, properties }) => {
+    UpdateMenu(layerId, id, properties);
   };
 
   componentDidMount() {
+    debugger;
     this.props.Feature && this.updateMenu(this.props.Feature);
   }
 
@@ -55,11 +56,19 @@ class ContextMenuContainer extends React.Component {
       this.props.Feature &&
       this.props.menus && (
         <React.Fragment>
-          <div class="context-menu" onMouseDownCapture={(e) => e.stopPropagation()}>
-            <div className="context-menu__header" onClick={() => this.setState({ isOpened: !this.state.isOpened })}>Menu</div>
-            <Collapse in={this.state.isOpened} >
+          <div
+            class="context-menu"
+            onMouseDownCapture={(e) => e.stopPropagation()}
+          >
+            <div
+              className="context-menu__header"
+              onClick={() => this.setState({ isOpened: !this.state.isOpened })}
+            >
+              Menu
+            </div>
+            <Collapse in={this.state.isOpened}>
               <div className="context-menu__content">
-              <Table borderless>
+                <Table borderless>
                   <tbody>
                     {Object.keys(this.props.menus).map((source) => {
                       return this.renderMenu(
@@ -67,11 +76,10 @@ class ContextMenuContainer extends React.Component {
                         this.props.menus[source][this.props.Feature.id]
                       );
                     })}
-                </tbody>
+                  </tbody>
                 </Table>
               </div>
             </Collapse>
-            
           </div>
         </React.Fragment>
       )
