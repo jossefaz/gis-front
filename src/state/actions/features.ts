@@ -46,7 +46,7 @@ export const setSelectedFeatures = (features: OLFeature[]) => (
           properties,
           id: featureId,
           type: layer,
-          layerId: metadata.restid,
+          layerId: metadata.semanticId,
           layerAlias: metadata.name,
           __Parent_NessUUID__: parentuuid,
         });

@@ -6,7 +6,7 @@ export default async (baseURL, LayerID, FeatureID, properties, cb) => {
   let menu_type = "";
   if (properties && adaptorId) {
     menu_type = "MENU_TYPE_BY_LAYERID";
-    filter = "{'AdaptorId':" + adaptorId + ",'LayerID':" + LayerID + "}";
+    filter = `{'AdaptorId': '${adaptorId}','LayerID': ${LayerID} }`;
     const response = await axios.get(baseURL, {
       params: { filter, menu_type },
     });

@@ -41,7 +41,8 @@ export default class CurrRowComboType extends Component {
   };
 
   fetchData = async () => {
-    var mockUpapiAddress = this.props.localconfig.local_config.mockUpApiAddress;
+    debugger;
+    var mockUpapiAddress = this.props.localconfig.mockUpApiAddress;
     // var mockUpapiAddress = config.get("mockUpApiAddress");
     var cmbSourceArray = JSON.parse(this.props.comboSource);
     var reqUrlCombo =

@@ -5,8 +5,8 @@ Modal.setAppElement("#root");
 
 const customStyle = {
   content: {
-    top: "25%",
-    left: "35%",
+    top: "35%",
+    left: "15%",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
