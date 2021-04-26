@@ -21,5 +21,6 @@ build_docker_image_group:
       - docker push $IMAGE_TAG_TEST_GROUP
     only : 
         - master
+        - presentation
 
 
