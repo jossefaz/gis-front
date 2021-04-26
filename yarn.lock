@@ -1634,7 +1634,6 @@
   resolved "https://registry.yarnpkg.com/@mapbox/unitbezier/-/unitbezier-0.0.0.tgz#15651bd553a67b8581fb398810c98ad86a34524e"
   integrity sha1-FWUb1VOme4WB+zmIEMmK2Go0Uk4=
 
-<<<<<<< Updated upstream
 "@material-ui/core@^4.11.3":
   version "4.11.3"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.11.3.tgz#f22e41775b0bd075e36a7a093d43951bf7f63850"
@@ -1728,12 +1727,11 @@
     "@babel/runtime" "^7.4.4"
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
-=======
+
 "@nieuwlandgeo/sldreader@^0.2.10":
   version "0.2.10"
   resolved "https://registry.yarnpkg.com/@nieuwlandgeo/sldreader/-/sldreader-0.2.10.tgz#c8860e618628935f893f8e10e7cb2e7acbfd6e40"
   integrity sha512-tUewbTO/lxothHiFTsDtfgxEPVowIMPrkfnbkNY+NkC9iuBgRDKJB7NGkPgV1c3x7x7bK4UVh8wy6EX2i6XouA==
->>>>>>> Stashed changes
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -12670,9 +12668,6 @@ redux-thunk@^2.3.0:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
-<<<<<<< Updated upstream
-redux@^4.0.0, redux@^4.0.4, redux@^4.0.5:
-=======
 redux-watch@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/redux-watch/-/redux-watch-1.2.0.tgz#b3a745e15855ef72db0e06a60a4b2fe3676d79a7"
@@ -12680,8 +12675,7 @@ redux-watch@^1.2.0:
   dependencies:
     object-path "^0.11.5"
 
-redux@^4.0.0, redux@^4.0.5:
->>>>>>> Stashed changes
+redux@^4.0.0, redux@^4.0.4, redux@^4.0.5:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.1.0.tgz#eb049679f2f523c379f1aff345c8612f294c88d4"
   integrity sha512-uI2dQN43zqLWCt6B/BMGRMY6db7TTY4qeHHfGeKb3EOhmOKjU3KdWvNLJyqaHRksv/ErdNH7cFZWg9jXtewy4g==
