@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { ApiCall } from "../types";
+import { mainStore as store } from "../../state/store";
+import { refreshToken } from "../../state/actions";
 
 class HTTPFactory {
   private static instance: HTTPFactory;
@@ -32,7 +34,12 @@ class HTTPFactory {
   }
 
   public async request<T>(options: ApiCall): Promise<AxiosResponse<T>> {
-    return await this._clients[this._current].request<T>(options);
+    const result = await this._clients[this._current].request<T>(options);
+    const newToken = result.headers["token"];
+    if (newToken) {
+      store.dispatch(refreshToken(newToken) as any);
+    }
+    return result;
   }
 }
 

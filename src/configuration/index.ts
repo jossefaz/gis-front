@@ -4,13 +4,8 @@ import { ConfigObject } from "./types";
 
 export const fetchConfig = async () => {
   const env = await get_env();
-  if (typeof env !== "boolean" && env.CONFIG) {
-    const conf = Object.assign(
-      env.CONFIG,
-      { Geoserver: env.GEOSERVER_ENDPOINT },
-      { MD_server: env.MD_SERVER_ENDPOINT }
-    );
-
+  if (env && env.CONFIG) {
+    const conf = Object.assign(env.CONFIG);
     try {
       config.set(conf);
       return true;

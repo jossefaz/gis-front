@@ -94,8 +94,8 @@ class EditTool extends Component {
         addingIcon: false,
         editIcon: true,
       });
-      await this.interactions.unModify();
-      await this.interactions.unDraw();
+      this.interactions.unModify();
+      this.interactions.unDraw();
     } else {
       this.props.errorNotification("Failed to remove feature !");
       this.setState({
@@ -105,8 +105,8 @@ class EditTool extends Component {
   };
 
   onIdentifyFeature = async () => {
-    await this.interactions.unDraw();
-    await this.interactions.newSelect(null, [this.currentLayer], true, click);
+    this.interactions.unDraw();
+    this.interactions.newSelect(null, [this.currentLayer], true, click);
     this.setState({
       openForm: false,
       newFeature: null,
@@ -122,13 +122,19 @@ class EditTool extends Component {
 
   getMetadata = async () => {
     this.metadata = await this.editProxy.getMetadata();
-    const geomType = this.metadata.featureTypes[0].properties.find((t) =>
-      t.name.includes("geom")
-    ).localType;
-    this.setState({
-      geomType,
-      fields: this.metadata.featureTypes[0].properties,
-    });
+    try {
+      const geomType = this.metadata.featureTypes[0].properties.find((t) =>
+        t.name.includes("geom")
+      ).localType;
+      this.setState({
+        geomType,
+        fields: this.metadata.featureTypes[0].properties,
+      });
+    } catch (error) {
+      this.props.errorNotification(
+        "Failed to get layers metadata from Server !"
+      );
+    }
   };
 
   onSelectEnd = () => {

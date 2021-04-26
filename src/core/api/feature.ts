@@ -11,8 +11,10 @@ import {
   Circle,
   Geometry,
 } from "ol/geom";
-
+import { GenerateUUID } from "../../utils/uuid";
 import { getFocusedMap, getFocusedMapProxy } from "./map";
+import GeoJSON, { GeoJSONFeatureCollection } from "ol/format/GeoJSON";
+import omitDeep from "omit-deep-lodash";
 
 export const getFeatureProperties = (
   ol_feature: Feature
@@ -74,13 +76,33 @@ export const zoomTo = (
     const view = getFocusedMap().getView();
     highlightFeature(geom);
     view.fit(geom, {
-      padding: [850, 850, 850, 850],
       maxZoom: 12,
     });
   } else {
     throw new TypeError(
       "the config object provided to ZoomTo function does not match any geometry type"
     );
+  }
+};
+
+export const zoomToGeojson = (geojson: GeoJSONFeatureCollection) => {
+  let Highlight = getFocusedMapProxy().Highlight;
+  if (!Highlight) {
+    getFocusedMapProxy().setHighLight();
+    Highlight = getFocusedMapProxy().Highlight;
+  }
+  if (Highlight && Highlight.source) {
+    const source = getFocusedMapProxy().getVectorSource(Highlight.source);
+    source.clear();
+    const features = new GeoJSON().readFeatures(geojson);
+    features.forEach((f) => f.setId(GenerateUUID()));
+    source.addFeatures(features);
+    const extent = source.getExtent();
+    const view = getFocusedMap().getView();
+    view.fit(extent, {
+      padding: [850, 850, 850, 850],
+      maxZoom: 12,
+    });
   }
 };
 

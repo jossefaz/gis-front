@@ -19,10 +19,14 @@ import FeatureTable from "./FeatureTable";
 import TextTable from "./Texts";
 import ColorPicker from "../../../UI/ColorPicker/ColorPicker";
 import { DragPan } from "ol/interaction";
+import GeoJSON from "ol/format/GeoJSON";
 import { Grid } from "semantic-ui-react";
 import Point from "ol/geom/Point";
 import axios from "axios";
 import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
+import { createCustomLayer } from "../../../../state/actions";
+import { createLayers } from "../../../../core/HTTP/usersLayers";
+import { fromCircle } from "ol/geom/Polygon";
 import "./style.css";
 
 const { getFocusedMap } = API.map;
@@ -337,6 +341,29 @@ class Draw extends React.Component {
     return this.DrawSource ? this.DrawSource.getFeatures() : [];
   };
 
+  onSaveFeatures = async () => {
+    const Features = this.getDrawnFeatures();
+    if (Features.length > 0) {
+      const FeatureCollection = [];
+      Features.forEach((feature) => {
+        const writer = new GeoJSON();
+        const geomtype = feature.getGeometry().getType();
+        if (geomtype == "Circle" || geomtype == "GeometryCollection") {
+          feature.setGeometry(fromCircle(feature.getGeometry()));
+        }
+        const geojson = writer.writeFeatureObject(feature);
+        FeatureCollection.push(geojson);
+      });
+      const layer_id = await createLayers("testfromclient", true, {
+        type: "FeatureCollection",
+        features: FeatureCollection,
+      });
+      if (layer_id) {
+        this.props.createCustomLayer(layer_id);
+      }
+    }
+  };
+
   handleTextChange = (text) => {
     this.setState({
       editText: { ...this.state.editText, text },
@@ -453,6 +480,15 @@ class Draw extends React.Component {
                   icon={this.state.view ? "eye" : "eye-slash"}
                   size="lg"
                 />
+                <IconButton
+                  className={`ui icon button pointer ${
+                    !disable ? "positive" : "disabled"
+                  }`}
+                  onClick={() => this.onSaveFeatures()}
+                  disabled={disable}
+                  icon="save"
+                  size="lg"
+                />
               </Grid.Row>
               <Grid.Row>
                 <FeatureTable
@@ -502,4 +538,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(withWidgetLifeCycle(Draw));
+export default connect(mapStateToProps, { createCustomLayer })(
+  withWidgetLifeCycle(Draw)
+);

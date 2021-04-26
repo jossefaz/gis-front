@@ -80,16 +80,20 @@ export interface MetaDataApi {
   url: string;
 }
 
+export interface APIS {
+  [url: string]: string;
+}
+
 export interface ConfigObject {
   MapConfig: MapConfig;
   Search: SearchEngine;
   ContextMenus: ContextMenus;
   Widgets: Widgets;
   channels: Channels;
-  metaDataApi: MetaDataApi;
-  mantiLayerUrl: string;
-  geoserverUrl: string;
-  Geoserver: string;
-  MD_server: string;
-  authUrl: string;
+  API: APIS;
+  Auth: {
+    headerName: string;
+    headerType: string;
+    headerRequestId: string;
+  };
 }

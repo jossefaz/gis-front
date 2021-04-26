@@ -2,7 +2,7 @@ import API from "../core/api";
 import axios from "axios";
 import { WFS } from "ol/format";
 import { FeatureCollection } from "geojson";
-import config from "react-global-configuration";
+import config from "../configuration";
 import { SupportedProjections } from "../core/types/projections";
 import { WriteTransactionOptions } from "ol/format/WFS";
 import Feature from "ol/Feature";
@@ -21,7 +21,7 @@ export class GeoserverUtil {
 
   constructor(ws: string, layername: string) {
     this._layername = layername;
-    this._domain = `${config.get("Geoserver")}${ws}`;
+    this._domain = `${config().API["geoserver"]}${ws}`;
     this._workspace = ws;
     this._srs = SupportedProjections.ISRAEL;
   }
