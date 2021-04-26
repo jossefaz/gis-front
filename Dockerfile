@@ -1,23 +1,22 @@
-FROM node:12.14.0 as builder
+# You should always specify a full version here to ensure all of your developers
+# are running the same version of Node.
+FROM node:15.2.1
 
-ARG GEOSERVER_ENDPOINT
-ARG MD_SERVER_ENDPOINT
-ARG CONFIG
 
-WORKDIR '/app'
+# Install and configure `serve`.
+RUN yarn global add serve
+CMD serve -s build
+EXPOSE 5000
 
-COPY ./package*.json ./
+# Install all dependencies of the current project.
+COPY package.json package.json
+RUN yarn
 
-RUN npm install
-
+# Copy all local files into the image.
 COPY . .
 
-ENV REACT_APP_GEOSERVER_ENDPOINT="${GEOSERVER_ENDPOINT}" \ 
-    REACT_APP_MD_SERVER_ENDPOINT="${MD_SERVER_ENDPOINT}" \
-    REACT_APP_APP_CONFIG="${CONFIG}" 
-
-
-RUN npm run build
+# Build for production.
+#RUN yarn run build --production
 
 FROM nginx
 

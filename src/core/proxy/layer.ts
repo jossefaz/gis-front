@@ -6,6 +6,7 @@ import MapProxy from "./map";
 import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import { ImageArcGISRest } from "ol/source";
+import GeoJSON from "ol/format/GeoJSON"
 
 import {
   IJsonMDLayer,
@@ -15,17 +16,15 @@ import {
   ReduxLayer,
 } from "../types/layers";
 import NessKeys from "../keys";
+import { StreamingLayer } from "./StreamingLayer";
 
 export default class LayerProxy {
   public uuid: { value: string };
   private _mapIndex: number;
   private _parentMap: MapProxy | null;
-  private _restid: string;
-  private _workspace: string;
-  private _semanticId: string;
-  private _displayExpression: string;
   private _config: ILayerConfig;
   private _alias: string;
+  private _md : IMDLayer;
 
   constructor(json: IJsonMDLayer, alias?: string) {
     this.uuid = Object.freeze({
@@ -34,31 +33,27 @@ export default class LayerProxy {
     this._mapIndex = -1;
     this._parentMap = null;
     // TODO : Check need for the others MD Utils
-    const nl = LayerProxy.getMDLayerFromJson(json);
-    this._restid = nl.restId;
-    this._workspace = nl.workspace;
-    this._semanticId = nl.semanticId;
-    this._displayExpression = nl.displayExpression;
+    this._md = LayerProxy.getMDLayerFromJson(json);
     // must-have layer configuration props
-    this._config = nl.config;
+    this._config = this._md.config;
     // LayerList props
-    this._alias = alias || nl.alias;
+    this._alias = alias || this._md.alias;
   }
 
   public get restid(): string {
-    return this._restid;
+    return this._md.restId;
   }
 
   public get workspace(): string {
-    return this._workspace;
+    return this._md.workspace;
   }
 
   public get semanticId(): string {
-    return this._semanticId;
+    return this._md.semanticId;
   }
 
   public get displayExpression(): string {
-    return this._displayExpression;
+    return this._md.displayExpression;
   }
 
   public static getMDLayerFromJson(jsonLayer: IJsonMDLayer): IMDLayer {
@@ -68,8 +63,14 @@ export default class LayerProxy {
       restId: jsonLayer.restid,
       workspace: jsonLayer.workspace,
       displayExpression: jsonLayer.displayexpression,
+      symbologyUrl : jsonLayer.symbologyurl,
+      symbologyName : jsonLayer.symbologyname,
+      channelRegistrationName : jsonLayer.channelregistrationname,
+      symbologyField : jsonLayer.symbologyfield,
+      symbologyCalculation : jsonLayer.symbologycalculation,
+      geoJoinFieldName : jsonLayer.geojoinfieldname,
       config: {
-        layerType: ELayerTypes.OL_ImageLayer,
+        layerType: jsonLayer.layertype as ELayerTypes,
         sourceOptions: {
           ratio: 1,
           params: {
@@ -84,7 +85,7 @@ export default class LayerProxy {
   public toReduxLayer = (): ReduxLayer => {
     return {
       name: this._alias,
-      semanticId: this._semanticId,
+      semanticId: this._md.semanticId,
       visible: false,
       opacity: 0.5,
       uuid: this.uuid.value,
@@ -111,9 +112,9 @@ export default class LayerProxy {
     }
 
     switch (this._config.layerType) {
-      case "OL_TileLayer":
+      case ELayerTypes.OL_TileLayer:
         break;
-      case "OL_ImageLayer":
+      case ELayerTypes.OL_ImageLayer:
         newLyr = new ImageLayer({
           source: new ImageWMS({
             url: this._config.sourceOptions.url,
@@ -124,20 +125,38 @@ export default class LayerProxy {
         });
         newLyr.set("alias", this._alias);
         break;
-      case "OL_VectorLayer":
+      case ELayerTypes.OL_VectorLayer:
         notImplemented();
         break;
-      case "OL_Heatmap":
+      case ELayerTypes.OL_Heatmap:
         notImplemented();
         break;
-      case "OL_Graticule":
+      case ELayerTypes.OL_Graticule:
         notImplemented();
         break;
-      case "OL_VectorTileLayer":
+      case ELayerTypes.OL_VectorTileLayer:
         notImplemented();
         break;
-      case "OL_VectorImageLayer":
+      case ELayerTypes.OL_VectorImageLayer:
         notImplemented();
+        break;
+      case ELayerTypes.OL_StreamningLayer:
+        var streamingLayer  = new StreamingLayer(null,{
+     
+          layerName : this._md.restId,
+          url: this._config.sourceOptions.url,
+          format: new GeoJSON(),       
+          geoJoinFieldName: this._md.geoJoinFieldName,   
+          projection : "EPSG:2039",
+          sldUrl : this._md.symbologyUrl,
+          sldName : this._md.symbologyName  ,
+          channelRegistrationName : this._md.channelRegistrationName,
+          symbologyField : this._md.symbologyField,
+          symbologyCalculation : this._md.symbologyCalculation          
+        }) as any;
+  
+        newLyr = streamingLayer.vl;
+        newLyr.alias = this._md.alias;
         break;
     }
 

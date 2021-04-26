@@ -10,6 +10,7 @@ import { ActionTypes as rasterActionsTypes, RasterActions } from "./raster";
 import { ActionTypes as toolsActionsTypes, ToolsActions } from "./tools";
 import { ActionTypes as authActionsTypes, AuthActions } from "./auth";
 import { ActionTypes as uiActionsTypes, UiActions } from "./ui";
+import { ActionTypes as streamActionsTypes, StreamActions } from "./stream";
 
 const actionTypes = {
   ...layersActionsTypes,
@@ -20,7 +21,8 @@ const actionTypes = {
   ...rasterActionsTypes,
   ...toolsActionsTypes,
   ...uiActionsTypes,
-  ...authActionsTypes
+  ...authActionsTypes,
+  ...streamActionsTypes
 };
 
 export type Actions =
@@ -33,5 +35,6 @@ export type Actions =
   | RasterActions
   | UiActions
   | AuthActions
+  | StreamActions
 
 export default actionTypes;

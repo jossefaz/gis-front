@@ -6,22 +6,22 @@ import Features, * as fromFeatures from "./features";
 import Rasters from "./rasters";
 import map from "./map";
 import Tools, * as fromTool from "./tools";
-import mantiSystems from "./mantiSystems";
 import ui from "./ui";
 import auth from "./auth";
+import streamingSystems from "./stream"
 import { GisState } from "../stateTypes";
 
 export default combineReducers<GisState>({
   Layers,
   Features,
   Rasters,
-  mantiSystems,
   map,
   Tools,
   Interactions,
   Overlays,
   ui,
-  auth
+  auth,
+  streamingSystems
   // filter
 });
 

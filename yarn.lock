@@ -1634,6 +1634,7 @@
   resolved "https://registry.yarnpkg.com/@mapbox/unitbezier/-/unitbezier-0.0.0.tgz#15651bd553a67b8581fb398810c98ad86a34524e"
   integrity sha1-FWUb1VOme4WB+zmIEMmK2Go0Uk4=
 
+<<<<<<< Updated upstream
 "@material-ui/core@^4.11.3":
   version "4.11.3"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.11.3.tgz#f22e41775b0bd075e36a7a093d43951bf7f63850"
@@ -1727,6 +1728,12 @@
     "@babel/runtime" "^7.4.4"
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
+=======
+"@nieuwlandgeo/sldreader@^0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@nieuwlandgeo/sldreader/-/sldreader-0.2.10.tgz#c8860e618628935f893f8e10e7cb2e7acbfd6e40"
+  integrity sha512-tUewbTO/lxothHiFTsDtfgxEPVowIMPrkfnbkNY+NkC9iuBgRDKJB7NGkPgV1c3x7x7bK4UVh8wy6EX2i6XouA==
+>>>>>>> Stashed changes
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -9982,6 +9989,11 @@ nth-check@^1.0.2:
   dependencies:
     boolbase "~1.0.0"
 
+nuid@^0.6.8:
+  version "0.6.14"
+  resolved "https://registry.yarnpkg.com/nuid/-/nuid-0.6.14.tgz#a225c8b720e46c563ad8d13641368669f6c25b48"
+  integrity sha1-oiXItyDkbFY62NE2QTaGafbCW0g=
+
 num2fraction@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/num2fraction/-/num2fraction-1.2.2.tgz#6f682b6a027a4e9ddfa4564cd2589d1d4e669ede"
@@ -10038,6 +10050,11 @@ object-keys@^1.0.12, object-keys@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.1.1.tgz#1c47f272df277f3b1daf061677d9c82e2322c60e"
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
+
+object-path@^0.11.5:
+  version "0.11.5"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.5.tgz#d4e3cf19601a5140a55a16ad712019a9c50b577a"
+  integrity sha512-jgSbThcoR/s+XumvGMTMf81QVBmah+/Q7K7YduKeKVWL7N111unR2d6pZZarSk6kY/caeNxUDyxOvMWyzoU2eg==
 
 object-visit@^1.0.0:
   version "1.0.1"
@@ -12653,7 +12670,18 @@ redux-thunk@^2.3.0:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
+<<<<<<< Updated upstream
 redux@^4.0.0, redux@^4.0.4, redux@^4.0.5:
+=======
+redux-watch@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/redux-watch/-/redux-watch-1.2.0.tgz#b3a745e15855ef72db0e06a60a4b2fe3676d79a7"
+  integrity sha512-Ws4Q+e5zFGMyy1H709c1Ws8apSd6MqoJRIzBDHbI4nikome/IZWVTYXdQNz+VJxPjyX/h2E+lYEo41fXgjCF8g==
+  dependencies:
+    object-path "^0.11.5"
+
+redux@^4.0.0, redux@^4.0.5:
+>>>>>>> Stashed changes
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.1.0.tgz#eb049679f2f523c379f1aff345c8612f294c88d4"
   integrity sha512-uI2dQN43zqLWCt6B/BMGRMY6db7TTY4qeHHfGeKb3EOhmOKjU3KdWvNLJyqaHRksv/ErdNH7cFZWg9jXtewy4g==
@@ -15079,6 +15107,13 @@ websocket-extensions@>=0.1.1:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
+
+websocket-nats@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/websocket-nats/-/websocket-nats-0.3.3.tgz#8a0493bd5b97caf1f8573983baed8715399523ef"
+  integrity sha1-igSTvVuXyvH4VzmDuu2HFTmVI+8=
+  dependencies:
+    nuid "^0.6.8"
 
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.5:
   version "1.0.5"

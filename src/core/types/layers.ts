@@ -8,6 +8,7 @@ export enum ELayerTypes {
   OL_Graticule = "OL_Graticule",
   OL_VectorTileLayer = "OL_VectorTileLayer",
   OL_VectorImageLayer = "OL_VectorImageLayer",
+  OL_StreamningLayer = "OL_StreamingLayer"
 }
 
 export enum ESourceTypes {
@@ -27,6 +28,13 @@ export interface IJsonMDLayer {
   workspace: string;
   displayexpression: string;
   restaddress: string;
+  symbologyurl : string;
+  symbologyname: string;
+  channelregistrationname : string;
+  symbologyfield : string;
+  symbologycalculation : string
+  geojoinfieldname:string
+  layertype: string
 }
 
 export interface IMDLayer {
@@ -36,6 +44,12 @@ export interface IMDLayer {
   workspace: string;
   displayExpression: string;
   config: ILayerConfig;
+  symbologyUrl : string,
+  symbologyName : string,
+  channelRegistrationName : string,
+  symbologyField : string,
+  symbologyCalculation : string,
+  geoJoinFieldName : string,
 }
 
 export interface ReduxLayer {

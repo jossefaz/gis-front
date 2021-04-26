@@ -71,11 +71,11 @@ export interface GisState {
   Layers: LayerState;
   Features: FeatureState;
   Rasters: RasterState;
-  mantiSystems: any;
   map: MapState;
   Tools: ToolState;
   Interactions: InteractionState;
   Overlays: OverlayState;
   ui: UiState;
-  auth:AuthState
+  auth:AuthState;
+  streamingSystems:any
 }

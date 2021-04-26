@@ -115,17 +115,12 @@ export default class MapProxy implements IMapProxy {
     return null;
   }
 
-  public addLayer(
-    lyrOrId: LayerProxy,
-    addToMap: boolean = false
-  ): LayerProxy | false {
+  public addLayer(lyrOrId: LayerProxy, addToMap: boolean = false): LayerProxy {
+    this._layers.push(lyrOrId);
     if (addToMap) {
-      if (lyrOrId.addSelfToMap(this)) {
-        this._layers.push(lyrOrId);
-        return lyrOrId;
-      }
+      lyrOrId.addSelfToMap(this);
     }
-    return false;
+    return lyrOrId;
   }
 
   public addInteractionProxy(
