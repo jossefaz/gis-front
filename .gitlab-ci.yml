@@ -12,4 +12,4 @@ build_docker_image_group:
     - docker build -t $IMAGE_TAG_PROD .
     - docker push $IMAGE_TAG_PROD
   only:
-    - develop
+    - presentation
