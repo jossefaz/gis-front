@@ -92,8 +92,8 @@
     "xml2js": "^0.4.23"
   },
   "scripts": {
-    "start": "REACT_APP_APP_CONFIG=http://localhost:8020 react-scripts start",
-    "build": "react-scripts build",
+    "start": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./public/ && react-scripts start",
+    "build": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./public/ && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
