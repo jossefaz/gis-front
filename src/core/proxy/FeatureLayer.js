@@ -81,7 +81,6 @@ export var FeatureLayer = (function () {
           var id = sourceItem[sourceId];
           var f = ftrs.getFeatureById(id);
           if (f) {
-            console.log("was set!");
             f.set(symbologyField, sourceItem[symbologyField]);
           }
         });

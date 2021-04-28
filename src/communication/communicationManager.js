@@ -11,6 +11,10 @@ export const loadChannels = (chanel, symbologyCalculation) => {
       nats.subscribe(channelItem.Channel + ".*", (msg) => {
         const data = [];
         msg = JSON.parse(msg);
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/presentation
         data.push(msg);
         switch (channelItem.reduxFunction) {
           case "UPDATE_FEATURE_ATTRIBUTES":
