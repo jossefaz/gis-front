@@ -23,7 +23,8 @@ import { Grid } from "semantic-ui-react";
 import Point from "ol/geom/Point";
 import axios from "axios";
 import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
-import "./style.css";
+import "./style.scss";
+import { Button, ButtonGroup } from "react-bootstrap";
 
 const { getFocusedMap } = API.map;
 class Draw extends React.Component {
@@ -347,6 +348,87 @@ class Draw extends React.Component {
     const features = this.getDrawnFeatures();
     const disable = features.length === 0;
     const overlays = this.selfOverlay;
+
+    return (
+      <div className="draw py-3">
+        <p className="px-tool">יש לבחור כלי ולאחר מכן לבחור את מיקומו על המפה</p>
+
+        <div className="btn-group-block">
+          <Button variant="link" onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}>
+            <span>צורה</span>
+            <i className="gis-icon gis-icon--graphic-pen-thin"></i>
+          </Button>
+          <Button variant="link" onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}>
+            <span>קו</span>
+            <i className="gis-icon gis-icon--line"></i>
+          </Button>
+          <Button variant="link" onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}>
+            <span>עגול</span>
+            <i className="gis-icon gis-icon--circle-dots"></i>
+          </Button>
+          <Button variant="link" onClick={() => this.setState({
+            sessionType: "Text",
+            editText: {
+              text: null,
+              overlayID: null,
+            },
+            drawtype: this.DRAW_TYPES.Text,
+          })}
+          >
+            <span>טקסט</span>
+            <i className="gis-icon gis-icon--text-box"></i>
+          </Button>
+        </div>
+
+        {!disable && (
+          <React.Fragment>
+            <div className="px-tool d-flex mt-5">
+              <strong className="flex-grow-1">רכיבים על גבי המפה</strong>
+              <ButtonGroup>
+                <Button variant="transparent" onClick={() => this.setState({ open: true })} disabled={disable}>
+                  <i className="gis-icon gis-icon--trash"></i>
+                </Button>
+                <Button variant="transparent" onClick={() => this.toggleView()} disabled={disable}>
+                  <i className={'gis-icon gis-icon--' + (this.state.view ? "eye" : "eye-slash")}></i>
+                </Button>
+              </ButtonGroup>
+            </div>
+
+            <FeatureTable
+              features={features}
+              source={this.DrawSource}
+              defaultColor={this.state.defaultColor}
+              deleteLastFeature={this.deleteLastFeature}
+              onOpenEditSession={this.onOpenEditSession}
+              editSession={this.state.editSession}
+            />
+          </React.Fragment>
+        )}
+
+        {overlays && (
+          <TextTable
+            overlays={this.selfOverlay}
+            editText={this.editText}
+            removeOverlay={this.removeOverlay}
+          />
+        )}
+
+        <Confirm
+          isOpen={this.state.open}
+          confirmTxt={this.state.eraseDraw.content}
+          cancelBtnTxt={this.state.eraseDraw.cancelBtn}
+          confirmBtnTxt={this.state.eraseDraw.confirmBtn}
+          onCancel={() =>
+            this.setState({ ...this.state.eraseDraw, open: false })
+          }
+          onConfirm={this.onClearAll}
+        />
+      </div>
+    );
+
+
+
+
     return (
       <React.Fragment>
         <Grid
@@ -359,43 +441,39 @@ class Draw extends React.Component {
             <label className="labels">בחר צורה : </label>
 
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Polygon
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Polygon
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
               icon="draw-polygon"
               size="lg"
             />
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Line
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Line
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
               icon="grip-lines"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Circle
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Circle
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
               icon="circle"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Text
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Text
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() =>
                 this.setState({
                   sessionType: "Text",
@@ -436,18 +514,16 @@ class Draw extends React.Component {
               <Grid.Row>
                 <label className="labels">שליטה כללית : </label>
                 <IconButton
-                  className={`ui icon button pointer ${
-                    !disable ? "negative" : "disabled"
-                  }`}
+                  className={`ui icon button pointer ${!disable ? "negative" : "disabled"
+                    }`}
                   onClick={() => this.setState({ open: true })}
                   disabled={disable}
                   icon="trash-alt"
                   size="lg"
                 />
                 <IconButton
-                  className={`ui icon button pointer ${
-                    !disable ? "positive" : "disabled"
-                  }`}
+                  className={`ui icon button pointer ${!disable ? "positive" : "disabled"
+                    }`}
                   onClick={() => this.toggleView()}
                   disabled={disable}
                   icon={this.state.view ? "eye" : "eye-slash"}

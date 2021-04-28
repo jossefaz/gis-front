@@ -17,7 +17,7 @@ import _ from "lodash";
 import Confirm from "../../../../UI/Modal/Confirm";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import EditButton from "../../../../UI/Buttons/EditButton";
-import "./style.css";
+import "./style.scss";
 import { Button, Col, Collapse, Form, Row, Table } from "react-bootstrap";
 
 const { getFocusedMapProxy } = API.map;

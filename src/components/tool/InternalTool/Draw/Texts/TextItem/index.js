@@ -2,12 +2,27 @@ import React from "react";
 import IconButton from "../../../../../UI/Buttons/IconButton";
 import { Table } from "semantic-ui-react";
 import "./style.css";
+import { Button, ButtonGroup } from "react-bootstrap";
 const TextItem = (props) => {
   const extractContent = (s) => {
     var span = document.createElement("span");
     span.innerHTML = s;
     return span.textContent || span.innerText;
   };
+
+  return (
+    <div className="d-flex px-tool py-2 border-top">
+      <div className="flex-grow-1">{extractContent(props.content)}</div>
+      <ButtonGroup>
+        <Button variant="transparent" onClick={() => props.removeOverlay(props.id)}>
+          <i className="gis-icon gis-icon--trash"></i>
+        </Button>
+        <Button variant="transparent" onClick={() => props.editText(props.content, props.id)}>
+          <i className="gis-icon gis-icon--pencil-on-square"></i>
+        </Button>
+      </ButtonGroup>
+    </div>
+  );
 
   return (
     <React.Fragment>
