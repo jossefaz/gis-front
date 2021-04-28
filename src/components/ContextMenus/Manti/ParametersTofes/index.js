@@ -73,14 +73,17 @@ class ParametersTofesComponent extends Component {
       key,
       value: this.props.identifyResult[key],
     }));
-    for (var currParam in params) {
+    for (let currParam of params) {
+      const searchedKey = currParam["value source"];
       if (
-        this.props.identifyResult[params[currParam].name] &&
-        params[currParam]["value source"]
+        searchedKey &&
+        searchedKey in this.props.identifyResult
+        //this.props.identifyResult[currParam.name] &&
+        //currParam["value source"]
       ) {
         newArray.push({
-          name: params[currParam].name,
-          value: this.props.identifyResult[params[currParam].name],
+          name: currParam.name,
+          value: this.props.identifyResult[searchedKey],
         });
       }
     }
@@ -245,7 +248,7 @@ class ParametersTofesComponent extends Component {
     this.props.toggleModal();
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     this.setInitialValuesFromIdentifyResult();
   }
 

@@ -165,6 +165,7 @@ export default class BankPkudotTree extends React.Component {
 
   componentDidMount() {
     this.groupArray(this.props.menu_config, "category");
+    this.setState({ identifyResult: this.props.feature.properties });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
