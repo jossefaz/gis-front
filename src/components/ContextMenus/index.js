@@ -57,7 +57,7 @@ class ContextMenuContainer extends React.Component {
       this.props.menus && (
         <React.Fragment>
           <div
-            class="context-menu"
+            className="context-menu"
             onMouseDownCapture={(e) => e.stopPropagation()}
           >
             <div

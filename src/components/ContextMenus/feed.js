@@ -24,7 +24,7 @@ export default async (layerId, featureId, properties) => {
           );
         })
         .catch((err) => {
-          console.log(
+          console.error(
             "One of the context Menus component did not mount as expected, check its configuration and/or its source code error :",
             err
           );

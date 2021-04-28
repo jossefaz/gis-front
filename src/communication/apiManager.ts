@@ -13,11 +13,8 @@ export async function fetchData(properties: any) {
     }
 
     var data = await response.json();
-    console.log(data);
     return data;
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 }
 
 export async function getXMLResponse(url: any) {

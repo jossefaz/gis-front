@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "react-inputs-validation/lib/react-inputs-validation.min.css";
 import "./styles.css";
-import Modal from "./Modal/Modal";
+import Modal from "../Modal/Modal";
 import CurrRowStringType from "./CurrentRowStringType/CurrentRowStringType";
 import CurrRowComboType from "./CurrentRowComboType/CurrentRowComboType";
 import CurrRowDatePickerType from "./CurrentRowDatePickerType/CurrentRowDatePickerType";
@@ -150,10 +150,11 @@ class ParametersTofesComponent extends Component {
   }
 
   handleOk = (e) => {
-    if (this.bankPkudRow.ID != 56 && this.bankPkudRow.ID != 78) {
-      alert("לא ניתן לשלוח את הפקודה");
-      return;
-    }
+    // if (this.bankPkudRow.ID != 56 && this.bankPkudRow.ID != 78) {
+    //   alert("לא ניתן לשלוח את הפקודה");
+    //   return;
+    // }
+    debugger;
     var errors = null;
 
     var schData = JSON.parse(this.props.data.value);
@@ -192,7 +193,7 @@ class ParametersTofesComponent extends Component {
         body: JSON.stringify(resultBody),
       };
 
-      var apiAddress = this.props.commandApiAddress;
+      var apiAddress = this.props.localconfig.commandApiAddress;
       fetch(apiAddress, postMethod)
         .then((response) => response.json())
         .then((data) => {
@@ -208,24 +209,13 @@ class ParametersTofesComponent extends Component {
             var adapId = JSON.parse(
               this.props.bankPkudotRow.templateComponent
             )[0].adaptorId;
-            var par = this.props.findItemByName(
-              comId,
-              adapId,
-              data.ResultValue
-            );
-            console.log("toggle 1");
-            this.props.toggleModal(); // close origin form
-            console.log("toggle 1.5");
+            this.props.findItemByName(comId, adapId, data.ResultValue);
           }
-          console.log("pkuda send response", data);
-          console.log("pkuda send response", this.props);
         })
         .catch((err) => {
           console.log("pkuda send response error", err);
           //alert("פקודה לא נשלחה" + err);
         });
-
-      console.log("toggle 2");
       this.props.toggleModal(); // open non generic form
     }
   };
@@ -263,30 +253,6 @@ class ParametersTofesComponent extends Component {
     this.paramsData = JSON.parse(this.props.data.value);
     this.bankPkudRow = this.props.bankPkudotRow;
     this.identifyResult = this.props.identifyResult;
-    const { row, visible, validate } = this.state;
-    const rowStyle = {
-      display: "flex",
-      alignItems: "flex-start",
-      justifyContent: "space-between",
-      padding: "2%",
-      fontSize: "14px",
-    };
-    const rowWrapperStyle = {
-      display: "table",
-      width: "100%",
-    };
-    const rowContainerStyle = {
-      display: "table-cell",
-      verticalAlign: "middle",
-      borderBottom: "1px solid #e5e5e5",
-    };
-    const labelStyle = {
-      display: "inline-block",
-    };
-    const labelContentStyle = {
-      verticalAlign: "middle",
-    };
-
     return (
       <Modal isModalOpen={true} closeModal={this.props.toggleModal}>
         <div
@@ -294,17 +260,15 @@ class ParametersTofesComponent extends Component {
             display: "inline-flex",
           }}
         >
-          <h1
+          <h4
             style={{
               color: "red",
             }}
           >
             {this.bankPkudRow.Name}
-          </h1>
-          <h1> : טופס פרמטרים של הפקודה </h1>
+          </h4>
         </div>
         <form>
-          {/* // onSubmit={this.validateForm}> */}
           {this.paramsData &&
             this.paramsData.map((row, index) =>
               row.UItype === "string" ? (
@@ -317,14 +281,12 @@ class ParametersTofesComponent extends Component {
                   helperfunc={this.paramsData[index]["helper function"]}
                   identresult={this.props.identifyResult}
                   valSource={this.paramsData[index]["value source"]}
-                  // valSource={this.paramsData[index]["value source"]}
                   mandatory={this.paramsData[index]["mandatory"]}
                   localconfig={this.props.localconfig}
                 />
               ) : row.UItype === "combo" ? (
                 <CurrRowComboType
                   parentComboCallback={this.callbackComboFunction}
-                  // fillComboCallBack={this.getDataForCombo}
                   key={this.paramsData[index]["name"]}
                   name={this.paramsData[index]["name"]}
                   type={this.paramsData[index]["UItype"]}

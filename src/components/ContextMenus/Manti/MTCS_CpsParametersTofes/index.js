@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "react-inputs-validation/lib/react-inputs-validation.min.css";
 import "./styles.css";
-import Modal from "./Modal/Modal";
+import Modal from "../Modal/Modal";
 import CurrRowStringType from "./CurrentRowStringType/CurrentRowStringType";
 import CurrentRowTableType from "./CurrentRowTableType/CurrentRowTableType";
 import _ from "lodash";
@@ -113,8 +113,6 @@ class MTCS_CpsParametersTofesComponent extends Component {
   };
 
   setInitialValuesFromIdentifyResult = () => {
-    console.log("identRes", this.props.identifyResult);
-    console.log("params", this.props.data.value);
     var params = JSON.parse(this.props.data.value);
     var newArray = [];
     var idRes = Object.keys(this.props.identifyResult).map((key) => ({
@@ -271,7 +269,7 @@ class MTCS_CpsParametersTofesComponent extends Component {
 
         body: JSON.stringify(resultBody),
       };
-
+      debugger;
       var apiAddress = this.props.commandApiAddress;
 
       fetch(apiAddress, postMethod)
@@ -397,14 +395,13 @@ class MTCS_CpsParametersTofesComponent extends Component {
             display: "inline-flex",
           }}
         >
-          <h1
+          <h4
             style={{
               color: "red",
             }}
           >
             {this.bankPkudRow.Name}
-          </h1>
-          <h1> : טופס פרמטרים של הפקודה </h1>
+          </h4>
         </div>
         <form>
           {/* // onSubmit={this.validateForm}> */}

@@ -9,10 +9,8 @@ export const loadChannels = (chanel, symbologyCalculation) => {
     if (channelItem) {
       const nats = wsNats.connect("ws://meitarimds:4223");
       nats.subscribe(channelItem.Channel + ".*", (msg) => {
-        console.log(msg);
         const data = [];
         msg = JSON.parse(msg);
-        console.log(msg);
         data.push(msg);
         switch (channelItem.reduxFunction) {
           case "UPDATE_FEATURE_ATTRIBUTES":

@@ -8,6 +8,8 @@ import _ from "lodash";
 import { uuid } from "uuidv4";
 import ParametersTofes from "./ParametersTofes";
 import MTCS_CpsParametersTofes from "./MTCS_CpsParametersTofes";
+import axios from "axios";
+import TreeItems from "./GroupData";
 
 const useStyles = makeStyles({
   root: {
@@ -24,10 +26,9 @@ export default class BankPkudotTree extends React.Component {
     modalVisible: false,
     rawData: this.props.menu_config,
     genericItem: true,
+    groupedData: null,
+    pkudaData: null,
   };
-  constructor(props) {
-    super(props);
-  }
 
   groupArray(data, property) {
     const data_copy = [...data];
@@ -51,12 +52,6 @@ export default class BankPkudotTree extends React.Component {
           var adObjLast = {
             key: element.ID,
             name: element.Name,
-            // "name: " +
-            // element.Name +
-            // ", id: " +
-            // element.ID +
-            // ", description: " +
-            // element.description,
             children: [],
           };
           a.push(adObjLast);
@@ -69,7 +64,6 @@ export default class BankPkudotTree extends React.Component {
       data_copy[currCat] = objNextCat;
     }
     this.setState({ groupedData: data_copy });
-    console.log("groupedData", data);
   }
 
   convertElementToObject(data, property, currCat) {
@@ -101,14 +95,6 @@ export default class BankPkudotTree extends React.Component {
     return objCateg;
   }
 
-  onItemClick = (e) => {
-    var s = e.currentTarget.lastChild.nodeValue;
-    this.setState({
-      modalVisible: true,
-      selectedItem: e.currentTarget.lastChild.nodeValue,
-    });
-  };
-
   toggleModal = () => {
     this.setState((oldState) => {
       return {
@@ -117,127 +103,76 @@ export default class BankPkudotTree extends React.Component {
     });
   };
 
-  fetchSpecificItem() {
-    debugger;
-    fetch(
-      this.props.local_config.pkudatItemByIdAddress + this.state.selectedItem
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        this.setState({
-          pkudaData: result,
-        });
-      })
-      .catch((error) => {
-        alert("There was an error fetching data !" + error);
-      });
-  }
+  fetchPkuda = async (item) => {
+    const { data } = await axios.get(
+      this.props.local_config.pkudatItemByIdAddress + item.key
+    );
+    this.setState({
+      pkudaData: data,
+      modalVisible: true,
+      selectedItem: item.key,
+    });
+  };
 
-  renderModal(value) {
-    if (
-      !this.state.pkudaData ||
-      this.state.pkudaData.ID != this.state.selectedItem
-    ) {
-      this.fetchSpecificItem();
-    }
-
-    return this.state.modalVisible &&
-      this.state.pkudaData &&
-      this.state.genericItem ? (
+  renderModal = (pkudaData) => {
+    return this.state.genericItem ? (
       <ParametersTofes
         toggleModal={this.toggleModal}
         findItemByName={this.findItemByName}
-        data={(() => {
-          console.log("generic tofes", this.state.pkudaData.Parameters);
-          return { value: this.state.pkudaData.Parameters };
-        })()}
+        data={{ value: pkudaData.Parameters }}
         localconfig={this.props.local_config}
-        bankPkudotRow={this.state.pkudaData}
+        bankPkudotRow={pkudaData}
         mapId={222}
         identifyResult={
           this.state.identifyResult ? this.state.identifyResult : {}
         }
-        commandApiAddress={this.state.commandApiAddress}
+        commandApiAddress={this.props.local_config.commandApiAddress}
       />
     ) : (
-      this.state.modalVisible &&
-        this.state.pkudaData &&
-        !this.state.genericItem && (
-          <MTCS_CpsParametersTofes
-            toggleModal={this.toggleModal}
-            findItemByName={this.findItemByName}
-            data={(() => {
-              console.log("not generic tofes", this.state.pkudaData.Parameters);
-              return { value: this.state.pkudaData.Parameters };
-            })()}
-            localconfig={this.props.local_config}
-            bankPkudotRow={this.state.pkudaData}
-            mapId={222}
-            identifyResult={
-              this.state.identifyResult ? this.state.identifyResult : {}
-            }
-            commandApiAddress={this.state.commandApiAddress}
-          />
-        )
-    );
-  }
-
-  renderLabel = (item) => (
-    <span
-      onClick={(event) => {
-        if (item.children.length == 0) {
-          this.setState({
-            modalVisible: true,
-            selectedItem: item.key,
-          });
-          console.log(item.key);
+      <MTCS_CpsParametersTofes
+        toggleModal={this.toggleModal}
+        findItemByName={this.findItemByName}
+        data={(() => {
+          return { value: pkudaData.Parameters };
+        })()}
+        localconfig={this.props.local_config}
+        bankPkudotRow={pkudaData}
+        mapId={222}
+        identifyResult={
+          this.state.identifyResult ? this.state.identifyResult : {}
         }
-      }}
-    >
-      {item.name}
-    </span>
-  );
-
-  getTreeItemsFromData(treeItems) {
-    if (treeItems === null) return;
-    return treeItems.map((treeItemData) => {
-      let children = undefined;
-      if (treeItemData.children && treeItemData.children.length > 0) {
-        children = this.getTreeItemsFromData(treeItemData.children);
-      }
-      return (
-        <TreeItem
-          key={treeItemData.key}
-          nodeId={treeItemData.key}
-          label={this.renderLabel(treeItemData)}
-          children={children}
-        />
-      );
-    });
-  }
+        commandApiAddress={this.props.local_config.commandApiAddress}
+      />
+    );
+  };
 
   findItemByName = (commandId, adaptorId, data) => {
-    var itByAdaptor = this.props.menu_config[0].children.filter(
-      (item) => item.name == adaptorId
+    var itByAdaptor = this.props.menu_config[0].filter(
+      (item) => item.AdaptorId == adaptorId
     );
-    var itByName = itByAdaptor[0].children.filter((i) => i.name == commandId);
+    var itByName = itByAdaptor.filter((i) => i.Name == commandId);
 
-    this.setState({
-      selectedItem: itByName[0].key,
-      identifyResult: data,
-      genericItem: false,
-    });
-
-    // this.renderModal(itByName[0].key);
+    this.setState(
+      {
+        selectedItem: itByName[0].ID,
+        identifyResult: data,
+        genericItem: false,
+        pkudaData: itByName[0],
+      },
+      () => this.toggleModal()
+    );
   };
 
   componentDidMount() {
-    this.setState({
-      getPkudaByIdAddress: this.props.getPkudaById,
-      mockupApiAddress: this.props.mockupApi,
-      commandApiAddress: this.props.commandApiAddress,
-    });
     this.groupArray(this.props.menu_config, "category");
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      nextState.modalVisible != this.state.modalVisible ||
+      nextState.selectedItem != this.state.selectedItem ||
+      nextState.groupedData != this.state.groupedData
+    );
   }
 
   render() {
@@ -248,11 +183,14 @@ export default class BankPkudotTree extends React.Component {
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
         >
-          {this.state.groupedData
-            ? this.getTreeItemsFromData(this.state.groupedData)
-            : console.log(this.state.groupedData)}
+          <TreeItems
+            groupData={this.state.groupedData}
+            fetchPkuda={this.fetchPkuda}
+          />
         </TreeView>
-        {this.state.modalVisible && this.renderModal(this.state.selectedItem)}
+        {this.state.modalVisible &&
+          this.state.pkudaData &&
+          this.renderModal(this.state.pkudaData)}
       </React.Fragment>
     );
   }
