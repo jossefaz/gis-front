@@ -34,7 +34,7 @@ class LayerList extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (
       Object.keys(prevState.layers).length !==
-      Object.keys(this.state.layers).length ||
+        Object.keys(this.state.layers).length ||
       prevState.layers !== this.state.layers
     ) {
       this.renderLayerList();
@@ -103,45 +103,54 @@ class LayerList extends Component {
 
   layerIsActive = (key) => {
     return this.state.activeKey === key;
-  }
+  };
 
   render() {
     return (
       <React.Fragment>
         <Accordion className="layers-list" onSelect={this.handleSelect}>
-
           {Object.keys(this.state.layerListObject).map((subjectId, index) => (
             <React.Fragment key={subjectId}>
-
-              <Accordion.Toggle as="div" eventKey={subjectId} className={"layers-list__toggle" +
-                (this.layerIsActive(subjectId) ? " layers-list__toggle--active" : "")}>
-                <i className={"gis-icon gis-icon--" + (this.layerIsActive(subjectId) ? "minus" : "plus")}></i>
-                <span className="layers-list__toggle-text">{this.state.layerListObject[subjectId].description +
-                  "(" + Object.keys(this.state.layerListObject[subjectId].layers).length + ")"}</span>
+              <Accordion.Toggle
+                as="div"
+                eventKey={subjectId}
+                className={
+                  "layers-list__toggle" +
+                  (this.layerIsActive(subjectId)
+                    ? " layers-list__toggle--active"
+                    : "")
+                }
+              >
+                <i
+                  className={
+                    "gis-icon gis-icon--" +
+                    (this.layerIsActive(subjectId) ? "minus" : "plus")
+                  }
+                ></i>
+                <span className="layers-list__toggle-text">
+                  {this.state.layerListObject[subjectId].description +
+                    "(" +
+                    Object.keys(this.state.layerListObject[subjectId].layers)
+                      .length +
+                    ")"}
+                </span>
               </Accordion.Toggle>
 
-              <Accordion.Collapse eventKey={subjectId} className="layers-list__collapse">
+              <Accordion.Collapse
+                eventKey={subjectId}
+                className="layers-list__collapse"
+              >
                 <React.Fragment>
                   {this.createLayerListItems(
                     this.state.layerListObject[subjectId].layers
                   )}
                 </React.Fragment>
               </Accordion.Collapse>
-
             </React.Fragment>
           ))}
-
         </Accordion>
-        <Button
-          id="btnShowSelectedLayers"
-          onClick={() => this.props.setMode(2)}
-        >
-          הצג את השכבות הנבחרות
-        </Button>
       </React.Fragment>
     );
-
-
   }
 }
 

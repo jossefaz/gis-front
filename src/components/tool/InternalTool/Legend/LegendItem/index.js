@@ -6,6 +6,7 @@ import { Accordion, Icon } from "semantic-ui-react";
 import { getHeight, getWidth } from "ol/extent";
 import { Checkbox } from "semantic-ui-react";
 import config from "../../../../../configuration";
+import { ImageWMS } from "ol/source";
 const {
   getFocusedMap,
   getCurrentResolution,
@@ -31,7 +32,7 @@ const LegendItem = (props) => {
     )}&srcheight=${getWidth(getCurrentExtent())}`;
     let url;
     let name;
-    if (layer) {
+    if (layer && layer instanceof ImageWMS) {
       const baseurl = layer.getSource().getLegendUrl();
 
       const cql = `&BBOX=${getCurrentExtent().join(",")}`;

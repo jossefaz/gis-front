@@ -13,6 +13,8 @@ import { Extent } from "ol/extent";
 import { Feature } from "ol";
 import { Coordinate } from "ol/coordinate";
 import { FeatureCollection } from "geojson";
+import { IMDLayer } from "../types";
+import TileLayer from "ol/layer/Tile";
 
 export default class VectorLayerProxy {
   public uuid: string | undefined;
@@ -23,6 +25,7 @@ export default class VectorLayerProxy {
   private _layername: string | undefined;
   private _editable: boolean | undefined;
   private _geoserverUtil: GeoserverUtil | undefined;
+  private _metadata: IMDLayer | undefined;
 
   constructor(vl?: VectorLayer) {
     this._vl = vl;
@@ -31,6 +34,9 @@ export default class VectorLayerProxy {
       this._vl.getSource()
         ? (this._source = this._vl.getSource())
         : (this._source = new VectorSource());
+      if (this.uuid) {
+        this._metadata = API.layers.getLayerMetadata(this.uuid);
+      }
     }
     this._data = [];
   }
@@ -39,11 +45,14 @@ export default class VectorLayerProxy {
     return this._vl ? this._vl : null;
   }
 
-  public fromImageLayer = (il: ImageLayer) => {
+  public fromImageLayer = (il: ImageLayer | TileLayer) => {
     const source = il.getSource() as ImageWMS;
     this.uuid = il.get("__NessUUID__");
     this._sourceUrl = source.getUrl();
     this._layername = source.getParams().LAYERS;
+    if (this.uuid) {
+      this._metadata = API.layers.getLayerMetadata(this.uuid);
+    }
     this._editable = il.get("editable") as boolean;
     if (this._layername) {
       this._geoserverUtil = new GeoserverUtil(
@@ -58,6 +67,10 @@ export default class VectorLayerProxy {
 
   get source() {
     return this._source ? this._source : null;
+  }
+
+  get metadata() {
+    return this._metadata;
   }
 
   public getAttributes = async () => {
@@ -105,9 +118,12 @@ export default class VectorLayerProxy {
     const features: Feature[] = [];
     if (this._source) {
       this._source.forEachFeatureIntersectingExtent(extent, (feature) => {
-        if (this._source) {
+        if (this._source && this.metadata) {
           feature.set("editable", true); // TODO : change true value by real editable value
           feature.set("__NessUUID__", this._source.get("__NessUUID__"));
+          feature.set("layerId", this.metadata.semanticId);
+          feature.set("layerAlias", this.metadata.alias);
+          feature.set("__Parent_NessUUID__", this._source.get("__NessUUID__"));
           features.push(feature);
         }
       });

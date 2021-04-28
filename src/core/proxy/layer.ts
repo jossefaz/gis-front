@@ -6,7 +6,7 @@ import MapProxy from "./map";
 import { Image as ImageLayer } from "ol/layer";
 import ImageWMS from "ol/source/ImageWMS";
 import { ImageArcGISRest } from "ol/source";
-import GeoJSON from "ol/format/GeoJSON"
+import GeoJSON from "ol/format/GeoJSON";
 
 import {
   IJsonMDLayer,
@@ -24,7 +24,7 @@ export default class LayerProxy {
   private _parentMap: MapProxy | null;
   private _config: ILayerConfig;
   private _alias: string;
-  private _md : IMDLayer;
+  private _md: IMDLayer;
 
   constructor(json: IJsonMDLayer, alias?: string) {
     this.uuid = Object.freeze({
@@ -56,6 +56,10 @@ export default class LayerProxy {
     return this._md.displayExpression;
   }
 
+  public get metadata(): IMDLayer {
+    return this._md;
+  }
+
   public static getMDLayerFromJson(jsonLayer: IJsonMDLayer): IMDLayer {
     return {
       semanticId: jsonLayer.semanticid,
@@ -63,12 +67,12 @@ export default class LayerProxy {
       restId: jsonLayer.restid,
       workspace: jsonLayer.workspace,
       displayExpression: jsonLayer.displayexpression,
-      symbologyUrl : jsonLayer.symbologyurl,
-      symbologyName : jsonLayer.symbologyname,
-      channelRegistrationName : jsonLayer.channelregistrationname,
-      symbologyField : jsonLayer.symbologyfield,
-      symbologyCalculation : jsonLayer.symbologycalculation,
-      geoJoinFieldName : jsonLayer.geojoinfieldname,
+      symbologyUrl: jsonLayer.symbologyurl,
+      symbologyName: jsonLayer.symbologyname,
+      channelRegistrationName: jsonLayer.channelregistrationname,
+      symbologyField: jsonLayer.symbologyfield,
+      symbologyCalculation: jsonLayer.symbologycalculation,
+      geoJoinFieldName: jsonLayer.geojoinfieldname,
       config: {
         layerType: jsonLayer.layertype as ELayerTypes,
         sourceOptions: {
@@ -141,20 +145,19 @@ export default class LayerProxy {
         notImplemented();
         break;
       case ELayerTypes.OL_StreamningLayer:
-        var streamingLayer  = new StreamingLayer(null,{
-     
-          layerName : this._md.restId,
+        var streamingLayer = new StreamingLayer(null, {
+          layerName: this._md.restId,
           url: this._config.sourceOptions.url,
-          format: new GeoJSON(),       
-          geoJoinFieldName: this._md.geoJoinFieldName,   
-          projection : "EPSG:2039",
-          sldUrl : this._md.symbologyUrl,
-          sldName : this._md.symbologyName  ,
-          channelRegistrationName : this._md.channelRegistrationName,
-          symbologyField : this._md.symbologyField,
-          symbologyCalculation : this._md.symbologyCalculation          
+          format: new GeoJSON(),
+          geoJoinFieldName: this._md.geoJoinFieldName,
+          projection: "EPSG:2039",
+          sldUrl: this._md.symbologyUrl,
+          sldName: this._md.symbologyName,
+          channelRegistrationName: this._md.channelRegistrationName,
+          symbologyField: this._md.symbologyField,
+          symbologyCalculation: this._md.symbologyCalculation,
         }) as any;
-  
+
         newLyr = streamingLayer.vl;
         newLyr.alias = this._md.alias;
         break;

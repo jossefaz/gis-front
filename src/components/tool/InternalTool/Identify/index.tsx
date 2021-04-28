@@ -43,7 +43,7 @@ const Identify: React.FC = () => {
       const endListener = (dragBox: DragBox) => {
         const extent = dragBox.getGeometry().getExtent();
         const features = vectorLayerRegistry.getFeaturesByExtent(extent);
-        if (features.length > 0) {
+        if (Object.keys(features).length > 0) {
           setSelectedFeatures(features);
         }
       };

@@ -62,7 +62,7 @@ export const getOlLayers = () => {
   return getFocusedMap().getLayers().getArray();
 };
 
-export const getNessLayer = (uuid: string) => {
+export const getNessLayer = (uuid: string): LayerProxy | undefined => {
   return getFocusedMapProxy().layers.find((layer) => layer.uuid.value === uuid);
 };
 
@@ -72,8 +72,8 @@ export const getNessLayers = () => {
 
 export const addLayerToMapProxy = (lyrConfig: IJsonMDLayer) => {
   const proxy = new LayerProxy(lyrConfig);
-  const MapProxy = getFocusedMapProxy()
-  if ( MapProxy.addLayer(proxy)) return proxy;
+  const MapProxy = getFocusedMapProxy();
+  if (MapProxy.addLayer(proxy)) return proxy;
   return -1;
 };
 
@@ -88,6 +88,13 @@ export const addOlLayerToMap = (uuid: string, visible = true) => {
     } else return false;
   }
   return false;
+};
+
+export const getLayerMetadata = (uuid: string) => {
+  const layerProxy = getNessLayer(uuid);
+  if (layerProxy) {
+    return layerProxy.metadata;
+  }
 };
 
 export const removeLayer = (layer: BaseLayer) => {

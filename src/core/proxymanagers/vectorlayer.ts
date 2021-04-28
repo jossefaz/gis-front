@@ -4,6 +4,7 @@ import VLProxy from "../proxy/vectorlayers";
 import { Feature } from "ol";
 import { Extent } from "ol/extent";
 import { Coordinate } from "ol/coordinate";
+import TileLayer from "ol/layer/Tile";
 
 class VectorLayerProxyManager {
   private static instance: VectorLayerProxyManager;
@@ -28,7 +29,7 @@ class VectorLayerProxyManager {
     this._registry[uid] = new VLProxy(vl);
   };
 
-  public setFromImageLayer = (il: ImageLayer) => {
+  public setFromImageLayer = (il: ImageLayer | TileLayer) => {
     const uid = il.get("__NessUUID__");
     if (!uid) {
       return false;
@@ -57,9 +58,13 @@ class VectorLayerProxyManager {
   };
 
   public getFeaturesByExtent = (extent: Extent) => {
-    const features: Feature[] = [];
+    const features: { [layername: string]: Feature[] } = {};
+    debugger;
     Object.values(this._registry).forEach((vl) => {
-      features.push(...vl.getFeaturesByExtent(extent));
+      if (vl.metadata) {
+        features[vl.metadata.restId] = [];
+        features[vl.metadata.restId].push(...vl.getFeaturesByExtent(extent));
+      }
     });
     return features;
   };
@@ -96,6 +101,13 @@ class VectorLayerProxyManager {
           !exists
         ) {
           this.setFromImageLayer(lyr);
+        }
+        if (
+          lyr instanceof VectorLayer &&
+          arrayOfLayerNames.includes(lyr.get("__NessUUID__")) &&
+          !exists
+        ) {
+          this.setNewVectorLayer(lyr);
         }
       });
   };

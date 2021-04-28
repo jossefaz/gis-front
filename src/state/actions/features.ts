@@ -14,43 +14,38 @@ import {
 } from "./types/features/actions";
 import { GisState } from "../stateTypes";
 
-export const setSelectedFeatures = (features: OLFeature[]) => (
-  dispatch: Dispatch,
-  getState: () => GisState
-) => {
+export const setSelectedFeatures = (features: {
+  [layername: string]: OLFeature[];
+}) => (dispatch: Dispatch) => {
   if (features) {
     const focusedmap = API.map.getFocusedMapUUID();
-    const getLayerMd = (layername: string): ReduxLayer => {
-      const { Layers } = getState();
-      return Object.values(Layers[focusedmap].layers).filter(
-        (lyr) => lyr.restid == layername
-      )[0];
-    };
-
     const featuresByLayers: { [layerid: string]: Feature[] } = {};
+    Object.keys(features).forEach((layername) => {
+      features[layername].forEach((f) => {
+        const parentuuid = f.get("__NessUUID__");
+        f.unset("__NessUUID__");
+        let featureId = f.getId();
+        if (featureId) {
+          featureId = featureId.toString();
+          if (!(layername in featuresByLayers)) {
+            featuresByLayers[layername] = [];
+          }
 
-    features.forEach((f) => {
-      let layer;
-      const parentuuid = f.get("__NessUUID__");
-      f.unset("__NessUUID__");
-      let featureId = f.getId();
-      if (featureId) {
-        featureId = featureId.toString();
-        layer = featureId.split(".")[0];
-        if (!(layer in featuresByLayers)) {
-          featuresByLayers[layer] = [];
+          const properties = API.features.getFeatureProperties(f);
+          featuresByLayers[layername].push({
+            properties,
+            id: featureId,
+            type: layername,
+            layerId: f.get("layerId"),
+            layerAlias: f.get("layerAlias"),
+            __Parent_NessUUID__: parentuuid,
+          });
+          f.unset("layerAlias");
+          f.unset("layerId");
+          f.unset("properties");
+          f.unset("__Parent_NessUUID__");
         }
-        const properties = API.features.getFeatureProperties(f);
-        const metadata = getLayerMd(layer);
-        featuresByLayers[layer].push({
-          properties,
-          id: featureId,
-          type: layer,
-          layerId: metadata.semanticId,
-          layerAlias: metadata.name,
-          __Parent_NessUUID__: parentuuid,
-        });
-      }
+      });
     });
     dispatch<SetSelectedFeaturesAction>({
       type: types.SET_SELECTED_FEATURES,

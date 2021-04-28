@@ -20,7 +20,15 @@ export const getFeatureProperties = (
   ol_feature: Feature
 ): { [key: string]: any } => {
   const props = ol_feature.getProperties() || {};
-  return _.omit(props, ["bbox", "geometry", "vector_source"]);
+  return _.omit(props, [
+    "bbox",
+    "geometry",
+    "vector_source",
+    "layerAlias",
+    "layerId",
+    "properties",
+    "__Parent_NessUUID__",
+  ]);
 };
 
 export const geoserverFeatureToOLGeom = (
