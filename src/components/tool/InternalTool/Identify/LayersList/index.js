@@ -25,9 +25,11 @@ class LayersList extends Component {
     return this.props.selectedFeatures
       ? Object.keys(this.props.selectedFeatures).map((layer) => (
         <React.Fragment key={layer}>
-          <Accordion.Toggle as="div" eventKey={layer} className="py-2 border-bottom px-tool">
-            + {layer}
-          </Accordion.Toggle>
+          <div className="py-2 border-bottom px-tool">
+            <Accordion.Toggle as="div" eventKey={layer} className={"collapse-toggler" + (this.props.currentLayer === layer ? " collapse-toggler--opened" : "")}>
+              {layer}
+            </Accordion.Toggle>
+          </div>
           <Accordion.Collapse eventKey={layer} >
             <div className="py-3" >
                <FeatureList selectedLayer={layer} />
@@ -42,7 +44,7 @@ class LayersList extends Component {
     return (
       <React.Fragment>
         <div className="text-primary font-weight-bold px-tool py-3 border-bottom">זיהוי יישויות</div>
-        <Accordion onSelect={this.handleSelect} className="layers-groups">
+        <Accordion onSelect={this.handleSelect} className="layers-groups accordion-with-icon">
           {this.renderSelectedFeature()}
         </Accordion>
 

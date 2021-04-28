@@ -11,16 +11,14 @@ const TextItem = (props) => {
   };
 
   return (
-    <div className="d-flex px-tool py-2 border-top">
+    <div className="draw-item">
       <div className="flex-grow-1">{extractContent(props.content)}</div>
-      <ButtonGroup>
-        <Button variant="transparent" onClick={() => props.removeOverlay(props.id)}>
-          <i className="gis-icon gis-icon--trash"></i>
-        </Button>
-        <Button variant="transparent" onClick={() => props.editText(props.content, props.id)}>
-          <i className="gis-icon gis-icon--pencil-on-square"></i>
-        </Button>
-      </ButtonGroup>
+      <Button variant="white" onClick={() => props.removeOverlay(props.id)}>
+        <i className="gis-icon gis-icon--trash"></i>
+      </Button>
+      <Button variant="white" onClick={() => props.editText(props.content, props.id)}>
+        <i className="gis-icon gis-icon--pencil-on-square"></i>
+      </Button>
     </div>
   );
 

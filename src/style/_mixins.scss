@@ -1,0 +1,8 @@
+@mixin rtl {
+    @at-root {
+        .rtl &,
+        [dir="rtl"] & {
+            @content;
+        }
+    }
+}

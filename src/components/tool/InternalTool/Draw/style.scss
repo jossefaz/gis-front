@@ -1,7 +1,14 @@
 @import "../../../../style/variables";
 
 .draw {
-
+  .draw-item {
+    display: flex;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-top: solid 1px $border-color;
+    padding-right: $tool-padding-start;
+    padding-left: $tool-padding-end;
+  }
 }
 
 /* .spaceAround {

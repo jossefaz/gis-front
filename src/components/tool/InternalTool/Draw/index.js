@@ -353,45 +353,54 @@ class Draw extends React.Component {
       <div className="draw py-3">
         <p className="px-tool">יש לבחור כלי ולאחר מכן לבחור את מיקומו על המפה</p>
 
-        <div className="btn-group-block">
-          <Button variant="link" onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}>
+        <ButtonGroup className="btn-group-block">
+          <Button variant="white" 
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)} 
+            active={this.state.drawtype === this.DRAW_TYPES.Polygon}
+          >
             <span>צורה</span>
             <i className="gis-icon gis-icon--graphic-pen-thin"></i>
           </Button>
-          <Button variant="link" onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}>
+          <Button variant="white" 
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)} 
+            active={this.state.drawtype === this.DRAW_TYPES.Line}
+          >
             <span>קו</span>
             <i className="gis-icon gis-icon--line"></i>
           </Button>
-          <Button variant="link" onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}>
+          <Button variant="white" 
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)} 
+            active={this.state.drawtype === this.DRAW_TYPES.Circle}
+          >
             <span>עגול</span>
             <i className="gis-icon gis-icon--circle-dots"></i>
           </Button>
-          <Button variant="link" onClick={() => this.setState({
-            sessionType: "Text",
-            editText: {
-              text: null,
-              overlayID: null,
-            },
-            drawtype: this.DRAW_TYPES.Text,
-          })}
+          <Button variant="white" 
+            onClick={() => this.setState({
+              sessionType: "Text",
+              editText: {
+                text: null,
+                overlayID: null,
+              },
+              drawtype: this.DRAW_TYPES.Text,
+            })}
+            active={this.state.drawtype === this.DRAW_TYPES.Text}
           >
             <span>טקסט</span>
             <i className="gis-icon gis-icon--text-box"></i>
           </Button>
-        </div>
+        </ButtonGroup>
 
         {!disable && (
           <React.Fragment>
-            <div className="px-tool d-flex mt-5">
+            <div className="px-tool d-flex mt-5 mb-2">
               <strong className="flex-grow-1">רכיבים על גבי המפה</strong>
-              <ButtonGroup>
-                <Button variant="transparent" onClick={() => this.setState({ open: true })} disabled={disable}>
-                  <i className="gis-icon gis-icon--trash"></i>
-                </Button>
-                <Button variant="transparent" onClick={() => this.toggleView()} disabled={disable}>
-                  <i className={'gis-icon gis-icon--' + (this.state.view ? "eye" : "eye-slash")}></i>
-                </Button>
-              </ButtonGroup>
+              <Button variant="white" onClick={() => this.setState({ open: true })} disabled={disable}>
+                <i className="gis-icon gis-icon--trash"></i>
+              </Button>
+              <Button variant="white" onClick={() => this.toggleView()} disabled={disable}>
+                <i className={'gis-icon gis-icon--' + (this.state.view ? "eye" : "eye-slash")}></i>
+              </Button>
             </div>
 
             <FeatureTable
@@ -412,6 +421,18 @@ class Draw extends React.Component {
             removeOverlay={this.removeOverlay}
           />
         )}
+        
+        {this.state.sessionType === "Text" && (
+          <div className="draw-item">
+            <TextForm
+              cancelEdit={this.cancelEditText}
+              onSubmit={this.createOrEditText}
+              value={this.state.editText.text}
+              setValue={this.handleTextChange}
+              overlayID={this.state.editText.overlayID}
+            />
+          </div>
+          )}
 
         <Confirm
           isOpen={this.state.open}

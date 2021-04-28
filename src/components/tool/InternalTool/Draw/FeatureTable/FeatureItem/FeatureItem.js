@@ -55,7 +55,7 @@ const FeatureItem = (props) => {
   }
 
   return (
-    <div className="d-flex px-tool py-2 border-top">
+    <div className="draw-item">
       <div className="flex-grow-1 d-flex align-items-center">
         <span>קו</span>
         <ColorPicker
@@ -75,14 +75,12 @@ const FeatureItem = (props) => {
             className="mr-2"
           />
       </div>
-      <ButtonGroup>
-        <Button variant="transparent" onClick={removeFeature}>
-          <i className="gis-icon gis-icon--trash"></i>
-        </Button>
-        <Button variant="transparent" onClick={edit}>
-          <i className="gis-icon gis-icon--pencil-on-square"></i>
-        </Button>
-      </ButtonGroup>
+      <Button variant="white" onClick={removeFeature}>
+        <i className="gis-icon gis-icon--trash"></i>
+      </Button>
+      <Button variant="white" onClick={edit}>
+        <i className="gis-icon gis-icon--pencil-on-square"></i>
+      </Button>
     </div>
   );
 
