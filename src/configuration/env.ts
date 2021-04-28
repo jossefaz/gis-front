@@ -15,8 +15,8 @@ const importConfigObject = async (url: string) => {
 };
 export const get_env = async (): Promise<EnvVariables | false> => {
   const APP_CONFIG = () =>
-    process.env.REACT_APP_APP_CONFIG
-      ? importConfigObject(process.env.REACT_APP_APP_CONFIG)
+    (<any>window)._env_.REACT_APP_APP_CONFIG
+      ? importConfigObject((<any>window)._env_.REACT_APP_APP_CONFIG)
       : null;
   const CONFIG = await APP_CONFIG();
   if (!APP_CONFIG) {

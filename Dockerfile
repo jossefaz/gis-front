@@ -1,12 +1,9 @@
 # You should always specify a full version here to ensure all of your developers
 # are running the same version of Node.
-FROM node:15.2.1
+FROM node:15.2.1 as builder
 
 
-# Install and configure `serve`.
-RUN yarn global add serve
-CMD serve -s build
-EXPOSE 5000
+WORKDIR '/app'
 
 # Install all dependencies of the current project.
 COPY package.json package.json
@@ -14,6 +11,7 @@ RUN yarn
 
 # Copy all local files into the image.
 COPY . .
+RUN yarn build
 
 # Build for production.
 #RUN yarn run build --production
