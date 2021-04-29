@@ -65,7 +65,7 @@ const App: React.FC = () => {
     ? API.map.getFocusedMapProxy().uuid.value
     : null;
 
-  return jwt.token && mapState ? (
+  return (jwt.token && mapState) || true ? (
     <React.Fragment>
       <ToastProvider placement="bottom-left">
         <DndProvider backend={HTML5Backend}>
