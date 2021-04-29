@@ -44,6 +44,7 @@ const Identify: React.FC = () => {
         const extent = dragBox.getGeometry().getExtent();
         const features = vectorLayerRegistry.getFeaturesByExtent(extent);
         if (Object.keys(features).length > 0) {
+          console.log(features);
           setSelectedFeatures(features);
         }
       };
@@ -76,7 +77,7 @@ const Identify: React.FC = () => {
 
   const onEditGeometry = (feature: Feature) => {
     removeInteraction();
-    const layer = feature.__Parent_NessUUID__;
+    const layer = feature.parentlayerProperties.uuid;
 
     const f = editProxy.registry[layer].getFeatureById(feature.id);
     if (f) {

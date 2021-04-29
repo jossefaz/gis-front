@@ -10,7 +10,8 @@ import { Style } from "ol/style";
 import ImageWMS from "ol/source/ImageWMS";
 import axios from "axios";
 import { Extent } from "ol/extent";
-import { Feature } from "ol";
+import { Feature } from "../../core/types/feature";
+import OLFeature from "ol/Feature";
 import { Coordinate } from "ol/coordinate";
 import { FeatureCollection } from "geojson";
 import { IMDLayer } from "../types";
@@ -36,6 +37,13 @@ export default class VectorLayerProxy {
         : (this._source = new VectorSource());
       if (this.uuid) {
         this._metadata = API.layers.getLayerMetadata(this.uuid);
+      }
+      if (this._metadata) {
+        this._layername = this._metadata.restId;
+        this._geoserverUtil = new GeoserverUtil(
+          this._metadata.workspace,
+          this._metadata.restId
+        );
       }
     }
     this._data = [];
@@ -118,27 +126,38 @@ export default class VectorLayerProxy {
     const features: Feature[] = [];
     if (this._source) {
       this._source.forEachFeatureIntersectingExtent(extent, (feature) => {
-        if (this._source && this.metadata) {
-          feature.set("editable", true); // TODO : change true value by real editable value
-          feature.set("__NessUUID__", this._source.get("__NessUUID__"));
-          feature.set("layerId", this.metadata.semanticId);
-          feature.set("layerAlias", this.metadata.alias);
-          feature.set("__Parent_NessUUID__", this._source.get("__NessUUID__"));
-          features.push(feature);
+        if (this._source && this.metadata && this.uuid) {
+          const candidate = this.olFeatureToFeature(feature);
+          candidate && features.push(candidate);
         }
       });
     }
     return features;
   };
 
+  public olFeatureToFeature = (olfeature: OLFeature) => {
+    if (this._source && this.metadata && this.uuid) {
+      olfeature.set("editable", true);
+      return {
+        properties: API.features.getFeatureProperties(olfeature),
+        parentlayerProperties: {
+          layerId: this.metadata.semanticId,
+          layerAlias: this.metadata.alias,
+          uuid: this.uuid,
+          type: this.metadata.restId,
+        },
+        id: olfeature.getId(),
+      };
+    }
+  };
+
   public getFeaturesAtCoordinate = (coordinates: Coordinate) => {
-    let features: Feature[] = [];
+    const features: Feature[] = [];
     if (this._source) {
-      features = this._source.getFeaturesAtCoordinate(coordinates);
-      features.forEach((feature) => {
-        if (this._source) {
-          feature.set("editable", true); // TODO : change true value by real editable value
-          feature.set("__NessUUID__", this._source.get("__NessUUID__"));
+      this._source.getFeaturesAtCoordinate(coordinates).forEach((feature) => {
+        if (this._source && this.metadata && this.uuid) {
+          const candidate = this.olFeatureToFeature(feature);
+          candidate && features.push(candidate);
         }
       });
     }
@@ -172,13 +191,11 @@ export default class VectorLayerProxy {
     });
   };
 
-  public highlightFeature = (eFeature: Feature): void => {
+  public highlightFeature = (eFeature: OLFeature): void => {
     this._source &&
       this._source.forEachFeature((feature) => {
         if (feature.getId() === eFeature.getId()) {
           feature.setStyle(styles.EDIT);
-        } else {
-          feature.setStyle(styles.HIDDEN);
         }
       });
   };
@@ -227,7 +244,9 @@ export default class VectorLayerProxy {
             if (this._source) {
               const format = this._source.getFormat();
               if (format) {
-                const featurelike = format.readFeatures(res.data) as Feature[];
+                const featurelike = format.readFeatures(
+                  res.data
+                ) as OLFeature[];
                 this._source.addFeatures(featurelike);
               }
             }

@@ -1,11 +1,11 @@
 import { ActionTypes } from "./actionsTypes";
-import { Feature } from "../../../../core/types";
+import { Feature, SelectedFeature } from "../../../../core/types";
 
 // PAYLOADS
 
 interface SelectedFeatureActionPayload {
   focusedmap: string;
-  featuresByLayers: { [layerid: string]: Feature[] };
+  featuresByLayers: SelectedFeature;
 }
 
 interface CurrentFeatureActionPayload {

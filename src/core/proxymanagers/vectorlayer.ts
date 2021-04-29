@@ -5,6 +5,7 @@ import { Feature } from "ol";
 import { Extent } from "ol/extent";
 import { Coordinate } from "ol/coordinate";
 import TileLayer from "ol/layer/Tile";
+import { SelectedFeature } from "../types";
 
 class VectorLayerProxyManager {
   private static instance: VectorLayerProxyManager;
@@ -58,10 +59,10 @@ class VectorLayerProxyManager {
   };
 
   public getFeaturesByExtent = (extent: Extent) => {
-    const features: { [layername: string]: Feature[] } = {};
+    const features: SelectedFeature = {};
     debugger;
     Object.values(this._registry).forEach((vl) => {
-      if (vl.metadata) {
+      if (vl.metadata && vl.uuid) {
         features[vl.metadata.restId] = [];
         features[vl.metadata.restId].push(...vl.getFeaturesByExtent(extent));
       }
@@ -70,9 +71,14 @@ class VectorLayerProxyManager {
   };
 
   public getFeaturesAtCoordinate = (coordinates: Coordinate) => {
-    const features: Feature[] = [];
+    const features: SelectedFeature = {};
     Object.values(this._registry).forEach((vl) => {
-      features.push(...vl.getFeaturesAtCoordinate(coordinates));
+      if (vl.metadata && vl.uuid) {
+        features[vl.metadata.restId] = [];
+        features[vl.metadata.restId].push(
+          ...vl.getFeaturesAtCoordinate(coordinates)
+        );
+      }
     });
     return features;
   };

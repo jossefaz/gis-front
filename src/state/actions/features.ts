@@ -1,7 +1,7 @@
 import types from "./types";
 import API from "../../core/api";
 import OLFeature from "ol/Feature";
-import { Feature, ReduxLayer } from "../../core/types";
+import { Feature, ReduxLayer, SelectedFeature } from "../../core/types";
 import { Dispatch } from "redux";
 import {
   SetCurrentFeatureAction,
@@ -14,44 +14,14 @@ import {
 } from "./types/features/actions";
 import { GisState } from "../stateTypes";
 
-export const setSelectedFeatures = (features: {
-  [layername: string]: OLFeature[];
-}) => (dispatch: Dispatch) => {
-  if (features) {
-    const focusedmap = API.map.getFocusedMapUUID();
-    const featuresByLayers: { [layerid: string]: Feature[] } = {};
-    Object.keys(features).forEach((layername) => {
-      features[layername].forEach((f) => {
-        const parentuuid = f.get("__NessUUID__");
-        f.unset("__NessUUID__");
-        let featureId = f.getId();
-        if (featureId) {
-          featureId = featureId.toString();
-          if (!(layername in featuresByLayers)) {
-            featuresByLayers[layername] = [];
-          }
-
-          const properties = API.features.getFeatureProperties(f);
-          featuresByLayers[layername].push({
-            properties,
-            id: featureId,
-            type: layername,
-            layerId: f.get("layerId"),
-            layerAlias: f.get("layerAlias"),
-            __Parent_NessUUID__: parentuuid,
-          });
-          f.unset("layerAlias");
-          f.unset("layerId");
-          f.unset("properties");
-          f.unset("__Parent_NessUUID__");
-        }
-      });
-    });
-    dispatch<SetSelectedFeaturesAction>({
-      type: types.SET_SELECTED_FEATURES,
-      payload: { focusedmap, featuresByLayers },
-    });
-  }
+export const setSelectedFeatures = (featuresByLayers: SelectedFeature) => (
+  dispatch: Dispatch
+) => {
+  const focusedmap = API.map.getFocusedMapUUID();
+  dispatch<SetSelectedFeaturesAction>({
+    type: types.SET_SELECTED_FEATURES,
+    payload: { focusedmap, featuresByLayers },
+  });
 };
 
 export const setCurrentFeature = (featureId: string) => (
@@ -61,6 +31,7 @@ export const setCurrentFeature = (featureId: string) => (
   const focusedmap = API.map.getFocusedMapUUID();
   if (focusedmap in getState().Features) {
     const { selectedFeatures, currentLayer } = getState().Features[focusedmap];
+    debugger;
     if (currentLayer) {
       const currentFeature = selectedFeatures[currentLayer].filter(
         (feature: Feature) => feature.id === featureId

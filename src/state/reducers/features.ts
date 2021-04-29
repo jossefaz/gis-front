@@ -3,6 +3,7 @@ import { FeatureState } from "../stateTypes";
 import produce from "immer";
 import { Actions } from "../actions/types";
 import { GisState } from "../stateTypes";
+import { SelectedFeature } from "../../core/types";
 
 const getinitialFeatureState = () => {
   return {
@@ -134,15 +135,22 @@ export const selectCurrentLayerUUID = (state: GisState) => {
     selectedFeatures &&
     currentLayer &&
     selectedFeatures[currentLayer].length > 0
-      ? selectedFeatures[currentLayer][0].__Parent_NessUUID__
+      ? selectedFeatures[currentLayer][0].parentlayerProperties.uuid
       : false;
   return currentId;
 };
 
 export const selectSelectedFeatures = (state: GisState) => {
   const { Features, map } = state;
+  const selectedFiltered: SelectedFeature = {};
   if (map.focused in Features && "selectedFeatures" in Features[map.focused]) {
-    return Features[map.focused].selectedFeatures;
+    Object.keys(Features[map.focused].selectedFeatures).forEach((layername) => {
+      if (Features[map.focused].selectedFeatures[layername].length > 0) {
+        selectedFiltered[layername] =
+          Features[map.focused].selectedFeatures[layername];
+      }
+    });
+    return Object.keys(selectedFiltered).length > 0 ? selectedFiltered : false;
   }
   return false;
 };

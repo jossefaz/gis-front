@@ -87,14 +87,14 @@ class FeatureList extends Component {
               onClick={() => {
                 this.props.setCurrentFeature(feature.id);
                 const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
-                  feature.__Parent_NessUUID__,
+                  feature.parentlayerProperties.uuid,
                   feature.id
                 );
                 f && zoomTo(f.getGeometry());
               }}
               onMouseOver={async () => {
                 const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
-                  feature.__Parent_NessUUID__,
+                  feature.parentlayerProperties.uuid,
                   feature.id
                 );
                 f && highlightFeature(f.getGeometry());
