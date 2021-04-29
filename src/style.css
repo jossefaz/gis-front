@@ -27,3 +27,7 @@ body {
   direction: rtl;
   text-align: right;
 }
+
+.rtl-layout {
+  direction: rtl;
+}

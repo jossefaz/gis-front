@@ -12,7 +12,7 @@ import IconButton from "../../../../UI/Buttons/IconButton";
 import "./style.css";
 import { Form, ListGroup } from "react-bootstrap";
 
-const { highlightFeature } = API.features;
+const { highlightFeature, zoomTo } = API.features;
 const { getFocusedMapProxy } = API.map;
 class FeatureList extends Component {
   state = {
@@ -45,22 +45,27 @@ class FeatureList extends Component {
   renderFieldsSelect = () => {
     return (
       this.selectedFeatures &&
-      this.currentLayer && this.props.selectedLayer in this.selectedFeatures && (
+      this.currentLayer &&
+      this.props.selectedLayer in this.selectedFeatures && (
         <Form.Group className="px-tool">
-          <Form.Control as="select" custom onChange={(event) =>
-            this.setState({ current_field: event.target.value })
-          } >
-
-            {Object.keys(this.selectedFeatures[this.props.selectedLayer][0].properties).map(
-              (field) =>
-                typeof this.selectedFeatures[this.props.selectedLayer][0].properties[field] ==
-                  "string" ||
-                  typeof this.selectedFeatures[this.props.selectedLayer][0].properties[field] ==
-                  "number" ? (
-                  <option key={field} value={field}>
-                    {field}
-                  </option>
-                ) : null
+          <Form.Control
+            as="select"
+            custom
+            onChange={(event) =>
+              this.setState({ current_field: event.target.value })
+            }
+          >
+            {Object.keys(
+              this.selectedFeatures[this.props.selectedLayer][0].properties
+            ).map((field) =>
+              typeof this.selectedFeatures[this.props.selectedLayer][0]
+                .properties[field] == "string" ||
+              typeof this.selectedFeatures[this.props.selectedLayer][0]
+                .properties[field] == "number" ? (
+                <option key={field} value={field}>
+                  {field}
+                </option>
+              ) : null
             )}
           </Form.Control>
         </Form.Group>
@@ -72,11 +77,20 @@ class FeatureList extends Component {
       this.selectedFeatures[this.props.selectedLayer].length > 0 ? (
         <ListGroup variant="flush">
           {this.selectedFeatures[this.props.selectedLayer].map((feature) => (
-            <ListGroup.Item action key={feature.id}
+            <ListGroup.Item
+              action
+              key={feature.id}
               className="px-tool"
-              active={this.currentFeature && this.currentFeature.id === feature.id}
+              active={
+                this.currentFeature && this.currentFeature.id === feature.id
+              }
               onClick={() => {
                 this.props.setCurrentFeature(feature.id);
+                const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
+                  feature.__Parent_NessUUID__,
+                  feature.id
+                );
+                f && zoomTo(f.getGeometry());
               }}
               onMouseOver={async () => {
                 const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
@@ -99,11 +113,14 @@ class FeatureList extends Component {
   };
 
   render() {
-    return this.currentLayer &&
-      <React.Fragment>
-        {this.renderFieldsSelect()}
-        {this.renderSelectedFeature()}
-      </React.Fragment>;
+    return (
+      this.currentLayer && (
+        <React.Fragment>
+          {this.renderFieldsSelect()}
+          {this.renderSelectedFeature()}
+        </React.Fragment>
+      )
+    );
   }
 }
 

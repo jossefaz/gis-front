@@ -43,7 +43,7 @@ const LegendItem = (props) => {
         const { restid } = props.Layers[props.uuid];
         // TODO : change baseurl from config
         url = `${
-          config().Geoserver
+          config().API["geoserver"]
         }/Jeru/wms?&LAYERS=${restid}&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=${restid}&legend_options=countMatched:false;fontAntiAliasing:true;hideEmptyRules:false;forceLabels:on`;
       }
     }
