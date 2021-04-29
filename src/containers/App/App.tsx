@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import MapTabs from "../../components/MapTabs/MapTabs";
-import Map from "../Map/Map";
+import Map from "../../components/Map/Map";
 import MapMenu from "../../components/MapMenu";
 import TopNav from "../TopNav";
 import config from "../../configuration";

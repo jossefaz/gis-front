@@ -157,8 +157,10 @@ export const selectSelectedFeatures = (state: GisState) => {
 
 export const selectCurrentLayer = (state: GisState) => {
   const { Features, map } = state;
-  const currentLayer = Features[map.focused].currentLayer || false;
-  return currentLayer;
+  if (map.focused && map.focused in Features) {
+    const currentLayer = Features[map.focused].currentLayer || false;
+    return currentLayer;
+  }
 };
 
 export const selectCurrentFeature = (state: GisState) => {

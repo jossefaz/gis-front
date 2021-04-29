@@ -20,6 +20,7 @@ import { DragBox } from "ol/interaction";
 import { useActions } from "../../../../hooks/useActions";
 import { useTypedSelector } from "../../../../hooks/useTypedSelectors";
 import useNotifications from "../../../../hooks/useNotifications";
+import { shiftKeyOnly } from "ol/events/condition";
 const { getFocusedMap } = API.map;
 const { zoomTo } = API.features;
 
@@ -44,7 +45,6 @@ const Identify: React.FC = () => {
         const extent = dragBox.getGeometry().getExtent();
         const features = vectorLayerRegistry.getFeaturesByExtent(extent);
         if (Object.keys(features).length > 0) {
-          console.log(features);
           setSelectedFeatures(features);
         }
       };
@@ -54,7 +54,7 @@ const Identify: React.FC = () => {
     }
   };
   const addInteraction = () => {
-    interactions.newDragBox();
+    interactions.newDragBox(shiftKeyOnly);
     onBoxEnd();
   };
 

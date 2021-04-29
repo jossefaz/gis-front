@@ -6,6 +6,8 @@ import { Extent } from "ol/extent";
 import { Coordinate } from "ol/coordinate";
 import TileLayer from "ol/layer/Tile";
 import { SelectedFeature } from "../types";
+import { mainStore as store } from "../../state/store";
+import { selectVisibleLayers } from "../../state/reducers";
 
 class VectorLayerProxyManager {
   private static instance: VectorLayerProxyManager;
@@ -60,9 +62,9 @@ class VectorLayerProxyManager {
 
   public getFeaturesByExtent = (extent: Extent) => {
     const features: SelectedFeature = {};
-    debugger;
+    const visibleLayers = selectVisibleLayers(store.getState());
     Object.values(this._registry).forEach((vl) => {
-      if (vl.metadata && vl.uuid) {
+      if (vl.metadata && vl.uuid && visibleLayers.includes(vl.uuid)) {
         features[vl.metadata.restId] = [];
         features[vl.metadata.restId].push(...vl.getFeaturesByExtent(extent));
       }
@@ -72,8 +74,9 @@ class VectorLayerProxyManager {
 
   public getFeaturesAtCoordinate = (coordinates: Coordinate) => {
     const features: SelectedFeature = {};
+    const visibleLayers = selectVisibleLayers(store.getState());
     Object.values(this._registry).forEach((vl) => {
-      if (vl.metadata && vl.uuid) {
+      if (vl.metadata && vl.uuid && visibleLayers.includes(vl.uuid)) {
         features[vl.metadata.restId] = [];
         features[vl.metadata.restId].push(
           ...vl.getFeaturesAtCoordinate(coordinates)
