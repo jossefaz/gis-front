@@ -19,11 +19,16 @@ import FeatureTable from "./FeatureTable";
 import TextTable from "./Texts";
 import ColorPicker from "../../../UI/ColorPicker/ColorPicker";
 import { DragPan } from "ol/interaction";
+import GeoJSON from "ol/format/GeoJSON";
 import { Grid } from "semantic-ui-react";
 import Point from "ol/geom/Point";
 import axios from "axios";
 import { InteractionSupportedTypes as TYPES } from "../../../../core/types/interaction";
-import "./style.css";
+import { createCustomLayer } from "../../../../state/actions";
+import { createLayers } from "../../../../core/HTTP/usersLayers";
+import { fromCircle } from "ol/geom/Polygon";
+import "./style.scss";
+import { Button, ButtonGroup } from "react-bootstrap";
 
 const { getFocusedMap } = API.map;
 class Draw extends React.Component {
@@ -337,6 +342,29 @@ class Draw extends React.Component {
     return this.DrawSource ? this.DrawSource.getFeatures() : [];
   };
 
+  onSaveFeatures = async () => {
+    const Features = this.getDrawnFeatures();
+    if (Features.length > 0) {
+      const FeatureCollection = [];
+      Features.forEach((feature) => {
+        const writer = new GeoJSON();
+        const geomtype = feature.getGeometry().getType();
+        if (geomtype == "Circle" || geomtype == "GeometryCollection") {
+          feature.setGeometry(fromCircle(feature.getGeometry()));
+        }
+        const geojson = writer.writeFeatureObject(feature);
+        FeatureCollection.push(geojson);
+      });
+      const layer_id = await createLayers("testfromclient", true, {
+        type: "FeatureCollection",
+        features: FeatureCollection,
+      });
+      if (layer_id) {
+        this.props.createCustomLayer(layer_id);
+      }
+    }
+  };
+
   handleTextChange = (text) => {
     this.setState({
       editText: { ...this.state.editText, text },
@@ -347,6 +375,108 @@ class Draw extends React.Component {
     const features = this.getDrawnFeatures();
     const disable = features.length === 0;
     const overlays = this.selfOverlay;
+
+    return (
+      <div className="draw py-3">
+        <p className="px-tool">יש לבחור כלי ולאחר מכן לבחור את מיקומו על המפה</p>
+
+        <ButtonGroup className="btn-group-block">
+          <Button variant="white" 
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)} 
+            active={this.state.drawtype === this.DRAW_TYPES.Polygon}
+          >
+            <span>צורה</span>
+            <i className="gis-icon gis-icon--graphic-pen-thin"></i>
+          </Button>
+          <Button variant="white" 
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)} 
+            active={this.state.drawtype === this.DRAW_TYPES.Line}
+          >
+            <span>קו</span>
+            <i className="gis-icon gis-icon--line"></i>
+          </Button>
+          <Button variant="white" 
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)} 
+            active={this.state.drawtype === this.DRAW_TYPES.Circle}
+          >
+            <span>עגול</span>
+            <i className="gis-icon gis-icon--circle-dots"></i>
+          </Button>
+          <Button variant="white" 
+            onClick={() => this.setState({
+              sessionType: "Text",
+              editText: {
+                text: null,
+                overlayID: null,
+              },
+              drawtype: this.DRAW_TYPES.Text,
+            })}
+            active={this.state.drawtype === this.DRAW_TYPES.Text}
+          >
+            <span>טקסט</span>
+            <i className="gis-icon gis-icon--text-box"></i>
+          </Button>
+        </ButtonGroup>
+
+        {!disable && (
+          <React.Fragment>
+            <div className="px-tool d-flex mt-5 mb-2">
+              <strong className="flex-grow-1">רכיבים על גבי המפה</strong>
+              <Button variant="white" onClick={() => this.setState({ open: true })} disabled={disable}>
+                <i className="gis-icon gis-icon--trash"></i>
+              </Button>
+              <Button variant="white" onClick={() => this.toggleView()} disabled={disable}>
+                <i className={'gis-icon gis-icon--' + (this.state.view ? "eye" : "eye-slash")}></i>
+              </Button>
+            </div>
+
+            <FeatureTable
+              features={features}
+              source={this.DrawSource}
+              defaultColor={this.state.defaultColor}
+              deleteLastFeature={this.deleteLastFeature}
+              onOpenEditSession={this.onOpenEditSession}
+              editSession={this.state.editSession}
+            />
+          </React.Fragment>
+        )}
+
+        {overlays && (
+          <TextTable
+            overlays={this.selfOverlay}
+            editText={this.editText}
+            removeOverlay={this.removeOverlay}
+          />
+        )}
+        
+        {this.state.sessionType === "Text" && (
+          <div className="draw-item">
+            <TextForm
+              cancelEdit={this.cancelEditText}
+              onSubmit={this.createOrEditText}
+              value={this.state.editText.text}
+              setValue={this.handleTextChange}
+              overlayID={this.state.editText.overlayID}
+            />
+          </div>
+          )}
+
+        <Confirm
+          isOpen={this.state.open}
+          confirmTxt={this.state.eraseDraw.content}
+          cancelBtnTxt={this.state.eraseDraw.cancelBtn}
+          confirmBtnTxt={this.state.eraseDraw.confirmBtn}
+          onCancel={() =>
+            this.setState({ ...this.state.eraseDraw, open: false })
+          }
+          onConfirm={this.onClearAll}
+        />
+      </div>
+    );
+
+
+
+
     return (
       <React.Fragment>
         <Grid
@@ -359,43 +489,39 @@ class Draw extends React.Component {
             <label className="labels">בחר צורה : </label>
 
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Polygon
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Polygon
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
               icon="draw-polygon"
               size="lg"
             />
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Line
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Line
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
               icon="grip-lines"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Circle
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Circle
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
               icon="circle"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Text
-                  ? "secondary"
-                  : "primary"
-              }`}
+              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Text
+                ? "secondary"
+                : "primary"
+                }`}
               onClick={() =>
                 this.setState({
                   sessionType: "Text",
@@ -436,21 +562,28 @@ class Draw extends React.Component {
               <Grid.Row>
                 <label className="labels">שליטה כללית : </label>
                 <IconButton
-                  className={`ui icon button pointer ${
-                    !disable ? "negative" : "disabled"
-                  }`}
+                  className={`ui icon button pointer ${!disable ? "negative" : "disabled"
+                    }`}
                   onClick={() => this.setState({ open: true })}
                   disabled={disable}
                   icon="trash-alt"
                   size="lg"
                 />
                 <IconButton
-                  className={`ui icon button pointer ${
-                    !disable ? "positive" : "disabled"
-                  }`}
+                  className={`ui icon button pointer ${!disable ? "positive" : "disabled"
+                    }`}
                   onClick={() => this.toggleView()}
                   disabled={disable}
                   icon={this.state.view ? "eye" : "eye-slash"}
+                  size="lg"
+                />
+                <IconButton
+                  className={`ui icon button pointer ${
+                    !disable ? "positive" : "disabled"
+                  }`}
+                  onClick={() => this.onSaveFeatures()}
+                  disabled={disable}
+                  icon="save"
                   size="lg"
                 />
               </Grid.Row>
@@ -502,4 +635,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(withWidgetLifeCycle(Draw));
+export default connect(mapStateToProps, { createCustomLayer })(
+  withWidgetLifeCycle(Draw)
+);

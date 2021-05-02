@@ -9,7 +9,7 @@ const LayerSample = {
   id: 1,
   name: "dimigcompile",
   alias: "שכבה לדוגמא",
-  url: config.get("Geoserver"),
+  url: config().API["geoserver"],
   params: {
     LAYERS: "Jeru:dimigcompile",
     SRS: "EPSG:2039",

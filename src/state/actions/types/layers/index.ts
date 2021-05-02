@@ -5,6 +5,7 @@ import {
   AddLayerToOLMapAction,
   InitLayersInternalAction,
   SetMapLayerVisibleAction,
+  CreateCustomLayerAction,
 } from "./actions";
 export type LayersActions =
   | AddLayersAction
@@ -12,5 +13,6 @@ export type LayersActions =
   | SetMapLayerOpacityAction
   | AddLayerToOLMapAction
   | InitLayersInternalAction
-  | SetMapLayerVisibleAction;
+  | SetMapLayerVisibleAction
+  | CreateCustomLayerAction;
 export * from "./actionsTypes";

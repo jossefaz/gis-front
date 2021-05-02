@@ -14,7 +14,7 @@ export class OverlayUtil {
   constructor(widgetName) {
     this.widget = widgetName;
     this.CLASSNAMES = {
-      TEXT: "ol-tooltip ol-tooltip-measure",
+      TEXT: "ol-tooltip ol-tooltip-measure rtl-layout",
       HIDDEN: "hidden",
       FINISH: "ol-tooltip ol-tooltip-static",
     };

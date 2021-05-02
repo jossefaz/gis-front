@@ -7,3 +7,11 @@ export interface ApiCall {
   data?: Object;
   headers?: Object;
 }
+
+export interface TypedApiCall<T> {
+  url: string;
+  method: Method;
+  params?: Object;
+  data?: T;
+  headers?: Object;
+}
