@@ -19,6 +19,24 @@ const TextComponent = (props) => {
   };
 
   return (
+    Object.keys(props.overlays).map((overlay, index) => (
+      <div
+        key={overlay}
+        onMouseOver={(e) => toggleRowHighlight(overlay, false)}
+        onMouseLeave={() => toggleRowHighlight(overlay, true)}
+      >
+        <TextItem
+          removeOverlay={props.removeOverlay}
+          index={index}
+          id={overlay}
+          content={props.overlays[overlay].content}
+          editText={props.editText}
+        />
+      </div>
+    ))
+  );
+
+  return (
     <React.Fragment>
       {Object.keys(props.overlays).length > 0 && (
         <Accordion>

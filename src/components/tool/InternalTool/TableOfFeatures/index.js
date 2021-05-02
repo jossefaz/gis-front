@@ -10,7 +10,7 @@ class TableOfFeature extends Component {
 
   generateColumns = () => {
     this.columns = this.metadata.featureTypes[0].properties
-      .forEach((prop) => {
+      .map((prop) => {
         if (!prop.type.includes("gml")) {
           return {
             Header: prop.name,

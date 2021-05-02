@@ -19,10 +19,10 @@
         padding: 0.5rem $tool-padding-start 0.5rem $tool-padding-end;
     }
 
-    &__side-padded, .px-tool {
+    &__side-padded,
+    .px-tool {
         padding-right: $tool-padding-start;
         padding-left: $tool-padding-end;
     }
-
-
 }
+
