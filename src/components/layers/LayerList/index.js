@@ -108,6 +108,7 @@ class LayerList extends Component {
   render() {
     return (
       <React.Fragment>
+<<<<<<< HEAD
         <Accordion className="layers-list" onSelect={this.handleSelect}>
           {Object.keys(this.state.layerListObject).map((subjectId, index) => (
             <React.Fragment key={subjectId}>
@@ -140,6 +141,19 @@ class LayerList extends Component {
                 eventKey={subjectId}
                 className="layers-list__collapse"
               >
+=======
+        <Accordion className="layers-list accordion-with-icon" onSelect={this.handleSelect}>
+
+          {Object.keys(this.state.layerListObject).map((subjectId, index) => (
+            <React.Fragment key={subjectId}>
+
+              <Accordion.Toggle as="div" eventKey={subjectId} className={"layers-list__toggle collapse-toggler" + (this.layerIsActive(subjectId) ? " collapse-toggler--opened" : "")}>
+              {this.state.layerListObject[subjectId].description +
+                  "(" + Object.keys(this.state.layerListObject[subjectId].layers).length + ")"}
+              </Accordion.Toggle>
+
+              <Accordion.Collapse eventKey={subjectId} className="arrow-padded">
+>>>>>>> upstream/styles
                 <React.Fragment>
                   {this.createLayerListItems(
                     this.state.layerListObject[subjectId].layers

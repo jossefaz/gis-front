@@ -9,6 +9,10 @@ $gray-400: #d9d9d9;
 $gray-600: #767676;
 $primary: $blue-100;
 
+$theme-colors: (
+    "white":    #fff,
+);
+
 $font-family-sans-serif: "Assistant", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
     "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji" !default;
@@ -36,6 +40,8 @@ $searchbar-height: 3rem;
 
 $tool-padding-start: $side-content-start;
 $tool-padding-end: $side-content-end;
+
+$collapsing-arrow-padding: 1.25rem;
 
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";

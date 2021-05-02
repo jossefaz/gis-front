@@ -17,8 +17,7 @@ import _ from "lodash";
 import Confirm from "../../../../UI/Modal/Confirm";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import EditButton from "../../../../UI/Buttons/EditButton";
-import "./style.css";
-import { Button, Col, Collapse, Form, Row, Table } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Collapse, Form, Row, Table } from "react-bootstrap";
 
 const { getFocusedMapProxy } = API.map;
 const { zoomTo } = API.features;
@@ -126,6 +125,7 @@ class FeatureDetail extends React.Component {
     return (
       this.currentFeature && (
         <React.Fragment>
+<<<<<<< HEAD
           <div
             className="feature-details"
             onMouseDownCapture={(e) => e.stopPropagation()}
@@ -151,6 +151,26 @@ class FeatureDetail extends React.Component {
                 </React.Fragment>
               )}
             </div>
+=======
+          <div className="feature-details" onMouseDownCapture={(e) => e.stopPropagation()}>
+
+          <ButtonGroup className="btn-group-block border-0">
+              <Button variant="white" onClick={this.onZoom}>
+                <span>תקריב</span>
+                <i className="gis-icon gis-icon--search-eye-thin"></i>
+              </Button>
+              {properties.editable && (<React.Fragment>
+                <Button variant="white" onClick={this.onStartEditGeom}>
+                  <span>ערוך</span>
+                  <i className="gis-icon gis-icon--graphic-pen-thin"></i>
+                </Button>
+                <Button variant="white" onClick={() => this.setState({ openConfirm: true })}>
+                  <span>מחק/י</span>
+                  <i className="gis-icon gis-icon--trash"></i>
+                </Button>
+              </React.Fragment>)}
+            </ButtonGroup>
+>>>>>>> upstream/styles
 
             <div
               className="feature-details__header"
@@ -213,6 +233,7 @@ class FeatureDetail extends React.Component {
             </Collapse>
           </div>
 
+<<<<<<< HEAD
           {/* <div onMouseDownCapture={(e) => e.stopPropagation()}>
             <table className="ui celled table">
               <thead>
@@ -290,6 +311,8 @@ class FeatureDetail extends React.Component {
             </table>
           </div> */}
 
+=======
+>>>>>>> upstream/styles
           <Confirm
             isOpen={this.state.openConfirm}
             confirmTxt={this.state.eraseFeature.content}
