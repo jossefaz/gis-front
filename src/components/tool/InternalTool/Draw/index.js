@@ -119,12 +119,9 @@ class Draw extends React.Component {
     });
   };
 
-  addInteraction = (drawtype) => {
-    this.interactions.newDraw({ type: drawtype });
-  };
-
   onOpenDrawSession = (drawtype) => {
-    this.addInteraction(drawtype);
+    this.interactions.newDraw({ type: drawtype });
+    this.DrawLayer && this.DrawLayer.setVisible(true);
     this.setState({ sessionType: "Geometry", drawtype });
     this.onDrawEnd();
   };
@@ -378,39 +375,47 @@ class Draw extends React.Component {
 
     return (
       <div className="draw py-3">
-        <p className="px-tool">יש לבחור כלי ולאחר מכן לבחור את מיקומו על המפה</p>
+        <p className="px-tool">
+          יש לבחור כלי ולאחר מכן לבחור את מיקומו על המפה
+        </p>
 
         <ButtonGroup className="btn-group-block">
-          <Button variant="white" 
-            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)} 
+          <Button
+            variant="white"
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
             active={this.state.drawtype === this.DRAW_TYPES.Polygon}
           >
             <span>צורה</span>
             <i className="gis-icon gis-icon--graphic-pen-thin"></i>
           </Button>
-          <Button variant="white" 
-            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)} 
+          <Button
+            variant="white"
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
             active={this.state.drawtype === this.DRAW_TYPES.Line}
           >
             <span>קו</span>
             <i className="gis-icon gis-icon--line"></i>
           </Button>
-          <Button variant="white" 
-            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)} 
+          <Button
+            variant="white"
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
             active={this.state.drawtype === this.DRAW_TYPES.Circle}
           >
             <span>עגול</span>
             <i className="gis-icon gis-icon--circle-dots"></i>
           </Button>
-          <Button variant="white" 
-            onClick={() => this.setState({
-              sessionType: "Text",
-              editText: {
-                text: null,
-                overlayID: null,
-              },
-              drawtype: this.DRAW_TYPES.Text,
-            })}
+          <Button
+            variant="white"
+            onClick={() =>
+              this.setState({
+                sessionType: "Text",
+                editText: {
+                  text: null,
+                  overlayID: null,
+                },
+                drawtype: this.DRAW_TYPES.Text,
+              })
+            }
             active={this.state.drawtype === this.DRAW_TYPES.Text}
           >
             <span>טקסט</span>
@@ -422,11 +427,24 @@ class Draw extends React.Component {
           <React.Fragment>
             <div className="px-tool d-flex mt-5 mb-2">
               <strong className="flex-grow-1">רכיבים על גבי המפה</strong>
-              <Button variant="white" onClick={() => this.setState({ open: true })} disabled={disable}>
+              <Button
+                variant="white"
+                onClick={() => this.setState({ open: true })}
+                disabled={disable}
+              >
                 <i className="gis-icon gis-icon--trash"></i>
               </Button>
-              <Button variant="white" onClick={() => this.toggleView()} disabled={disable}>
-                <i className={'gis-icon gis-icon--' + (this.state.view ? "eye" : "eye-slash")}></i>
+              <Button
+                variant="white"
+                onClick={() => this.toggleView()}
+                disabled={disable}
+              >
+                <i
+                  className={
+                    "gis-icon gis-icon--" +
+                    (this.state.view ? "eye" : "eye-slash")
+                  }
+                ></i>
               </Button>
             </div>
 
@@ -448,7 +466,7 @@ class Draw extends React.Component {
             removeOverlay={this.removeOverlay}
           />
         )}
-        
+
         {this.state.sessionType === "Text" && (
           <div className="draw-item">
             <TextForm
@@ -459,7 +477,7 @@ class Draw extends React.Component {
               overlayID={this.state.editText.overlayID}
             />
           </div>
-          )}
+        )}
 
         <Confirm
           isOpen={this.state.open}
@@ -474,9 +492,6 @@ class Draw extends React.Component {
       </div>
     );
 
-
-
-
     return (
       <React.Fragment>
         <Grid
@@ -489,39 +504,43 @@ class Draw extends React.Component {
             <label className="labels">בחר צורה : </label>
 
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Polygon
-                ? "secondary"
-                : "primary"
-                }`}
+              className={`ui icon button pointer ${
+                this.state.drawtype === this.DRAW_TYPES.Polygon
+                  ? "secondary"
+                  : "primary"
+              }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
               icon="draw-polygon"
               size="lg"
             />
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Line
-                ? "secondary"
-                : "primary"
-                }`}
+              className={`ui icon button pointer ${
+                this.state.drawtype === this.DRAW_TYPES.Line
+                  ? "secondary"
+                  : "primary"
+              }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
               icon="grip-lines"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Circle
-                ? "secondary"
-                : "primary"
-                }`}
+              className={`ui icon button pointer ${
+                this.state.drawtype === this.DRAW_TYPES.Circle
+                  ? "secondary"
+                  : "primary"
+              }`}
               onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
               icon="circle"
               size="lg"
             />
 
             <IconButton
-              className={`ui icon button pointer ${this.state.drawtype === this.DRAW_TYPES.Text
-                ? "secondary"
-                : "primary"
-                }`}
+              className={`ui icon button pointer ${
+                this.state.drawtype === this.DRAW_TYPES.Text
+                  ? "secondary"
+                  : "primary"
+              }`}
               onClick={() =>
                 this.setState({
                   sessionType: "Text",
@@ -562,16 +581,18 @@ class Draw extends React.Component {
               <Grid.Row>
                 <label className="labels">שליטה כללית : </label>
                 <IconButton
-                  className={`ui icon button pointer ${!disable ? "negative" : "disabled"
-                    }`}
+                  className={`ui icon button pointer ${
+                    !disable ? "negative" : "disabled"
+                  }`}
                   onClick={() => this.setState({ open: true })}
                   disabled={disable}
                   icon="trash-alt"
                   size="lg"
                 />
                 <IconButton
-                  className={`ui icon button pointer ${!disable ? "positive" : "disabled"
-                    }`}
+                  className={`ui icon button pointer ${
+                    !disable ? "positive" : "disabled"
+                  }`}
                   onClick={() => this.toggleView()}
                   disabled={disable}
                   icon={this.state.view ? "eye" : "eye-slash"}

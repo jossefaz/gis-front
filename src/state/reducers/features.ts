@@ -129,21 +129,23 @@ export default reducer;
 
 export const selectCurrentLayerUUID = (state: GisState) => {
   const { Features, map } = state;
-  const selectedFeatures = Features[map.focused].selectedFeatures || false;
-  const currentLayer = Features[map.focused].currentLayer || false;
-  const currentId =
-    selectedFeatures &&
-    currentLayer &&
-    selectedFeatures[currentLayer].length > 0
-      ? selectedFeatures[currentLayer][0].parentlayerProperties.uuid
-      : false;
-  return currentId;
+  if (map.focused in Features && Features[map.focused].selectedFeatures) {
+    const selectedFeatures = Features[map.focused].selectedFeatures || false;
+    const currentLayer = Features[map.focused].currentLayer || false;
+    const currentId =
+      selectedFeatures &&
+      currentLayer &&
+      selectedFeatures[currentLayer].length > 0
+        ? selectedFeatures[currentLayer][0].parentlayerProperties.uuid
+        : false;
+    return currentId;
+  }
 };
 
 export const selectSelectedFeatures = (state: GisState) => {
   const { Features, map } = state;
   const selectedFiltered: SelectedFeature = {};
-  if (map.focused in Features && "selectedFeatures" in Features[map.focused]) {
+  if (map.focused in Features && Features[map.focused].selectedFeatures) {
     Object.keys(Features[map.focused].selectedFeatures).forEach((layername) => {
       if (Features[map.focused].selectedFeatures[layername].length > 0) {
         selectedFiltered[layername] =
