@@ -17,9 +17,11 @@ const FeatureTable = (props) => {
     highlightFeature(feature.getGeometry());
   };
 
+  debugger;
+
   return (
-    props.features
-    && props.features.map((feature, index) => (
+    props.features &&
+    props.features.map((feature, index) => (
       <div
         key={"fi" + feature.getId()}
         onMouseOver={(e) => onRowOver(feature)}
@@ -35,9 +37,7 @@ const FeatureTable = (props) => {
           editSession={props.editSession}
         />
       </div>
-
     ))
-
   );
 
   return (
@@ -60,22 +60,22 @@ const FeatureTable = (props) => {
             <Body>
               {props.features
                 ? props.features.map((feature, index) => (
-                  <Row
-                    key={"fi" + feature.getId()}
-                    onMouseOver={(e) => onRowOver(feature)}
-                    onMouseLeave={() => unhighlightFeature()}
-                  >
-                    <FeatureItem
-                      index={index}
-                      fid={feature.getId()}
-                      source={props.source}
-                      defaultColor={props.defaultColor}
-                      deleteLastFeature={props.deleteLastFeature}
-                      onOpenEditSession={props.onOpenEditSession}
-                      editSession={props.editSession}
-                    />
-                  </Row>
-                ))
+                    <Row
+                      key={"fi" + feature.getId()}
+                      onMouseOver={(e) => onRowOver(feature)}
+                      onMouseLeave={() => unhighlightFeature()}
+                    >
+                      <FeatureItem
+                        index={index}
+                        fid={feature.getId()}
+                        source={props.source}
+                        defaultColor={props.defaultColor}
+                        deleteLastFeature={props.deleteLastFeature}
+                        onOpenEditSession={props.onOpenEditSession}
+                        editSession={props.editSession}
+                      />
+                    </Row>
+                  ))
                 : null}
             </Body>
           </Table>

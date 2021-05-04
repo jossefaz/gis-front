@@ -32,6 +32,7 @@ const FeatureItem = (props) => {
   const edit = () => {
     props.onOpenEditSession(props.fid);
   };
+  debugger;
   const getFeature = () => props.source.getFeatureById(props.fid);
   const updateStyle = () => {
     if (getFeature()) {
@@ -70,10 +71,10 @@ const FeatureItem = (props) => {
       <div className="flex-grow-1 d-flex align-items-center">
         <span>מילוי</span>
         <ColorPicker
-            onColorChange={(newFillColor) => setFillColor(newFillColor)}
-            defaultColor={fillColor}
-            className="mr-2"
-          />
+          onColorChange={(newFillColor) => setFillColor(newFillColor)}
+          defaultColor={fillColor}
+          className="mr-2"
+        />
       </div>
       <Button variant="white" onClick={removeFeature}>
         <i className="gis-icon gis-icon--trash"></i>

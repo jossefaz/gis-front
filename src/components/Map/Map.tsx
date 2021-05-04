@@ -13,6 +13,7 @@ import { useActions } from "../../hooks/useActions";
 import { shiftKeyOnly } from "ol/events/condition";
 import { DragBox } from "ol/interaction";
 import { boundingExtent, buffer } from "ol/extent";
+import { MapBrowserEvent } from "ol";
 
 const { getFocusedMap, getFocusedMapUUID } = API.map;
 const MapComponent: FC = () => {
@@ -27,7 +28,9 @@ const MapComponent: FC = () => {
   const { setSelectedFeatures, toggleToolByName, setRaster } = useActions();
   const [currentLayers, setcurrentLayers] = useState<string[]>([]);
   const openedTools =
-    storeTools.stickyTool.length > 0 || storeTools.dynamicTools.length > 0;
+    storeTools.stickyTool.length > 0 ||
+    storeTools.dynamicTools.length > 0 ||
+    Object.keys(currentInteraction).length > 0;
 
   const onBoxEnd = () => {
     if (interactions.currentDragBoxUUID) {
@@ -46,10 +49,16 @@ const MapComponent: FC = () => {
     }
   };
 
-  const defaultClickTool = async () => {
+  const defaultClickTool = async (e: MapBrowserEvent<UIEvent>) => {
     if (!openedTools && Object.keys(currentInteraction).length === 0) {
       interactions.newDragBox(shiftKeyOnly);
       onBoxEnd();
+      const extent = buffer(boundingExtent([e.coordinate]), 10);
+      const features = vlregistry.getFeaturesByExtent(extent);
+      if (Object.keys(features).length > 0) {
+        setSelectedFeatures(features);
+        toggleToolByName("Identify", true, false);
+      }
     } else {
       interactions.unDragBox();
     }
@@ -64,21 +73,15 @@ const MapComponent: FC = () => {
       vlregistry.initVectorLayers(visibleLayers);
       setcurrentLayers(visibleLayers);
     }
+    if (!openedTools) {
+      getFocusedMap().on("click", defaultClickTool);
+    }
   });
 
   useEffect(() => {
-    getFocusedMap().on("click", function (event) {
-      if (!openedTools && Object.keys(currentInteraction).length === 0) {
-        defaultClickTool();
-        const extent = buffer(boundingExtent([event.coordinate]), 10);
-        const features = vlregistry.getFeaturesByExtent(extent);
-        if (Object.keys(features).length > 0) {
-          setSelectedFeatures(features);
-          toggleToolByName("Identify", true, false);
-        }
-      }
-    });
-    return () => interactions.unDragBox();
+    return () => {
+      interactions.unDragBox();
+    };
   }, []);
 
   return <div id="map" className="map"></div>;
