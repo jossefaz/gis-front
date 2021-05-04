@@ -206,8 +206,7 @@ class Draw extends React.Component {
   onDrawEnd = () => {
     if (this.interactions.currentDraw) {
       this.interactions.currentDraw.on("drawend", async (e) => {
-        const newFeatureId =
-          (await createNewGeometry(e.feature)) || GenerateUUID();
+        const newFeatureId = GenerateUUID();
         e.feature.setId(newFeatureId);
         const { r, g, b, a } = this.state.defaultColor;
         e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`));

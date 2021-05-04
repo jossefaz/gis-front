@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { renderTools } from "../../components/tool/RenderTool";
 import { MapsToolState } from "../../state/stateTypes";
 import { ListGroup } from "react-bootstrap";
+import _ from "lodash";
 
 const TopNav: React.FC<{ Tools: MapsToolState | false }> = (props) => {
   const [opened, setOpened] = useState(false);
-
   return (
     <div
       onMouseEnter={() => setOpened(true)}
@@ -24,7 +24,7 @@ export default React.memo(TopNav, (props, nextProps) => {
   const tools = props.Tools;
   const nextTools = nextProps.Tools;
 
-  return (
+  return !(
     tools !== nextTools &&
     tools &&
     nextTools &&

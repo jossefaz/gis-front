@@ -18,7 +18,7 @@ import API from "../../core/api";
 import { useActions } from "../../hooks/useActions";
 import { TokenData } from "../../core/types";
 import LoginForm from "../../components/Login";
-import ContextMenu from "../../components/ContextMenuNew";
+import ContextMenu from "../../components/ContextMenus/Container";
 
 interface StoredJWT {
   value: TokenData;
