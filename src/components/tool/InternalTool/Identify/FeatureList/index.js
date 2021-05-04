@@ -51,11 +51,7 @@ class FeatureList extends Component {
         typeof properties[field] == "number"
       )
         return (
-          <option
-            selected={field == this.state.current_field}
-            key={field}
-            value={field}
-          >
+          <option key={field} value={field}>
             {field}
           </option>
         );
@@ -69,6 +65,7 @@ class FeatureList extends Component {
       this.props.selectedLayer in this.selectedFeatures && (
         <Form.Group className="px-tool">
           <Form.Control
+            defaultValue={this.state.current_field}
             as="select"
             custom
             onChange={(event) =>
