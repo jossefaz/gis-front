@@ -156,7 +156,7 @@ export class InteractionUtil {
     condition: Condition | undefined
   ) => {
     const config = {
-      ...(layers && { layers }),
+      ...(layers.length > 0 && { layers }),
       ...(multi && { multi }),
       ...(feature && { features: new Collection([feature]) }),
       ...(condition && { condition }),

@@ -12,6 +12,7 @@ import {
 import { useActions } from "../../hooks/useActions";
 import { shiftKeyOnly } from "ol/events/condition";
 import { DragBox } from "ol/interaction";
+import { boundingExtent, buffer } from "ol/extent";
 
 const { getFocusedMap, getFocusedMapUUID } = API.map;
 const MapComponent: FC = () => {
@@ -66,9 +67,19 @@ const MapComponent: FC = () => {
   });
 
   useEffect(() => {
-    defaultClickTool();
+    getFocusedMap().on("click", function (event) {
+      if (!openedTools && Object.keys(currentInteraction).length === 0) {
+        defaultClickTool();
+        const extent = buffer(boundingExtent([event.coordinate]), 10);
+        const features = vlregistry.getFeaturesByExtent(extent);
+        if (Object.keys(features).length > 0) {
+          setSelectedFeatures(features);
+          toggleToolByName("Identify", true, false);
+        }
+      }
+    });
     return () => interactions.unDragBox();
-  }, [openedTools]);
+  }, []);
 
   return <div id="map" className="map"></div>;
 };

@@ -65,8 +65,11 @@ class VectorLayerProxyManager {
     const visibleLayers = selectVisibleLayers(store.getState());
     Object.values(this._registry).forEach((vl) => {
       if (vl.metadata && vl.uuid && visibleLayers.includes(vl.uuid)) {
-        features[vl.metadata.restId] = [];
-        features[vl.metadata.restId].push(...vl.getFeaturesByExtent(extent));
+        const found = vl.getFeaturesByExtent(extent);
+        if (found.length > 0) {
+          features[vl.metadata.restId] = [];
+          features[vl.metadata.restId].push(...found);
+        }
       }
     });
     return features;
@@ -77,10 +80,11 @@ class VectorLayerProxyManager {
     const visibleLayers = selectVisibleLayers(store.getState());
     Object.values(this._registry).forEach((vl) => {
       if (vl.metadata && vl.uuid && visibleLayers.includes(vl.uuid)) {
-        features[vl.metadata.restId] = [];
-        features[vl.metadata.restId].push(
-          ...vl.getFeaturesAtCoordinate(coordinates)
-        );
+        const found = vl.getFeaturesAtCoordinate(coordinates);
+        if (found.length > 0) {
+          features[vl.metadata.restId] = [];
+          features[vl.metadata.restId].push(...found);
+        }
       }
     });
     return features;
