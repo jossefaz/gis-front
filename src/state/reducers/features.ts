@@ -24,7 +24,8 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
         }
         draftState[focusedmap].selectedFeatures = featuresByLayers;
         draftState[focusedmap].currentLayer = Object.keys(featuresByLayers)[0];
-        draftState[focusedmap].currentFeature = null;
+        draftState[focusedmap].currentFeature =
+          featuresByLayers[Object.keys(featuresByLayers)[0]][0];
       });
 
     case types.SET_CURRENT_FEATURE:
