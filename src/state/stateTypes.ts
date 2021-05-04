@@ -7,7 +7,7 @@ import {
   ToolMetadata,
   GroupMetadata,
   LayerStateObject,
-  TokenData
+  TokenData,
 } from "../core/types";
 
 export interface FeatureState {
@@ -34,6 +34,7 @@ export interface OverlayState {
 
 export interface MapsToolState {
   tools: { [toolId: string]: ToolMetadata };
+  displayOrder: string[];
   Groups: { [groupId: string]: GroupMetadata };
   dynamicTools: string[];
   reset: string[];
@@ -48,6 +49,7 @@ export type ToolState = {
   blueprint?: {
     tools: { [toolId: string]: ToolMetadata };
     Groups: { [groupId: string]: GroupMetadata };
+    displayOrder: string[];
   };
 };
 
@@ -63,8 +65,8 @@ export interface UiState {
   sideNavOpen: boolean;
 }
 
-export interface AuthState{
-  jwt : TokenData
+export interface AuthState {
+  jwt: TokenData;
 }
 
 export interface GisState {
@@ -76,6 +78,6 @@ export interface GisState {
   Interactions: InteractionState;
   Overlays: OverlayState;
   ui: UiState;
-  auth:AuthState;
-  streamingSystems:any
+  auth: AuthState;
+  streamingSystems: any;
 }

@@ -117,11 +117,16 @@ export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
     tools: {},
     Groups: {},
     dynamicTools: [],
+    displayOrder: ToolConfig.sideMenu.toolOrder,
     reset: [],
     focused: "",
     stickyTool: "",
   };
-  const blueprint = { tools: {}, Groups: {} };
+  const blueprint = {
+    tools: {},
+    Groups: {},
+    displayOrder: ToolConfig.sideMenu.toolOrder,
+  };
   const mapId = API.map.getFocusedMapUUID();
 
   ToolConfig.groups.forEach((group) => {

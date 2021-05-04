@@ -105,18 +105,25 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
           tools: {},
           Groups: {},
           dynamicTools: [],
+          displayOrder: [],
           reset: [],
           unfocus: undefined,
           focused: "",
           stickyTool: "",
         };
-        if (draftState.blueprint && draftState.blueprint.tools) {
+        if (
+          draftState.blueprint &&
+          draftState.blueprint.tools &&
+          draftState.blueprint.displayOrder
+        ) {
           draftState[action.payload].tools = JSON.parse(
             JSON.stringify(draftState.blueprint.tools)
           );
           draftState[action.payload].Groups = JSON.parse(
             JSON.stringify(draftState.blueprint.Groups)
           );
+          draftState[action.payload].displayOrder =
+            draftState.blueprint.displayOrder;
         }
       });
 
