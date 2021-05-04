@@ -103,7 +103,6 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
           draftState[focusedmap] = getinitialFeatureState();
         }
         draftState[focusedmap].currentLayer = currentFeatureLayer;
-        draftState[focusedmap].currentFeature = null;
       });
 
     case types.SET_CONTEXT_MENU:
@@ -112,7 +111,7 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
         if (!(focusedmap in state)) {
           draftState[focusedmap] = getinitialFeatureState();
         }
-        if (!("contextMenus" in draftState[focusedmap])) {
+        if (!draftState[focusedmap].contextMenus) {
           draftState[focusedmap].contextMenus = {};
         }
         if (!(source in draftState[focusedmap].contextMenus)) {
