@@ -52,7 +52,7 @@ const MapComponent: FC = () => {
   };
 
   const getFeaturesFromEvent = (e: MapBrowserEvent<UIEvent>) => {
-    const extent = buffer(boundingExtent([e.coordinate]), 10);
+    const extent = buffer(boundingExtent([e.coordinate]), 50);
     return vlregistry.getFeaturesByExtent(extent);
   };
 
@@ -72,8 +72,6 @@ const MapComponent: FC = () => {
   };
 
   const defaultContextMenu = (e: MapBrowserEvent<UIEvent>) => {
-    e.stopPropagation();
-    e.preventDefault();
     if ((e.originalEvent as any).buttons == 2) {
       const features = getFeaturesFromEvent(e);
       if (Object.keys(features).length > 0) {
@@ -97,12 +95,17 @@ const MapComponent: FC = () => {
   });
 
   useEffect(() => {
-    getFocusedMap().on("pointerdown", defaultContextMenu);
-    getFocusedMap().on("click", defaultClickTool);
+    if (!openedTools) {
+      getFocusedMap().on("click", defaultClickTool);
+      getFocusedMap().on("pointerdown", defaultContextMenu);
+    } else {
+      getFocusedMap().un("click", defaultClickTool);
+      getFocusedMap().un("pointerdown", defaultContextMenu);
+    }
     return () => {
       interactions.unDragBox();
     };
-  }, []);
+  }, [openedTools]);
 
   return (
     <React.Fragment>
