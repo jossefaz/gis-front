@@ -2,8 +2,10 @@ import { MapBrowserEvent } from "ol";
 import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { SelectedFeature } from "../../../core/types";
-import ContextMenu from "../index";
+import { lazy } from "react";
+
 import _ from "lodash";
+import { Suspense } from "react";
 
 const ContextMenuContainer: React.FC<{
   features: SelectedFeature;
@@ -48,13 +50,18 @@ const ContextMenuContainer: React.FC<{
     setMenuPosition();
     setRender(!render);
   }, [clientXY[0], clientXY[1]]);
-  console.log(`props.features`, features);
+  const ContextMenu = lazy(() => import("../index"));
   return (
     <div ref={menuRef} className="contextMenu">
       {
-        <div className="contextMenu--option">
-          {features[Object.keys(features)[0]][0].id}
-        </div>
+        <React.Fragment>
+          <div className="contextMenu--option">
+            {features[Object.keys(features)[0]][0].id}
+          </div>
+          <Suspense fallback={<div>Loading ...</div>}>
+            <ContextMenu Feature={features[Object.keys(features)[0]][0]} />
+          </Suspense>
+        </React.Fragment>
       }
     </div>
   );

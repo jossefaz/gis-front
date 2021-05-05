@@ -69,23 +69,27 @@ export var StreamingLayer = (function () {
           })
         );
         loadChannels(this.channel, props["symbologyCalculation"]);
-        const arr = this.channel.Channel.split(".");
-        axios
-          .get("http://meitarimds:2210/api/ro_reality/" + arr[0] + "/" + arr[1])
-          .then((request) => {
-            store.dispatch(setFilterIds(this.channel.reduxTarget, null));
-            store.dispatch(
-              updateFeatureAttributes(
-                request.data,
-                this.channel.reduxTarget,
-                this.channel.messageItemIdFieldName,
-                props["symbologyCalculation"]
-              )
-            );
-            store.dispatch(
-              setFilterIds(this.channel.reduxTarget, request.data)
-            );
-          });
+        if (this.channel) {
+          const arr = this.channel.Channel.split(".");
+          axios
+            .get(
+              "http://meitarimds:2210/api/ro_reality/" + arr[0] + "/" + arr[1]
+            )
+            .then((request) => {
+              store.dispatch(setFilterIds(this.channel.reduxTarget, null));
+              store.dispatch(
+                updateFeatureAttributes(
+                  request.data,
+                  this.channel.reduxTarget,
+                  this.channel.messageItemIdFieldName,
+                  props["symbologyCalculation"]
+                )
+              );
+              store.dispatch(
+                setFilterIds(this.channel.reduxTarget, request.data)
+              );
+            });
+        }
       }
     });
     return this.streamingLayer;

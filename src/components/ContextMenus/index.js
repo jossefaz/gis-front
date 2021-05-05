@@ -52,37 +52,36 @@ class ContextMenuContainer extends React.Component {
   }
 
   render() {
-    return (
-      this.props.Feature &&
-      this.props.menus && (
-        <React.Fragment>
+    return this.props.Feature && this.props.menus ? (
+      <React.Fragment>
+        <div
+          className="context-menu"
+          onMouseDownCapture={(e) => e.stopPropagation()}
+        >
           <div
-            className="context-menu"
-            onMouseDownCapture={(e) => e.stopPropagation()}
+            className="context-menu__header"
+            onClick={() => this.setState({ isOpened: !this.state.isOpened })}
           >
-            <div
-              className="context-menu__header"
-              onClick={() => this.setState({ isOpened: !this.state.isOpened })}
-            >
-              Menu
-            </div>
-            <Collapse in={this.state.isOpened}>
-              <div className="context-menu__content">
-                <Table borderless>
-                  <tbody>
-                    {Object.keys(this.props.menus).map((source) => {
-                      return this.renderMenu(
-                        source,
-                        this.props.menus[source][this.props.Feature.id]
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              </div>
-            </Collapse>
+            Menu
           </div>
-        </React.Fragment>
-      )
+          <Collapse in={this.state.isOpened}>
+            <div className="context-menu__content">
+              <Table borderless>
+                <tbody>
+                  {Object.keys(this.props.menus).map((source) => {
+                    return this.renderMenu(
+                      source,
+                      this.props.menus[source][this.props.Feature.id]
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
+          </Collapse>
+        </div>
+      </React.Fragment>
+    ) : (
+      <div>NO MENU</div>
     );
   }
 }

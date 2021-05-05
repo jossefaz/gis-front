@@ -67,6 +67,7 @@ const MapComponent: FC = () => {
       if (Object.keys(features).length > 0) {
         setSelectedFeatures(features);
         toggleToolByName("Identify", true, false);
+        setMenuFeatures({});
       }
     }
   };
@@ -95,12 +96,17 @@ const MapComponent: FC = () => {
   });
 
   useEffect(() => {
+    const map = getFocusedMap();
     if (!openedTools) {
-      getFocusedMap().on("click", defaultClickTool);
-      getFocusedMap().on("pointerdown", defaultContextMenu);
+      map.on("click", defaultClickTool);
+      map.on("pointerdown", defaultContextMenu);
+      map.getView().on("change:resolution", () => setMenuFeatures({}));
+      map.on("pointerdrag", () => setMenuFeatures({}));
     } else {
-      getFocusedMap().un("click", defaultClickTool);
-      getFocusedMap().un("pointerdown", defaultContextMenu);
+      map.un("click", defaultClickTool);
+      map.un("pointerdown", defaultContextMenu);
+      map.getView().un("change:resolution", () => setMenuFeatures({}));
+      map.un("pointerdrag", () => setMenuFeatures({}));
     }
     return () => {
       interactions.unDragBox();
