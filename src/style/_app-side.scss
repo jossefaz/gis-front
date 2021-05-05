@@ -51,8 +51,9 @@
     top: 48px; //0;
     right: $side-width;
     max-height: calc(100vh - 48px);
-    overflow-y: scroll;
-    width: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-width: 350px;
     background: #fff;
     border: solid 1px $gray-400;
     border-right-width: 0;
