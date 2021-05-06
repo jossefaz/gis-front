@@ -59,7 +59,9 @@ const ContextMenuContainer: React.FC<{
             {features[Object.keys(features)[0]][0].id}
           </div>
           <Suspense fallback={<div>Loading ...</div>}>
-            <ContextMenu Feature={features[Object.keys(features)[0]][0]} />
+            <ContextMenu
+              candidateFeature={features[Object.keys(features)[0]][0]}
+            />
           </Suspense>
         </React.Fragment>
       }

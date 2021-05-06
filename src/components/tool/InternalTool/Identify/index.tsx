@@ -120,7 +120,7 @@ const Identify: React.FC = () => {
           {currentFeature && (
             <div className="side-extra-container">
               <FeatureDetail onEditGeometry={onEditGeometry} />
-              <ContextMenu Feature={currentFeature} />
+              <ContextMenu candidateFeature={currentFeature} />
             </div>
           )}
         </div>

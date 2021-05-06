@@ -16,40 +16,26 @@ import { boundingExtent, buffer } from "ol/extent";
 import { MapBrowserEvent } from "ol";
 import ContextMenuContainer from "../ContextMenus/Container";
 import { Feature, SelectedFeature } from "../../core/types";
+import { unByKey } from "ol/Observable";
+import { EventsKey } from "ol/events";
 
 const { getFocusedMap, getFocusedMapUUID } = API.map;
 const MapComponent: FC = () => {
-  const WIDGET_NAME = "Map";
-  const interactions = new InteractionUtil(WIDGET_NAME);
   const vlregistry = VectorLayerRegistry.getInstance();
   const storeTools = useTypedSelector(
     (state) => state.Tools[getFocusedMapUUID()]
   );
   const visibleLayers = useTypedSelector(selectVisibleLayers);
-  const currentInteraction = useTypedSelector(selectCurrentInteractions);
+  const currentInteractions = useTypedSelector(selectCurrentInteractions);
+
+  const currentInteractionsLength = Object.keys(currentInteractions).length;
   const { setSelectedFeatures, toggleToolByName, setRaster } = useActions();
   const [menuFeatures, setMenuFeatures] = useState<SelectedFeature>({});
   const [clientXY, setclientXY] = useState<any[]>([]);
   const [currentLayers, setcurrentLayers] = useState<string[]>([]);
+  const [eventKeys, seteventKeys] = useState<(EventsKey | EventsKey[])[]>([]);
   const openedTools =
     storeTools.stickyTool.length > 0 || storeTools.dynamicTools.length > 0;
-
-  const onBoxEnd = () => {
-    if (interactions.currentDragBoxUUID) {
-      const dragBox = interactions.currentDragBox;
-      const endListener = (dragBox: DragBox) => {
-        const extent = dragBox.getGeometry().getExtent();
-        const features = vlregistry.getFeaturesByExtent(extent);
-        if (Object.keys(features).length > 0) {
-          setSelectedFeatures(features);
-          toggleToolByName("Identify", true, false);
-        }
-      };
-      if (dragBox) {
-        dragBox.on("boxend", () => endListener(dragBox));
-      }
-    }
-  };
 
   const getFeaturesFromEvent = (e: MapBrowserEvent<UIEvent>) => {
     const extent = buffer(boundingExtent([e.coordinate]), 50);
@@ -59,10 +45,7 @@ const MapComponent: FC = () => {
   const defaultClickTool = (e: MapBrowserEvent<UIEvent>) => {
     e.stopPropagation();
     e.preventDefault();
-    console.log(`click`, e);
     if (!openedTools) {
-      interactions.newDragBox(shiftKeyOnly);
-      onBoxEnd();
       const features = getFeaturesFromEvent(e);
       if (Object.keys(features).length > 0) {
         setSelectedFeatures(features);
@@ -97,21 +80,23 @@ const MapComponent: FC = () => {
 
   useEffect(() => {
     const map = getFocusedMap();
-    if (!openedTools) {
-      map.on("click", defaultClickTool);
-      map.on("pointerdown", defaultContextMenu);
-      map.getView().on("change:resolution", () => setMenuFeatures({}));
-      map.on("pointerdrag", () => setMenuFeatures({}));
+    if (
+      !currentInteractionsLength ||
+      (currentInteractionsLength === 1 && "Identify" in currentInteractions)
+    ) {
+      const clickKey = map.on("click", defaultClickTool);
+      const poinnterDownKey = map.on("pointerdown", defaultContextMenu);
+      const changeResKey = map
+        .getView()
+        .on("change:resolution", () => setMenuFeatures({}));
+      const pointDragKey = map.on("pointerdrag", () => setMenuFeatures({}));
+      seteventKeys([clickKey, poinnterDownKey, changeResKey, pointDragKey]);
     } else {
-      map.un("click", defaultClickTool);
-      map.un("pointerdown", defaultContextMenu);
-      map.getView().un("change:resolution", () => setMenuFeatures({}));
-      map.un("pointerdrag", () => setMenuFeatures({}));
+      eventKeys.map((ek) => unByKey(ek));
+      seteventKeys([]);
+      setMenuFeatures({});
     }
-    return () => {
-      interactions.unDragBox();
-    };
-  }, [openedTools]);
+  }, [currentInteractionsLength]);
 
   return (
     <React.Fragment>
