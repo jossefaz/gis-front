@@ -10,12 +10,13 @@ export default function (state = initialState, action) {
         target,
         messageItemIdFieldName,
         symbologyCalculation,
+        system
       } = action.payload;
 
       return produce(state, (draft) => {
         data.map(function (sourceItem) {
           var obj = sourceItem;
-          var f = draft[target]["elements"][obj[messageItemIdFieldName]];
+          var f = draft[target]["elements"][system + "." + obj[messageItemIdFieldName]];
           if (f) {
             for (var prop in obj) {
               if (!obj.hasOwnProperty(prop)) continue;
@@ -31,8 +32,7 @@ export default function (state = initialState, action) {
       if (action.payload.target) {
         var ids = [];
         if (action.payload.data != null) {
-          //TODO change to dynamic key
-          ids = action.payload.data.map((item) => item["id"]);
+          ids = action.payload.data.map((item) =>  action.payload.system + "." + item["id"]);
           return produce(state, (draft) => {
             draft[action.payload.target]["updatedIds"] = ids;
           });
@@ -42,7 +42,7 @@ export default function (state = initialState, action) {
 
     case types.INIT_STREAMING_SYSTEM:
       if (action.payload.target) {
-        const { data, target, geoJoinFieldName } = action.payload;
+        const { data, target, geoJoinFieldName, adaptorId } = action.payload;
         //system dosent exists create one
         if (!state[target])
           state = { ...state, [target]: { elements: null, updatedIds: [] } };
@@ -50,7 +50,9 @@ export default function (state = initialState, action) {
         var streamingSystemObject = {};
         if (data) {
           data.forEach((element) => {
-            streamingSystemObject[element[geoJoinFieldName]] = element;
+            streamingSystemObject[
+          element["adaptorId"] + "." +   element[geoJoinFieldName]
+            ] = element;
           });
           return produce(state, (draft) => {
             draft[target]["elements"] = streamingSystemObject;

@@ -5,6 +5,7 @@ import {
   sourceFormat,
   projection,
 } from "../../configuration/FeatureLayerDefaults.js";
+import _ from "lodash";
 
 export var FeatureLayer = (function () {
   var _this = null;
@@ -19,7 +20,6 @@ export var FeatureLayer = (function () {
 
     if (features != null || props.url != null) {
       var vectorSource = new VectorSource({
-        // features: _features,
         url: props.url != null ? props.url : null,
         format: props.format != null ? props.format : sourceFormat,
       });
@@ -29,13 +29,6 @@ export var FeatureLayer = (function () {
           if (vectorSource.getState() === "ready") {
             setIds(props.geoJoinFieldName);
           }
-          //TODO remive and get from geoserver
-          var src = "EPSG:4326";
-          var dest = "EPSG:2039";
-
-          //   vectorSource.getFeatures().map((feature) => {
-          //     feature.getGeometry().transform(src, dest);
-          //   });
         });
 
       _vectorLayer = new VectorLayer({
@@ -47,10 +40,8 @@ export var FeatureLayer = (function () {
 
     return {
       vl: _vectorLayer,
-      drawSymbolgy: drawSymbolgy,
       setProperties: setProperties,
       setIds: setIds,
-      filter: filter,
     };
   }
 
@@ -60,62 +51,32 @@ export var FeatureLayer = (function () {
         .getSource()
         .getFeatures()
         .map((feature) => {
-          feature.setId(feature.values_[geoJoinFieldName]);
+          feature.setId(feature.values_["adaptorId"] + "." +  feature.values_[geoJoinFieldName] );
         });
     }
   };
 
-  var setProperties = (data, props) => {
-    var lyr = _vectorLayer;
+  const setProperties = (data, props) => {
+    let lyr = _vectorLayer;
+    let st = lyr.getStyleFunction();
 
     if (data != null && data.length > 0) {
-      var targetId = props.targetId;
-      var sourceId = props.sourceId;
-      var symbologyField = props.symbologyField;
+      let sourceId = props.sourceId;
 
       if (lyr) {
-        var st = lyr.getStyleFunction();
-        var ftrs = lyr.getSource();
+        let st = lyr.getStyleFunction();
+        let ftrs = lyr.getSource();
 
-        data.map(function (sourceItem) {
-          var id = sourceItem[sourceId];
-          var f = ftrs.getFeatureById(id);
-          if (f) {
-            f.set(symbologyField, sourceItem[symbologyField]);
-          }
-        });
-      }
-    }
-  };
-
-  var filter = (expression) => {
-    var lyr = _vectorLayer;
-    var ftrs = lyr.getSource().getFeatures();
-    var f = ftrs.filter(function (feature) {
-      return feature.values_["CSTAT"] === "FAIL";
-    });
-
-    lyr.setSource();
-  };
-
-  var drawSymbolgy = (data, props) => {
-    var lyr = _vectorLayer;
-
-    if (data && data.sourceArray) {
-      var targetId = props.targetId;
-      var sourceId = props.sourceId;
-
-      if (lyr) {
-        var st = lyr.getStyleFunction();
-        var ftrs = lyr.getSource().getFeatures();
-
-        data.sourceArray.map(function (sourceItem) {
-          var f = ftrs.find(function (feature) {
-            return feature.values_[targetId] === sourceItem[sourceId];
-          });
+        data.forEach(function (sourceItem) {
+          let id = sourceItem[sourceId];
+          let f = ftrs.getFeatureById(id);
 
           if (f) {
-            f.setStyle(st.apply(this, [f]));
+            for (let prop in sourceItem) {
+              if (prop !== "geometry") {
+                f.set(prop, sourceItem[prop]);
+              }
+            }
           }
         });
       }
