@@ -79,6 +79,10 @@ const MapComponent: FC = () => {
   });
 
   useEffect(() => {
+    setMenuFeatures({});
+  }, [getFocusedMap()]);
+
+  useEffect(() => {
     const map = getFocusedMap();
     if (
       !currentInteractionsLength ||
@@ -96,7 +100,7 @@ const MapComponent: FC = () => {
       seteventKeys([]);
       setMenuFeatures({});
     }
-  }, [currentInteractionsLength]);
+  }, [currentInteractionsLength, getFocusedMap()]);
 
   return (
     <React.Fragment>

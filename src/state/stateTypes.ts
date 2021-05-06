@@ -16,7 +16,7 @@ export interface FeatureState {
     currentLayer: string | null;
     currentFeature: Feature | null;
     spatialSelection?: number[] | string[];
-    contextMenus?: any;
+    contextMenus?: {[layername:string]:{[featureId:string]:any}};
   };
 }
 

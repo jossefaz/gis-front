@@ -27,7 +27,7 @@ const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
   const renderMenu = (source: string, config: { [key: string]: any }) => {
     const InternalTool = REGISTRY[source].component;
     return (
-      source in menus &&
+      menus && source in menus &&
       candidateFeature.id in menus[source] &&
       menus[source][candidateFeature.id].length > 0 && (
         <tr key={source}>

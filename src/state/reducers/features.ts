@@ -111,13 +111,16 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
         if (!(focusedmap in state)) {
           draftState[focusedmap] = getinitialFeatureState();
         }
-        if (!draftState[focusedmap].contextMenus) {
+        const contextMenuStores = draftState[focusedmap].contextMenus;
+        if (!contextMenuStores) {
           draftState[focusedmap].contextMenus = {};
         }
-        if (!(source in draftState[focusedmap].contextMenus)) {
-          draftState[focusedmap].contextMenus[source] = {};
+        if (contextMenuStores && !(source in contextMenuStores)) {
+          contextMenuStores[source] = {};
         }
-        draftState[focusedmap].contextMenus[source][featureID] = menu;
+        if (contextMenuStores) {
+          contextMenuStores[source][featureID] = menu;
+        }
       });
 
     default:
@@ -184,7 +187,7 @@ export const selectSelectedFeatureInCurrentLayer = (state: GisState) => {
 
 export const selectContextMenus = (state: GisState) => {
   const { Features, map } = state;
-  if (map.focused in Features && "contextMenus" in Features[map.focused]) {
+  if (map.focused in Features && Features[map.focused].contextMenus) {
     return Features[map.focused].contextMenus;
   }
   return false;
