@@ -16,7 +16,7 @@ const { highlightFeature, zoomTo } = API.features;
 const { getFocusedMapProxy } = API.map;
 class FeatureList extends Component {
   state = {
-    current_field: null,
+    current_field: "id",
   };
   get focusedmap() {
     return getFocusedMapProxy().uuid.value;
@@ -42,6 +42,22 @@ class FeatureList extends Component {
     return this.props.currentSelectedFeatures;
   }
 
+  renderOptions = () => {
+    const properties = this.selectedFeatures[this.props.selectedLayer][0]
+      .properties;
+    return Object.keys(properties).map((field) => {
+      if (
+        typeof properties[field] == "string" ||
+        typeof properties[field] == "number"
+      )
+        return (
+          <option key={field} value={field}>
+            {field}
+          </option>
+        );
+    });
+  };
+
   renderFieldsSelect = () => {
     return (
       this.selectedFeatures &&
@@ -49,24 +65,14 @@ class FeatureList extends Component {
       this.props.selectedLayer in this.selectedFeatures && (
         <Form.Group className="px-tool">
           <Form.Control
+            defaultValue={this.state.current_field}
             as="select"
             custom
             onChange={(event) =>
               this.setState({ current_field: event.target.value })
             }
           >
-            {Object.keys(
-              this.selectedFeatures[this.props.selectedLayer][0].properties
-            ).map((field) =>
-              typeof this.selectedFeatures[this.props.selectedLayer][0]
-                .properties[field] == "string" ||
-              typeof this.selectedFeatures[this.props.selectedLayer][0]
-                .properties[field] == "number" ? (
-                <option key={field} value={field}>
-                  {field}
-                </option>
-              ) : null
-            )}
+            {this.renderOptions()}
           </Form.Control>
         </Form.Group>
       )
@@ -87,14 +93,14 @@ class FeatureList extends Component {
               onClick={() => {
                 this.props.setCurrentFeature(feature.id);
                 const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
-                  feature.__Parent_NessUUID__,
+                  feature.parentlayerProperties.uuid,
                   feature.id
                 );
                 f && zoomTo(f.getGeometry());
               }}
               onMouseOver={async () => {
                 const f = this.vectorLayerRegistry.getFeatureFromNamedLayer(
-                  feature.__Parent_NessUUID__,
+                  feature.parentlayerProperties.uuid,
                   feature.id
                 );
                 f && highlightFeature(f.getGeometry());

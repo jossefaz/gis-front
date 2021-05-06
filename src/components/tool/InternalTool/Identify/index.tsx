@@ -20,6 +20,7 @@ import { DragBox } from "ol/interaction";
 import { useActions } from "../../../../hooks/useActions";
 import { useTypedSelector } from "../../../../hooks/useTypedSelectors";
 import useNotifications from "../../../../hooks/useNotifications";
+import { shiftKeyOnly } from "ol/events/condition";
 const { getFocusedMap } = API.map;
 const { zoomTo } = API.features;
 
@@ -53,7 +54,7 @@ const Identify: React.FC = () => {
     }
   };
   const addInteraction = () => {
-    interactions.newDragBox();
+    interactions.newDragBox(shiftKeyOnly);
     onBoxEnd();
   };
 
@@ -76,7 +77,7 @@ const Identify: React.FC = () => {
 
   const onEditGeometry = (feature: Feature) => {
     removeInteraction();
-    const layer = feature.__Parent_NessUUID__;
+    const layer = feature.parentlayerProperties.uuid;
 
     const f = editProxy.registry[layer].getFeatureById(feature.id);
     if (f) {

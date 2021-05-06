@@ -49,7 +49,6 @@ const ToolTemplate: React.FC<Props> = (props) => {
               }}
             ></div>
           </div>
-          <div className="content uirtl">{props.children}</div>
         </div>
         <div
           className={`window ${props.focused ? "focusedWindow" : ""}`}

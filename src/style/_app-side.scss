@@ -1,147 +1,150 @@
 // Sticky container
 // ==========================
 .sticky-tool-container {
-    position: absolute;
-    z-index: 998;
-    top: $searchbar-height;
-    height: calc(100% - #{$searchbar-height});
-    right: $side-icon-width;
-    width: calc(100% - #{$side-icon-width});
-    background: #fff; // rgba($color: red, $alpha: 0.2);
+  position: absolute;
+  z-index: 998;
+  top: $searchbar-height;
+  height: calc(100% - #{$searchbar-height});
+  right: $side-icon-width;
+  width: calc(100% - #{$side-icon-width});
+  background: #fff; // rgba($color: red, $alpha: 0.2);
 
-    &--closed {
-        display: none;
-    }
+  &--closed {
+    display: none;
+  }
 }
 
 // Layers container
 // ==========================
 .layers-container {
-    position: relative;
-    z-index: 991;
-    height: 100%;
-    width: 100%;
-    background: $gray-400; // rgba($color: green, $alpha: 0.2);
+  position: relative;
+  z-index: 991;
+  height: 100%;
+  width: 100%;
+  background: $gray-400; // rgba($color: green, $alpha: 0.2);
 
-    .searchbar {
-        height: $searchbar-height;
-        display: flex;
-        align-items: center;
+  .searchbar {
+    height: $searchbar-height;
+    display: flex;
+    align-items: center;
 
-        &__icon {
-            width: $side-icon-width;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    &__icon {
+      width: $side-icon-width;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+  }
 
-    .layers-block {
-        padding: 1rem ($side-icon-width + $side-content-start) 1rem $side-content-end;
-        height: calc(100% - #{$searchbar-height});
-        background: #fff; // rgba(purple, 0.2);
-    }
+  .layers-block {
+    padding: 1rem ($side-icon-width + $side-content-start) 1rem
+      $side-content-end;
+    height: calc(100% - #{$searchbar-height});
+    background: #fff; // rgba(purple, 0.2);
+  }
 }
 
 // extra data container
 // ==========================
 .side-extra-container {
-    position: fixed;
-    z-index: 998;
-    top: 0;
-    right: $side-width;
-    height: 100%;
-    width: 350px;
-    background: #fff;
-    border-left: solid 1px $gray-400;
+  position: fixed;
+  z-index: 998;
+  top: 4.4rem; //0;
+  right: $side-width;
+  max-height: calc(100vh - 48px);
+  overflow-y: scroll;
+  width: 350px;
+  background: #fff;
+  border: solid 1px $gray-400;
+  border-right-width: 0;
 }
 
 // Main nav
 // ==========================
 .main-nav {
-    position: absolute;
-    z-index: 999;
-    top: $searchbar-height;
-    right: 0;
+  position: absolute;
+  z-index: 999;
+  top: $searchbar-height;
+  right: 0;
+  width: 100%;
+  height: calc(100% - #{$searchbar-height});
+  background: $primary;
+  color: #fff;
+  overflow: hidden;
+  transition: all 0.35s ease-out;
+
+  .list-group {
+    height: 100%;
     width: 100%;
-    height: calc(100% - #{$searchbar-height});
-    background: $primary;
-    color: #fff;
-    overflow: hidden;
-    transition: all 0.35s ease-out;
 
-    .list-group {
-        height: 100%;
-        width: 100%;
+    .tool-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: $primary;
+      border-color: rgba(#fff, 0.15);
+      padding-right: 0.5rem;
+      padding-left: 0.5rem;
+      font-size: 1.25rem;
+      width: $side-width;
 
-        .tool-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: $primary;
-            border-color: rgba(#fff, 0.15);
-            padding-right: 0.5rem;
-            padding-left: 0.5rem;
-            font-size: 1.25rem;
-            width: $side-width;
+      // svg,
+      // img {
+      //     height: 24px;
+      // }
 
-            // svg,
-            // img {
-            //     height: 24px;
-            // }
+      &__title {
+        transition: all 0.35s ease-out;
+      }
 
-            &__title {
-                transition: all 0.35s ease-out;
-            }
+      &__main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-grow: 1;
+        cursor: pointer;
+      }
 
-            &__main {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-grow: 1;
-                cursor: pointer;
-            }
+      &__icon {
+        width: 1.2rem;
+        margin-left: 0.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-            &__icon {
-                width: 1.2rem;
-                margin-left: 0.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+      i {
+        display: block;
+        font-size: 1.2rem;
+        margin-top: -0.1rem;
+        margin-bottom: -0.1rem;
+      }
 
-            i {
-                display: block;
-                font-size: 1.2rem;
-                margin-top: -0.1rem;
-                margin-bottom: -0.1rem;
-            }
+      &__drag {
+        opacity: 0.45;
+        cursor: grab;
 
-            &__drag {
-                opacity: 0.45;
-                cursor: grab;
-
-                &:hover,
-                &:focus {
-                    opacity: 1;
-                }
-
-                i {
-                    font-size: 1.4rem;
-                    margin-top: -0.2rem;
-                    margin-bottom: -0.2rem;
-                }
-            }
+        &:hover,
+        &:focus {
+          opacity: 1;
         }
-    }
 
-    &--closed {
-        width: $side-icon-width;
-        transition: all 0.25s ease-in;
-
-        .tool-item__title {
-            opacity: 0;
-            transition: all 0.25s ease-in;
+        i {
+          font-size: 1.4rem;
+          margin-top: -0.2rem;
+          margin-bottom: -0.2rem;
         }
+      }
     }
+  }
+
+  &--closed {
+    width: $side-icon-width;
+    transition: all 0.25s ease-in;
+
+    .tool-item__title {
+      opacity: 0;
+      transition: all 0.25s ease-in;
+    }
+  }
 }

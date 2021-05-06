@@ -15,12 +15,16 @@ export const renderTools = (
           <ToolGroup key={groupId} GroupID={groupId} />
         ) : null;
       })}
-      {Object.keys(toolState.tools).map((toolId) => {
-        const { ToolGroupId, ToolContainer } = toolState.tools[toolId];
-        return !ToolGroupId && ToolContainer === containerName ? (
+      {toolState.displayOrder.map((toolName) => {
+        const metadata = Object.values(toolState.tools).filter(
+          (md) => md.ToolName == toolName
+        )[0];
+
+        return metadata.ToolContainer &&
+          metadata.ToolContainer === containerName ? (
           <ToolItem
-            key={toolId}
-            ToolID={toolId}
+            key={metadata.Id}
+            ToolID={`${metadata.Id}`}
             sideEffectOnToolOpen={sideEffectOnToolOpen}
           />
         ) : null;

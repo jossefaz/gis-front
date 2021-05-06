@@ -3,6 +3,7 @@ import { FeatureState } from "../stateTypes";
 import produce from "immer";
 import { Actions } from "../actions/types";
 import { GisState } from "../stateTypes";
+import { SelectedFeature } from "../../core/types";
 
 const getinitialFeatureState = () => {
   return {
@@ -23,7 +24,8 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
         }
         draftState[focusedmap].selectedFeatures = featuresByLayers;
         draftState[focusedmap].currentLayer = Object.keys(featuresByLayers)[0];
-        draftState[focusedmap].currentFeature = null;
+        draftState[focusedmap].currentFeature =
+          featuresByLayers[Object.keys(featuresByLayers)[0]][0];
       });
 
     case types.SET_CURRENT_FEATURE:
@@ -101,7 +103,6 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
           draftState[focusedmap] = getinitialFeatureState();
         }
         draftState[focusedmap].currentLayer = currentFeatureLayer;
-        draftState[focusedmap].currentFeature = null;
       });
 
     case types.SET_CONTEXT_MENU:
@@ -110,7 +111,7 @@ const reducer = (state: FeatureState = {}, action: Actions): FeatureState => {
         if (!(focusedmap in state)) {
           draftState[focusedmap] = getinitialFeatureState();
         }
-        if (!("contextMenus" in draftState[focusedmap])) {
+        if (!draftState[focusedmap].contextMenus) {
           draftState[focusedmap].contextMenus = {};
         }
         if (!(source in draftState[focusedmap].contextMenus)) {
@@ -128,29 +129,40 @@ export default reducer;
 
 export const selectCurrentLayerUUID = (state: GisState) => {
   const { Features, map } = state;
-  const selectedFeatures = Features[map.focused].selectedFeatures || false;
-  const currentLayer = Features[map.focused].currentLayer || false;
-  const currentId =
-    selectedFeatures &&
-    currentLayer &&
-    selectedFeatures[currentLayer].length > 0
-      ? selectedFeatures[currentLayer][0].__Parent_NessUUID__
-      : false;
-  return currentId;
+  if (map.focused in Features && Features[map.focused].selectedFeatures) {
+    const selectedFeatures = Features[map.focused].selectedFeatures || false;
+    const currentLayer = Features[map.focused].currentLayer || false;
+    const currentId =
+      selectedFeatures &&
+      currentLayer &&
+      selectedFeatures[currentLayer].length > 0
+        ? selectedFeatures[currentLayer][0].parentlayerProperties.uuid
+        : false;
+    return currentId;
+  }
 };
 
 export const selectSelectedFeatures = (state: GisState) => {
   const { Features, map } = state;
-  if (map.focused in Features && "selectedFeatures" in Features[map.focused]) {
-    return Features[map.focused].selectedFeatures;
+  const selectedFiltered: SelectedFeature = {};
+  if (map.focused in Features && Features[map.focused].selectedFeatures) {
+    Object.keys(Features[map.focused].selectedFeatures).forEach((layername) => {
+      if (Features[map.focused].selectedFeatures[layername].length > 0) {
+        selectedFiltered[layername] =
+          Features[map.focused].selectedFeatures[layername];
+      }
+    });
+    return Object.keys(selectedFiltered).length > 0 ? selectedFiltered : false;
   }
   return false;
 };
 
 export const selectCurrentLayer = (state: GisState) => {
   const { Features, map } = state;
-  const currentLayer = Features[map.focused].currentLayer || false;
-  return currentLayer;
+  if (map.focused && map.focused in Features) {
+    const currentLayer = Features[map.focused].currentLayer || false;
+    return currentLayer;
+  }
 };
 
 export const selectCurrentFeature = (state: GisState) => {

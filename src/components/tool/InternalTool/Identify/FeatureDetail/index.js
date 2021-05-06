@@ -17,8 +17,15 @@ import _ from "lodash";
 import Confirm from "../../../../UI/Modal/Confirm";
 import IconButton from "../../../../UI/Buttons/IconButton";
 import EditButton from "../../../../UI/Buttons/EditButton";
-import "./style.css";
-import { Button, Col, Collapse, Form, Row, Table } from "react-bootstrap";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Collapse,
+  Form,
+  Row,
+  Table,
+} from "react-bootstrap";
 
 const { getFocusedMapProxy } = API.map;
 const { zoomTo } = API.features;
@@ -37,16 +44,20 @@ class FeatureDetail extends React.Component {
   };
 
   get editProxy() {
-    return this._editProxy.registry[this.currentFeature.__Parent_NessUUID__];
+    debugger;
+    return this._editProxy.registry[
+      this.currentFeature.parentlayerProperties.uuid
+    ];
   }
 
   onZoom = () => {
+    debugger;
     const feature = this.editProxy.getFeatureById(this.currentFeature.id);
     zoomTo(feature.getGeometry());
-  }
+  };
 
   onStartEdit = (event) => {
-    event.stopPropagation()
+    event.stopPropagation();
     const feature = this.editProxy.getFeatureById(this.currentFeature.id);
     zoomTo(feature.getGeometry());
     this.editProxy.edit(feature);
@@ -116,39 +127,49 @@ class FeatureDetail extends React.Component {
     const properties = this.state.properties
       ? this.state.properties
       : this.currentFeature
-        ? this.currentFeature.properties
-        : null;
+      ? this.currentFeature.properties
+      : null;
 
     return (
       this.currentFeature && (
         <React.Fragment>
-          <div className="feature-details" onMouseDownCapture={(e) => e.stopPropagation()}>
-
-            <div className="feature-details__actions">
-              <Button variant="link" onClick={this.onZoom}>
+          <div
+            className="feature-details"
+            onMouseDownCapture={(e) => e.stopPropagation()}
+          >
+            <ButtonGroup className="btn-group-block border-0">
+              <Button variant="white" onClick={this.onZoom}>
                 <span>תקריב</span>
                 <i className="gis-icon gis-icon--search-eye-thin"></i>
               </Button>
-              {properties.editable && (<React.Fragment>
-                <Button variant="link" onClick={this.onStartEditGeom}>
-                  <span>ערוך</span>
-                  <i className="gis-icon gis-icon--graphic-pen-thin"></i>
-                </Button>
-                <Button variant="link" onClick={() => this.setState({ openConfirm: true })}>
-                  <span>מחק/י</span>
-                  <i className="gis-icon gis-icon--trash"></i>
-                </Button>
-              </React.Fragment>)}
-            </div>
+              {properties.editable && (
+                <React.Fragment>
+                  <Button variant="white" onClick={this.onStartEditGeom}>
+                    <span>ערוך</span>
+                    <i className="gis-icon gis-icon--graphic-pen-thin"></i>
+                  </Button>
+                  <Button
+                    variant="white"
+                    onClick={() => this.setState({ openConfirm: true })}
+                  >
+                    <span>מחק/י</span>
+                    <i className="gis-icon gis-icon--trash"></i>
+                  </Button>
+                </React.Fragment>
+              )}
+            </ButtonGroup>
 
-            <div className="feature-details__header"
+            <div
+              className="feature-details__header"
               onClick={() => this.setState({ isOpened: !this.state.isOpened })}
             >
               <div className="flex-grow-1 text-left py-1">נתונים נוספים</div>
-              <Button onClick={this.onStartEdit} disabled={this.state.editing}><i className="gis-icon gis-icon--pencil-square"></i> ערוך</Button>
+              <Button onClick={this.onStartEdit} disabled={this.state.editing}>
+                <i className="gis-icon gis-icon--pencil-square"></i> ערוך
+              </Button>
             </div>
 
-            <Collapse in={this.state.isOpened} >
+            <Collapse in={this.state.isOpened}>
               <div className="feature-details__content">
                 <Table borderless>
                   <tbody>
@@ -163,8 +184,12 @@ class FeatureDetail extends React.Component {
                                 <Form.Control
                                   value={this.state.properties[property]}
                                   onChange={(e) =>
-                                    this.handleValueChange(property, e.target.value)
-                                  } />
+                                    this.handleValueChange(
+                                      property,
+                                      e.target.value
+                                    )
+                                  }
+                                />
                               ) : (
                                 properties[property]
                               )}
@@ -175,106 +200,25 @@ class FeatureDetail extends React.Component {
                   </tbody>
                 </Table>
 
-                {properties.editable && this.state.editing &&
+                {properties.editable && this.state.editing && (
                   <div className="m-3">
                     <Row className="feature-details__properties-actions">
                       <Col>
-                        <Button block onClick={this.onEditCancel}>בטל</Button>
+                        <Button block onClick={this.onEditCancel}>
+                          בטל
+                        </Button>
                       </Col>
                       <Col>
-                        <Button block onClick={this.onSave}>שמור</Button>
+                        <Button block onClick={this.onSave}>
+                          שמור
+                        </Button>
                       </Col>
                     </Row>
                   </div>
-                }
-              </div>
-
-            </Collapse>
-
-          </div>
-
-
-
-
-
-
-
-          {/* <div onMouseDownCapture={(e) => e.stopPropagation()}>
-            <table className="ui celled table">
-              <thead>
-                <tr>
-                  <th className="details-header">
-                    <div>Details</div>
-                    {properties.editable ? (
-                      !this.state.editing ? (
-                        <div>
-                          <EditButton onStartEdit={this.onStartEdit} />
-                          <IconButton
-                            className={`ui icon button pointer primary`}
-                            onClick={this.onStartEditGeom}
-                            icon="draw-polygon"
-                            size="xs"
-                          />
-                          <IconButton
-                            className={`ui icon button pointer negative`}
-                            onClick={() => this.setState({ openConfirm: true })}
-                            icon="trash-alt"
-                            size="xs"
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <IconButton
-                            className={`ui icon button pointer positive`}
-                            onClick={this.onSave}
-                            icon="save"
-                            size="xs"
-                          />
-                          <IconButton
-                            className={`ui icon button pointer negative`}
-                            onClick={this.onEditCancel}
-                            icon="window-close"
-                            size="xs"
-                          />
-                          <IconButton
-                            className={`ui icon button pointer negative`}
-                            onClick={() => this.setState({ openConfirm: true })}
-                            icon="trash-alt"
-                            size="xs"
-                          />
-                        </div>
-                      )
-                    ) : null}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="scrollContent">
-                {Object.keys(properties).map(
-                  (property) =>
-                    property !== "bbox" &&
-                    property !== "editable" && (
-                      <tr key={property}>
-                        <td>
-                          <b>{property}</b>
-                        </td>
-                        {this.state.editing ? (
-                          <td>
-                            <input
-                              value={this.state.properties[property]}
-                              onChange={(e) =>
-                                this.handleValueChange(property, e.target.value)
-                              }
-                            />
-                          </td>
-                        ) : (
-                          <td>{properties[property]}</td>
-                        )}
-                      </tr>
-                    )
                 )}
-              </tbody>
-            </table>
-          </div> */}
+              </div>
+            </Collapse>
+          </div>
 
           <Confirm
             isOpen={this.state.openConfirm}

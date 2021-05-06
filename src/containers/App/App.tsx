@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import MapTabs from "../../components/MapTabs/MapTabs";
-import Map from "../Map/Map";
+import Map from "../../components/Map/Map";
 import MapMenu from "../../components/MapMenu";
 import TopNav from "../TopNav";
 import config from "../../configuration";
@@ -18,6 +18,7 @@ import API from "../../core/api";
 import { useActions } from "../../hooks/useActions";
 import { TokenData } from "../../core/types";
 import LoginForm from "../../components/Login";
+import ContextMenu from "../../components/ContextMenus/Container";
 
 interface StoredJWT {
   value: TokenData;
@@ -65,7 +66,7 @@ const App: React.FC = () => {
     ? API.map.getFocusedMapProxy().uuid.value
     : null;
 
-  return jwt.token && mapState ? (
+  return (jwt.token && mapState) || true ? (
     <React.Fragment>
       <ToastProvider placement="bottom-left">
         <DndProvider backend={HTML5Backend}>

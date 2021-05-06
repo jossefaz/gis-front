@@ -108,38 +108,30 @@ class LayerList extends Component {
   render() {
     return (
       <React.Fragment>
-        <Accordion className="layers-list" onSelect={this.handleSelect}>
+        <Accordion
+          className="layers-list accordion-with-icon"
+          onSelect={this.handleSelect}
+        >
           {Object.keys(this.state.layerListObject).map((subjectId, index) => (
             <React.Fragment key={subjectId}>
               <Accordion.Toggle
                 as="div"
                 eventKey={subjectId}
                 className={
-                  "layers-list__toggle" +
+                  "layers-list__toggle collapse-toggler" +
                   (this.layerIsActive(subjectId)
-                    ? " layers-list__toggle--active"
+                    ? " collapse-toggler--opened"
                     : "")
                 }
               >
-                <i
-                  className={
-                    "gis-icon gis-icon--" +
-                    (this.layerIsActive(subjectId) ? "minus" : "plus")
-                  }
-                ></i>
-                <span className="layers-list__toggle-text">
-                  {this.state.layerListObject[subjectId].description +
-                    "(" +
-                    Object.keys(this.state.layerListObject[subjectId].layers)
-                      .length +
-                    ")"}
-                </span>
+                {this.state.layerListObject[subjectId].description +
+                  "(" +
+                  Object.keys(this.state.layerListObject[subjectId].layers)
+                    .length +
+                  ")"}
               </Accordion.Toggle>
 
-              <Accordion.Collapse
-                eventKey={subjectId}
-                className="layers-list__collapse"
-              >
+              <Accordion.Collapse eventKey={subjectId} className="arrow-padded">
                 <React.Fragment>
                   {this.createLayerListItems(
                     this.state.layerListObject[subjectId].layers

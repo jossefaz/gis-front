@@ -16,7 +16,7 @@ import { Collection, Feature } from "ol";
 import BaseLayer from "ol/layer/Base";
 import { Condition } from "ol/events/condition";
 import styles from "../core/mapStyle";
-import { DragBox } from "ol/interaction";
+import { DragBox, Select } from "ol/interaction";
 
 export class InteractionUtil {
   private _widget: string;
@@ -71,7 +71,7 @@ export class InteractionUtil {
     return false;
   }
 
-  get currentSelect() {
+  get currentSelect(): Select | false {
     if (this.currentSelectUUID && typeof this.currentSelectUUID === "string") {
       return API.interactions.getInteraction(this.currentSelectUUID);
     }
@@ -150,13 +150,13 @@ export class InteractionUtil {
   };
 
   newSelect = (
-    feature: Feature,
+    feature: Feature | null,
     layers: BaseLayer[],
     multi: boolean,
     condition: Condition | undefined
   ) => {
     const config = {
-      ...(layers && { layers }),
+      ...(layers.length > 0 && { layers }),
       ...(multi && { multi }),
       ...(feature && { features: new Collection([feature]) }),
       ...(condition && { condition }),
@@ -253,12 +253,16 @@ export class InteractionUtil {
     }
   };
 
-  newDragBox = () => {
+  newDragBox = (condition?: Condition) => {
     this.unDragBox();
+    const config = {
+      ...(condition && { condition }),
+    };
     store.dispatch(
       setInteraction({
         Type: INTERACTION_TYPE.DRAGBOX,
         widgetName: this._widget,
+        interactionConfig: config,
       }) as any
     );
   };

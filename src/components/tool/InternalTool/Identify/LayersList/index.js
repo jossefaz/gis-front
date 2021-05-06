@@ -17,40 +17,38 @@ class LayersList extends Component {
   }
 
   handleSelect = (layer) => {
-    this.props.setCurrentFeatureLayer(layer);
+    this.props.setCurrentFeatureLayer(layer)
   };
 
+
   renderSelectedFeature = () => {
-    debugger;
     return this.props.selectedFeatures
       ? Object.keys(this.props.selectedFeatures).map((layer) => (
-          <React.Fragment key={layer}>
-            <Accordion.Toggle
-              as="div"
-              eventKey={layer}
-              className="py-2 border-bottom px-tool"
-            >
-              + {this.props.selectedFeatures[layer][0].layerAlias}
+        <React.Fragment key={layer}>
+          <div className="py-2 border-bottom px-tool">
+            <Accordion.Toggle as="div" eventKey={layer} className={"collapse-toggler" + (this.props.currentLayer === layer ? " collapse-toggler--opened" : "")}>
+              {layer}
             </Accordion.Toggle>
-            <Accordion.Collapse eventKey={layer}>
-              <div className="py-3">
-                <FeatureList selectedLayer={layer} />
-              </div>
-            </Accordion.Collapse>
-          </React.Fragment>
-        ))
+          </div>
+          <Accordion.Collapse eventKey={layer} >
+            <div className="py-3" >
+               <FeatureList selectedLayer={layer} />
+            </div>
+          </Accordion.Collapse>
+        </React.Fragment>
+      ))
       : null;
   };
 
   render() {
     return (
       <React.Fragment>
-        <div className="text-primary font-weight-bold px-tool py-3 border-bottom">
-          זיהוי יישויות
-        </div>
-        <Accordion onSelect={this.handleSelect} className="layers-groups">
+        <div className="text-primary font-weight-bold px-tool py-3 border-bottom">זיהוי יישויות</div>
+        <Accordion onSelect={this.handleSelect} className="layers-groups accordion-with-icon">
           {this.renderSelectedFeature()}
         </Accordion>
+
+
       </React.Fragment>
     );
   }
@@ -67,4 +65,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setCurrentFeatureLayer })(LayersList);
+export default connect(mapStateToProps, { setCurrentFeatureLayer })(
+  LayersList
+);

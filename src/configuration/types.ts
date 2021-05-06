@@ -61,6 +61,9 @@ export interface Group {
 export interface Widgets {
   tools: Tool[];
   groups: Group[];
+  sideMenu: {
+    toolOrder: string[];
+  };
 }
 
 export interface Channels {

@@ -27,7 +27,8 @@ import { InteractionSupportedTypes as TYPES } from "../../../../core/types/inter
 import { createCustomLayer } from "../../../../state/actions";
 import { createLayers } from "../../../../core/HTTP/usersLayers";
 import { fromCircle } from "ol/geom/Polygon";
-import "./style.css";
+import "./style.scss";
+import { Button, ButtonGroup } from "react-bootstrap";
 
 const { getFocusedMap } = API.map;
 class Draw extends React.Component {
@@ -118,12 +119,9 @@ class Draw extends React.Component {
     });
   };
 
-  addInteraction = (drawtype) => {
-    this.interactions.newDraw({ type: drawtype });
-  };
-
   onOpenDrawSession = (drawtype) => {
-    this.addInteraction(drawtype);
+    this.interactions.newDraw({ type: drawtype });
+    this.DrawLayer && this.DrawLayer.setVisible(true);
     this.setState({ sessionType: "Geometry", drawtype });
     this.onDrawEnd();
   };
@@ -208,8 +206,7 @@ class Draw extends React.Component {
   onDrawEnd = () => {
     if (this.interactions.currentDraw) {
       this.interactions.currentDraw.on("drawend", async (e) => {
-        const newFeatureId =
-          (await createNewGeometry(e.feature)) || GenerateUUID();
+        const newFeatureId = GenerateUUID();
         e.feature.setId(newFeatureId);
         const { r, g, b, a } = this.state.defaultColor;
         e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`));
@@ -374,146 +371,113 @@ class Draw extends React.Component {
     const features = this.getDrawnFeatures();
     const disable = features.length === 0;
     const overlays = this.selfOverlay;
+
     return (
-      <React.Fragment>
-        <Grid
-          columns="equal"
-          stackable
-          divided="vertically"
-          className="widhtEm"
-        >
-          <Grid.Row>
-            <label className="labels">בחר צורה : </label>
+      <div className="draw py-3">
+        <p className="px-tool">
+          יש לבחור כלי ולאחר מכן לבחור את מיקומו על המפה
+        </p>
 
-            <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Polygon
-                  ? "secondary"
-                  : "primary"
-              }`}
-              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
-              icon="draw-polygon"
-              size="lg"
-            />
-            <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Line
-                  ? "secondary"
-                  : "primary"
-              }`}
-              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
-              icon="grip-lines"
-              size="lg"
-            />
+        <ButtonGroup className="btn-group-block">
+          <Button
+            variant="white"
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Polygon)}
+            active={this.state.drawtype === this.DRAW_TYPES.Polygon}
+          >
+            <span>צורה</span>
+            <i className="gis-icon gis-icon--graphic-pen-thin"></i>
+          </Button>
+          <Button
+            variant="white"
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Line)}
+            active={this.state.drawtype === this.DRAW_TYPES.Line}
+          >
+            <span>קו</span>
+            <i className="gis-icon gis-icon--line"></i>
+          </Button>
+          <Button
+            variant="white"
+            onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
+            active={this.state.drawtype === this.DRAW_TYPES.Circle}
+          >
+            <span>עגול</span>
+            <i className="gis-icon gis-icon--circle-dots"></i>
+          </Button>
+          <Button
+            variant="white"
+            onClick={() =>
+              this.setState({
+                sessionType: "Text",
+                editText: {
+                  text: null,
+                  overlayID: null,
+                },
+                drawtype: this.DRAW_TYPES.Text,
+              })
+            }
+            active={this.state.drawtype === this.DRAW_TYPES.Text}
+          >
+            <span>טקסט</span>
+            <i className="gis-icon gis-icon--text-box"></i>
+          </Button>
+        </ButtonGroup>
 
-            <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Circle
-                  ? "secondary"
-                  : "primary"
-              }`}
-              onClick={() => this.onOpenDrawSession(this.DRAW_TYPES.Circle)}
-              icon="circle"
-              size="lg"
-            />
+        {!disable && (
+          <React.Fragment>
+            <div className="px-tool d-flex mt-5 mb-2">
+              <strong className="flex-grow-1">רכיבים על גבי המפה</strong>
+              <Button
+                variant="white"
+                onClick={() => this.setState({ open: true })}
+                disabled={disable}
+              >
+                <i className="gis-icon gis-icon--trash"></i>
+              </Button>
+              <Button
+                variant="white"
+                onClick={() => this.toggleView()}
+                disabled={disable}
+              >
+                <i
+                  className={
+                    "gis-icon gis-icon--" +
+                    (this.state.view ? "eye" : "eye-slash")
+                  }
+                ></i>
+              </Button>
+            </div>
 
-            <IconButton
-              className={`ui icon button pointer ${
-                this.state.drawtype === this.DRAW_TYPES.Text
-                  ? "secondary"
-                  : "primary"
-              }`}
-              onClick={() =>
-                this.setState({
-                  sessionType: "Text",
-                  editText: {
-                    text: null,
-                    overlayID: null,
-                  },
-                  drawtype: this.DRAW_TYPES.Text,
-                })
-              }
-              icon="font"
-              size="lg"
+            <FeatureTable
+              features={features}
+              source={this.DrawSource}
+              defaultColor={this.state.defaultColor}
+              deleteLastFeature={this.deleteLastFeature}
+              onOpenEditSession={this.onOpenEditSession}
+              editSession={this.state.editSession}
             />
-          </Grid.Row>
-          {this.state.sessionType === "Text" && (
-            <Grid.Row>
-              <TextForm
-                cancelEdit={this.cancelEditText}
-                onSubmit={this.createOrEditText}
-                value={this.state.editText.text}
-                setValue={this.handleTextChange}
-                overlayID={this.state.editText.overlayID}
-              />
-            </Grid.Row>
-          )}
-          {this.state.sessionType === "Geometry" && (
-            <Grid.Row>
-              <label className="labels">בחר צבע : </label>
-              <ColorPicker
-                onColorChange={this.onColorChange}
-                defaultColor={this.state.defaultColor}
-              />
-            </Grid.Row>
-          )}
+          </React.Fragment>
+        )}
 
-          {!disable && (
-            <React.Fragment>
-              <Grid.Row>
-                <label className="labels">שליטה כללית : </label>
-                <IconButton
-                  className={`ui icon button pointer ${
-                    !disable ? "negative" : "disabled"
-                  }`}
-                  onClick={() => this.setState({ open: true })}
-                  disabled={disable}
-                  icon="trash-alt"
-                  size="lg"
-                />
-                <IconButton
-                  className={`ui icon button pointer ${
-                    !disable ? "positive" : "disabled"
-                  }`}
-                  onClick={() => this.toggleView()}
-                  disabled={disable}
-                  icon={this.state.view ? "eye" : "eye-slash"}
-                  size="lg"
-                />
-                <IconButton
-                  className={`ui icon button pointer ${
-                    !disable ? "positive" : "disabled"
-                  }`}
-                  onClick={() => this.onSaveFeatures()}
-                  disabled={disable}
-                  icon="save"
-                  size="lg"
-                />
-              </Grid.Row>
-              <Grid.Row>
-                <FeatureTable
-                  features={features}
-                  source={this.DrawSource}
-                  defaultColor={this.state.defaultColor}
-                  deleteLastFeature={this.deleteLastFeature}
-                  onOpenEditSession={this.onOpenEditSession}
-                  editSession={this.state.editSession}
-                />
-              </Grid.Row>
-            </React.Fragment>
-          )}
-          {overlays && (
-            <React.Fragment>
-              <Grid.Row>
-                <TextTable
-                  overlays={this.selfOverlay}
-                  editText={this.editText}
-                  removeOverlay={this.removeOverlay}
-                />
-              </Grid.Row>
-            </React.Fragment>
-          )}
-        </Grid>
+        {overlays && (
+          <TextTable
+            overlays={this.selfOverlay}
+            editText={this.editText}
+            removeOverlay={this.removeOverlay}
+          />
+        )}
+
+        {this.state.sessionType === "Text" && (
+          <div className="draw-item">
+            <TextForm
+              cancelEdit={this.cancelEditText}
+              onSubmit={this.createOrEditText}
+              value={this.state.editText.text}
+              setValue={this.handleTextChange}
+              overlayID={this.state.editText.overlayID}
+            />
+          </div>
+        )}
+
         <Confirm
           isOpen={this.state.open}
           confirmTxt={this.state.eraseDraw.content}
@@ -524,7 +488,7 @@ class Draw extends React.Component {
           }
           onConfirm={this.onClearAll}
         />
-      </React.Fragment>
+      </div>
     );
   }
 }

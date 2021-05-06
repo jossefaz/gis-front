@@ -39,6 +39,7 @@ interface InitToolsActionPayload {
   blueprint: {
     tools: { [toolId: string]: ToolMetadata };
     Groups: { [groupId: string]: GroupMetadata };
+    displayOrder: string[];
   };
 }
 

@@ -5,6 +5,7 @@ import IconButton from "../../../../../UI/Buttons/IconButton";
 import API from "../../../../../../core/api";
 import { Table } from "semantic-ui-react";
 import "./style.css";
+import { Button, ButtonGroup } from "react-bootstrap";
 const { unhighlightFeature } = API.features;
 const FeatureItem = (props) => {
   const [fillColor, setFillColor] = useState({
@@ -31,6 +32,7 @@ const FeatureItem = (props) => {
   const edit = () => {
     props.onOpenEditSession(props.fid);
   };
+  debugger;
   const getFeature = () => props.source.getFeatureById(props.fid);
   const updateStyle = () => {
     if (getFeature()) {
@@ -52,6 +54,37 @@ const FeatureItem = (props) => {
       updateStyle();
     }
   }
+
+  return (
+    <div className="draw-item">
+      <div className="flex-grow-1 d-flex align-items-center">
+        <span>קו</span>
+        <ColorPicker
+          withWidth
+          initialWidth={outlineWidth}
+          onWidthChange={(newWidth) => setOutlineWidth(newWidth)}
+          onColorChange={(newStrokeColor) => setStrokeColor(newStrokeColor)}
+          defaultColor={strokeColor}
+          className="mr-2"
+        />
+      </div>
+      <div className="flex-grow-1 d-flex align-items-center">
+        <span>מילוי</span>
+        <ColorPicker
+          onColorChange={(newFillColor) => setFillColor(newFillColor)}
+          defaultColor={fillColor}
+          className="mr-2"
+        />
+      </div>
+      <Button variant="white" onClick={removeFeature}>
+        <i className="gis-icon gis-icon--trash"></i>
+      </Button>
+      <Button variant="white" onClick={edit}>
+        <i className="gis-icon gis-icon--pencil-on-square"></i>
+      </Button>
+    </div>
+  );
+
   return (
     <React.Fragment>
       <Table.Cell>

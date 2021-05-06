@@ -5,6 +5,9 @@ import { Feature } from "ol";
 import { Extent } from "ol/extent";
 import { Coordinate } from "ol/coordinate";
 import TileLayer from "ol/layer/Tile";
+import { SelectedFeature } from "../types";
+import { mainStore as store } from "../../state/store";
+import { selectVisibleLayers } from "../../state/reducers";
 
 class VectorLayerProxyManager {
   private static instance: VectorLayerProxyManager;
@@ -58,21 +61,31 @@ class VectorLayerProxyManager {
   };
 
   public getFeaturesByExtent = (extent: Extent) => {
-    const features: { [layername: string]: Feature[] } = {};
-    debugger;
+    const features: SelectedFeature = {};
+    const visibleLayers = selectVisibleLayers(store.getState());
     Object.values(this._registry).forEach((vl) => {
-      if (vl.metadata) {
-        features[vl.metadata.restId] = [];
-        features[vl.metadata.restId].push(...vl.getFeaturesByExtent(extent));
+      if (vl.metadata && vl.uuid && visibleLayers.includes(vl.uuid)) {
+        const found = vl.getFeaturesByExtent(extent);
+        if (found.length > 0) {
+          features[vl.metadata.restId] = [];
+          features[vl.metadata.restId].push(...found);
+        }
       }
     });
     return features;
   };
 
   public getFeaturesAtCoordinate = (coordinates: Coordinate) => {
-    const features: Feature[] = [];
+    const features: SelectedFeature = {};
+    const visibleLayers = selectVisibleLayers(store.getState());
     Object.values(this._registry).forEach((vl) => {
-      features.push(...vl.getFeaturesAtCoordinate(coordinates));
+      if (vl.metadata && vl.uuid && visibleLayers.includes(vl.uuid)) {
+        const found = vl.getFeaturesAtCoordinate(coordinates);
+        if (found.length > 0) {
+          features[vl.metadata.restId] = [];
+          features[vl.metadata.restId].push(...found);
+        }
+      }
     });
     return features;
   };

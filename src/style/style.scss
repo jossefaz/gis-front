@@ -1,7 +1,8 @@
 // font
-@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap");
 
 @import "variables";
+@import "mixins";
 
 /* import bootstrap to set changes */
 @import "~bootstrap/scss/bootstrap";
@@ -10,8 +11,9 @@
 @import "bootstrap-v4-rtl";
 
 @import "general";
+@import "bootstrap-added";
 @import "map-menu";
 @import "app-side";
 @import "tools";
 @import "layers";
-
+@import "contextMenus";

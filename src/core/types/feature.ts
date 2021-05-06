@@ -3,13 +3,17 @@ export interface IFeatureConfigInterface {
   coordinates: number[];
 }
 
-export interface Feature {
-  properties: { [propertyName: string]: any };
-  id: string;
+export interface layerProperties {
   type: string;
   layerId: string;
   layerAlias: string;
-  __Parent_NessUUID__: string;
+  uuid: string;
+}
+
+export interface Feature {
+  properties: { [propertyName: string]: any };
+  parentlayerProperties: layerProperties;
+  id: any;
 }
 
 export interface SelectedFeature {

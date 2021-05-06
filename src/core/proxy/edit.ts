@@ -71,6 +71,7 @@ export default class EditLayerProxy {
   };
 
   public edit = (eFeature: Feature) => {
+    debugger;
     const geometry = eFeature.getGeometry();
     if (geometry && geometry.getType() !== "Point") {
       this._vectorLayerProxy &&
