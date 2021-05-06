@@ -45,12 +45,12 @@ const MapComponent: FC = () => {
   const defaultClickTool = (e: MapBrowserEvent<UIEvent>) => {
     e.stopPropagation();
     e.preventDefault();
+    setMenuFeatures({});
     if (!openedTools) {
       const features = getFeaturesFromEvent(e);
       if (Object.keys(features).length > 0) {
         setSelectedFeatures(features);
         toggleToolByName("Identify", true, false);
-        setMenuFeatures({});
       }
     }
   };

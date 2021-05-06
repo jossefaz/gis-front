@@ -12,10 +12,4 @@ export default async (baseURL, LayerID, FeatureID, properties, cb) => {
     });
     cb(response.data);
   }
-  // if (adaptorId) {
-  //   const response = await axios.get(baseURL, {
-  //     params: { filter, menu_type },
-  //   });
-  //   cb(response.data);
-  // }
 };

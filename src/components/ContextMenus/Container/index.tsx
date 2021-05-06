@@ -42,7 +42,7 @@ const ContextMenuContainer: React.FC<{
       if (bottom) {
         menuRef.current.style.top = `${clickY - rootH - 5}px`;
       }
-      menuRef.current.style.zIndex = "99";
+      menuRef.current.style.zIndex = "9";
     }
   };
 

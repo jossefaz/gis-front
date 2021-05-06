@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import _ from "lodash";
 import "./style.css";
-import { connect } from "react-redux";
 import UpdateMenu from "./feed";
 import { selectContextMenus } from "../../state/reducers";
 import REGISTRY from "./registry";
@@ -25,9 +24,10 @@ const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
   }, []);
 
   const renderMenu = (source: string, config: { [key: string]: any }) => {
-    const InternalTool = REGISTRY[source].component;
+    const Menu = REGISTRY[source].component;
     return (
-      menus && source in menus &&
+      menus &&
+      source in menus &&
       candidateFeature.id in menus[source] &&
       menus[source][candidateFeature.id].length > 0 && (
         <tr key={source}>
@@ -35,7 +35,7 @@ const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
             <b>{source}</b>
           </td>
           <td>
-            <InternalTool
+            <Menu
               menu_config={config}
               local_config={REGISTRY[source].configuration}
               feature={candidateFeature}
@@ -57,7 +57,7 @@ const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
         >
           Menu
         </div>
-        <Collapse in={isOpened}>
+        <Collapse in={true}>
           <div className="context-menu__content">
             <Table borderless>
               <tbody>
@@ -71,7 +71,7 @@ const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
       </div>
     </React.Fragment>
   ) : (
-    <div>NO MENU</div>
+    <div></div>
   );
 };
 
