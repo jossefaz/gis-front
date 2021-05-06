@@ -12,7 +12,12 @@ interface Props {
 }
 
 const ToolTemplate: React.FC<Props> = (props) => {
-  const { toggleTool, setToolFocused, closeDragTool } = useActions();
+  const {
+    toggleTool,
+    setToolFocused,
+    closeDragTool,
+    toogleSideNav,
+  } = useActions();
   const issticky = useTypedSelector(selectStickyTool) === props.ToolID;
 
   function getStickyTemplate() {
@@ -25,6 +30,7 @@ const ToolTemplate: React.FC<Props> = (props) => {
             onClick={(e) => {
               e.stopPropagation();
               toggleTool(props.ToolID, false, false);
+              toogleSideNav(true);
             }}
           >
             <i className="gis-icon gis-icon--minus"></i>

@@ -69,12 +69,12 @@ export let StreamingLayer = (function () {
               store.subscribe(
                 w((newVal, oldVal) => {
                   if (newVal && newVal.length > 0 && !isEqual(newVal, oldVal)) {
-                    console.log(
-                      "this is a message of :" + props["layerName"] +
-                        newVal[0].adaptorId +
-                        "id:" +
-                        newVal[0].id
-                    );
+                    // console.log(
+                    //   "this is a message of :" + props["layerName"] +
+                    //     newVal[0].adaptorId +
+                    //     "id:" +
+                    //     newVal[0].id
+                    // );
 
                     let data = newVal;
 

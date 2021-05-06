@@ -27,7 +27,7 @@ export const streamingSystemSelector = () => {
   return createSelector(
     [getElements, getupdatedIds],
     (elements, updatedIds) => {
-      console.log("elements in selector:" + updatedIds);
+      // console.log("elements in selector:" + updatedIds);
 
       if (updatedIds && updatedIds.length > 0) {
         var arr = [];

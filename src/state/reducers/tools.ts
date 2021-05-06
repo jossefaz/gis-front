@@ -205,7 +205,7 @@ export const selectStickyTool = (state: GisState) => {
   if (
     Tools &&
     map.focused in Tools &&
-    Tools[map.focused].stickyTool in Tools[map.focused].tools
+    Tools[map.focused].stickyTool.length > 0
   ) {
     return Tools[map.focused].stickyTool;
   }

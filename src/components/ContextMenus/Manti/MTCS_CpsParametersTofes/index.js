@@ -113,6 +113,7 @@ class MTCS_CpsParametersTofesComponent extends Component {
   };
 
   setInitialValuesFromIdentifyResult = () => {
+    debugger
     var params = JSON.parse(this.props.data.value);
     var newArray = [];
     var idRes = Object.keys(this.props.identifyResult).map((key) => ({
@@ -248,14 +249,14 @@ class MTCS_CpsParametersTofesComponent extends Component {
       return;
     }
 
-    console.log(this.state.rows);
+    // console.log(this.state.rows);
     if (errors.length === 0) {
       var mapped = this.state.rows.map((item) => ({
         [item.name]: item.value,
       }));
 
       var resPrms = Object.assign({}, ...mapped);
-      console.log(resPrms);
+      // console.log(resPrms);
       var resultBody = {
         controlSystem: this.bankPkudRow.AdaptorId,
         functionName: this.bankPkudRow.Name,
@@ -269,7 +270,7 @@ class MTCS_CpsParametersTofesComponent extends Component {
 
         body: JSON.stringify(resultBody),
       };
-      debugger;
+
       var apiAddress = this.props.commandApiAddress;
 
       fetch(apiAddress, postMethod)
@@ -286,7 +287,7 @@ class MTCS_CpsParametersTofesComponent extends Component {
           alert("פקודה לא נשלחה" + err);
         });
 
-      console.log("toggle 2");
+      // console.log("toggle 2");
       this.props.toggleModal(); // open non generic form
     }
   };
@@ -333,7 +334,8 @@ class MTCS_CpsParametersTofesComponent extends Component {
     this.props.toggleModal();
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    debugger;
     this.setInitialValuesFromIdentifyResult();
   }
 

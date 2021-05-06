@@ -4,14 +4,13 @@ import { UiState } from "../stateTypes";
 import { Actions } from "../actions/types";
 
 const initialState = {
-  sideNavOpen: false,
+  sideNavOpen: true,
 };
 const uiReducer = (state: UiState = initialState, action: Actions): UiState => {
   switch (action.type) {
     case types.TOGGLE_SIDENAV:
       return produce(state, (draftState) => {
-        const IsOpen = draftState.sideNavOpen;
-        draftState.sideNavOpen = !IsOpen;
+        draftState.sideNavOpen = action.payload;
       });
 
     default:

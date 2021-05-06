@@ -12,7 +12,7 @@ export const loadChannels = (chanel, symbologyCalculation, reduxTarget) => {
         channelItem.system + "." + channelItem.branch + ".*",
         (msg) => {
           const data = [];
-          console.log(msg);
+          // console.log(msg);
           msg = JSON.parse(msg);
           data.push(msg);
           switch (channelItem.reduxFunction) {

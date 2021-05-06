@@ -205,14 +205,10 @@ class ParametersTofesComponent extends Component {
             alert(data.ResultMessage);
             return;
           }
-          if (this.props.bankPkudotRow.templateComponent) {
-            var comId = JSON.parse(
-              this.props.bankPkudotRow.templateComponent
-            )[0].commandId;
-            var adapId = JSON.parse(
-              this.props.bankPkudotRow.templateComponent
-            )[0].adaptorId;
-            this.props.findItemByName(comId, adapId, data.ResultValue);
+          const template = JSON.parse(this.props.bankPkudotRow.templateComponent.replaceAll('\\\"','"'))[0]
+          if (template) {
+            const {commandId, adaptorId } = template;
+            this.props.findItemByName(commandId, adaptorId, data.ResultValue);
           }
         })
         .catch((err) => {

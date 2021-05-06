@@ -53,7 +53,7 @@ const BankPkudotTree: React.FC<Props> = (props) => {
           localconfig={props.local_config}
           bankPkudotRow={pkudaData}
           mapId={222}
-          identifyResult={identifyResult ? identifyResult.properties : {}}
+          identifyResult={identifyResult ? identifyResult : {}}
           commandApiAddress={props.local_config.commandApiAddress}
         />
       )
@@ -68,7 +68,7 @@ const BankPkudotTree: React.FC<Props> = (props) => {
     setidentifyResult(data);
     setgenericItem(false);
     setpkudaData(itByName[0]);
-    toggleModal();
+    setmodalVisible(true);
   };
 
   const toogleCategory = (category: string) => {

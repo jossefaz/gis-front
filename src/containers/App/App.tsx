@@ -18,7 +18,7 @@ import API from "../../core/api";
 import { useActions } from "../../hooks/useActions";
 import { TokenData } from "../../core/types";
 import LoginForm from "../../components/Login";
-import ContextMenu from "../../components/ContextMenus/Container";
+import "./style.css";
 
 interface StoredJWT {
   value: TokenData;
@@ -39,6 +39,8 @@ const App: React.FC = () => {
   const { InitLayers, InitMap, InitRasters, InitTools } = useActions();
   const mapState = useTypedSelector((state) => state.map);
   const Tools = useTypedSelector(selectFocusedMapTools);
+  const { sideNavOpen: ShowLayers } = useTypedSelector((state) => state.ui);
+
   const { setToken } = useActions();
 
   const setTokenIfExists = () => {
@@ -74,10 +76,10 @@ const App: React.FC = () => {
             <div className="app__side">
               <div className="layers-container">
                 <SeachComp />
-                <LayerListMain />
+                {ShowLayers && <LayerListMain />}
               </div>
+              {!ShowLayers && <WidgetFixContainer />}
 
-              <WidgetFixContainer />
               {mapId && <TopNav Tools={Tools} />}
               <div
                 id="app-side-content-container"
