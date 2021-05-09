@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import config from "../../../configuration";
 import { Menu, Icon } from "semantic-ui-react";
@@ -11,6 +11,9 @@ import EditTool from "../../tool/InternalTool/EditTool";
 import LayerListTOF from "../LayerListTOF";
 import SpatialSelect from "../../tool/InternalTool/SpatialSelect";
 import { setMapLayerOpacity } from "../../../state/actions";
+import "./style.scss";
+import { ListGroup, Tab } from "react-bootstrap";
+
 
 class LayerListMenuItem extends Component {
   state = {
@@ -20,7 +23,7 @@ class LayerListMenuItem extends Component {
     OlLayer: null,
     showHide: true,
   };
-  settings = {
+  opacitySliderSettings = {
     start: this.props.opacity,
     min: 0,
     max: 1,
@@ -31,8 +34,9 @@ class LayerListMenuItem extends Component {
     },
   };
 
-  handleItemClick = (e, { name }) => {
+  handleItemClick = (name) => {
     if (this.state.activeItem === name) {
+      return;
       this.setState(
         {
           showHide: !this.state.showHide,
@@ -127,6 +131,70 @@ class LayerListMenuItem extends Component {
     const color = visible ? { color: "black" } : { color: "grey" };
 
     return (
+      <Tab.Container defaultActiveKey="transparency" transition={false} activeKey={this.state.activeItem} onSelect={this.handleItemClick}>
+        <ListGroup variant="flush" className="layers-list-item-menu">
+          <ListGroup.Item eventKey="transparency" action>
+            <div>שקיפות</div>
+            <div className="flex-grow-1">
+              <Slider
+                disabled={!visible}
+                settings={this.opacitySliderSettings}
+              />
+            </div>
+          </ListGroup.Item>
+          <ListGroup.Item eventKey="fullExtent" action>
+            <div>מבט מלא על השכבה</div>
+            <i className="gis-icon gis-icon--search-eye-thin"></i>
+          </ListGroup.Item>
+          <ListGroup.Item eventKey="editLayer" action>
+            <div>ערוך שכבה</div>
+            <i className="gis-icon gis-icon--graphic-pen-thin"></i>
+          </ListGroup.Item>
+          <ListGroup.Item eventKey="legend" action>
+            <div>מקרא</div>
+            <i className="gis-icon gis-icon--legend-thin"></i>
+          </ListGroup.Item>
+          <ListGroup.Item eventKey="attributeTable" action>
+            <div>מאפיינים</div>
+            <i className="gis-icon gis-icon--grid-thin"></i>
+          </ListGroup.Item>
+          <ListGroup.Item eventKey="spatialSelect" action>
+            <div>ניתוח מרחבי</div>
+            <i className="gis-icon gis-icon--search-eye-thin"></i>
+          </ListGroup.Item>
+        </ListGroup>
+
+        {this.state.activeItem && <Tab.Content className="layers-list-item-menu-details">
+          <div className="side-extra-container">
+            <Tab.Pane eventKey="editLayer">
+              <EditTool uuid={layer.uuid}></EditTool>
+            </Tab.Pane>
+            <Tab.Pane eventKey="legend">
+              <LegendItem key={layer.uuid} uuid={layer.uuid} global={false}></LegendItem>
+            </Tab.Pane>
+            <Tab.Pane eventKey="attributeTable">
+              <LayerListTOF openTable={this.state.showHide} uuid={layer.uuid} />
+            </Tab.Pane>
+            <Tab.Pane eventKey="spatialSelect">
+            <SpatialSelect key={layer.uuid} uuid={layer.uuid} global={false}></SpatialSelect>
+            </Tab.Pane>
+          </div>
+        </Tab.Content>}
+
+      </Tab.Container>
+
+
+      // <Nav className="flex-column" variant="pills" activeKey={this.state.activeItem} onSelect={this.handleItemClick}>
+      //     <Nav.Link eventKey="transparency">שקיפות</Nav.Link>
+      //     <Nav.Link eventKey="fullExtent">מבט מלא על השכבה</Nav.Link>
+      //     <Nav.Link eventKey="editLayer">ערוך שכבה</Nav.Link>
+      //     <Nav.Link eventKey="legend">מקרא</Nav.Link>
+      //     <Nav.Link eventKey="attributeTable">מאפיינים</Nav.Link>
+      //     <Nav.Link eventKey="spatialSelect">ניתוח מרחבי</Nav.Link>
+      // </Nav>
+    )
+
+    return (
       <Menu secondary vertical className="content uirtl">
         <Menu.Item
           name="transparency"
@@ -139,7 +207,7 @@ class LayerListMenuItem extends Component {
               style={{ width: "80%" }}
               color={visible ? "blue" : "grey"}
               disabled={!visible}
-              settings={this.settings}
+              settings={this.opacitySliderSettings}
             />
           </div>
         </Menu.Item>

@@ -40,7 +40,7 @@ const ToolItem: React.FC<Props> = (props) => {
     const { ToolIcon, ToolTip } = currentTools.tools[props.ToolID];
 
     return (
-      <ListGroup.Item className="tool-item" role="TOOL">
+      <ListGroup.Item className="tool-item" role="TOOL" ref={drag}>
         <div
           className="tool-item__main"
           onClick={() => {
@@ -60,7 +60,6 @@ const ToolItem: React.FC<Props> = (props) => {
 
         <div
           className="tool-item__drag"
-          ref={drag}
           data-testid={`box-${props.ToolID}`}
         >
           <i className="gis-icon gis-icon--drag-thin"></i>

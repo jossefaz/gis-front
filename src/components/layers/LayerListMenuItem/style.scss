@@ -1,0 +1,35 @@
+@import "../../../style/variables";
+
+.layers-list-item-menu {
+    .list-group-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 0.25rem;
+        border-color: $border-color;
+
+        &.active {
+            background: $gray-100;
+            border-color: $border-color;
+            color: $primary;
+        }
+
+        .gis-icon {
+            font-size: 1.4em;
+            width: 1.4em;
+            margin-top: -0.2em;
+            margin-bottom: -0.2em;
+            text-align: center;
+        }
+    }
+}
+
+.layers-list-item-menu-details {
+    .tab-pane {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+}
