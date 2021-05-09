@@ -5,7 +5,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import React from "react";
 import "./style.css";
-import { MenuItem, IdentifyResult, MenuConfig } from "./types";
+import {
+  MenuItem,
+  IdentifyResult,
+  MenuConfig,
+  ParamTofes,
+  Parameter,
+} from "./types";
 
 interface Props {
   menu_config: MenuConfig[];
@@ -30,15 +36,43 @@ const BankPkudotTree: React.FC<Props> = (props) => {
     setmodalVisible(true);
   };
 
+  const buildParamerter = (paramObj: any): Parameter => {
+    const item: Parameter = {
+      ...(paramObj["combo source"] && {
+        combo_source: paramObj["combo source"],
+      }),
+      ...(paramObj["value source"] && {
+        value_source: paramObj["value source"],
+      }),
+      ...(paramObj["helper function"] && {
+        helper_function: paramObj["helper function"],
+      }),
+      ...(paramObj.UIType && { UItype: paramObj.UIType }),
+      ...(paramObj.rule && { rule: paramObj.rule }),
+      name: paramObj.name,
+      type: paramObj.type,
+      mandatory: paramObj.mandatory,
+    };
+    return item;
+  };
+
+  const parseParams = () => {
+    const copy: any = pkudaData ? JSON.parse(pkudaData.Parameters) : false;
+    if (copy) {
+      return copy.map((paramItem: any) => buildParamerter(paramItem));
+    }
+    return copy;
+  };
+
   const renderModal = () => {
-    return genericItem && pkudaData ? (
+    const params = parseParams();
+    return genericItem && params && pkudaData ? (
       <ParametersTofes
         toggleModal={toggleModal}
         findItemByName={findItemByName}
-        data={{ value: pkudaData.Parameters }}
+        data={params}
         localconfig={props.local_config}
         bankPkudotRow={pkudaData}
-        mapId={222}
         identifyResult={identifyResult ? identifyResult.properties : {}}
         commandApiAddress={props.local_config.commandApiAddress}
       />
@@ -121,9 +155,9 @@ const BankPkudotTree: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    debugger;
     setidentifyResult(props.feature);
   }, []);
+
   return (
     <React.Fragment>
       <ul>{renderTree()}</ul>

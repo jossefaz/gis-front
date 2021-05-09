@@ -22,6 +22,18 @@ import { EventsKey } from "ol/events";
 const { getFocusedMap, getFocusedMapUUID } = API.map;
 const MapComponent: FC = () => {
   const vlregistry = VectorLayerRegistry.getInstance();
+
+  const {
+    setSelectedFeatures,
+    toggleToolByName,
+    setRaster,
+    toogleSideNav,
+  } = useActions();
+  const [menuFeatures, setMenuFeatures] = useState<SelectedFeature>({});
+  const [clientXY, setclientXY] = useState<any[]>([]);
+  const [currentLayers, setcurrentLayers] = useState<string[]>([]);
+  const [eventKeys, seteventKeys] = useState<(EventsKey | EventsKey[])[]>([]);
+
   const storeTools = useTypedSelector(
     (state) => state.Tools[getFocusedMapUUID()]
   );
@@ -29,11 +41,6 @@ const MapComponent: FC = () => {
   const currentInteractions = useTypedSelector(selectCurrentInteractions);
 
   const currentInteractionsLength = Object.keys(currentInteractions).length;
-  const { setSelectedFeatures, toggleToolByName, setRaster } = useActions();
-  const [menuFeatures, setMenuFeatures] = useState<SelectedFeature>({});
-  const [clientXY, setclientXY] = useState<any[]>([]);
-  const [currentLayers, setcurrentLayers] = useState<string[]>([]);
-  const [eventKeys, seteventKeys] = useState<(EventsKey | EventsKey[])[]>([]);
   const openedTools =
     storeTools.stickyTool.length > 0 || storeTools.dynamicTools.length > 0;
 
@@ -51,6 +58,7 @@ const MapComponent: FC = () => {
       if (Object.keys(features).length > 0) {
         setSelectedFeatures(features);
         toggleToolByName("Identify", true, false);
+        toogleSideNav(false);
       }
     }
   };

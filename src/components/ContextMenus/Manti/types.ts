@@ -4,19 +4,26 @@ enum ItemState {
   DELETED = "AUDITED",
 }
 
-enum UITypes {
+export enum UITypes {
   string = "string",
   combo = "combo",
   date = "date",
   number = "number",
 }
 
-interface ParamsTofes {
+export interface Parameter {
   name: string;
   type: string;
   mandatory: boolean;
-  value_source: string;
+  value_source?: string;
+  combo_source?: string;
+  helper_function?: string;
+  rule?: string;
+  UItype: UITypes;
 }
+
+export type ParamTofes = Parameter[];
+
 export interface layerProperties {
   type: string;
   layerId: string;
@@ -39,7 +46,7 @@ export interface MenuItem {
   ConcurrentCopies: number;
   AdaptorCommand: string;
   timeOut: number;
-  Parameters: ParamsTofes;
+  Parameters: string;
   AD_Groups: string;
   updateDate: Date;
   username: string;
@@ -50,4 +57,4 @@ export interface MenuItem {
   templateComponent: string;
 }
 
-type MenuConfig = MenuItem[];
+export type MenuConfig = MenuItem[];

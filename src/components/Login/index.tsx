@@ -12,7 +12,12 @@ type Inputs = {
 
 const LoginForm = () => {
   const { setToken } = useActions();
-  const { register, handleSubmit, watch, errors } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
   const { jwt } = useTypedSelector((state) => state.auth);
   const [errorCredentials, seterrorCredentials] = useState(false);
 
@@ -35,9 +40,8 @@ const LoginForm = () => {
                 <i className="user icon"></i>
                 <input
                   type="text"
-                  name="username"
                   placeholder="E-mail address"
-                  ref={register({ required: true })}
+                  {...register("username", { required: true })}
                 />
                 {errors.username && <span>You must enter user username</span>}
               </div>
@@ -47,9 +51,8 @@ const LoginForm = () => {
                 <i className="lock icon"></i>
                 <input
                   type="password"
-                  name="password"
                   placeholder="Password"
-                  ref={register({ required: true })}
+                  {...register("password", { required: true })}
                 />
                 {errors.password && <span>You must enter password</span>}
               </div>
