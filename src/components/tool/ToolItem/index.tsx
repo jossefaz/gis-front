@@ -1,12 +1,12 @@
-import React from "react";
-import { useActions } from "../../../hooks/useActions";
-import { useTypedSelector } from "../../../hooks/useTypedSelectors";
-import { selectFocusedMapTools } from "../../../state/reducers";
-import { useDrag } from "react-dnd";
-import { ListGroup } from "react-bootstrap";
+import React from 'react';
+import { useActions } from '../../../hooks/useActions';
+import { useTypedSelector } from '../../../hooks/useTypedSelectors';
+import { selectFocusedMapTools } from '../../../state/reducers';
+import { useDrag } from 'react-dnd';
+import { ListGroup } from 'react-bootstrap';
 
 enum ItemTypes {
-  TOOL = "TOOL",
+  TOOL = 'TOOL',
 }
 
 export interface BoxProps {
@@ -50,7 +50,7 @@ const ToolItem: React.FC<Props> = (props) => {
         >
           <div className="tool-item__icon mx-1">
             {ToolIcon ? (
-              <i className={"gis-icon gis-icon--" + ToolIcon}></i>
+              <i className={'gis-icon gis-icon--' + ToolIcon}></i>
             ) : (
               <i>i</i>
             )}
@@ -58,7 +58,7 @@ const ToolItem: React.FC<Props> = (props) => {
           <div className="tool-item__title flex-grow-1 mx-2">{ToolTip}</div>
         </div>
 
-        <div className="tool-item__drag">
+        <div className="tool-item__drag" data-testid={`box-${props.ToolID}`}>
           <i className="gis-icon gis-icon--drag-thin"></i>
         </div>
       </ListGroup.Item>
