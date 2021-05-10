@@ -1,6 +1,6 @@
-import { MapsToolState } from "../../../stateTypes";
-import { ToolMetadata, GroupMetadata } from "../../../../core/types";
-import { ActionTypes } from "./actionsTypes";
+import { MapsToolState } from '../../../stateTypes';
+import { ToolMetadata, GroupMetadata } from '../../../../core/types';
+import { ActionTypes } from './actionsTypes';
 
 interface ToogleToolActionPayload {
   ToolId: string;
@@ -39,7 +39,7 @@ interface InitToolsActionPayload {
   blueprint: {
     tools: { [toolId: string]: ToolMetadata };
     Groups: { [groupId: string]: GroupMetadata };
-    displayOrder: string[];
+    displayOrder?: string[];
   };
 }
 

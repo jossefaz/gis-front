@@ -1,7 +1,7 @@
-import types from "./types";
-import API from "../../core/api";
-import { GisState, MapsToolState } from "../stateTypes";
-import { Dispatch } from "redux";
+import types from './types';
+import API from '../../core/api';
+import { GisState, MapsToolState } from '../stateTypes';
+import { Dispatch } from 'redux';
 import {
   ToogleToolAction,
   ToogleToolByNameAction,
@@ -13,8 +13,8 @@ import {
   InitToolsAction,
   DragToolAction,
   CloseDragToolAction,
-} from "./types/tools/actions";
-import { Widgets } from "../../configuration/types";
+} from './types/tools/actions';
+import { Widgets } from '../../configuration/types';
 
 export const toggleTool = (
   ToolId: string,
@@ -113,19 +113,22 @@ export const toolsReseted = () => async (dispatch: Dispatch) => {
 };
 
 export const InitTools = (ToolConfig: Widgets) => (dispatch: Dispatch) => {
+  const toolOrder = ToolConfig.sideMenu
+    ? ToolConfig.sideMenu.toolOrder
+    : undefined;
   const gTools: MapsToolState = {
     tools: {},
     Groups: {},
     dynamicTools: [],
-    displayOrder: ToolConfig.sideMenu.toolOrder,
+    displayOrder: toolOrder,
     reset: [],
-    focused: "",
-    stickyTool: "",
+    focused: '',
+    stickyTool: '',
   };
   const blueprint = {
     tools: {},
     Groups: {},
-    displayOrder: ToolConfig.sideMenu.toolOrder,
+    displayOrder: toolOrder,
   };
   const mapId = API.map.getFocusedMapUUID();
 

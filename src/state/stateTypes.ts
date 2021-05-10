@@ -8,7 +8,7 @@ import {
   GroupMetadata,
   LayerStateObject,
   TokenData,
-} from "../core/types";
+} from '../core/types';
 
 export interface FeatureState {
   [mapUUID: string]: {
@@ -16,7 +16,7 @@ export interface FeatureState {
     currentLayer: string | null;
     currentFeature: Feature | null;
     spatialSelection?: number[] | string[];
-    contextMenus?: {[layername:string]:{[featureId:string]:any}};
+    contextMenus?: { [layername: string]: { [featureId: string]: any } };
   };
 }
 
@@ -34,7 +34,7 @@ export interface OverlayState {
 
 export interface MapsToolState {
   tools: { [toolId: string]: ToolMetadata };
-  displayOrder: string[];
+  displayOrder?: string[];
   Groups: { [groupId: string]: GroupMetadata };
   dynamicTools: string[];
   reset: string[];
@@ -49,7 +49,7 @@ export type ToolState = {
   blueprint?: {
     tools: { [toolId: string]: ToolMetadata };
     Groups: { [groupId: string]: GroupMetadata };
-    displayOrder: string[];
+    displayOrder?: string[];
   };
 };
 
