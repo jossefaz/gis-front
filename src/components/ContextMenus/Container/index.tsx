@@ -1,11 +1,11 @@
-import { MapBrowserEvent } from "ol";
-import React from "react";
-import { useEffect, useRef, useState } from "react";
-import { SelectedFeature } from "../../../core/types";
-import { lazy } from "react";
+import { MapBrowserEvent } from 'ol';
+import React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { SelectedFeature } from '../../../core/types';
+import { lazy } from 'react';
 
-import _ from "lodash";
-import { Suspense } from "react";
+import _ from 'lodash';
+import { Suspense } from 'react';
 
 const ContextMenuContainer: React.FC<{
   features: SelectedFeature;
@@ -42,7 +42,7 @@ const ContextMenuContainer: React.FC<{
       if (bottom) {
         menuRef.current.style.top = `${clickY - rootH - 5}px`;
       }
-      menuRef.current.style.zIndex = "9";
+      menuRef.current.style.zIndex = '9';
     }
   };
 
@@ -50,7 +50,7 @@ const ContextMenuContainer: React.FC<{
     setMenuPosition();
     setRender(!render);
   }, [clientXY[0], clientXY[1]]);
-  const ContextMenu = lazy(() => import("../index"));
+  const ContextMenu = lazy(() => import('../index'));
   return (
     <div ref={menuRef} className="contextMenu">
       {
@@ -61,6 +61,7 @@ const ContextMenuContainer: React.FC<{
           <Suspense fallback={<div>Loading ...</div>}>
             <ContextMenu
               candidateFeature={features[Object.keys(features)[0]][0]}
+              fromMap
             />
           </Suspense>
         </React.Fragment>

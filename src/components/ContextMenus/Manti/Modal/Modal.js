@@ -1,17 +1,18 @@
-import React from "react";
-import Modal from "react-modal";
+import React from 'react';
+import Modal from 'react-modal';
+import './style.css';
 
-Modal.setAppElement("#root");
+Modal.setAppElement('#root');
 
 const customStyle = {
   content: {
-    top: "35%",
-    left: "35%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50, -50%)",
-    zIndex : "9999"
+    top: '35%',
+    left: '35%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50, -50%)',
+    zIndex: '9999',
   },
 };
 
@@ -23,6 +24,7 @@ const AppModal = ({ isModalOpen, afterOpen, closeModal, children }) => {
         onAfterOpen={afterOpen}
         onRequestClose={closeModal}
         style={customStyle}
+        portalClassName="portalModal"
       >
         {children}
       </Modal>

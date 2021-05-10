@@ -1,17 +1,17 @@
-import _ from "lodash";
-import ParametersTofes from "./ParametersTofes";
-import MTCS_CpsParametersTofes from "./MTCS_CpsParametersTofes";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import React from "react";
-import "./style.css";
+import _ from 'lodash';
+import ParametersTofes from './ParametersTofes';
+import MTCS_CpsParametersTofes from './MTCS_CpsParametersTofes';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import React from 'react';
+import './style.css';
 import {
   MenuItem,
   IdentifyResult,
   MenuConfig,
   ParamTofes,
   Parameter,
-} from "./types";
+} from './types';
 
 interface Props {
   menu_config: MenuConfig[];
@@ -38,14 +38,14 @@ const BankPkudotTree: React.FC<Props> = (props) => {
 
   const buildParamerter = (paramObj: any): Parameter => {
     const item: Parameter = {
-      ...(paramObj["combo source"] && {
-        combo_source: paramObj["combo source"],
+      ...(paramObj['combo source'] && {
+        combo_source: paramObj['combo source'],
       }),
-      ...(paramObj["value source"] && {
-        value_source: paramObj["value source"],
+      ...(paramObj['value source'] && {
+        value_source: paramObj['value source'],
       }),
-      ...(paramObj["helper function"] && {
-        helper_function: paramObj["helper function"],
+      ...(paramObj['helper function'] && {
+        helper_function: paramObj['helper function'],
       }),
       ...(paramObj.UIType && { UItype: paramObj.UIType }),
       ...(paramObj.rule && { rule: paramObj.rule }),
@@ -123,24 +123,28 @@ const BankPkudotTree: React.FC<Props> = (props) => {
     const adaptors = [
       ...new Set(props.menu_config[0].map((MenuItem) => MenuItem.AdaptorId)),
     ];
+    const isUniqueCategory = adaptors.length === 1;
 
     return adaptors.map((adaptor) => (
       <li key={adaptor}>
-        <span
-          onClick={() => toogleCategory(adaptor)}
-          className={`${
-            activeCategory.includes(adaptor) ? "caret-down" : "caret"
-          }`}
-        >
-          {adaptor}
-        </span>
+        {!isUniqueCategory && (
+          <span onClick={() => toogleCategory(adaptor)} className="collapsible">
+            {adaptor}
+          </span>
+        )}
+
         <ul
           className={`${
-            activeCategory.includes(adaptor) ? "active" : "nested"
+            isUniqueCategory
+              ? 'active'
+              : activeCategory.includes(adaptor)
+              ? 'active'
+              : 'nested'
           }`}
         >
           {getFilteredItems(adaptor).map((MenuItem) => (
             <li
+              className="MenuItem"
               key={MenuItem.ID}
               onClick={async () => {
                 await fetchPkuda(MenuItem.ID);

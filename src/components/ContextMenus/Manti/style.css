@@ -1,5 +1,7 @@
 ul, #myUL {
   list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .caret {
@@ -35,10 +37,30 @@ ul, #myUL {
   transform: rotate(90deg);  
 }
 
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
 .nested {
   display: none;
 }
 
 .active {
   display: block;
+}
+.MenuItem{
+  border-bottom: 1px solid black;
+}
+
+.MenuItem:hover {
+  background-color: rgb(54, 54, 126);
+  color: white;
+  cursor: pointer;
 }

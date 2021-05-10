@@ -1,47 +1,46 @@
 // Sticky container
 // ==========================
 .sticky-tool-container {
-  position: absolute;
-  z-index: 998;
-  top: $searchbar-height;
-  height: calc(100% - #{$searchbar-height});
-  right: $side-icon-width;
-  width: calc(100% - #{$side-icon-width});
-  background: #fff; // rgba($color: red, $alpha: 0.2);
+    position: absolute;
+    z-index: 998;
+    top: $searchbar-height;
+    height: calc(100% - #{$searchbar-height});
+    right: $side-icon-width;
+    width: calc(100% - #{$side-icon-width});
+    background: #fff; // rgba($color: red, $alpha: 0.2);
 
-  &--closed {
-    display: none;
-  }
+    &--closed {
+        display: none;
+    }
 }
 
 // Layers container
 // ==========================
 .layers-container {
-  position: relative;
-  z-index: 991;
-  height: 100%;
-  width: 100%;
-  background: $gray-400; // rgba($color: green, $alpha: 0.2);
+    position: relative;
+    z-index: 991;
+    height: 100%;
+    width: 100%;
+    background: $gray-400; // rgba($color: green, $alpha: 0.2);
 
-  .searchbar {
-    height: $searchbar-height;
-    display: flex;
-    align-items: center;
+    .searchbar {
+        height: $searchbar-height;
+        display: flex;
+        align-items: center;
 
-    &__icon {
-      width: $side-icon-width;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        &__icon {
+            width: $side-icon-width;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     }
-  }
 
-  .layers-block {
-    padding: 1rem ($side-icon-width + $side-content-start) 1rem
-      $side-content-end;
-    height: calc(100% - #{$searchbar-height});
-    background: #fff; // rgba(purple, 0.2);
-  }
+    .layers-block {
+        padding: 1rem ($side-icon-width + $side-content-start) 1rem $side-content-end;
+        height: calc(100% - #{$searchbar-height});
+        background: #fff; // rgba(purple, 0.2);
+    }
 }
 
 // extra data container
@@ -63,19 +62,10 @@
 // Main nav
 // ==========================
 .main-nav {
-  position: absolute;
-  z-index: 999;
-  top: $searchbar-height;
-  right: 0;
-  width: 100%;
-  height: calc(100% - #{$searchbar-height});
-  background: $primary;
-  color: #fff;
-  overflow: hidden;
-  transition: all 0.35s ease-out;
-
-  .list-group {
-    height: 100%;
+    position: absolute;
+    z-index: 999;
+    top: $searchbar-height;
+    right: 0;
     width: 100%;
     height: calc(100% - #{$searchbar-height});
     background: $primary;
@@ -145,23 +135,15 @@
             }
 
         }
+    }
 
-        i {
-          font-size: 1.4rem;
-          margin-top: -0.2rem;
-          margin-bottom: -0.2rem;
+    &--closed {
+        width: $side-icon-width;
+        transition: all 0.25s ease-in;
+
+        .tool-item__title {
+            opacity: 0;
+            transition: all 0.25s ease-in;
         }
-      }
     }
-  }
-
-  &--closed {
-    width: $side-icon-width;
-    transition: all 0.25s ease-in;
-
-    .tool-item__title {
-      opacity: 0;
-      transition: all 0.25s ease-in;
-    }
-  }
-
+}

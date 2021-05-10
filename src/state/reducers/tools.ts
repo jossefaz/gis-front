@@ -1,7 +1,7 @@
-import types from "../actions/types";
-import produce from "immer";
-import { GisState, ToolState } from "../stateTypes";
-import { Actions } from "../actions/types";
+import types from '../actions/types';
+import produce from 'immer';
+import { GisState, ToolState } from '../stateTypes';
+import { Actions } from '../actions/types';
 
 const reducer = (state: ToolState = {}, action: Actions): ToolState => {
   switch (action.type) {
@@ -41,10 +41,10 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
           currentMapTools.tools[ToolId].IsOpen = true;
           currentMapTools.focused = ToolId;
           currentMapTools.stickyTool = ToolId;
-        } else {
+        } else if (!IsOpen) {
           currentMapTools.tools[ToolId].IsOpen = futureToolStatus;
-          currentMapTools.focused = futureToolStatus ? ToolId : "";
-          currentMapTools.stickyTool = futureToolStatus ? ToolId : "";
+          currentMapTools.focused = futureToolStatus ? ToolId : '';
+          currentMapTools.stickyTool = futureToolStatus ? ToolId : '';
         }
       });
 
@@ -61,7 +61,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
         currentMapTools.dynamicTools = currentMapTools.dynamicTools.filter(
           (id) => id !== ToolId
         );
-        currentMapTools.focused = "";
+        currentMapTools.focused = '';
       });
 
     case types.DRAG_TOOL:
@@ -78,7 +78,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
           currentMapTools.unfocus = unfocus;
         }
         if (ToolId === currentMapTools.stickyTool) {
-          currentMapTools.stickyTool = "";
+          currentMapTools.stickyTool = '';
         }
         currentMapTools.tools[ToolId].IsOpen = true;
         currentMapTools.dynamicTools.unshift(ToolId); // This tool is now Focused
@@ -108,8 +108,8 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
           displayOrder: [],
           reset: [],
           unfocus: undefined,
-          focused: "",
-          stickyTool: "",
+          focused: '',
+          stickyTool: '',
         };
         if (
           draftState.blueprint &&
@@ -131,7 +131,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
       // First check if this tool is open
       const { ToolId, mapId } = action.payload;
       const isDynamicTool = state[mapId].dynamicTools.indexOf(ToolId) !== -1;
-      const isFixedTool = state[mapId].stickyTool !== "";
+      const isFixedTool = state[mapId].stickyTool !== '';
       if (!isDynamicTool && !isFixedTool) {
         console.warn(`unknown toolid tried to be focused ${ToolId}`);
         return state;
@@ -177,7 +177,7 @@ const reducer = (state: ToolState = {}, action: Actions): ToolState => {
       return produce(state, (draftState) => {
         const { ToolId, mapId } = action.payload;
         if (ToolId === draftState[mapId].unfocus) {
-          draftState[mapId].unfocus = "";
+          draftState[mapId].unfocus = '';
         }
       });
 

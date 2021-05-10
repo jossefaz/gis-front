@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import _ from "lodash";
-import "./style.css";
-import UpdateMenu from "./feed";
-import { selectContextMenus } from "../../state/reducers";
-import REGISTRY from "./registry";
-import { Collapse, Table } from "react-bootstrap";
-import { Feature } from "../../core/types";
-import { useTypedSelector } from "../../hooks/useTypedSelectors";
-const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
-  candidateFeature,
-}) => {
+import React, { useEffect, useState } from 'react';
+import _ from 'lodash';
+import './style.css';
+import UpdateMenu from './feed';
+import { selectContextMenus } from '../../state/reducers';
+import REGISTRY from './registry';
+import { Collapse, Table } from 'react-bootstrap';
+import { Feature } from '../../core/types';
+import { useTypedSelector } from '../../hooks/useTypedSelectors';
+const ContextMenuContainer: React.FC<{
+  candidateFeature: Feature;
+  fromMap?: boolean;
+}> = ({ candidateFeature, fromMap }) => {
   const [isOpened, setisOpened] = useState<boolean>(false);
 
   const updateMenu = () => {
@@ -31,9 +32,11 @@ const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
       candidateFeature.id in menus[source] &&
       menus[source][candidateFeature.id].length > 0 && (
         <tr key={source}>
-          <td>
-            <b>{source}</b>
-          </td>
+          {!fromMap && (
+            <td>
+              <b>{source}</b>
+            </td>
+          )}
           <td>
             <Menu
               menu_config={config}
@@ -51,15 +54,18 @@ const ContextMenuContainer: React.FC<{ candidateFeature: Feature }> = ({
         className="context-menu"
         onMouseDownCapture={(e) => e.stopPropagation()}
       >
-        <div
-          className="context-menu__header"
-          onClick={() => setisOpened(!isOpened)}
-        >
-          Menu
-        </div>
+        {!fromMap && (
+          <div
+            className="context-menu__header"
+            onClick={() => setisOpened(!isOpened)}
+          >
+            Menu
+          </div>
+        )}
+
         <Collapse in={true}>
           <div className="context-menu__content">
-            <Table borderless>
+            <Table className="MenuTable">
               <tbody>
                 {Object.keys(menus).map((source) => {
                   return renderMenu(source, menus[source][candidateFeature.id]);
