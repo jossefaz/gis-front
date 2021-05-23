@@ -1,6 +1,6 @@
-import { MapsToolState } from '../../../stateTypes';
-import { ToolMetadata, GroupMetadata } from '../../../../core/types';
-import { ActionTypes } from './actionsTypes';
+import { MapsToolState } from "../../../stateTypes";
+import { ToolMetadata, GroupMetadata } from "../../../../core/types";
+import { ActionTypes } from "./actionsTypes";
 
 interface ToogleToolActionPayload {
   ToolId: string;
@@ -26,6 +26,7 @@ interface UnsetUnfocusedPayload {
 interface DragToolPayload {
   ToolId: string;
   mapId: string;
+  position: { x: number; y: number };
 }
 
 interface ResetToolPayload {
@@ -91,4 +92,9 @@ export interface DragToolAction {
 export interface InitToolsAction {
   type: ActionTypes.INIT_TOOLS;
   payload: InitToolsActionPayload;
+}
+
+export interface SetToolPosition {
+  type: ActionTypes.SET_TOOL_POSITION;
+  payload: DragToolPayload;
 }

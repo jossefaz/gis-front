@@ -27,8 +27,9 @@ import { InteractionSupportedTypes as TYPES } from "../../../../core/types/inter
 import { createCustomLayer } from "../../../../state/actions";
 import { createLayers } from "../../../../core/HTTP/usersLayers";
 import { fromCircle } from "ol/geom/Polygon";
-import "./style.scss";
+	import "./style.scss";
 import { Button, ButtonGroup } from "react-bootstrap";
+
 
 const { getFocusedMap } = API.map;
 class Draw extends React.Component {
@@ -119,9 +120,13 @@ class Draw extends React.Component {
     });
   };
 
-  onOpenDrawSession = (drawtype) => {
+  addInteraction = (drawtype) => {
     this.interactions.newDraw({ type: drawtype });
-    this.DrawLayer && this.DrawLayer.setVisible(true);
+  };
+
+  onOpenDrawSession = (drawtype) => {
+    this.addInteraction(drawtype);
+    	    this.DrawLayer && this.DrawLayer.setVisible(true);
     this.setState({ sessionType: "Geometry", drawtype });
     this.onDrawEnd();
   };
@@ -206,7 +211,8 @@ class Draw extends React.Component {
   onDrawEnd = () => {
     if (this.interactions.currentDraw) {
       this.interactions.currentDraw.on("drawend", async (e) => {
-        const newFeatureId = GenerateUUID();
+        const newFeatureId =
+          (await createNewGeometry(e.feature)) || GenerateUUID();
         e.feature.setId(newFeatureId);
         const { r, g, b, a } = this.state.defaultColor;
         e.feature.setStyle(generateNewStyle(`rgba(${r},${g},${b},${a})`));
@@ -371,13 +377,11 @@ class Draw extends React.Component {
     const features = this.getDrawnFeatures();
     const disable = features.length === 0;
     const overlays = this.selfOverlay;
-
     return (
-      <div className="draw py-3">
+ 	      <div className="draw py-3">
         <p className="px-tool">
           יש לבחור כלי ולאחר מכן לבחור את מיקומו על המפה
         </p>
-
         <ButtonGroup className="btn-group-block">
           <Button
             variant="white"
@@ -421,7 +425,6 @@ class Draw extends React.Component {
             <i className="gis-icon gis-icon--text-box"></i>
           </Button>
         </ButtonGroup>
-
         {!disable && (
           <React.Fragment>
             <div className="px-tool d-flex mt-5 mb-2">
@@ -446,7 +449,6 @@ class Draw extends React.Component {
                 ></i>
               </Button>
             </div>
-
             <FeatureTable
               features={features}
               source={this.DrawSource}
@@ -457,7 +459,6 @@ class Draw extends React.Component {
             />
           </React.Fragment>
         )}
-
         {overlays && (
           <TextTable
             overlays={this.selfOverlay}
@@ -465,7 +466,6 @@ class Draw extends React.Component {
             removeOverlay={this.removeOverlay}
           />
         )}
-
         {this.state.sessionType === "Text" && (
           <div className="draw-item">
             <TextForm
@@ -477,7 +477,6 @@ class Draw extends React.Component {
             />
           </div>
         )}
-
         <Confirm
           isOpen={this.state.open}
           confirmTxt={this.state.eraseDraw.content}

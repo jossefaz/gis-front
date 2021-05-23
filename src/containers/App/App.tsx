@@ -1,24 +1,24 @@
-import React, { useEffect } from 'react';
-import MapTabs from '../../components/MapTabs/MapTabs';
-import Map from '../../components/Map/Map';
-import MapMenu from '../../components/MapMenu';
-import TopNav from '../TopNav';
-import config from '../../configuration';
-import { InitIcons } from '../../utils/faicons';
-import WidgetFixContainer from '../Widget/StickyToolContainer';
-import WidgetMapContainer from '../Widget/DynamicToolContainer';
-import { ToastProvider } from 'react-toast-notifications';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import LayerListMain from '../../components/layers/LayerListMain';
-import SeachComp from '../../components/Search';
-import { selectFocusedMapTools } from '../../state/reducers';
-import { useTypedSelector } from '../../hooks/useTypedSelectors';
-import API from '../../core/api';
-import { useActions } from '../../hooks/useActions';
-import { TokenData } from '../../core/types';
-import LoginForm from '../../components/Login';
-import './style.css';
+import React, { useEffect } from "react";
+import MapTabs from "../../components/MapTabs/MapTabs";
+import Map from "../../components/Map/Map";
+import MapMenu from "../../components/MapMenu";
+import TopNav from "../TopNav";
+import config from "../../configuration";
+import { InitIcons } from "../../utils/faicons";
+import WidgetFixContainer from "../Widget/StickyToolContainer";
+import WidgetMapContainer from "../Widget/DynamicToolContainer";
+import { ToastProvider } from "react-toast-notifications";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import LayerListMain from "../../components/layers/LayerListMain";
+import SeachComp from "../../components/Search";
+import { selectFocusedMapTools } from "../../state/reducers";
+import { useTypedSelector } from "../../hooks/useTypedSelectors";
+import API from "../../core/api";
+import { useActions } from "../../hooks/useActions";
+import { TokenData } from "../../core/types";
+import LoginForm from "../../components/Login";
+import "./style.css";
 
 interface StoredJWT {
   value: TokenData;
@@ -27,9 +27,9 @@ interface StoredJWT {
 
 const App: React.FC = () => {
   const { jwt } = useTypedSelector((state) => state.auth);
-  window.addEventListener('unload', function (event) {
+  window.addEventListener("unload", function (event) {
     localStorage.setItem(
-      'jwt',
+      "jwt",
       JSON.stringify({
         value: jwt,
         expiry: new Date().getTime() + 5000,
@@ -44,12 +44,12 @@ const App: React.FC = () => {
   const { setToken } = useActions();
 
   const setTokenIfExists = () => {
-    let stored_jwt = localStorage.getItem('jwt');
+    let stored_jwt = localStorage.getItem("jwt");
     if (stored_jwt) {
       const sjwt = JSON.parse(stored_jwt) as StoredJWT;
       const now = new Date();
       sjwt.expiry > now.getTime() && setToken(sjwt.value);
-      localStorage.removeItem('jwt');
+      localStorage.removeItem("jwt");
     }
   };
 
@@ -90,6 +90,7 @@ const App: React.FC = () => {
               {mapId ? (
                 <React.Fragment>
                   <MapTabs />
+                  <WidgetMapContainer />
                   <Map />
                   <MapMenu />
                 </React.Fragment>
@@ -104,7 +105,6 @@ const App: React.FC = () => {
             id="append-element-container"
             className="append-element-container"
           ></div>
-          <WidgetMapContainer />
         </DndProvider>
       </ToastProvider>
     </React.Fragment>

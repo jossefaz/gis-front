@@ -20,6 +20,7 @@ export interface ToolMetadata {
   ToolGroupId: number;
   ToolContainer: string;
   IsOpen: boolean;
+  Position?: { x: number; y: number };
 }
 
 export interface GroupMetadata {

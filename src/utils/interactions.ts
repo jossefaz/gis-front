@@ -16,7 +16,7 @@ import { Collection, Feature } from "ol";
 import BaseLayer from "ol/layer/Base";
 import { Condition } from "ol/events/condition";
 import styles from "../core/mapStyle";
-import { DragBox, Select } from "ol/interaction";
+import { DragBox, Modify, Select } from "ol/interaction";
 
 export class InteractionUtil {
   private _widget: string;
@@ -78,7 +78,7 @@ export class InteractionUtil {
     return false;
   }
 
-  get currentModify() {
+  get currentModify(): Modify | false {
     if (this.currentModifyUUID && typeof this.currentModifyUUID === "string") {
       return API.interactions.getInteraction(this.currentModifyUUID);
     }
@@ -153,7 +153,7 @@ export class InteractionUtil {
     feature: Feature | null,
     layers: BaseLayer[],
     multi: boolean,
-    condition: Condition | undefined
+    condition?: Condition
   ) => {
     const config = {
       ...(layers.length > 0 && { layers }),

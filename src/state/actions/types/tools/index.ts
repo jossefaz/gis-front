@@ -9,6 +9,7 @@ import {
   UnsetUnfocusedAction,
   DragToolAction,
   CloseDragToolAction,
+  SetToolPosition,
 } from "./actions";
 export * from "./actionsTypes";
 
@@ -22,4 +23,5 @@ export type ToolsActions =
   | ToolResetedAction
   | UnsetUnfocusedAction
   | DragToolAction
-  | CloseDragToolAction;
+  | CloseDragToolAction
+  | SetToolPosition;

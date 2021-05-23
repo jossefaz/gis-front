@@ -1,12 +1,13 @@
-import React from 'react';
-import { useActions } from '../../../hooks/useActions';
-import { useTypedSelector } from '../../../hooks/useTypedSelectors';
-import { selectFocusedMapTools } from '../../../state/reducers';
-import { useDrag } from 'react-dnd';
-import { ListGroup } from 'react-bootstrap';
+import React, { useState } from "react";
+import { useActions } from "../../../hooks/useActions";
+import { useTypedSelector } from "../../../hooks/useTypedSelectors";
+import { selectFocusedMapTools } from "../../../state/reducers";
+import { useDrag } from "react-dnd";
+import { ControlPosition } from "react-draggable";
+import { ListGroup } from "react-bootstrap";
 
 enum ItemTypes {
-  TOOL = 'TOOL',
+  TOOL = "TOOL",
 }
 
 export interface BoxProps {
@@ -20,18 +21,19 @@ interface Props {
 
 const ToolItem: React.FC<Props> = (props) => {
   const currentTools = useTypedSelector(selectFocusedMapTools);
-  const { toggleTool, dragTool } = useActions();
+  const { toggleTool, dragTool, toogleSideNav } = useActions();
+
   const drag = useDrag(() => ({
     type: ItemTypes.TOOL,
     item: { name: props.ToolID },
-    end: (item) => {
-      if (item) {
-        dragTool(item.name);
-        // alert(`You dropped ${item.name} into ${dropResult.name}!`);
+    end: (item, monitor) => {
+      const pos = monitor.getClientOffset();
+      if (item && pos) {
+        dragTool(item.name, { x: pos.x - 2500, y: pos.y });
+        toogleSideNav(true);
       }
     },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
       handlerId: monitor.getHandlerId(),
     }),
   }))[1];
@@ -40,7 +42,7 @@ const ToolItem: React.FC<Props> = (props) => {
     const { ToolIcon, ToolTip } = currentTools.tools[props.ToolID];
 
     return (
-      <ListGroup.Item className="tool-item" role="TOOL" ref={drag}>
+      <ListGroup.Item className="tool-item" role={`${props.ToolID}`} ref={drag}>
         <div
           className="tool-item__main"
           onClick={() => {
@@ -50,7 +52,7 @@ const ToolItem: React.FC<Props> = (props) => {
         >
           <div className="tool-item__icon mx-1">
             {ToolIcon ? (
-              <i className={'gis-icon gis-icon--' + ToolIcon}></i>
+              <i className={"gis-icon gis-icon--" + ToolIcon}></i>
             ) : (
               <i>i</i>
             )}

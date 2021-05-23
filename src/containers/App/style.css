@@ -5,3 +5,10 @@
 .show{
     display: 9;
 }
+
+#DynamicToolContainer{
+    height: 0%;
+    z-index: 9999;
+    position: absolute;
+    width: 0%;
+}

@@ -18,8 +18,7 @@ const TextComponent = (props) => {
     overlayDiv.style.backgroundColor = leave ? defaultBG : highlightBG;
   };
 
-  return (
-    Object.keys(props.overlays).map((overlay, index) => (
+  const renderItems = () => Object.keys(props.overlays).map((overlay, index) => (
       <div
         key={overlay}
         onMouseOver={(e) => toggleRowHighlight(overlay, false)}
@@ -34,6 +33,13 @@ const TextComponent = (props) => {
         />
       </div>
     ))
+
+  return (
+    <>
+    {
+      renderItems()
+    }
+    </>
   );
 
   return (
