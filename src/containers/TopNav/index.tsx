@@ -8,7 +8,11 @@ import { useActions } from "../../hooks/useActions";
 const TopNav: React.FC<{ Tools: MapsToolState | false }> = (props) => {
   const [opened, setOpened] = useState(false);
   const [isOver, setIsOver] = useState(false);
-
+  const { toogleSideNav } = useActions();
+  const sideOpenEffect = () => {
+    setOpened(false);
+    toogleSideNav(false);
+  };
   useEffect(() => {
     const timeDelay = isOver ? 350 : 100;
 
