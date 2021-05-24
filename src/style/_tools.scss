@@ -1,10 +1,16 @@
+$tool-heading-height: 1.25rem * $line-height-base + (0.5rem + 0.5rem);
+
 .tool {
+    position: relative;
+    height: 100%;
+
     &__header {
         background: $gray-400;
         // color: $gray-600;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        height: $tool-heading-height;
     }
 
     &__name {
@@ -17,6 +23,11 @@
     &__close {
         cursor: pointer;
         padding: 0.5rem $tool-padding-start 0.5rem $tool-padding-end;
+    }
+
+    &__content {
+        height: calc(100% - #{$tool-heading-height});
+        overflow-y: auto;
     }
 
     &__side-padded,

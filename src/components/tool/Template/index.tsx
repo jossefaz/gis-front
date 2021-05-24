@@ -37,7 +37,7 @@ const ToolTemplate: React.FC<Props> = (props) => {
           </div>
         </div>
 
-        <div>{props.children}</div>
+        <div className="tool__content">{props.children}</div>
       </div>
     );
   };
