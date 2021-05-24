@@ -27,6 +27,7 @@
 .layers-list-item-menu-details {
     .tab-pane {
         display: none;
+        padding: 0.75rem;
 
         &.active {
             display: block;

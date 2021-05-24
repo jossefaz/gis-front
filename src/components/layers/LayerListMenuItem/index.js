@@ -13,6 +13,7 @@ import SpatialSelect from "../../tool/InternalTool/SpatialSelect";
 import { setMapLayerOpacity } from "../../../state/actions";
 import "./style.scss";
 import { ListGroup, Tab } from "react-bootstrap";
+import TableOfFeatures from "../../tool/InternalTool/TableOfFeatures";
 
 
 class LayerListMenuItem extends Component {
@@ -173,7 +174,7 @@ class LayerListMenuItem extends Component {
               <LegendItem key={layer.uuid} uuid={layer.uuid} global={false}></LegendItem>
             </Tab.Pane>
             <Tab.Pane eventKey="attributeTable">
-              <LayerListTOF openTable={this.state.showHide} uuid={layer.uuid} />
+            <TableOfFeatures uuid={layer.uuid}  />
             </Tab.Pane>
             <Tab.Pane eventKey="spatialSelect">
             <SpatialSelect key={layer.uuid} uuid={layer.uuid} global={false}></SpatialSelect>
